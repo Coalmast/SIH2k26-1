@@ -1,0 +1,50 @@
+import os
+from fastapi import FastAPI
+from pydantic import BaseModel
+from celery import Celery
+
+# --- Celery Configuration ---
+# Use the local Redis container we set up as both the broker and result backend
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+celery = Celery(
+    "sih2026_worker",
+    broker=REDIS_URL,
+    backend=REDIS_URL
+)
+
+celery.conf.update(
+    task_serializer="json",
+    accept_content=["json"],
+    result_serializer="json",
+    timezone="Asia/Kolkata", # Adjust if necessary
+    enable_utc=True,
+)
+
+# Sample background task
+@celery.task(name="sample_background_task")
+def sample_background_task(message: str):
+    import time
+    print(f"Starting long task for: {message}")
+    time.sleep(3) # Simulate a slow ML or PDF job
+    print(f"Finished task for: {message}")
+    return f"Processed: {message}"
+
+
+# --- FastAPI Application ---
+app = FastAPI(title="SIH2026 Backend Engine")
+
+class HealthCheckResponse(BaseModel):
+    status: str
+    message: str
+
+@app.get("/", response_model=HealthCheckResponse)
+async def root():
+    return HealthCheckResponse(status="ok", message="FastAPI engine running.")
+
+@app.post("/test-background-task")
+async def trigger_task(message: str):
+    """Endpoint to test our new Celery worker"""
+    # .delay() sends the job to the Redis queue in the background
+    task = sample_background_task.delay(message)
+    return {"message": "Task queued successfully!", "task_id": str(task.id)}
