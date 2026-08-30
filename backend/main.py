@@ -34,6 +34,20 @@ def sample_background_task(message: str):
 # --- FastAPI Application ---
 app = FastAPI(title="SIH2026 Backend Engine")
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+from routers import compliance, reports
+app.include_router(compliance.router)
+app.include_router(reports.router)
+
 class HealthCheckResponse(BaseModel):
     status: str
     message: str
