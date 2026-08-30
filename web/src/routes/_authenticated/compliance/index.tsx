@@ -1,6 +1,45 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ComplianceCalendar } from '@/features/compliance'
+import { useState } from 'react'
+import { ComplianceCalendar } from '@/features/compliance/components/ComplianceCalendar'
+import { ComplianceKanban } from '@/features/compliance/components/ComplianceKanban'
+import { Header } from '@/components/layout/header'
+import { Main } from '@/components/layout/main'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export const Route = createFileRoute('/_authenticated/compliance/')({
-  component: () => <ComplianceCalendar />,
+  component: CompliancePage,
 })
+
+function CompliancePage() {
+  const [view, setView] = useState<'kanban' | 'calendar'>('kanban')
+
+  return (
+    <>
+      <Header fixed />
+      
+      <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
+        <div className='flex flex-wrap items-end justify-between gap-2'>
+          <div>
+            <h2 className='text-2xl font-bold tracking-tight'>Compliance Management</h2>
+            <p className='text-muted-foreground'>
+              Track, submit, and approve compliance tasks.
+            </p>
+          </div>
+          
+          <Tabs value={view} onValueChange={(v) => setView(v as 'kanban' | 'calendar')} className="w-[400px]">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="kanban">Kanban Board</TabsTrigger>
+              <TabsTrigger value="calendar">Calendar View</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        
+        {view === 'kanban' ? (
+          <ComplianceKanban />
+        ) : (
+          <ComplianceCalendar />
+        )}
+      </Main>
+    </>
+  )
+}

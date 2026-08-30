@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedMobileInspectionRouteImport } from './routes/_authenticated/mobile-inspection'
 import { Route as AuthenticatedMineMapRouteImport } from './routes/_authenticated/mine-map'
 import { Route as AuthenticatedMineManagerRouteImport } from './routes/_authenticated/mine-manager'
 import { Route as AuthenticatedCorporateDashboardRouteImport } from './routes/_authenticated/corporate-dashboard'
@@ -26,19 +27,22 @@ import { Route as authOtpRouteImport } from './routes/(auth)/otp'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
-import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedReportsIndexRouteImport } from './routes/_authenticated/reports/index'
-import { Route as AuthenticatedHelpCenterIndexRouteImport } from './routes/_authenticated/help-center/index'
+import { Route as AuthenticatedInspectionIndexRouteImport } from './routes/_authenticated/inspection/index'
 import { Route as AuthenticatedComplianceIndexRouteImport } from './routes/_authenticated/compliance/index'
-import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authenticated/chats/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
+import { Route as AuthenticatedViolationsIdRouteImport } from './routes/_authenticated/violations/$id'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
+import { Route as AuthenticatedInspectionIdRouteImport } from './routes/_authenticated/inspection/$id'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
+import { Route as AuthenticatedCorrectiveActionsIdRouteImport } from './routes/_authenticated/corrective-actions/$id'
+import { Route as AuthenticatedComplianceInstanceIdRouteImport } from './routes/_authenticated/compliance/$instanceId'
 import { Route as AuthenticatedComplianceMineIdIndexRouteImport } from './routes/_authenticated/compliance/$mineId/index'
+import { Route as AuthenticatedAdminMinesIndexRouteImport } from './routes/_authenticated/admin/mines/index'
 import { Route as AuthenticatedComplianceMineIdInstanceIdRouteImport } from './routes/_authenticated/compliance/$mineId/$instanceId'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -50,6 +54,12 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMobileInspectionRoute =
+  AuthenticatedMobileInspectionRouteImport.update({
+    id: '/mobile-inspection',
+    path: '/mobile-inspection',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMineMapRoute = AuthenticatedMineMapRouteImport.update({
   id: '/mine-map',
   path: '/mine-map',
@@ -128,11 +138,6 @@ const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexRouteImport.update({
-  id: '/tasks/',
-  path: '/tasks/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedSettingsIndexRoute =
   AuthenticatedSettingsIndexRouteImport.update({
     id: '/',
@@ -145,10 +150,10 @@ const AuthenticatedReportsIndexRoute =
     path: '/reports/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedHelpCenterIndexRoute =
-  AuthenticatedHelpCenterIndexRouteImport.update({
-    id: '/help-center/',
-    path: '/help-center/',
+const AuthenticatedInspectionIndexRoute =
+  AuthenticatedInspectionIndexRouteImport.update({
+    id: '/inspection/',
+    path: '/inspection/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedComplianceIndexRoute =
@@ -157,16 +162,17 @@ const AuthenticatedComplianceIndexRoute =
     path: '/compliance/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedChatsIndexRoute = AuthenticatedChatsIndexRouteImport.update({
-  id: '/chats/',
-  path: '/chats/',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
   id: '/apps/',
   path: '/apps/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedViolationsIdRoute =
+  AuthenticatedViolationsIdRouteImport.update({
+    id: '/violations/$id',
+    path: '/violations/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsNotificationsRoute =
   AuthenticatedSettingsNotificationsRouteImport.update({
     id: '/notifications',
@@ -191,16 +197,40 @@ const AuthenticatedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedInspectionIdRoute =
+  AuthenticatedInspectionIdRouteImport.update({
+    id: '/inspection/$id',
+    path: '/inspection/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
     id: '/errors/$error',
     path: '/errors/$error',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCorrectiveActionsIdRoute =
+  AuthenticatedCorrectiveActionsIdRouteImport.update({
+    id: '/corrective-actions/$id',
+    path: '/corrective-actions/$id',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedComplianceInstanceIdRoute =
+  AuthenticatedComplianceInstanceIdRouteImport.update({
+    id: '/compliance/$instanceId',
+    path: '/compliance/$instanceId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedComplianceMineIdIndexRoute =
   AuthenticatedComplianceMineIdIndexRouteImport.update({
     id: '/compliance/$mineId/',
     path: '/compliance/$mineId/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminMinesIndexRoute =
+  AuthenticatedAdminMinesIndexRouteImport.update({
+    id: '/admin/mines/',
+    path: '/admin/mines/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedComplianceMineIdInstanceIdRoute =
@@ -226,20 +256,24 @@ export interface FileRoutesByFullPath {
   '/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/mine-manager': typeof AuthenticatedMineManagerRoute
   '/mine-map': typeof AuthenticatedMineMapRoute
+  '/mobile-inspection': typeof AuthenticatedMobileInspectionRoute
+  '/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
+  '/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/inspection/$id': typeof AuthenticatedInspectionIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/violations/$id': typeof AuthenticatedViolationsIdRoute
   '/apps/': typeof AuthenticatedAppsIndexRoute
-  '/chats/': typeof AuthenticatedChatsIndexRoute
   '/compliance/': typeof AuthenticatedComplianceIndexRoute
-  '/help-center/': typeof AuthenticatedHelpCenterIndexRoute
+  '/inspection/': typeof AuthenticatedInspectionIndexRoute
   '/reports/': typeof AuthenticatedReportsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/tasks/': typeof AuthenticatedTasksIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
   '/compliance/$mineId/$instanceId': typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  '/admin/mines/': typeof AuthenticatedAdminMinesIndexRoute
   '/compliance/$mineId/': typeof AuthenticatedComplianceMineIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -256,21 +290,25 @@ export interface FileRoutesByTo {
   '/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/mine-manager': typeof AuthenticatedMineManagerRoute
   '/mine-map': typeof AuthenticatedMineMapRoute
+  '/mobile-inspection': typeof AuthenticatedMobileInspectionRoute
   '/': typeof AuthenticatedIndexRoute
+  '/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
+  '/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/inspection/$id': typeof AuthenticatedInspectionIdRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/violations/$id': typeof AuthenticatedViolationsIdRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
-  '/chats': typeof AuthenticatedChatsIndexRoute
   '/compliance': typeof AuthenticatedComplianceIndexRoute
-  '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/inspection': typeof AuthenticatedInspectionIndexRoute
   '/reports': typeof AuthenticatedReportsIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
-  '/tasks': typeof AuthenticatedTasksIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
   '/compliance/$mineId/$instanceId': typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  '/admin/mines': typeof AuthenticatedAdminMinesIndexRoute
   '/compliance/$mineId': typeof AuthenticatedComplianceMineIdIndexRoute
 }
 export interface FileRoutesById {
@@ -290,21 +328,25 @@ export interface FileRoutesById {
   '/_authenticated/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/_authenticated/mine-manager': typeof AuthenticatedMineManagerRoute
   '/_authenticated/mine-map': typeof AuthenticatedMineMapRoute
+  '/_authenticated/mobile-inspection': typeof AuthenticatedMobileInspectionRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
+  '/_authenticated/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/_authenticated/inspection/$id': typeof AuthenticatedInspectionIdRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
+  '/_authenticated/violations/$id': typeof AuthenticatedViolationsIdRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
-  '/_authenticated/chats/': typeof AuthenticatedChatsIndexRoute
   '/_authenticated/compliance/': typeof AuthenticatedComplianceIndexRoute
-  '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
+  '/_authenticated/inspection/': typeof AuthenticatedInspectionIndexRoute
   '/_authenticated/reports/': typeof AuthenticatedReportsIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
-  '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
   '/_authenticated/compliance/$mineId/$instanceId': typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  '/_authenticated/admin/mines/': typeof AuthenticatedAdminMinesIndexRoute
   '/_authenticated/compliance/$mineId/': typeof AuthenticatedComplianceMineIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -325,20 +367,24 @@ export interface FileRouteTypes {
     | '/corporate-dashboard'
     | '/mine-manager'
     | '/mine-map'
+    | '/mobile-inspection'
+    | '/compliance/$instanceId'
+    | '/corrective-actions/$id'
     | '/errors/$error'
+    | '/inspection/$id'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
+    | '/violations/$id'
     | '/apps/'
-    | '/chats/'
     | '/compliance/'
-    | '/help-center/'
+    | '/inspection/'
     | '/reports/'
     | '/settings/'
-    | '/tasks/'
     | '/users/'
     | '/compliance/$mineId/$instanceId'
+    | '/admin/mines/'
     | '/compliance/$mineId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -355,21 +401,25 @@ export interface FileRouteTypes {
     | '/corporate-dashboard'
     | '/mine-manager'
     | '/mine-map'
+    | '/mobile-inspection'
     | '/'
+    | '/compliance/$instanceId'
+    | '/corrective-actions/$id'
     | '/errors/$error'
+    | '/inspection/$id'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
+    | '/violations/$id'
     | '/apps'
-    | '/chats'
     | '/compliance'
-    | '/help-center'
+    | '/inspection'
     | '/reports'
     | '/settings'
-    | '/tasks'
     | '/users'
     | '/compliance/$mineId/$instanceId'
+    | '/admin/mines'
     | '/compliance/$mineId'
   id:
     | '__root__'
@@ -388,21 +438,25 @@ export interface FileRouteTypes {
     | '/_authenticated/corporate-dashboard'
     | '/_authenticated/mine-manager'
     | '/_authenticated/mine-map'
+    | '/_authenticated/mobile-inspection'
     | '/_authenticated/'
+    | '/_authenticated/compliance/$instanceId'
+    | '/_authenticated/corrective-actions/$id'
     | '/_authenticated/errors/$error'
+    | '/_authenticated/inspection/$id'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
+    | '/_authenticated/violations/$id'
     | '/_authenticated/apps/'
-    | '/_authenticated/chats/'
     | '/_authenticated/compliance/'
-    | '/_authenticated/help-center/'
+    | '/_authenticated/inspection/'
     | '/_authenticated/reports/'
     | '/_authenticated/settings/'
-    | '/_authenticated/tasks/'
     | '/_authenticated/users/'
     | '/_authenticated/compliance/$mineId/$instanceId'
+    | '/_authenticated/admin/mines/'
     | '/_authenticated/compliance/$mineId/'
   fileRoutesById: FileRoutesById
 }
@@ -434,6 +488,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mobile-inspection': {
+      id: '/_authenticated/mobile-inspection'
+      path: '/mobile-inspection'
+      fullPath: '/mobile-inspection'
+      preLoaderRoute: typeof AuthenticatedMobileInspectionRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/mine-map': {
@@ -541,13 +602,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/tasks/': {
-      id: '/_authenticated/tasks/'
-      path: '/tasks'
-      fullPath: '/tasks/'
-      preLoaderRoute: typeof AuthenticatedTasksIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/settings/': {
       id: '/_authenticated/settings/'
       path: '/'
@@ -562,11 +616,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/help-center/': {
-      id: '/_authenticated/help-center/'
-      path: '/help-center'
-      fullPath: '/help-center/'
-      preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
+    '/_authenticated/inspection/': {
+      id: '/_authenticated/inspection/'
+      path: '/inspection'
+      fullPath: '/inspection/'
+      preLoaderRoute: typeof AuthenticatedInspectionIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/compliance/': {
@@ -576,18 +630,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedComplianceIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/chats/': {
-      id: '/_authenticated/chats/'
-      path: '/chats'
-      fullPath: '/chats/'
-      preLoaderRoute: typeof AuthenticatedChatsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/apps/': {
       id: '/_authenticated/apps/'
       path: '/apps'
       fullPath: '/apps/'
       preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/violations/$id': {
+      id: '/_authenticated/violations/$id'
+      path: '/violations/$id'
+      fullPath: '/violations/$id'
+      preLoaderRoute: typeof AuthenticatedViolationsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/notifications': {
@@ -618,6 +672,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/inspection/$id': {
+      id: '/_authenticated/inspection/$id'
+      path: '/inspection/$id'
+      fullPath: '/inspection/$id'
+      preLoaderRoute: typeof AuthenticatedInspectionIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/errors/$error': {
       id: '/_authenticated/errors/$error'
       path: '/errors/$error'
@@ -625,11 +686,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedErrorsErrorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/corrective-actions/$id': {
+      id: '/_authenticated/corrective-actions/$id'
+      path: '/corrective-actions/$id'
+      fullPath: '/corrective-actions/$id'
+      preLoaderRoute: typeof AuthenticatedCorrectiveActionsIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/compliance/$instanceId': {
+      id: '/_authenticated/compliance/$instanceId'
+      path: '/compliance/$instanceId'
+      fullPath: '/compliance/$instanceId'
+      preLoaderRoute: typeof AuthenticatedComplianceInstanceIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/compliance/$mineId/': {
       id: '/_authenticated/compliance/$mineId/'
       path: '/compliance/$mineId'
       fullPath: '/compliance/$mineId/'
       preLoaderRoute: typeof AuthenticatedComplianceMineIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/mines/': {
+      id: '/_authenticated/admin/mines/'
+      path: '/admin/mines'
+      fullPath: '/admin/mines/'
+      preLoaderRoute: typeof AuthenticatedAdminMinesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/compliance/$mineId/$instanceId': {
@@ -670,16 +752,20 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedCorporateDashboardRoute: typeof AuthenticatedCorporateDashboardRoute
   AuthenticatedMineManagerRoute: typeof AuthenticatedMineManagerRoute
   AuthenticatedMineMapRoute: typeof AuthenticatedMineMapRoute
+  AuthenticatedMobileInspectionRoute: typeof AuthenticatedMobileInspectionRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedComplianceInstanceIdRoute: typeof AuthenticatedComplianceInstanceIdRoute
+  AuthenticatedCorrectiveActionsIdRoute: typeof AuthenticatedCorrectiveActionsIdRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
+  AuthenticatedInspectionIdRoute: typeof AuthenticatedInspectionIdRoute
+  AuthenticatedViolationsIdRoute: typeof AuthenticatedViolationsIdRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
-  AuthenticatedChatsIndexRoute: typeof AuthenticatedChatsIndexRoute
   AuthenticatedComplianceIndexRoute: typeof AuthenticatedComplianceIndexRoute
-  AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
+  AuthenticatedInspectionIndexRoute: typeof AuthenticatedInspectionIndexRoute
   AuthenticatedReportsIndexRoute: typeof AuthenticatedReportsIndexRoute
-  AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
   AuthenticatedComplianceMineIdInstanceIdRoute: typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  AuthenticatedAdminMinesIndexRoute: typeof AuthenticatedAdminMinesIndexRoute
   AuthenticatedComplianceMineIdIndexRoute: typeof AuthenticatedComplianceMineIdIndexRoute
 }
 
@@ -688,17 +774,22 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCorporateDashboardRoute: AuthenticatedCorporateDashboardRoute,
   AuthenticatedMineManagerRoute: AuthenticatedMineManagerRoute,
   AuthenticatedMineMapRoute: AuthenticatedMineMapRoute,
+  AuthenticatedMobileInspectionRoute: AuthenticatedMobileInspectionRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedComplianceInstanceIdRoute:
+    AuthenticatedComplianceInstanceIdRoute,
+  AuthenticatedCorrectiveActionsIdRoute: AuthenticatedCorrectiveActionsIdRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
+  AuthenticatedInspectionIdRoute: AuthenticatedInspectionIdRoute,
+  AuthenticatedViolationsIdRoute: AuthenticatedViolationsIdRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
-  AuthenticatedChatsIndexRoute: AuthenticatedChatsIndexRoute,
   AuthenticatedComplianceIndexRoute: AuthenticatedComplianceIndexRoute,
-  AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
+  AuthenticatedInspectionIndexRoute: AuthenticatedInspectionIndexRoute,
   AuthenticatedReportsIndexRoute: AuthenticatedReportsIndexRoute,
-  AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
   AuthenticatedComplianceMineIdInstanceIdRoute:
     AuthenticatedComplianceMineIdInstanceIdRoute,
+  AuthenticatedAdminMinesIndexRoute: AuthenticatedAdminMinesIndexRoute,
   AuthenticatedComplianceMineIdIndexRoute:
     AuthenticatedComplianceMineIdIndexRoute,
 }

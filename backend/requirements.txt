@@ -8,3 +8,5 @@ cryptography
 redis
 supabase
 celery
+pytest
+pytest-asyncio

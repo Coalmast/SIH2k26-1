@@ -34,25 +34,30 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-2xl font-bold tracking-tight">{instance.requirement?.title || 'Compliance Task'}</h1>
             <Badge className={
-              instance.status === 'PENDING' ? "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 border-yellow-500/20" :
-              instance.status === 'COMPLETED' ? "bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20" :
-              instance.status === 'OVERDUE' ? "bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20" :
+              instance.status === 'pending' ? "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 border-yellow-500/20" :
+              instance.status === 'approved' ? "bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20" :
+              instance.status === 'breached' ? "bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20" :
               "bg-blue-500/10 text-blue-500 border-blue-500/20"
-            }>{instance.status}</Badge>
+            }>{instance.status?.toUpperCase()}</Badge>
           </div>
           <div className="flex gap-4 text-sm text-muted-foreground">
             {instance.requirement?.regulation && <span>Regulation: {instance.requirement.regulation.code}</span>}
             {instance.requirement?.regulation && <span>•</span>}
             {instance.requirement?.regulation && <span>Authority: {instance.requirement.regulation.authority}</span>}
             {instance.requirement?.regulation && <span>•</span>}
-            <span className={instance.status === 'OVERDUE' ? "text-red-500" : "text-yellow-500"}>Due: {new Date(instance.due_date).toLocaleDateString()}</span>
+            <span className={instance.status === 'breached' ? "text-red-500" : "text-yellow-500"}>Due: {new Date(instance.due_date).toLocaleDateString()}</span>
           </div>
         </div>
-        {instance.status === 'IN_PROGRESS' && (
-          <Button onClick={handleApprove} disabled={approveMutation.isPending} className="bg-[#FCD535] text-black hover:bg-[#FCD535]/90 gap-2">
-            {approveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
-            Approve & Complete
-          </Button>
+        {instance.status === 'in_progress' && (
+          <div className="flex gap-2">
+            <Button variant="outline" className="border-red-500/50 text-red-500 hover:bg-red-500/10">
+              Reject
+            </Button>
+            <Button onClick={handleApprove} disabled={approveMutation.isPending} className="bg-[#FCD535] text-black hover:bg-[#FCD535]/90 gap-2">
+              {approveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+              Approve & Complete
+            </Button>
+          </div>
         )}
       </div>
 
@@ -63,7 +68,7 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
               <CardTitle>Evidence Verification</CardTitle>
             </CardHeader>
             <CardContent>
-              {instance.status === 'PENDING' ? (
+              {instance.status === 'pending' ? (
                  <SubmitEvidenceForm instanceId={instanceId} />
               ) : (
                 <div className="mt-2 flex items-center justify-between rounded-lg border border-border/50 p-4 bg-background">
@@ -84,7 +89,7 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
             </CardContent>
           </Card>
 
-          {instance.status !== 'PENDING' && (
+          {instance.status !== 'pending' && (
             <Card className="border-border/50 bg-card/50 flex-1">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle>OCR Review (Side-by-Side)</CardTitle>
@@ -128,18 +133,18 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
                 <p className="text-sm font-medium">Task Created</p>
                 <p className="text-xs text-muted-foreground mb-1">{new Date(instance.created_at).toLocaleString()}</p>
               </div>
-              {instance.status !== 'PENDING' && (
+              {instance.status !== 'pending' && (
                 <div className="relative border-l border-border/50 ml-3 pl-6 pb-6">
                   <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[6.5px] top-1"></div>
                   <p className="text-sm font-medium text-green-500">Evidence Submitted</p>
                   <p className="text-xs text-muted-foreground">Under Review by Compliance Officer</p>
                 </div>
               )}
-              {instance.status === 'COMPLETED' ? (
+              {instance.status === 'approved' ? (
                  <div className="relative ml-3 pl-6">
                  <div className="absolute w-3 h-3 bg-green-500 rounded-full -left-[6.5px] top-1"></div>
                  <p className="text-sm font-medium text-green-500">Approved & Completed</p>
-                 <p className="text-xs text-muted-foreground">{new Date(instance.completed_at || new Date()).toLocaleString()}</p>
+                 <p className="text-xs text-muted-foreground">{new Date(instance.updated_at || new Date()).toLocaleString()}</p>
                </div>
               ) : (
                 <div className="relative ml-3 pl-6">

@@ -6,7 +6,7 @@ import { ComplianceCalendar } from '@/components/mine-manager/compliance-calenda
 import { OpenViolationsTable } from '@/components/mine-manager/open-violations-table'
 import { LiveAlertFeed } from '@/components/mine-manager/live-alert-feed'
 import { EnvironmentalStatus } from '@/components/mine-manager/environmental-status'
-import { ChartBarDefault } from '@/components/bar-table'
+import { ProductionTrendChart } from '@/components/mine-manager/production-trend-chart'
 
 export const Route = createFileRoute('/_authenticated/mine-manager')({
   component: MineManagerDashboard,
@@ -45,7 +45,7 @@ function MineManagerDashboard() {
       {/* Footer Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
         <EnvironmentalStatus />
-        <ChartBarDefault />
+        <ProductionTrendChart />
       </div>
     </div>
   )

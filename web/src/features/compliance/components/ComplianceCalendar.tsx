@@ -10,11 +10,11 @@ import { useComplianceInstances } from '../hooks/useCompliance';
 import { ComplianceHealthScore } from './ComplianceHealthScore';
 
 const COLUMNS = [
-  { id: 'PENDING', label: 'PENDING', color: 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20' },
-  { id: 'IN_PROGRESS', label: 'IN PROGRESS', color: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20' },
-  { id: 'OVERDUE', label: 'OVERDUE', color: 'bg-red-500/10 text-red-500 hover:bg-red-500/20' },
-  { id: 'ESCALATED', label: 'ESCALATED', color: 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' },
-  { id: 'COMPLETED', label: 'APPROVED', color: 'bg-green-500/10 text-green-500 hover:bg-green-500/20' }
+  { id: 'pending', label: 'PENDING', color: 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20' },
+  { id: 'in_progress', label: 'IN PROGRESS', color: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20' },
+  { id: 'submitted', label: 'SUBMITTED', color: 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' },
+  { id: 'approved', label: 'APPROVED', color: 'bg-green-500/10 text-green-500 hover:bg-green-500/20' },
+  { id: 'breached', label: 'BREACHED', color: 'bg-red-500/10 text-red-500 hover:bg-red-500/20' }
 ];
 
 interface Props {

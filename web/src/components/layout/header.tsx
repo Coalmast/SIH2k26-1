@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { MineSelector } from '@/components/shared/MineSelector'
+import { ThemeSwitch } from '@/components/theme-switch'
+import { ProfileDropdown } from '@/components/profile-dropdown'
+import { Bell } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
   fixed?: boolean
@@ -16,10 +21,7 @@ export function Header({ className, fixed, children, ...props }: HeaderProps) {
       setOffset(document.body.scrollTop || document.documentElement.scrollTop)
     }
 
-    // Add scroll listener to the body
     document.addEventListener('scroll', onScroll, { passive: true })
-
-    // Clean up the event listener on unmount
     return () => document.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -43,7 +45,28 @@ export function Header({ className, fixed, children, ...props }: HeaderProps) {
       >
         <SidebarTrigger variant='outline' className='max-md:scale-125' />
         <Separator orientation='vertical' className='h-6' />
-        {children}
+        
+        {/* Left side (page-specific breadcrumbs etc.) */}
+        <div className="flex-1 flex items-center gap-4">
+           {children}
+        </div>
+        
+        {/* Right side standardized TopBar */}
+        <div className="flex items-center gap-2">
+           <MineSelector />
+           
+           <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
+             <Bell className="h-5 w-5" />
+             <span className="absolute top-1 right-2 h-2 w-2 bg-red-500 rounded-full border border-background"></span>
+           </Button>
+           
+           <Button variant="ghost" size="sm" className="font-semibold text-xs text-muted-foreground hover:text-foreground">
+             EN
+           </Button>
+           
+           <ThemeSwitch />
+           <ProfileDropdown />
+        </div>
       </div>
     </header>
   )

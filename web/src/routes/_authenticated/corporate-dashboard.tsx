@@ -11,6 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
+import { AreaChart, Area, XAxis, YAxis } from 'recharts'
 
 export const Route = createFileRoute('/_authenticated/corporate-dashboard')({
   component: CorporateDashboard,
@@ -57,13 +59,67 @@ function CorporateDashboard() {
             <MoreHorizontal className="text-muted-foreground h-5 w-5 cursor-pointer" />
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="h-64 w-full bg-muted/30 rounded border relative overflow-hidden flex items-end">
-              {/* Fake Chart */}
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent"></div>
-              <svg className="w-full h-full text-primary drop-shadow-sm" preserveAspectRatio="none" viewBox="0 0 100 40">
-                <path d="M0 40 L0 30 L10 32 L20 25 L30 28 L40 15 L50 20 L60 10 L70 18 L80 5 L90 12 L100 2 L100 40 Z" fill="currentColor" fillOpacity="0.2"></path>
-                <path d="M0 30 L10 32 L20 25 L30 28 L40 15 L50 20 L60 10 L70 18 L80 5 L90 12 L100 2" fill="none" stroke="currentColor" strokeWidth="0.5"></path>
-              </svg>
+            <div className="h-64 w-full relative overflow-hidden flex items-end">
+              <ChartContainer
+                config={{
+                  efficiency: {
+                    label: "Efficiency",
+                    color: "hsl(var(--primary))",
+                  },
+                }}
+                className="w-full h-full"
+              >
+                <AreaChart
+                  data={[
+                    { month: "Jan", efficiency: 40 },
+                    { month: "Feb", efficiency: 30 },
+                    { month: "Mar", efficiency: 20 },
+                    { month: "Apr", efficiency: 28 },
+                    { month: "May", efficiency: 18 },
+                    { month: "Jun", efficiency: 24 },
+                    { month: "Jul", efficiency: 35 },
+                    { month: "Aug", efficiency: 22 },
+                    { month: "Sep", efficiency: 28 },
+                    { month: "Oct", efficiency: 38 },
+                    { month: "Nov", efficiency: 45 },
+                    { month: "Dec", efficiency: 55 },
+                  ]}
+                  margin={{
+                    left: -20,
+                    right: 0,
+                    top: 10,
+                    bottom: 0,
+                  }}
+                >
+                  <defs>
+                    <linearGradient id="fillEfficiency" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-efficiency)" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="var(--color-efficiency)" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => value.slice(0, 3)}
+                  />
+                  <YAxis
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                  />
+                  <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                  <Area
+                    type="natural"
+                    dataKey="efficiency"
+                    stroke="var(--color-efficiency)"
+                    fill="url(#fillEfficiency)"
+                    fillOpacity={1}
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ChartContainer>
             </div>
           </CardContent>
         </Card>

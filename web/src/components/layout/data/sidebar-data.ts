@@ -1,207 +1,118 @@
 import {
-  Construction,
   LayoutDashboard,
-  Monitor,
-  Bug,
-  ListTodo,
-  FileX,
-  HelpCircle,
-  Lock,
-  Bell,
-  Package,
-  Palette,
-  ServerOff,
-  Settings,
-  Wrench,
-  UserCog,
-  UserX,
-  Users,
-  MessagesSquare,
-  ShieldCheck,
-  AudioWaveform,
-  Command,
-  GalleryVerticalEnd,
-  Map,
   ShieldAlert,
+  Search,
+  Users,
+  Leaf,
+  Activity,
+  AlertTriangle,
+  FileScan,
+  Map,
+  Bell,
+  MessageSquare,
+  BrainCircuit,
   FileSignature,
+  Settings,
 } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: 'Inspector',
+    email: 'inspector@example.com',
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
     {
-      name: 'Shadcn Admin',
-      logo: Command,
-      plan: 'Vite + ShadcnUI',
-    },
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
+      name: 'Mine Operations',
+      logo: Activity,
+      plan: 'Active',
+    }
   ],
   navGroups: [
     {
-      title: 'General',
+      title: 'Navigation',
       items: [
         {
-          title: 'Coal Dashboard',
-          url: '/corporate-dashboard',
+          title: 'Dashboard',
+          url: '/',
           icon: LayoutDashboard,
-        },
-        {
-          title: 'Mine Manager',
-          url: '/mine-manager',
-          icon: LayoutDashboard,
-        },
-        {
-          title: 'Mine Map',
-          url: '/mine-map',
-          icon: Map,
         },
         {
           title: 'Compliance',
           url: '/compliance',
           icon: ShieldAlert,
+          roles: ['compliance_officer', 'mine_manager', 'regulator'],
+        },
+        {
+          title: 'Inspections',
+          url: '/inspection',
+          icon: Search,
+          roles: ['safety_officer', 'mine_manager', 'regulator'],
+        },
+        {
+          title: 'Contractors',
+          url: '/contractors',
+          icon: Users,
+          roles: ['contractor_manager', 'mine_manager'],
+        },
+        {
+          title: 'Environment',
+          url: '/environment',
+          icon: Leaf,
+          roles: ['environmental_officer', 'mine_manager', 'regulator'],
+        },
+        {
+          title: 'Production',
+          url: '/production',
+          icon: Activity,
+          roles: ['mine_manager', 'corporate_executive'],
+        },
+        {
+          title: 'Incidents',
+          url: '/incidents',
+          icon: AlertTriangle,
+          roles: ['safety_officer', 'mine_manager', 'regulator'],
+        },
+        {
+          title: 'OCR / Digitization',
+          url: '/ocr',
+          icon: FileScan,
+          roles: ['compliance_officer', 'system_admin'],
+        },
+        {
+          title: 'GIS Map',
+          url: '/mine-map',
+          icon: Map,
+        },
+        {
+          title: 'Alerts',
+          url: '/alerts',
+          icon: Bell,
+        },
+        {
+          title: 'Grievances',
+          url: '/grievances',
+          icon: MessageSquare,
+          roles: ['mine_manager', 'subsidiary_admin'],
+        },
+        {
+          title: 'AI Analytics',
+          url: '/ai-analytics',
+          icon: BrainCircuit,
+          roles: ['mine_manager', 'corporate_executive'],
         },
         {
           title: 'Reports',
           url: '/reports',
           icon: FileSignature,
+          roles: ['compliance_officer', 'mine_manager', 'regulator'],
         },
         {
-          title: 'Tasks',
-          url: '/tasks',
-          icon: ListTodo,
-        },
-        {
-          title: 'Apps',
-          url: '/apps',
-          icon: Package,
-        },
-        {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
-          icon: MessagesSquare,
-        },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: Users,
-        },
-      ],
-    },
-    {
-      title: 'Pages',
-      items: [
-        {
-          title: 'Auth',
-          icon: ShieldCheck,
-          items: [
-            {
-              title: 'Sign In',
-              url: '/sign-in',
-            },
-            {
-              title: 'Sign In (2 Col)',
-              url: '/sign-in-2',
-            },
-            {
-              title: 'Sign Up',
-              url: '/sign-up',
-            },
-            {
-              title: 'Forgot Password',
-              url: '/forgot-password',
-            },
-            {
-              title: 'OTP',
-              url: '/otp',
-            },
-          ],
-        },
-        {
-          title: 'Errors',
-          icon: Bug,
-          items: [
-            {
-              title: 'Unauthorized',
-              url: '/errors/unauthorized',
-              icon: Lock,
-            },
-            {
-              title: 'Forbidden',
-              url: '/errors/forbidden',
-              icon: UserX,
-            },
-            {
-              title: 'Not Found',
-              url: '/errors/not-found',
-              icon: FileX,
-            },
-            {
-              title: 'Internal Server Error',
-              url: '/errors/internal-server-error',
-              icon: ServerOff,
-            },
-            {
-              title: 'Maintenance Error',
-              url: '/errors/maintenance-error',
-              icon: Construction,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: 'Other',
-      items: [
-        {
-          title: 'Settings',
+          title: 'Admin',
+          url: '/admin/mines',
           icon: Settings,
-          items: [
-            {
-              title: 'Profile',
-              url: '/settings',
-              icon: UserCog,
-            },
-            {
-              title: 'Account',
-              url: '/settings/account',
-              icon: Wrench,
-            },
-            {
-              title: 'Appearance',
-              url: '/settings/appearance',
-              icon: Palette,
-            },
-            {
-              title: 'Notifications',
-              url: '/settings/notifications',
-              icon: Bell,
-            },
-            {
-              title: 'Display',
-              url: '/settings/display',
-              icon: Monitor,
-            },
-          ],
-        },
-        {
-          title: 'Help Center',
-          url: '/help-center',
-          icon: HelpCircle,
+          roles: ['system_admin', 'subsidiary_admin'],
         },
       ],
     },

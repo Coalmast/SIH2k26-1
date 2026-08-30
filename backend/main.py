@@ -21,6 +21,17 @@ celery.conf.update(
     enable_utc=True,
 )
 
+celery.conf.beat_schedule = {
+    "check-overdue-capas-every-15min": {
+        "task": "services.escalation_tasks.check_overdue_capas",
+        "schedule": 900.0,  # 900 seconds = 15 minutes
+    },
+    "check-overdue-compliance-every-15min": {
+        "task": "services.compliance_escalation_tasks.check_overdue_compliance",
+        "schedule": 900.0,
+    },
+}
+
 # Sample background task
 @celery.task(name="sample_background_task")
 def sample_background_task(message: str):
@@ -44,9 +55,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from routers import compliance, reports
+from routers import compliance, reports, inspection, mine, users
 app.include_router(compliance.router)
 app.include_router(reports.router)
+app.include_router(inspection.router)
+app.include_router(mine.router)
+app.include_router(users.router)
 
 class HealthCheckResponse(BaseModel):
     status: str

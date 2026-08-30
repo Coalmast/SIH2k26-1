@@ -1,35 +1,19 @@
-import { Shield, UserCheck, Users, CreditCard } from 'lucide-react'
-import { type UserStatus } from './schema'
+import { Shield, ShieldCheck, ShieldAlert, UserIcon, ShieldHalf, HardHat, HardHatIcon, Briefcase } from 'lucide-react'
 
-export const callTypes = new Map<UserStatus, string>([
-  ['active', 'bg-teal-100/30 text-teal-900 dark:text-teal-200 border-teal-200'],
-  ['inactive', 'bg-neutral-300/40 border-neutral-300'],
-  ['invited', 'bg-sky-200/40 text-sky-900 dark:text-sky-100 border-sky-300'],
-  [
-    'suspended',
-    'bg-destructive/10 dark:bg-destructive/50 text-destructive dark:text-primary border-destructive/10',
-  ],
-])
+export const userTypes = [
+  { label: 'Active', value: 'active' },
+  { label: 'Inactive', value: 'inactive' },
+]
 
 export const roles = [
-  {
-    label: 'Superadmin',
-    value: 'superadmin',
-    icon: Shield,
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-    icon: UserCheck,
-  },
-  {
-    label: 'Manager',
-    value: 'manager',
-    icon: Users,
-  },
-  {
-    label: 'Cashier',
-    value: 'cashier',
-    icon: CreditCard,
-  },
-] as const
+  { label: 'System Admin', value: 'system_admin', icon: ShieldAlert },
+  { label: 'Subsidiary Admin', value: 'subsidiary_admin', icon: ShieldCheck },
+  { label: 'Corporate Executive', value: 'corporate_executive', icon: ShieldHalf },
+  { label: 'Mine Manager', value: 'mine_manager', icon: Briefcase },
+  { label: 'Safety Officer', value: 'safety_officer', icon: HardHatIcon },
+  { label: 'Environmental Officer', value: 'environmental_officer', icon: Shield },
+  { label: 'Compliance Officer', value: 'compliance_officer', icon: ShieldCheck },
+  { label: 'Field Officer', value: 'field_officer', icon: HardHat },
+  { label: 'Contractor Manager', value: 'contractor_manager', icon: UserIcon },
+  { label: 'Regulator', value: 'regulator', icon: ShieldAlert },
+]

@@ -2,14 +2,19 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Any
 from datetime import datetime, date
 import uuid
-from models.compliance import ComplianceCategory, MineTypeEnum, RequirementFrequency, InstanceStatus, EvidenceOcrStatus
+from models.compliance import ComplianceCategory, InstanceStatus, AuthorityEnum, RequirementFrequency, EvidenceUploadMethod
+from models.mine import MineTypeEnum, RoleNameEnum
 
 class RegulationBase(BaseModel):
     code: str
     title: str
     category: ComplianceCategory
-    authority: Optional[str] = None
+    authority: Optional[AuthorityEnum] = None
     description: Optional[str] = None
+    statute: Optional[str] = None
+    section_reference: Optional[str] = None
+    consequence_of_non_compliance: Optional[str] = None
+    version: int = 1
     is_active: bool = True
 
 class RegulationCreate(RegulationBase):
@@ -25,11 +30,14 @@ class RegulationRead(RegulationBase):
 
 class RequirementBase(BaseModel):
     title: str
-    mine_type: MineTypeEnum
-    frequency: RequirementFrequency
+    recurrence: RequirementFrequency
+    applicable_mine_types: List[MineTypeEnum]
     grace_period_days: int = 0
-    applies_to_subsidiaries: Optional[list] = None
-    auto_generate: bool = True
+    reminder_offsets_days: List[int] = [30, 7, 1]
+    applicable_states: Optional[List[str]] = None
+    documents_required: Optional[List[str]] = None
+    responsible_role: Optional[RoleNameEnum] = None
+    regulation_version: Optional[int] = None
 
 class RequirementCreate(RequirementBase):
     regulation_id: uuid.UUID
@@ -45,19 +53,22 @@ class RequirementRead(RequirementBase):
 
 class ComplianceInstanceBase(BaseModel):
     mine_id: uuid.UUID
-    status: InstanceStatus = InstanceStatus.PENDING
-    period_start: Optional[date] = None
-    period_end: Optional[date] = None
+    subsidiary_id: Optional[uuid.UUID] = None
+    status: InstanceStatus = InstanceStatus.pending
+    period_start: date
+    period_end: date
     due_date: date
     assigned_to: Optional[uuid.UUID] = None
-    escalation_tier: int = 0
-    regulator_visible: bool = False
+    is_late_submission: bool = False
+    regulation_version: Optional[int] = None
 
 class ComplianceInstanceRead(ComplianceInstanceBase):
     id: uuid.UUID
     requirement_id: uuid.UUID
-    escalated_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
+    submitted_by: Optional[uuid.UUID] = None
+    submitted_at: Optional[datetime] = None
+    verified_by: Optional[uuid.UUID] = None
+    verified_at: Optional[datetime] = None
     rejection_reason: Optional[str] = None
     created_at: datetime
     updated_at: datetime
@@ -73,9 +84,10 @@ class ComplianceInstanceUpdate(BaseModel):
 
 class EvidenceUploadResponse(BaseModel):
     id: uuid.UUID
-    file_key: str
-    file_name: str
-    ocr_status: EvidenceOcrStatus
+    document_url: str
+    file_name: Optional[str] = None
+    upload_method: EvidenceUploadMethod
+    is_verified: bool = False
 
 class SubmitEvidenceRequest(BaseModel):
     notes: Optional[str] = None
