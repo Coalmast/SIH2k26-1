@@ -1,0 +1,32 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "mine_name": "Gevra Opencast Mine",
+        "subsidiary": "South Eastern Coalfields Limited (SECL)",
+        "district": "Korba",
+        "state": "Chhattisgarh",
+        "status": "active",
+        "mine_type": "opencast",
+        "area_sq_km": 19.03,
+        "description": "One of the largest open cast coal mines in India."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [82.5248, 22.3195],
+            [82.5738, 22.3150],
+            [82.6228, 22.3295],
+            [82.6100, 22.3555],
+            [82.5500, 22.3500],
+            [82.5300, 22.3400],
+            [82.5248, 22.3195]
+          ]
+        ]
+      }
+    }
+  ]
+}

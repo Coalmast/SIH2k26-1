@@ -1,0 +1,620 @@
+{
+  "regulations": [
+    {
+      "regulationId": "REG-SAF-001",
+      "category": "Safety",
+      "sourceLaw": "CMR 2017, Regulation 105 (Ventilation Standards)",
+      "title": "Daily Ventilation and Air/Gas Quality Survey",
+      "description": "Every underground coal mine must maintain adequate quantity and velocity of air at all working faces, roadways and return airways to dilute flammable and noxious gases and airborne dust. A competent ventilation official must measure and record air quantity, velocity and methane percentage in each working district at least once every shift, and any reading below the approved ventilation standard must be rectified before persons are permitted to work in that area.",
+      "periodicity": "Daily",
+      "escalationSlaHours": 4,
+      "checklistIds": ["CHK-SAF-001"]
+    },
+    {
+      "regulationId": "REG-SAF-002",
+      "category": "Safety",
+      "sourceLaw": "CMR 2017, Regulation 100 (Support of Roof and Sides)",
+      "title": "Daily Inspection of Roof and Side Support",
+      "description": "Before any person is permitted to work or travel in an underground working place, the roof and sides must be examined and tested by sounding, and adequately supported with props, roof bolts, steel arches or other approved systematic support in accordance with the support rules sanctioned for that mine. Loose or unsafe ground identified during inspection must be brought down or securely fenced off before work commences.",
+      "periodicity": "Daily",
+      "escalationSlaHours": 6,
+      "checklistIds": ["CHK-SAF-002"]
+    },
+    {
+      "regulationId": "REG-SAF-003",
+      "category": "Safety",
+      "sourceLaw": "CMR 2017, Regulation 116 (Testing for Inflammable and Noxious Gases)",
+      "title": "Daily Testing for Firedamp and Noxious Gases",
+      "description": "In every mine or part of a mine classified as gassy, a competent gas testing person must test the general body of air and the atmosphere at the face, goaf edges and return airways for methane and other noxious gases before the commencement of each shift and at prescribed intervals during the shift, recording every reading in the statutory Gas Testing Register.",
+      "periodicity": "Daily",
+      "escalationSlaHours": 2,
+      "checklistIds": ["CHK-SAF-003"]
+    },
+    {
+      "regulationId": "REG-SAF-004",
+      "category": "Safety",
+      "sourceLaw": "CMR 2017, Regulation 175 read with Explosives Rules, 2008",
+      "title": "Daily Verification of Explosives Stock and Shot-Firing Records",
+      "description": "Explosives and detonators held in the mine magazine or explosives van must be physically verified against the Magazine Register at the start and end of each shift. All shot-firing must be carried out only by an authorized shotfirer, recorded in the Shot-Firing Register, with unused explosives returned to the magazine and reconciled on the same day.",
+      "periodicity": "Daily",
+      "escalationSlaHours": 12,
+      "checklistIds": ["CHK-SAF-004"]
+    },
+    {
+      "regulationId": "REG-SAF-005",
+      "category": "Safety",
+      "sourceLaw": "CMR 2017, Regulation 82 read with DGMS Technical Circular No. 07 of 2021",
+      "title": "Daily Pre-Operational Safety Check of HEMM and Trackless Machinery",
+      "description": "Every dumper, excavator, dozer, drill and other heavy earth-moving or trackless machinery deployed in the mine must undergo a documented pre-operational safety check each shift, covering braking systems, reverse alarms, lighting, tyres and fire-fighting equipment, before being certified fit for operation by the operator and shift in-charge.",
+      "periodicity": "Daily",
+      "escalationSlaHours": 8,
+      "checklistIds": ["CHK-SAF-005"]
+    },
+    {
+      "regulationId": "REG-ENV-001",
+      "category": "Environment",
+      "sourceLaw": "CMR 2017, Regulation 222 (Precautions Against Dust) read with Environment (Protection) Act, 1986",
+      "title": "Daily Functional Check of Dust Suppression Systems",
+      "description": "Dust-generating points including crushers, screens, transfer points, drilling locations and haul roads must be fitted with functional water sprinkling, fogging or dry-fog suppression systems, operated at the prescribed frequency to keep respirable dust concentrations within permissible occupational and ambient limits.",
+      "periodicity": "Daily",
+      "escalationSlaHours": 24,
+      "checklistIds": ["CHK-ENV-001"]
+    },
+    {
+      "regulationId": "REG-ENV-002",
+      "category": "Environment",
+      "sourceLaw": "Environment (Protection) Act, 1986, Schedule VII read with Environmental Clearance conditions",
+      "title": "Monthly Ambient Air Quality Monitoring",
+      "description": "The mine must monitor ambient air quality (PM10, PM2.5, SO2 and NOx) at all approved monitoring stations at the prescribed frequency and submit results to the State Pollution Control Board, ensuring concentrations remain within the National Ambient Air Quality Standards notified under the Environment (Protection) Act, 1986.",
+      "periodicity": "Monthly",
+      "escalationSlaHours": 48,
+      "checklistIds": ["CHK-ENV-002"]
+    },
+    {
+      "regulationId": "REG-ENV-003",
+      "category": "Environment",
+      "sourceLaw": "Water (Prevention and Control of Pollution) Act, 1974 read with Environment (Protection) Rules, 1986",
+      "title": "Monthly Mine Discharge Water Quality Testing",
+      "description": "Water discharged from mine pit sumps, settling ponds or effluent treatment plants into natural water bodies must be tested monthly for pH, total suspended solids, oil and grease and other notified parameters, and must satisfy the standards prescribed for inland surface water discharge before release.",
+      "periodicity": "Monthly",
+      "escalationSlaHours": 48,
+      "checklistIds": ["CHK-ENV-003"]
+    },
+    {
+      "regulationId": "REG-PRD-001",
+      "category": "Production",
+      "sourceLaw": "CMR 2017, Regulation 190 (Registers of Output) read with Mineral Conservation and Development Rules, 2017",
+      "title": "Monthly Reconciliation of Excavation, Production and Dispatch",
+      "description": "Coal and overburden excavated, raised and dispatched during the month must be reconciled against the daily output registers, weighbridge records and the capacity approved in the Mining Plan and Environmental Clearance, with any deviation reported to the Indian Bureau of Mines, DGMS or the Coal Controller's Organisation as applicable.",
+      "periodicity": "Monthly",
+      "escalationSlaHours": 72,
+      "checklistIds": ["CHK-PRD-001"]
+    },
+    {
+      "regulationId": "REG-LAB-001",
+      "category": "Labor",
+      "sourceLaw": "Mines Act, 1952, Sections 20-22 read with the Payment of Wages Act, 1936 and Mines Rules, 1955",
+      "title": "Monthly Statutory Wages and Welfare Amenities Compliance Audit",
+      "description": "Wages must be disbursed to all mine workers within the statutory wage period without unauthorized deductions, and Provident Fund and ESI contributions deposited by the prescribed due date. Statutory welfare amenities such as drinking water, rest shelters, first-aid and creche facilities must be maintained in functional condition at all times.",
+      "periodicity": "Monthly",
+      "escalationSlaHours": 72,
+      "checklistIds": ["CHK-LAB-001"]
+    },
+    {
+      "regulationId": "REG-ENV-004",
+      "category": "Environment",
+      "sourceLaw": "Environment (Protection) Rules, 1986, Rule 14",
+      "title": "Annual Environmental Statement (Form V) Submission",
+      "description": "Every mine operating under a valid Consent to Operate must prepare and submit an Environmental Statement in Form V to the concerned State Pollution Control Board for the preceding financial year on or before the notified due date, accurately disclosing water and raw material consumption, pollution generated and abatement measures undertaken.",
+      "periodicity": "Yearly",
+      "escalationSlaHours": 168,
+      "checklistIds": ["CHK-ENV-004"]
+    },
+    {
+      "regulationId": "REG-SAF-006",
+      "category": "Safety",
+      "sourceLaw": "Mines Act, 1952, Section 63 read with Mines Rules, 1955, Rule 29 and DGMS Circulars on Risk-Based Safety Audit",
+      "title": "Annual Mine Safety Audit and DGMS Statistical Return",
+      "description": "Every mine must undergo a comprehensive annual safety audit, internal or third-party as mandated by its risk category, covering all major hazard areas, and must file the Annual Return along with consolidated statistics of accidents, dangerous occurrences and safety performance with DGMS within the prescribed timeline, together with the closure status of the previous year's audit recommendations.",
+      "periodicity": "Yearly",
+      "escalationSlaHours": 120,
+      "checklistIds": ["CHK-SAF-006"]
+    }
+  ],
+  "checklists": [
+    {
+      "checklistId": "CHK-SAF-001",
+      "title": "Underground Ventilation and Gas Quality Field Survey",
+      "observationIds": ["OBS-SAF-001-01", "OBS-SAF-001-02", "OBS-SAF-001-03", "OBS-SAF-001-04", "OBS-SAF-001-05"]
+    },
+    {
+      "checklistId": "CHK-SAF-002",
+      "title": "Roof and Side Support (Strata Control) Inspection Checklist",
+      "observationIds": ["OBS-SAF-002-01", "OBS-SAF-002-02", "OBS-SAF-002-03", "OBS-SAF-002-04"]
+    },
+    {
+      "checklistId": "CHK-SAF-003",
+      "title": "Firedamp and Noxious Gas Testing Checklist",
+      "observationIds": ["OBS-SAF-003-01", "OBS-SAF-003-02", "OBS-SAF-003-03", "OBS-SAF-003-04", "OBS-SAF-003-05"]
+    },
+    {
+      "checklistId": "CHK-SAF-004",
+      "title": "Explosives Magazine and Shot-Firing Verification Checklist",
+      "observationIds": ["OBS-SAF-004-01", "OBS-SAF-004-02", "OBS-SAF-004-03", "OBS-SAF-004-04"]
+    },
+    {
+      "checklistId": "CHK-SAF-005",
+      "title": "HEMM Pre-Operational Safety Inspection Checklist",
+      "observationIds": ["OBS-SAF-005-01", "OBS-SAF-005-02", "OBS-SAF-005-03", "OBS-SAF-005-04", "OBS-SAF-005-05"]
+    },
+    {
+      "checklistId": "CHK-ENV-001",
+      "title": "Dust Suppression System Functional Checklist",
+      "observationIds": ["OBS-ENV-001-01", "OBS-ENV-001-02", "OBS-ENV-001-03", "OBS-ENV-001-04"]
+    },
+    {
+      "checklistId": "CHK-ENV-002",
+      "title": "Ambient Air Quality Monitoring Checklist",
+      "observationIds": ["OBS-ENV-002-01", "OBS-ENV-002-02", "OBS-ENV-002-03", "OBS-ENV-002-04", "OBS-ENV-002-05"]
+    },
+    {
+      "checklistId": "CHK-ENV-003",
+      "title": "Mine Discharge Water Quality Testing Checklist",
+      "observationIds": ["OBS-ENV-003-01", "OBS-ENV-003-02", "OBS-ENV-003-03", "OBS-ENV-003-04"]
+    },
+    {
+      "checklistId": "CHK-PRD-001",
+      "title": "Monthly Production and Dispatch Reconciliation Checklist",
+      "observationIds": ["OBS-PRD-001-01", "OBS-PRD-001-02", "OBS-PRD-001-03", "OBS-PRD-001-04"]
+    },
+    {
+      "checklistId": "CHK-LAB-001",
+      "title": "Wages, PF/ESI and Welfare Amenities Compliance Checklist",
+      "observationIds": ["OBS-LAB-001-01", "OBS-LAB-001-02", "OBS-LAB-001-03", "OBS-LAB-001-04", "OBS-LAB-001-05"]
+    },
+    {
+      "checklistId": "CHK-ENV-004",
+      "title": "Annual Environmental Statement (Form V) Compliance Checklist",
+      "observationIds": ["OBS-ENV-004-01", "OBS-ENV-004-02", "OBS-ENV-004-03", "OBS-ENV-004-04"]
+    },
+    {
+      "checklistId": "CHK-SAF-006",
+      "title": "Annual Safety Audit and Statutory Statistical Return Checklist",
+      "observationIds": ["OBS-SAF-006-01", "OBS-SAF-006-02", "OBS-SAF-006-03", "OBS-SAF-006-04", "OBS-SAF-006-05"]
+    }
+  ],
+  "observations": [
+    {
+      "observationId": "OBS-SAF-001-01",
+      "question": "Is the quantity of air reaching the last open face at least 2.5 cubic metres per second, as per the approved ventilation standard?",
+      "dataType": "numeric",
+      "expectedValue": ">=2.5",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-001-02",
+      "question": "Is the methane (CH4) concentration in the general body of air below 0.75%?",
+      "dataType": "numeric",
+      "expectedValue": "<0.75",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-001-03",
+      "question": "Is the air velocity at the mechanized working face at least 15 metres per minute?",
+      "dataType": "numeric",
+      "expectedValue": ">=15",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-001-04",
+      "question": "Are auxiliary fans, ventilation ducting and brattices intact, undamaged and functioning correctly?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-001-05",
+      "question": "Has the shift's ventilation survey reading been recorded in the statutory Ventilation Register?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-SAF-002-01",
+      "question": "Have the roof and sides at the working place been sounded and tested by a competent person before work commenced?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-002-02",
+      "question": "Is systematic support (props, roof bolts or steel arches) installed strictly as per the approved support rules for the district?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-002-03",
+      "question": "Is the roof bolt density at the face at least 0.8 bolts per square metre, as per the approved support design?",
+      "dataType": "numeric",
+      "expectedValue": ">=0.8",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-002-04",
+      "question": "Are danger boards and barricades placed to restrict entry into areas of unsupported or loose roof?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-003-01",
+      "question": "Has gas testing been carried out at the working face at the start of the shift using an approved methanometer?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-003-02",
+      "question": "Is the methane percentage recorded at the working face below the statutory danger level of 1.25%?",
+      "dataType": "numeric",
+      "expectedValue": "<1.25",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-003-03",
+      "question": "Is the methane percentage in the return airway below 1.0%?",
+      "dataType": "numeric",
+      "expectedValue": "<1.0",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-003-04",
+      "question": "Has the gas testing person recorded all readings, with time and location, in the statutory Gas Testing Register?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-SAF-003-05",
+      "question": "Is the methanometer/gas detector currently within its calibration validity period?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-004-01",
+      "question": "Does the physical stock of explosives and detonators in the magazine match the balance shown in the Magazine Register?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-004-02",
+      "question": "Is the explosives van/magazine securely locked with access restricted to the authorized shotfirer only?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-004-03",
+      "question": "Has every shot-firing operation during the shift been recorded in the Shot-Firing Register with the shotfirer's signature?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-004-04",
+      "question": "Is the quantity of explosives issued for the shift within the sanctioned daily limit of 50 kg?",
+      "dataType": "numeric",
+      "expectedValue": "<=50",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-005-01",
+      "question": "Are the service brakes and parking brake of the machine functioning effectively?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-005-02",
+      "question": "Is the reverse horn and flashing beacon light operational?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-005-03",
+      "question": "Are the tyres and undercarriage free from visible damage, cuts or abnormal wear?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-005-04",
+      "question": "Is a charged fire extinguisher mounted onboard and within its inspection validity date?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-005-05",
+      "question": "Has the operator verified a valid HEMM operating competency certificate before starting the shift?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-ENV-001-01",
+      "question": "Are water sprinklers or fog cannons operational at the crusher, screening and transfer points?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-001-02",
+      "question": "Is the haul road being wet-suppressed at the prescribed frequency to control fugitive dust?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-001-03",
+      "question": "Is the respirable dust (RPM) concentration at the drilling point within the permissible exposure limit of 3 mg/m3?",
+      "dataType": "numeric",
+      "expectedValue": "<=3",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-001-04",
+      "question": "Are workers deployed in dusty zones wearing the prescribed anti-dust respirators?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-002-01",
+      "question": "Is the 24-hour average PM10 concentration at the monitoring station within the permissible limit of 100 micrograms per cubic metre?",
+      "dataType": "numeric",
+      "expectedValue": "<=100",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-002-02",
+      "question": "Is the 24-hour average PM2.5 concentration within the permissible limit of 60 micrograms per cubic metre?",
+      "dataType": "numeric",
+      "expectedValue": "<=60",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-002-03",
+      "question": "Is the SO2 concentration within the permissible limit of 80 micrograms per cubic metre?",
+      "dataType": "numeric",
+      "expectedValue": "<=80",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-ENV-002-04",
+      "question": "Is the NOx concentration within the permissible limit of 80 micrograms per cubic metre?",
+      "dataType": "numeric",
+      "expectedValue": "<=80",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-ENV-002-05",
+      "question": "Has monitoring been conducted at all ambient air quality stations specified in the Environmental Clearance conditions?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-003-01",
+      "question": "Is the pH of the discharged mine water within the permissible range of 5.5 to 9.0?",
+      "dataType": "numeric",
+      "expectedValue": "5.5-9.0",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-003-02",
+      "question": "Is the Total Suspended Solids (TSS) level in the discharge within the permissible limit of 100 mg/l?",
+      "dataType": "numeric",
+      "expectedValue": "<=100",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-003-03",
+      "question": "Is the Oil and Grease content in the discharge within the permissible limit of 10 mg/l?",
+      "dataType": "numeric",
+      "expectedValue": "<=10",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-003-04",
+      "question": "Is a functional settling pond or effluent treatment plant in place before the final discharge point?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-PRD-001-01",
+      "question": "Does the month's actual coal production remain within the capacity sanctioned under the approved Mining Plan and Environmental Clearance?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-PRD-001-02",
+      "question": "Is the Overburden-to-Coal stripping ratio for the month within the Mining Plan-approved range of 4.5:1 to 5.5:1?",
+      "dataType": "numeric",
+      "expectedValue": "4.5-5.5",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-PRD-001-03",
+      "question": "Has the daily output register been reconciled against weighbridge and dispatch records for the month?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-PRD-001-04",
+      "question": "Has the monthly production return been submitted to IBM/DGMS/Coal Controller's Organisation within the stipulated timeline?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-LAB-001-01",
+      "question": "Have wages been paid to all workers within the statutory wage period without unauthorized deductions?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-LAB-001-02",
+      "question": "Has the Provident Fund contribution for all eligible employees been deposited by the due date?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-LAB-001-03",
+      "question": "Has the ESI contribution for all eligible employees been deposited by the due date?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-LAB-001-04",
+      "question": "Are statutory welfare amenities (drinking water, rest shelters, first-aid, creche) available and in functional condition?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-LAB-001-05",
+      "question": "Is the wage paid to every category of worker equal to or above the notified minimum wage rate?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-004-01",
+      "question": "Has the Environmental Statement in Form V been submitted to the State Pollution Control Board on or before the notified due date?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-004-02",
+      "question": "Does the water and raw material consumption data reported in Form V match the actual production and utility records?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-ENV-004-03",
+      "question": "Have the pollution abatement measures implemented during the year been accurately and completely disclosed?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    },
+    {
+      "observationId": "OBS-ENV-004-04",
+      "question": "Is the hazardous waste generation and disposal quantity reported in Form V consistent with the Hazardous Waste Manifest records?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-006-01",
+      "question": "Has an internal or third-party safety audit been conducted covering all major hazard areas as mandated by DGMS risk-based norms?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-006-02",
+      "question": "Have all reportable accidents and dangerous occurrences during the year been correctly included in the annual statistical return to DGMS?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Critical",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-006-03",
+      "question": "Has the Annual Return under the Mines Rules been filed with DGMS within the prescribed timeline?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-006-04",
+      "question": "Have the corrective action recommendations from the previous year's safety audit been closed out?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Major",
+      "capaRequired": true
+    },
+    {
+      "observationId": "OBS-SAF-006-05",
+      "question": "Has the Standard Operating Procedures register been updated to reflect any change in mining method or machinery during the year?",
+      "dataType": "boolean",
+      "expectedValue": "true",
+      "violationSeverityIfFailed": "Minor",
+      "capaRequired": false
+    }
+  ]
+}
