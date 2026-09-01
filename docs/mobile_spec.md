@@ -1515,58 +1515,290 @@ await BackgroundTask.registerTaskAsync(SYNC_TASK, {
 
 ---
 
-## 7. Push Notification System
+## 7. Notification System
 
-### 7.1 Architecture Overview
+### 7.1 Architecture Overview — Three-Tier Model
 
-The notification system uses **two libraries with distinct responsibilities**:
-
-| Library | Channel | Use Case | Bypass DND |
-|---|---|---|---|
-| `expo-notifications` | Standard FCM | Compliance reminders, CAPA assignments, schedule alerts | No |
-| `@notifee/react-native` | Critical | CH₄ > 1.5%, fatal incidents, evacuation orders | **Yes** |
-| `@react-native-firebase/messaging` | Background handler | Routes FCM data messages to correct library | — |
-
-### 7.2 Notification Priority Matrix
-
-| Priority | Trigger Event | Channels | Mobile Behavior |
-|---|---|---|---|
-| `critical` | Fatal incident reported | FCM + SMS (Notifee) | Fullscreen takeover, siren, cannot dismiss without acknowledging |
-| `critical` | CH₄ > 1.5% (gas reading) | FCM + SMS (Notifee) | Same as above — immediate evacuation protocol |
-| `critical` | Evacuation order from Mine Manager | FCM + SMS (Notifee) | Same |
-| `high` | CAPA assigned to user | FCM (expo-notif) | Banner + badge + vibration |
-| `high` | Compliance overdue > 7 days | FCM + SMS (expo-notif) | Banner + badge |
-| `high` | Incident severity=HIGH synced | FCM (expo-notif) | Banner + badge |
-| `medium` | Compliance due in 7 days | FCM (expo-notif) | Badge only |
-| `medium` | Contractor document expiring in 30 days | FCM (expo-notif) | Badge only |
-| `medium` | Inspection assigned to user | FCM (expo-notif) | Banner |
-| `low` | Daily production summary | FCM (expo-notif) | Silent notification |
-| `info` | Sync completed successfully | In-app only | Toast inside app |
-
-### 7.3 Critical Signal Protocol
+The notification system is split across **three independent channels**, each with a distinct responsibility and delivery mechanism. There is **no dependency on `@react-native-firebase/messaging`** as a standalone library — FCM is used purely as the push transport for `expo-notifications`.
 
 ```
-FCM Data Payload (from backend notification_service):
-{
-  "comet_alarm": "true",          ← This flag routes to Notifee
-  "alert_id": "ALRT-2026-0891",
-  "title": "🚨 CH₄ 1.85% — Evacuation Required",
-  "body": "Face Entry Station 1, Rajmahal OCP",
-  "priority": "critical",
-  "mine_id": "mine_raj_01"
+┌──────────────────────────────────────────────────────────────────────┐
+│                  COMET NOTIFICATION ARCHITECTURE                     │
+├──────────────────┬───────────────────────────┬───────────────────────┤
+│  TIER 1          │  TIER 2                   │  TIER 3               │
+│  Email Reports   │  Mobile Push Alerts       │  Emergency Alarms     │
+├──────────────────┼───────────────────────────┼───────────────────────┤
+│  Resend API      │  expo-notifications       │  @notifee/react-native│
+│  (server-side)   │  (FCM as transport)       │  (native, DND bypass) │
+├──────────────────┼───────────────────────────┼───────────────────────┤
+│  Statutory PDF   │  CAPA assignments,        │  CH₄ > 1.5%,         │
+│  reports, audit  │  compliance alerts,       │  fatal incidents,     │
+│  digests, CAPA   │  inspection assigned,     │  evacuation orders    │
+│  closure emails  │  document expiry          │                       │
+├──────────────────┼───────────────────────────┼───────────────────────┤
+│  Triggered by    │  Triggered by             │  Triggered by         │
+│  FastAPI backend │  FastAPI → Expo push API  │  FastAPI → Notifee    │
+│  via Resend SDK  │  → FCM → device           │  data payload → app   │
+└──────────────────┴───────────────────────────┴───────────────────────┘
+```
+
+> [!NOTE]
+> **Supabase Realtime** is also used on the **web dashboard** for live toast notifications (compliance alerts, CAPA updates, sensor breaches). This is web-only and does not involve the mobile app's push system.
+
+---
+
+### 7.2 Tier 1 — Email (Resend)
+
+**Library:** Resend SDK (server-side only — FastAPI backend)  
+**Package:** `resend` (Python) in `backend/requirements.txt`  
+**Mobile app involvement:** None — purely server-triggered
+
+**What triggers an email:**
+
+| Event | Recipients | Attachment |
+|---|---|---|
+| Inspection submitted (HIGH/CRITICAL violations) | Mine Manager, Safety Officer | Inspection PDF report |
+| CAPA assigned | Assigned officer | CAPA detail PDF |
+| CAPA overdue (> due date) | Mine Manager, Compliance Officer | CAPA status PDF |
+| Incident report filed (severity ≥ HIGH) | Mine Manager, Safety Director | Incident report PDF |
+| Statutory compliance deadline in 7 days | Compliance Officer, Mine Manager | Compliance calendar |
+| Monthly production/compliance digest | Mine Manager, Corporate HQ | Summary PDF |
+| Contractor document expiring in 30 days | HR Officer, Mine Manager | License/cert details |
+
+**FastAPI flow:**
+```python
+# backend: notification_service.py
+from resend import Emails
+
+async def send_inspection_report(inspection_id: str, recipients: list[str]):
+    pdf_bytes = await generate_inspection_pdf(inspection_id)
+    
+    Emails.send({
+        "from": "reports@comet.coalindia.gov.in",
+        "to": recipients,
+        "subject": f"Inspection Report — {inspection.mine_name} — {inspection.date}",
+        "html": render_email_template("inspection_complete", inspection),
+        "attachments": [{
+            "filename": f"inspection_{inspection_id}.pdf",
+            "content": base64.b64encode(pdf_bytes).decode()
+        }]
+    })
+```
+
+---
+
+### 7.3 Tier 2 — Standard Mobile Push (expo-notifications + FCM)
+
+**Library:** `expo-notifications` (FCM is the underlying Android transport — no separate Firebase SDK needed)  
+**Package:** `expo-notifications` (already in `app.json` plugins)
+
+This covers all **non-emergency** mobile alerts: reminders, assignments, status updates, and compliance nudges.
+
+**How it works:**
+
+```
+FastAPI backend
+  → calls Expo Push API (https://exp.host/--/api/v2/push/send)
+  → Expo routes via FCM (Android) / APNs (iOS) → device notification tray
+  → expo-notifications foreground handler shows in-app banner
+```
+
+**Backend push sender (FastAPI):**
+```python
+# backend: push_service.py
+import httpx
+
+EXPO_PUSH_URL = "https://exp.host/--/api/v2/push/send"
+
+async def send_push(expo_token: str, title: str, body: str, data: dict = {}):
+    payload = {
+        "to": expo_token,          # stored in users.expo_push_token
+        "title": title,
+        "body": body,
+        "data": data,
+        "sound": "default",
+        "priority": "high",
+    }
+    async with httpx.AsyncClient() as client:
+        await client.post(EXPO_PUSH_URL, json=payload)
+```
+
+**Mobile app — foreground handler (in `src/lib/notifications.ts`):**
+```typescript
+import * as Notifications from 'expo-notifications';
+
+// Show banner even when app is open
+Notifications.setNotificationHandler({
+  handleNotification: async (notification) => {
+    const isAlarm = notification.request.content.data?.comet_alarm === 'true';
+    // Critical alarms are handled by Notifee (Tier 3), not shown here
+    if (isAlarm) return { shouldShowAlert: false, shouldPlaySound: false, shouldSetBadge: false };
+
+    return {
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    };
+  },
+});
+
+// Register device token with backend after login
+export async function registerAndSyncPushToken(apiBase: string, accessToken: string) {
+  const { data: token } = await Notifications.getExpoPushTokenAsync({
+    projectId: Constants.expoConfig?.extra?.eas?.projectId,
+  });
+  await fetch(`${apiBase}/api/v1/users/me/push-token`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ expo_push_token: token }),
+  });
 }
-
-Flow:
-FCM delivers data message
-  → @react-native-firebase/messaging background handler fires
-  → data.comet_alarm === 'true' → delegates to Notifee
-  → Notifee: IMPORTANCE_HIGH channel, bypassDnd:true, fullScreenAction
-  → Device: siren + vibration + fullscreen even if locked
-  → User: MUST acknowledge before dismissing
-  → On acknowledge: PATCH /api/v1/alerts/{id}/acknowledge (queued if offline)
 ```
 
-### 7.4 Bootstrap Integration (in `app/_layout.tsx`)
+**Priority matrix — Tier 2 events:**
+
+| Priority | Trigger Event | Mobile Behavior |
+|---|---|---|
+| `high` | CAPA assigned to user | Banner + badge + sound |
+| `high` | Compliance overdue > 7 days | Banner + badge + sound |
+| `high` | Incident severity=HIGH submitted | Banner + badge |
+| `medium` | Inspection assigned to user | Banner |
+| `medium` | Compliance due in 7 days | Badge only |
+| `medium` | Contractor document expiring in 30 days | Badge only |
+| `low` | Daily production summary | Silent / badge |
+| `info` | Sync completed successfully | In-app toast only |
+
+---
+
+### 7.4 Tier 3 — Critical Emergency Alarm (Notifee)
+
+**Library:** `@notifee/react-native`  
+**Behavior:** Bypasses DND/silent mode, plays native siren, launches fullscreen even from lock screen  
+**Use case:** Life-safety emergencies only — CH₄ > 1.5%, fatal incidents, evacuation orders
+
+**How it works:**
+
+```
+FastAPI backend detects emergency condition
+  → calls Expo Push API with data payload { comet_alarm: "true", ... }
+  → FCM delivers data message to device (background)
+  → expo-notifications background task receives the message
+  → detects comet_alarm flag → delegates entirely to Notifee
+  → Notifee displays fullscreen alarm, plays comet_alarm.wav, bypasses DND
+  → User MUST tap "Acknowledge & Evacuating" to dismiss
+  → App sends PATCH /api/v1/alerts/{id}/acknowledge (queued if offline)
+```
+
+**Notifee channel setup (called once at app bootstrap):**
+```typescript
+// src/lib/notifications.ts
+import notifee, { AndroidImportance, AndroidCategory } from '@notifee/react-native';
+
+export async function bootstrapNotifications() {
+  // Standard channel — normal priority
+  await notifee.createChannel({
+    id: 'comet_standard',
+    name: 'COMET Alerts',
+    importance: AndroidImportance.HIGH,
+  });
+
+  // Critical alarm channel — bypasses DND, siren sound
+  await notifee.createChannel({
+    id: 'comet_critical_alarm',
+    name: 'COMET Emergency Alarms',
+    importance: AndroidImportance.HIGH,
+    sound: 'comet_alarm',              // comet_alarm.wav in android/app/src/main/res/raw/
+    bypassDnd: true,
+    vibration: true,
+    vibrationPattern: [0, 500, 300, 500, 300, 500],
+  });
+}
+```
+
+**Triggering the alarm from the background message handler:**
+```typescript
+// src/lib/notifications.ts
+import * as Notifications from 'expo-notifications';
+import notifee, { AndroidCategory, AndroidImportance } from '@notifee/react-native';
+
+// Register background handler
+Notifications.registerTaskAsync('BACKGROUND_NOTIFICATION_TASK');
+
+// In TaskManager.defineTask:
+TaskManager.defineTask('BACKGROUND_NOTIFICATION_TASK', async ({ data }) => {
+  const notification = data as Notifications.Notification;
+  const payload = notification.request.content.data;
+
+  if (payload?.comet_alarm === 'true') {
+    // Hand off to Notifee for critical alarm
+    await notifee.displayNotification({
+      title: `🚨 ${payload.title}`,
+      body: payload.body,
+      android: {
+        channelId: 'comet_critical_alarm',
+        importance: AndroidImportance.HIGH,
+        category: AndroidCategory.ALARM,
+        fullScreenAction: { id: 'default' },  // Launch fullscreen even on lock screen
+        ongoing: true,                         // Cannot be swiped away
+        autoCancel: false,
+        actions: [{
+          title: '✅ Acknowledge & Evacuating',
+          pressAction: { id: 'acknowledge' },
+        }],
+      },
+      ios: {
+        critical: true,           // Requires Apple entitlement
+        criticalVolume: 1.0,
+        sound: 'comet_alarm.wav',
+        interruptionLevel: 'critical',
+      },
+    });
+  }
+});
+```
+
+**Required assets:**
+- `android/app/src/main/res/raw/comet_alarm.wav` — native siren file for Android
+- `assets/sounds/comet_alarm.wav` — for iOS (referenced in app.json)
+
+**Critical alarm trigger conditions:**
+
+| Condition | Threshold | Alert Text |
+|---|---|---|
+| Methane gas (CH₄) | > 1.5% | "HIGH METHANE — Evacuate area immediately" |
+| Carbon monoxide (CO) | > 50 ppm | "CO BREACH — Evacuate and ventilate" |
+| Fatal incident filed | severity = fatal | "FATALITY REPORTED — [Zone]" |
+| Evacuation order issued | Mine Manager action | "EVACUATION ORDER — [Mine name]" |
+| Inundation detected | sensor trigger | "INUNDATION RISK — Evacuate lower levels" |
+
+> [!CAUTION]
+> The `comet_critical_alarm` Notifee channel **must not** be used for non-life-safety events. Overuse will cause users to disable the channel entirely, defeating the safety purpose.
+
+---
+
+### 7.5 Tier 3B — Web Dashboard Live Toasts (Supabase Realtime)
+
+**This is web-only and does not affect the mobile app.**
+
+The web dashboard (`/web`) subscribes to Supabase Realtime channels to show live toast notifications without polling:
+
+```typescript
+// web: src/hooks/useRealtimeAlerts.ts
+import { supabase } from '../lib/supabase';
+
+supabase
+  .channel(`alerts:mine_id=eq.${mineId}`)
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' },
+    (payload) => showToast(payload.new)
+  )
+  .subscribe();
+```
+
+Triggers: sensor breach alerts, new violations, CAPA assignments, compliance deadline breaches.
+
+---
+
+### 7.6 Bootstrap Integration (`app/_layout.tsx`)
 
 ```typescript
 // app/_layout.tsx
@@ -1576,10 +1808,10 @@ export default function RootLayout() {
   const { session, apiBase } = useAuthStore();
 
   useEffect(() => {
-    // 1. Bootstrap channels + permissions on app mount
+    // 1. Create Notifee channels + request permissions
     bootstrapNotifications();
 
-    // 2. Register push token after login
+    // 2. Register Expo push token with backend after login
     if (session?.access_token) {
       registerAndSyncPushToken(apiBase, session.access_token);
     }
