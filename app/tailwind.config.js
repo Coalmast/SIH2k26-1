@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./App.tsx", "./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
+  content: ["./App.tsx", "./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
@@ -38,6 +38,20 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        navy: { DEFAULT: '#1E3A5F', light: '#2D5186', dark: '#152C47' },
+        amber: { DEFAULT: '#F59E0B', light: '#FCD34D', dark: '#B45309' },
+        compliant: '#22C55E',
+        warning: '#F59E0B',
+        breach: '#EF4444',
+        pending: '#94A3B8',
+        'risk-low': '#22C55E',
+        'risk-medium': '#F59E0B',
+        'risk-high': '#F97316',
+        'risk-critical': '#EF4444',
+        'severity-minor': '#94A3B8',
+        'severity-moderate': '#F59E0B',
+        'severity-major': '#F97316',
+        'severity-critical': '#EF4444',
       },
       borderRadius: {
         lg: "var(--radius)",

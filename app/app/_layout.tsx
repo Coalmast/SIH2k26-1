@@ -11,7 +11,8 @@ import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { ThemeProvider as UIThemeProvider } from '@/components/ui/theme';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { AuthProvider } from '@/src/context/AuthContext'; // ✅ Add this
+import { AuthProvider } from '@/src/context/AuthContext';
+import { bootstrapNotifications } from '@/src/lib/notifications';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -22,6 +23,9 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    // Bootstrap Notifee channels on mount
+    bootstrapNotifications();
+    
     if (loaded) SplashScreen.hideAsync();
   }, [loaded]);
 
