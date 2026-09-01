@@ -55,12 +55,14 @@ class ChecklistTemplateRead(BaseModel):
 class CAPACreate(BaseModel):
     description: str = Field(..., min_length=10)
     assigned_to: uuid.UUID
-    due_date: date
+    due_date: Optional[date] = None
+    root_cause: Optional[str] = None
     # assigned_by will be injected by the service
 
 class CAPAUpdate(BaseModel):
     status: Optional[CapaStatus] = None
     completion_notes: Optional[str] = None
+    root_cause: Optional[str] = None
 
 class CAPARead(BaseModel):
     id: uuid.UUID
@@ -70,6 +72,7 @@ class CAPARead(BaseModel):
     subsidiary_id: Optional[uuid.UUID] = None
     description: str
     preventive_measures: Optional[str]
+    root_cause: Optional[str] = None
     assigned_to: uuid.UUID
     assigned_by: uuid.UUID
     due_date: date
@@ -163,6 +166,9 @@ class InspectionRead(BaseModel):
     observation_count: int
     violation_count: int
     overall_remarks: Optional[str]
+    completion_pct: float = 0.0
+    checklist_items_total: int = 0
+    checklist_items_answered: int = 0
     created_at: datetime
     updated_at: datetime
 

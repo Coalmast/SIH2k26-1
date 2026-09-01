@@ -35,6 +35,7 @@ class InstanceStatus(str, enum.Enum):
     revision_requested = "revision_requested"
     approved = "approved"
     breached = "breached"
+    authority_submitted = "authority_submitted"
 
 class EvidenceUploadMethod(str, enum.Enum):
     web_upload = "web_upload"
@@ -119,6 +120,10 @@ class ComplianceInstance(Base):
     verified_at = Column(DateTime(timezone=True))
     rejection_reason = Column(String)
     regulation_version = Column(Integer)
+    submitted_to_authority_at = Column(DateTime(timezone=True))
+    submission_reference_number = Column(String(100))
+    submitted_to_authority_by = Column(UUID(as_uuid=True))
+    notes = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

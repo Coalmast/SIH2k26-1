@@ -10,3 +10,5 @@ supabase
 celery
 pytest
 pytest-asyncio
+httpx
+google-auth

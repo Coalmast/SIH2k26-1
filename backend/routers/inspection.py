@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, B
 from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 import uuid
+from datetime import datetime, timezone
 
 from database import SessionLocal
 from schemas.inspection import (
@@ -177,7 +178,11 @@ async def verify_close_capa(
 ):
     """Verify and close a CAPA"""
     actor_id = uuid.UUID(user_ctx.user_id) if "-" in user_ctx.user_id else uuid.uuid4()
-    capa = await InspectionService.verify_close_capa(db, id, actor_id)
+    try:
+        capa = await InspectionService.verify_close_capa(db, id, actor_id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+        
     if not capa:
         raise HTTPException(status_code=404, detail="CAPA not found")
     return capa
@@ -201,7 +206,11 @@ async def submit_inspection(
     db: AsyncSession = Depends(get_db)
 ):
     """Submit an inspection (triggers escalation check via webhooks/tasks in real impl)"""
-    inspection = await InspectionService.submit_inspection(db, id)
+    try:
+        inspection = await InspectionService.submit_inspection(db, id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+        
     if not inspection:
         raise HTTPException(status_code=404, detail="Inspection not found")
     return inspection
@@ -219,3 +228,45 @@ async def add_observation(
     if not obs:
         raise HTTPException(status_code=404, detail="Inspection not found")
     return obs
+
+from pydantic import BaseModel
+
+class AIOverrideRequest(BaseModel):
+    confirmed_category: str
+    confirmed_severity: str
+
+@router.post("/observations/{id}/ai-override")
+async def ai_override(
+    id: uuid.UUID, 
+    dto: AIOverrideRequest,
+    db: AsyncSession = Depends(get_db),
+    user_ctx: UserContext = Depends(get_current_user)
+):
+    from models.inspection import Observation, ModelFeedback
+    from sqlalchemy.future import select
+    
+    query = select(Observation).where(Observation.id == id)
+    result = await db.execute(query)
+    obs = result.scalar_one_or_none()
+    
+    if not obs:
+        raise HTTPException(status_code=404, detail="Observation not found")
+        
+    actor_id = uuid.UUID(user_ctx.user_id) if "-" in user_ctx.user_id else uuid.uuid4()
+    
+    feedback = ModelFeedback(
+        observation_id=obs.id,
+        original_ai_category=obs.ai_category,
+        original_ai_confidence=obs.ai_confidence_score,
+        corrected_category=dto.confirmed_category,
+        corrected_by=actor_id,
+        corrected_at=datetime.now(timezone.utc)
+    )
+    db.add(feedback)
+    
+    obs.ai_status = "overridden"
+    obs.category = dto.confirmed_category
+    
+    await db.commit()
+    return {"status": "success"}
+

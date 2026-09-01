@@ -1,13 +1,14 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
-from sqlalchemy import func
+from sqlalchemy import func, update
 import uuid
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta, date
 
 from models.inspection import (
     Inspection, Observation, Violation, CorrectiveAction, ChecklistTemplate,
-    InspectionStatus, ObsStatusEnum, ViolationSeverity, ObsSeverity, ViolationStatus, CapaStatus, SourceTypeEnum
+    InspectionStatus, ObsStatusEnum, ViolationSeverity, ObsSeverity, ViolationStatus, CapaStatus, SourceTypeEnum,
+    MediaAttachment, MediaParentType
 )
 from schemas.inspection import (
     InspectionCreate, ObservationCreate, CAPACreate, CAPAUpdate
@@ -30,12 +31,32 @@ class InspectionService:
         return result.scalars().all()
 
     @staticmethod
+    def _compute_checklist_progress(inspection: Inspection, template: ChecklistTemplate) -> dict:
+        total = len(template.checklist_items) if template else 0
+        answered = len({obs.checklist_item_id for obs in inspection.observations
+                        if obs.checklist_item_id})
+        pct = round((answered / total) * 100, 1) if total > 0 else 0.0
+        return {"total": total, "answered": answered, "pct": pct}
+
+    @staticmethod
     async def get_inspection_detail(db: AsyncSession, id: uuid.UUID):
         query = select(Inspection).where(Inspection.id == id).options(
             selectinload(Inspection.observations).selectinload(Observation.violation)
         )
         result = await db.execute(query)
-        return result.scalar_one_or_none()
+        inspection = result.scalar_one_or_none()
+        
+        if inspection and inspection.checklist_template_id:
+            t_query = select(ChecklistTemplate).where(ChecklistTemplate.id == inspection.checklist_template_id)
+            t_res = await db.execute(t_query)
+            template = t_res.scalar_one_or_none()
+            
+            progress = InspectionService._compute_checklist_progress(inspection, template)
+            inspection.completion_pct = progress["pct"]
+            inspection.checklist_items_total = progress["total"]
+            inspection.checklist_items_answered = progress["answered"]
+            
+        return inspection
 
     @staticmethod
     async def create_inspection(db: AsyncSession, dto: InspectionCreate, user_id: uuid.UUID):
@@ -58,6 +79,17 @@ class InspectionService:
     async def submit_inspection(db: AsyncSession, id: uuid.UUID):
         inspection = await InspectionService.get_inspection_detail(db, id)
         if inspection:
+            t_query = select(ChecklistTemplate).where(ChecklistTemplate.id == inspection.checklist_template_id)
+            t_res = await db.execute(t_query)
+            template = t_res.scalar_one_or_none()
+            
+            progress = InspectionService._compute_checklist_progress(inspection, template)
+            if progress["pct"] < 80:
+                raise ValueError(
+                    f"Cannot submit: only {progress['pct']}% of checklist items answered. "
+                    f"Minimum required: 80%. Missing: {progress['total'] - progress['answered']} items."
+                )
+
             inspection.status = InspectionStatus.submitted
             inspection.completed_at = datetime.now(timezone.utc)
             inspection.submitted_at = datetime.now(timezone.utc)
@@ -115,6 +147,12 @@ class InspectionService:
         db.add(observation)
         await db.flush() # flush to get observation.id
 
+        await db.execute(
+            update(Inspection)
+            .where(Inspection.id == inspection_id)
+            .values(observation_count=Inspection.observation_count + 1)
+        )
+
         # Auto-promote to violation if severity is high or critical
         if dto.severity in [ObsSeverity.high, ObsSeverity.critical]:
             v_sev = ViolationSeverity.major if dto.severity == ObsSeverity.high else ViolationSeverity.critical
@@ -127,9 +165,16 @@ class InspectionService:
                 status=ViolationStatus.reported,
                 reported_by=user_id
             )
+            await InspectionService._check_and_update_recurrence(db, violation)
             db.add(violation)
             await db.flush()
             observation.violation_id = violation.id
+
+            await db.execute(
+                update(Inspection)
+                .where(Inspection.id == inspection_id)
+                .values(violation_count=Inspection.violation_count + 1)
+            )
 
         await db.commit()
         await db.refresh(observation)
@@ -160,11 +205,35 @@ class InspectionService:
         return result.scalar_one_or_none()
 
     @staticmethod
+    async def _check_and_update_recurrence(db: AsyncSession, new_violation: Violation):
+        cutoff = datetime.now(timezone.utc) - timedelta(days=548)  # 18 months
+        result = await db.execute(
+            select(func.count(Violation.id)).where(
+                Violation.mine_id == new_violation.mine_id,
+                Violation.statute_reference == new_violation.statute_reference,
+                Violation.reported_at >= cutoff,
+                Violation.status != ViolationStatus.dismissed
+            )
+        )
+        count = result.scalar_one()
+        new_violation.recurrence_count = count
+        if count >= 3:
+            new_violation.status = ViolationStatus.systemic_risk
+
+    @staticmethod
     async def assign_capa(db: AsyncSession, violation_id: uuid.UUID, dto: CAPACreate, user_id: uuid.UUID):
         violation = await InspectionService.get_violation_detail(db, violation_id)
         if not violation:
             return None
             
+        SLA_DAYS = {
+            ViolationSeverity.critical: 1,
+            ViolationSeverity.major:    7,
+            ViolationSeverity.moderate: 21,
+            ViolationSeverity.minor:    30,
+        }
+        computed_due_date = dto.due_date or (date.today() + timedelta(days=SLA_DAYS.get(violation.severity, 30)))
+
         capa = CorrectiveAction(
             source_type=SourceTypeEnum.violation,
             source_id=violation_id,
@@ -173,7 +242,8 @@ class InspectionService:
             description=dto.description,
             assigned_to=dto.assigned_to,
             assigned_by=user_id,
-            due_date=dto.due_date,
+            due_date=computed_due_date,
+            root_cause=dto.root_cause,
             status=CapaStatus.assigned
         )
         db.add(capa)
@@ -203,6 +273,10 @@ class InspectionService:
             # If changing to completed, set completed_at
             if dto.status == CapaStatus.completed and not capa.completed_at:
                 capa.completed_at = datetime.now(timezone.utc)
+                if capa.source_type == SourceTypeEnum.violation:
+                    violation = await InspectionService.get_violation_detail(db, capa.source_id)
+                    if violation:
+                        violation.status = ViolationStatus.pending_verification
                 
         if dto.completion_notes:
             capa.completion_notes = dto.completion_notes
@@ -213,6 +287,16 @@ class InspectionService:
         
     @staticmethod
     async def verify_close_capa(db: AsyncSession, capa_id: uuid.UUID, user_id: uuid.UUID):
+        media_count_result = await db.execute(
+            select(func.count(MediaAttachment.id)).where(
+                MediaAttachment.parent_id == capa_id,
+                MediaAttachment.parent_type == MediaParentType.corrective_action
+            )
+        )
+        media_count = media_count_result.scalar_one()
+        if media_count == 0:
+            raise ValueError("Evidence upload required before closing CAPA.")
+
         capa = await InspectionService.get_capa(db, capa_id)
         if not capa:
             return None

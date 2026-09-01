@@ -52,6 +52,7 @@ async def test_add_observation_auto_promotes_to_violation():
     # We patch get_inspection_detail to avoid mocking deep SQLAlchemy select logic
     with pytest.MonkeyPatch.context() as m:
         m.setattr(InspectionService, "get_inspection_detail", AsyncMock(return_value=mock_inspection))
+        m.setattr(InspectionService, "_check_and_update_recurrence", AsyncMock())
         
         observation = await InspectionService.add_observation(db, inspection_id, dto, user_id)
         

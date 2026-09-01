@@ -80,3 +80,6 @@ Security is baked into the architecture at the database level, ensuring data iso
 *   **Orchestration:** Kubernetes (K8s) via Helm charts for scalable backend deployments
 *   **CI/CD:** GitHub Actions (For automated testing, linting, and building images)
 *   **Observability:** OpenTelemetry (Instrumentation) + Prometheus/Grafana (Metrics) + Loki (Logs)
+
+
+For notifications, use Resend for statutory PDF email reports, expo-notifications (with FCM) for standard mobile push alerts, Notifee for critical emergency alarms (bypassing DND/silent mode with native siren playback), and Supabase Realtime for live web dashboard toasts.
