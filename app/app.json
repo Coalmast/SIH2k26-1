@@ -1,14 +1,17 @@
 {
   "expo": {
-    "name": "NativeShad",
-    "slug": "NativeShad",
+    "name": "COMET Field App",
+    "slug": "comet-field-app",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "comet",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "in.gov.coalindia.comet",
+      "entitlements": {
+        "com.apple.developer.usernotifications.critical-alerts": true
+      },
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select and save images.",
         "NSPhotoLibraryAddUsageDescription": "This app needs permission to save photos to your photo library.",
@@ -20,42 +23,58 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#5B21B6"
-      },
+      "package": "in.gov.coalindia.comet",
       "permissions": [
         "CAMERA",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "POST_NOTIFICATIONS",
+        "VIBRATE",
+        "RECEIVE_BOOT_COMPLETED",
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "ACCESS_MEDIA_LOCATION",
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION",
-        "READ_CONTACTS",
-        "WRITE_CONTACTS"
+        "ACCESS_COARSE_LOCATION"
       ]
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-brand.png",
-          "imageWidth": 240,
-          "resizeMode": "contain",
-          "backgroundColor": "#030712"
-        }
-      ],
+      "expo-splash-screen",
       "expo-font",
       "expo-image",
-      "expo-status-bar"
+      "expo-status-bar",
+      "expo-background-task",
+      "expo-notifications",
+      "expo-local-authentication",
+      "expo-location",
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "COMET needs camera access for inspection photo evidence."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "$rootDir/../node_modules/@notifee/react-native/android/libs"
+            ]
+          }
+        }
+      ]
     ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    },
     "experiments": {
       "typedRoutes": true
     }

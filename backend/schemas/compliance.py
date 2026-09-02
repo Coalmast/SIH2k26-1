@@ -70,6 +70,8 @@ class ComplianceInstanceRead(ComplianceInstanceBase):
     verified_by: Optional[uuid.UUID] = None
     verified_at: Optional[datetime] = None
     rejection_reason: Optional[str] = None
+    submitted_to_authority_at: Optional[datetime] = None
+    submission_reference_number: Optional[str] = None
     created_at: datetime
     updated_at: datetime
     requirement: Optional[RequirementRead] = None
@@ -90,6 +92,10 @@ class EvidenceUploadResponse(BaseModel):
     is_verified: bool = False
 
 class SubmitEvidenceRequest(BaseModel):
+    notes: Optional[str] = None
+
+class AuthoritySubmissionRequest(BaseModel):
+    submission_reference_number: str
     notes: Optional[str] = None
 
 class ComplianceHealthScore(BaseModel):

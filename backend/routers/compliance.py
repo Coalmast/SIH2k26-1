@@ -7,7 +7,8 @@ import os
 from database import SessionLocal
 from schemas.compliance import (
     RegulationRead, RequirementCreate, RequirementRead,
-    ComplianceInstanceRead, ComplianceHealthScore, EvidenceUploadResponse, SubmitEvidenceRequest
+    ComplianceInstanceRead, ComplianceHealthScore, EvidenceUploadResponse, SubmitEvidenceRequest,
+    AuthoritySubmissionRequest
 )
 from services.compliance_service import ComplianceService
 from models.compliance import InstanceStatus, EvidenceUploadMethod
@@ -117,6 +118,31 @@ async def approve_instance(
     actor_id = uuid.UUID(user_ctx.user_id) if "-" in user_ctx.user_id else None
     instance = await ComplianceService.approve_instance(db, id, actor_id)
     return instance
+
+@router.post("/instances/{id}/submit-to-authority", response_model=ComplianceInstanceRead)
+async def submit_to_authority(
+    id: uuid.UUID,
+    request: AuthoritySubmissionRequest,
+    db: AsyncSession = Depends(get_db),
+    user_ctx: UserContext = Depends(get_current_user)
+):
+    """[Mine Manager] Submit to regulatory authority"""
+    if user_ctx.role not in ["system_admin", "mine_manager", "subsidiary_admin"]:
+        raise HTTPException(status_code=403, detail="Not authorized to submit to authority")
+        
+    actor_id = uuid.UUID(user_ctx.user_id) if "-" in user_ctx.user_id else uuid.uuid4()
+    
+    try:
+        instance = await ComplianceService.submit_to_authority(
+            db, 
+            id, 
+            request.submission_reference_number, 
+            request.notes, 
+            actor_id
+        )
+        return instance
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.post("/instances/{id}/reject", response_model=ComplianceInstanceRead)
 async def reject_instance(

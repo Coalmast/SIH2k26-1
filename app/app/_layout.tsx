@@ -1,49 +1,74 @@
 import 'react-native-reanimated';
 import '../global.css';
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { ThemeProvider as UIThemeProvider } from '@/components/ui/theme';
-import { ErrorBoundary } from '@/components/error-boundary';
-import { AuthProvider } from '@/src/context/AuthContext'; // ✅ Add this
+import { useColorScheme } from 'react-native';
+import { AuthProvider, useAuthInit } from '@/src/context/AuthContext';
+import { useAuthStore } from '@/src/stores/authStore';
+import { bootstrapNotifications } from '@/src/lib/notifications';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+function RootNavigator() {
+  const { isInitialized } = useAuthInit();
+  const session = useAuthStore((state) => state.session);
+  const segments = useSegments();
+  const router = useRouter();
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
 
   useEffect(() => {
-    if (loaded) SplashScreen.hideAsync();
-  }, [loaded]);
+    if (!isInitialized) return;
 
-  if (!loaded) return null;
+    const inAuthGroup = segments[0] === '(auth)';
+
+    if (!session && !inAuthGroup) {
+      // Redirect to login if not authenticated
+      router.replace('/(auth)/login');
+    } else if (session && inAuthGroup) {
+      // Redirect away from login if authenticated
+      router.replace('/(app)/home');
+    }
+  }, [session, isInitialized, segments, router]);
+
+  if (!isInitialized) {
+    return null; // Or a splash screen
+  }
 
   return (
-    <ErrorBoundary>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <BottomSheetModalProvider>
-          <UIThemeProvider>
-            <AuthProvider> {/* ✅ Wrap everything with AuthProvider */}
-              <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <Stack>
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-                <StatusBar style="auto" />
-              </ThemeProvider>
-            </AuthProvider>
-          </UIThemeProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </ErrorBoundary>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </ThemeProvider>
+  );
+}
+
+export default function RootLayout() {
+  useEffect(() => {
+    // Bootstrap Notifee channels on mount
+    bootstrapNotifications();
+    
+    SplashScreen.hideAsync();
+  }, []);
+
+
+
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <AuthProvider>
+          <RootNavigator />
+        </AuthProvider>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }

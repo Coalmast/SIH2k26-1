@@ -55,12 +55,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from routers import compliance, reports, inspection, mine, users
+from routers import compliance, reports, inspection, mine, users, ai
 app.include_router(compliance.router)
 app.include_router(reports.router)
 app.include_router(inspection.router)
 app.include_router(mine.router)
 app.include_router(users.router)
+app.include_router(ai.router)
 
 class HealthCheckResponse(BaseModel):
     status: str

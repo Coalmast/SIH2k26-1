@@ -145,6 +145,8 @@ class Observation(Base):
     voice_transcription = Column(String)
     ai_category = Column(String)
     ai_confidence_score = Column(Numeric(5, 4))
+    ai_auto_applied = Column(Boolean, default=False)
+    ai_status = Column(String(20))
     violation_id = Column(UUID(as_uuid=True), ForeignKey("violations.id", ondelete="SET NULL"))
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -186,6 +188,7 @@ class CorrectiveAction(Base):
     subsidiary_id = Column(UUID(as_uuid=True))
     description = Column(String, nullable=False)
     preventive_measures = Column(String)
+    root_cause = Column(String)
     assigned_to = Column(UUID(as_uuid=True), nullable=False)
     assigned_by = Column(UUID(as_uuid=True), nullable=False)
     due_date = Column(Date, nullable=False)
@@ -215,3 +218,15 @@ class MediaAttachment(Base):
     sync_status = Column(String, default='pending_upload')
     captured_by = Column(UUID(as_uuid=True), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class ModelFeedback(Base):
+    __tablename__ = "model_feedback"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    observation_id = Column(UUID(as_uuid=True), ForeignKey("observations.id", ondelete="CASCADE"), nullable=False)
+    original_ai_category = Column(String)
+    original_ai_confidence = Column(Numeric(5, 4))
+    corrected_category = Column(String)
+    corrected_by = Column(UUID(as_uuid=True))
+    corrected_at = Column(DateTime(timezone=True), server_default=func.now())
+    used_in_training = Column(Boolean, default=False)

@@ -149,45 +149,137 @@ class ComplianceService:
         return instance
 
     @staticmethod
+    async def submit_to_authority(db: AsyncSession, instance_id: uuid.UUID, submission_reference_number: str, notes: Optional[str], actor_id: uuid.UUID) -> ComplianceInstance:
+        from services.notification_service import send_statutory_report_email, _resolve_role_user_id
+        from models.mine import User
+        
+        instance = await ComplianceService.get_instance_by_id(db, instance_id)
+        if not instance:
+            raise ValueError("Instance not found")
+            
+        if instance.status != InstanceStatus.approved:
+            raise ValueError("Instance must be approved before submission to authority")
+            
+        instance.submitted_to_authority_at = datetime.now(timezone.utc)
+        instance.submission_reference_number = submission_reference_number
+        instance.submitted_to_authority_by = actor_id
+        instance.notes = notes
+        instance.status = InstanceStatus.authority_submitted
+        
+        await db.commit()
+        await db.refresh(instance)
+        
+        # Email mine manager
+        manager_id = await _resolve_role_user_id(str(instance.mine_id), "mine_manager")
+        if manager_id:
+            # We fetch manager email
+            user_result = await db.execute(select(User.email).where(User.id == manager_id))
+            manager_email = user_result.scalar_one_or_none()
+            if manager_email:
+                # get some fake PDF url from first evidence or dummy
+                pdf_url = instance.evidences[0].document_url if instance.evidences else "https://example.com/report.pdf"
+                await send_statutory_report_email(
+                    to_email=manager_email,
+                    report_name=instance.requirement.title,
+                    mine_name="COMET Mine", # Ideally fetch mine name
+                    period=f"{instance.period_start} to {instance.period_end}",
+                    pdf_signed_url=pdf_url,
+                    target_user_id=manager_id
+                )
+        
+        return instance
+
+    @staticmethod
     async def generate_instances_for_period(db: AsyncSession, mine_id: uuid.UUID, year: int, month: int) -> List[ComplianceInstance]:
-        # For simplicity in this sprint, we'll fetch all requirements and generate missing monthly instances
-        query = select(ComplianceRequirement)
+        from datetime import timedelta
+        import calendar
+        from models.mine import Mine
+        
+        # 1. Fetch mine details to filter applicable_mine_types and applicable_states
+        mine_result = await db.execute(select(Mine).where(Mine.id == mine_id))
+        mine = mine_result.scalar_one_or_none()
+        if not mine:
+            raise ValueError(f"Mine {mine_id} not found")
+            
+        # 2. Fetch requirements
+        query = select(ComplianceRequirement).where(ComplianceRequirement.is_active == True)
         result = await db.execute(query)
         requirements = result.scalars().all()
         
         generated = []
+        
+        _, last_day = calendar.monthrange(year, month)
+        month_start = date(year, month, 1)
+        month_end = date(year, month, last_day)
+        
         for req in requirements:
-            if req.recurrence.name != "monthly":
+            # Filter by mine_type and state
+            if mine.mine_type not in req.applicable_mine_types:
                 continue
-                
-            # check if instance already exists
-            period_start = date(year, month, 1)
-            _, last_day = calendar.monthrange(year, month)
-            period_end = date(year, month, last_day)
-            
-            # Simple assumption: due date is end of month + grace period
-            due_date = date(year, month, last_day) 
-            
-            existing_query = select(ComplianceInstance).where(
-                ComplianceInstance.mine_id == mine_id,
-                ComplianceInstance.requirement_id == req.id,
-                ComplianceInstance.period_start == period_start
-            )
-            existing_result = await db.execute(existing_query)
-            if existing_result.scalar_one_or_none():
+            if req.applicable_states and mine.state not in req.applicable_states:
                 continue
+
+            periods = []
+            if req.recurrence.name == "daily":
+                for d in range(1, last_day + 1):
+                    p_date = date(year, month, d)
+                    periods.append((p_date, p_date))
+            elif req.recurrence.name == "weekly":
+                # Find all weeks that start in this month
+                current_date = month_start
+                start_of_week = current_date - timedelta(days=current_date.isoweekday() - 1)
+                while start_of_week <= month_end:
+                    end_of_week = start_of_week + timedelta(days=6)
+                    if start_of_week.year == year and start_of_week.month == month:
+                        periods.append((start_of_week, end_of_week))
+                    start_of_week += timedelta(days=7)
+            elif req.recurrence.name == "fortnightly":
+                periods.append((date(year, month, 1), date(year, month, 15)))
+                if last_day > 15:
+                    periods.append((date(year, month, 16), month_end))
+            elif req.recurrence.name == "monthly":
+                periods.append((month_start, month_end))
+            elif req.recurrence.name == "quarterly":
+                quarter = (month - 1) // 3 + 1
+                q_start_month = 3 * quarter - 2
+                q_start = date(year, q_start_month, 1)
+                _, q_last_day = calendar.monthrange(year, q_start_month + 2)
+                q_end = date(year, q_start_month + 2, q_last_day)
+                # Ensure we only generate it once per quarter, say on the first month of the quarter
+                if month == q_start_month:
+                    periods.append((q_start, q_end))
+            elif req.recurrence.name == "half_yearly":
+                if month == 1:
+                    periods.append((date(year, 1, 1), date(year, 6, 30)))
+                elif month == 7:
+                    periods.append((date(year, 7, 1), date(year, 12, 31)))
+            elif req.recurrence.name == "annual":
+                if month == 1:
+                    periods.append((date(year, 1, 1), date(year, 12, 31)))
                 
-            instance = ComplianceInstance(
-                requirement_id=req.id,
-                mine_id=mine_id,
-                period_start=period_start,
-                period_end=period_end,
-                due_date=due_date,
-                status=InstanceStatus.pending
-            )
-            db.add(instance)
-            generated.append(instance)
-            
+            for p_start, p_end in periods:
+                due_date = p_end + timedelta(days=req.grace_period_days)
+                
+                existing_query = select(ComplianceInstance.id).where(
+                    ComplianceInstance.mine_id == mine_id,
+                    ComplianceInstance.requirement_id == req.id,
+                    ComplianceInstance.period_start == p_start
+                )
+                existing_result = await db.execute(existing_query)
+                if existing_result.scalar_one_or_none():
+                    continue
+                    
+                instance = ComplianceInstance(
+                    requirement_id=req.id,
+                    mine_id=mine_id,
+                    period_start=p_start,
+                    period_end=p_end,
+                    due_date=due_date,
+                    status=InstanceStatus.pending
+                )
+                db.add(instance)
+                generated.append(instance)
+                
         if generated:
             await db.commit()
         return generated
