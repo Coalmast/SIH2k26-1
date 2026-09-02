@@ -7,10 +7,10 @@ import uuid
 from database import Base
 
 class ComplianceCategory(str, enum.Enum):
-    Safety = "Safety"
-    Environment = "Environment"
-    Production = "Production"
-    Labour = "Labour"
+    safety = "safety"
+    environment = "environment"
+    production = "production"
+    labour = "labour"
 
 class MineTypeEnum(str, enum.Enum):
     opencast = "opencast"
