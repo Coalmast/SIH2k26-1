@@ -1,50 +1,54 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import * as SecureStore from 'expo-secure-store';
+import { useAuthStore } from '../stores/authStore';
 
 interface AuthContextValue {
-  session: Session | null;
-  isLoading: boolean;
+  isInitialized: boolean;
 }
 
-export const AuthContext = createContext<AuthContextValue>({ session: null, isLoading: true });
+export const AuthContext = createContext<AuthContextValue>({ isInitialized: false });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const setAuth = useAuthStore((state) => state.setAuth);
 
   useEffect(() => {
-    // 1. Check stored session (offline restore)
+    // 1. Initial session fetch
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setIsLoading(false);
+      if (session) {
+        const role = session.user.app_metadata?.role || null;
+        const mineId = session.user.app_metadata?.mine_id || null;
+        const user = { id: session.user.id, email: session.user.email || '' };
+        setAuth(session, user, role, mineId);
+      } else {
+        setAuth(null, null, null, null);
+      }
+      setIsInitialized(true);
     });
 
     // 2. Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
+      (event, session) => {
         if (session) {
-          // Extract role from JWT app_metadata / user_metadata
-          const role = session.user.app_metadata?.role;
-          const mineId = session.user.app_metadata?.mine_id;
-          // Store session for offline restore
-          await SecureStore.setItemAsync('supabase_session', JSON.stringify(session));
+          const role = session.user.app_metadata?.role || null;
+          const mineId = session.user.app_metadata?.mine_id || null;
+          const user = { id: session.user.id, email: session.user.email || '' };
+          setAuth(session, user, role, mineId);
         } else {
-          await SecureStore.deleteItemAsync('supabase_session');
+          setAuth(null, null, null, null);
         }
       }
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [setAuth]);
 
   return (
-    <AuthContext.Provider value={{ session, isLoading }}>
+    <AuthContext.Provider value={{ isInitialized }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuthInit = () => useContext(AuthContext);

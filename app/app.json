@@ -4,13 +4,11 @@
     "slug": "comet-field-app",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "comet",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "in.gov.coalindia.comet",
-      "googleServicesFile": "./GoogleService-Info.plist",
       "entitlements": {
         "com.apple.developer.usernotifications.critical-alerts": true
       },
@@ -26,11 +24,6 @@
     },
     "android": {
       "package": "in.gov.coalindia.comet",
-      "googleServicesFile": "./google-services.json",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#1E3A5F"
-      },
       "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",
@@ -48,38 +41,32 @@
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/splash-brand.png",
-          "imageWidth": 240,
-          "resizeMode": "contain",
-          "backgroundColor": "#030712"
-        }
-      ],
+      "expo-splash-screen",
       "expo-font",
       "expo-image",
       "expo-status-bar",
       "expo-background-task",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/images/notification-icon.png",
-          "color": "#1E3A5F"
-        }
-      ],
+      "expo-notifications",
       "expo-local-authentication",
       "expo-location",
-      "@notifee/react-native",
       [
         "react-native-vision-camera",
         {
           "cameraPermissionText": "COMET needs camera access for inspection photo evidence."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "$rootDir/../node_modules/@notifee/react-native/android/libs"
+            ]
+          }
         }
       ]
     ],
