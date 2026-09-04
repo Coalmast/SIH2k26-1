@@ -50,7 +50,7 @@ export const schema = appSchema({
         { name: 'gas_readings', type: 'string', isOptional: true },
         { name: 'sync_status', type: 'string' },
         { name: 'remote_id', type: 'string', isOptional: true },
-        { name: 'updated_at', type: 'number', isOptional: true },
+        { name: 'updated_at', type: 'number' },
       ],
     }),
     tableSchema({
