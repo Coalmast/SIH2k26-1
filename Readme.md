@@ -136,14 +136,21 @@ pnpm dlx expo start
 
 ## 5. Docker (Full Stack)
 
+For a comprehensive guide on Docker setup, see [DOCKER_GUIDE.md](./DOCKER_GUIDE.md).
+
 If you prefer to run the Web, Backend, and required infrastructure (like Redis) entirely through Docker, you can use the provided Docker Compose configuration from the root of the project.
+
+First, copy the example Docker environment file and populate it with your credentials:
+```bash
+cp .env.docker.example .env.docker
+```
 
 ### Build and Start All Services
 ```bash
-docker-compose up --build
+docker compose --env-file .env.docker up --build
 ```
 
 ### Stop All Services
 ```bash
-docker-compose down
+docker compose --env-file .env.docker down
 ```
