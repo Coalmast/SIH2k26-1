@@ -35,7 +35,7 @@ export async function bootstrapNotifications() {
     sound: 'comet_alarm',              // requires comet_alarm.wav in android/app/src/main/res/raw/
     bypassDnd: true,
     vibration: true,
-    vibrationPattern: [0, 500, 300, 500, 300, 500],
+    vibrationPattern: [300, 500, 300, 500],
   });
 }
 

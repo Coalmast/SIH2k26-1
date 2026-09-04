@@ -1,76 +1,50 @@
 import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, Alert } from 'react-native';
+import { router } from 'expo-router';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { ShieldAlert, Fingerprint, LogOut, KeyRound } from 'lucide-react-native';
+import { Button } from '../../src/components/ui/Button';
+import { useAuthStore } from '../../src/stores/authStore';
 
-export default function BiometricReAuthScreen() {
-  const router = useRouter();
+export default function BiometricScreen() {
+  const setOfflineAuthenticated = useAuthStore(state => state.setOfflineAuthenticated);
 
-  async function handleAuthenticate() {
-    try {
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Underground Re-Authentication',
-        fallbackLabel: 'Use PIN instead',
-      });
+  useEffect(() => {
+    authenticate();
+  }, []);
 
-      if (result.success) {
-        // Handle session restoration logic here
-        // For now, redirect to the app
-        router.replace('/(app)/home');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Authentication failed');
+  const authenticate = async () => {
+    const hasHardware = await LocalAuthentication.hasHardwareAsync();
+    const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+    if (!hasHardware || !isEnrolled) {
+      Alert.alert('Not Available', 'Biometric authentication is not set up on this device.', [
+        { text: 'Use Password Instead', onPress: () => router.replace('/(auth)/login') }
+      ]);
+      return;
     }
-  }
 
-  function handleSignOut() {
-    // Should clear session and go to login
-    router.replace('/(auth)/login');
-  }
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'Unlock COMET Field App',
+      fallbackLabel: 'Use Passcode',
+    });
+
+    if (result.success) {
+      setOfflineAuthenticated(true);
+      router.replace('/(app)/home');
+    }
+  };
 
   return (
-    <View className="flex-1 bg-navy dark:bg-navy-dark px-6 justify-center items-center">
-      <View className="items-center mb-10">
-        <ShieldAlert color="#F59E0B" size={80} className="mb-4" />
-        <Text className="text-white text-2xl font-bold text-center mb-2">
-          Underground Re-Authentication
-        </Text>
-        <Text className="text-white/80 text-center text-base px-4">
-          You are offline. Use biometric to resume your session.
-        </Text>
-      </View>
+    <View className="flex-1 justify-center items-center bg-binance-canvas-dark px-6">
+      <Text className="text-binance-primary font-bold text-3xl mb-8">Unlock COMET</Text>
+      
+      <Button onPress={authenticate} className="w-full mb-4" size="lg">
+        Use Fingerprint / Face ID
+      </Button>
 
-      <TouchableOpacity 
-        className="w-40 h-40 bg-white/10 rounded-full items-center justify-center border-2 border-white/20 mb-8"
-        onPress={handleAuthenticate}
-      >
-        <Fingerprint color="white" size={64} />
-        <Text className="text-white text-sm mt-4">Touch to authenticate</Text>
-      </TouchableOpacity>
-
-      <View className="bg-white/5 rounded-lg w-full p-4 mb-8">
-        <Text className="text-white/60 text-sm mb-1">Last sync: 2h 14m ago</Text>
-        <Text className="text-white font-medium">Mine: Rajmahal OCP</Text>
-      </View>
-
-      <View className="w-full space-y-3">
-        <TouchableOpacity 
-          className="border border-white/30 rounded-lg py-3 flex-row items-center justify-center"
-          onPress={handleAuthenticate}
-        >
-          <KeyRound color="white" size={18} className="mr-2" />
-          <Text className="text-white text-base">Use PIN instead</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          className="py-3 flex-row items-center justify-center mt-2"
-          onPress={handleSignOut}
-        >
-          <LogOut color="#ef4444" size={18} className="mr-2" />
-          <Text className="text-[#ef4444] text-base">Sign out & return online</Text>
-        </TouchableOpacity>
-      </View>
+      <Button variant="ghost" onPress={() => router.replace('/(auth)/login')} className="w-full">
+        Log in with Password
+      </Button>
     </View>
   );
 }

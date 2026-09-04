@@ -5,6 +5,11 @@ export const userTypes = [
   { label: 'Inactive', value: 'inactive' },
 ]
 
+export const callTypes = new Map<string, string>([
+  ['active', 'bg-green-500'],
+  ['inactive', 'bg-red-500'],
+])
+
 export const roles = [
   { label: 'System Admin', value: 'system_admin', icon: ShieldAlert },
   { label: 'Subsidiary Admin', value: 'subsidiary_admin', icon: ShieldCheck },

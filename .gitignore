@@ -2,3 +2,6 @@
 /docs-dev
 backend/.env
 secrets.md
+
+# Docker secrets — never commit the real env file
+.env.docker

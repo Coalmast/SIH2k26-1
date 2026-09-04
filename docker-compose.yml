@@ -1,0 +1,152 @@
+# ==============================================================================
+#  SIH2026 — Docker Compose (Full Stack)
+#
+#  Services:
+#    redis     — Celery broker + result backend
+#    backend   — FastAPI (Uvicorn)
+#    worker    — Celery worker (same image as backend)
+#    beat      — Celery beat scheduler (same image as backend)
+#    web       — React/Vite portal (Nginx)
+#
+#  Supabase (PostgreSQL, Auth, Storage, Realtime) is run separately via the
+#  Supabase CLI (`supabase start`) and is NOT managed by this Compose file.
+#  The backend connects to it over the host network.
+#
+#  Usage:
+#    1. Copy .env.docker.example → .env.docker and fill in your secrets.
+#    2. docker compose --env-file .env.docker up --build
+# ==============================================================================
+
+services:
+
+  # ── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7.4-alpine
+    container_name: sih2026_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sih2026_net
+
+  # ── FastAPI Backend ─────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sih2026_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env.docker
+    environment:
+      # Override Redis URL so it points to the 'redis' container, not localhost
+      REDIS_URL: redis://redis:6379/0
+      # Override DB URL to point to host-based Supabase  (host.docker.internal
+      # resolves to the Windows/Mac host from inside a container)
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@host.docker.internal:54322/postgres}
+      SUPABASE_URL: ${SUPABASE_URL:-http://host.docker.internal:54321}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app  # live-reload in dev; remove for production
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/')\""]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    networks:
+      - sih2026_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Linux host resolution
+
+  # ── Celery Worker ───────────────────────────────────────────────────────────
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sih2026_worker
+    restart: unless-stopped
+    # Override the default uvicorn CMD
+    command: celery -A main.celery worker --loglevel=info --concurrency=4
+    env_file:
+      - .env.docker
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@host.docker.internal:54322/postgres}
+      SUPABASE_URL: ${SUPABASE_URL:-http://host.docker.internal:54321}
+    depends_on:
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    volumes:
+      - ./backend:/app
+    networks:
+      - sih2026_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ── Celery Beat (Scheduler) ─────────────────────────────────────────────────
+  beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sih2026_beat
+    restart: unless-stopped
+    command: celery -A main.celery beat --loglevel=info
+    env_file:
+      - .env.docker
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://postgres:postgres@host.docker.internal:54322/postgres}
+      SUPABASE_URL: ${SUPABASE_URL:-http://host.docker.internal:54321}
+    depends_on:
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    networks:
+      - sih2026_net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # ── Web Portal (React/Vite → Nginx) ────────────────────────────────────────
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        # These are baked into the static bundle at build time
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-http://127.0.0.1:54321}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000}
+    container_name: sih2026_web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - sih2026_net
+
+# ==============================================================================
+#  Volumes & Networks
+# ==============================================================================
+volumes:
+  redis_data:
+
+networks:
+  sih2026_net:
+    driver: bridge

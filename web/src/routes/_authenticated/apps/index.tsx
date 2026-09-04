@@ -1,6 +1,7 @@
 import z from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
-import { Apps } from '@/features/apps'
+
+const Apps = () => <div>Apps Feature Coming Soon</div>;
 
 const appsSearchSchema = z.object({
   type: z

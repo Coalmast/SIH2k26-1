@@ -1,5 +1,5 @@
 {
-  "name": "NativeShad",
+  "name": "comet-field-app",
   "main": "expo-router/entry",
   "version": "0.1.0",
   "description": "A production-ready Expo template with NativeWind, TypeScript, and 20+ pre-built UI components",
@@ -39,52 +39,57 @@
     "@gorhom/bottom-sheet": "^5.2.5",
     "@notifee/react-native": "^9.1.8",
     "@nozbe/watermelondb": "^0.28.0",
+    "@react-native-async-storage/async-storage": "^3.1.1",
     "@react-native-community/netinfo": "12.0.1",
-    "@supabase/supabase-js": "^2.112.4",
+    "@react-navigation/bottom-tabs": "^7.18.18",
+    "@react-navigation/native": "^7.3.18",
+    "@react-navigation/native-stack": "^7.18.10",
+    "@supabase/supabase-js": "^2.114.0",
     "@tanstack/react-query": "^5.102.8",
     "babel-preset-expo": "~56.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "expo": "^56.0.9",
+    "expo": "~56.0.21",
     "expo-background-task": "~56.0.27",
-    "expo-blur": "~56.0.3",
-    "expo-camera": "~56.0.7",
+    "expo-blur": "~56.0.4",
+    "expo-build-properties": "^0.13.3",
+    "expo-camera": "~56.0.8",
     "expo-clipboard": "~56.0.4",
-    "expo-build-properties": "~0.13.0",
     "expo-constants": "~56.0.17",
-    "expo-contacts": "~56.0.8",
+    "expo-contacts": "~56.0.13",
+    "expo-dev-client": "~56.0.26",
     "expo-font": "~56.0.5",
     "expo-haptics": "~56.0.3",
-    "expo-image": "~56.0.10",
-    "expo-linking": "~56.0.13",
+    "expo-image": "~56.0.12",
+    "expo-linking": "~56.0.17",
     "expo-local-authentication": "~56.0.5",
-    "expo-location": "~56.0.16",
-    "expo-media-library": "~56.0.6",
+    "expo-location": "~56.0.25",
+    "expo-media-library": "~56.0.11",
     "expo-notifications": "~56.0.25",
-    "expo-router": "~56.2.9",
+    "expo-router": "~56.2.20",
     "expo-secure-store": "~14.0.0",
-    "expo-splash-screen": "~56.0.10",
+    "expo-splash-screen": "~56.0.15",
     "expo-status-bar": "~56.0.4",
-    "expo-symbols": "~56.0.6",
+    "expo-symbols": "~56.0.7",
     "expo-system-ui": "~56.0.5",
     "expo-task-manager": "~56.0.27",
+    "i18next": "^26.4.1",
     "lucide-react-native": "^0.542.0",
     "nativewind": "^4.1.23",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.87.0",
-    "react-native-css-interop": "^0.0.36",
+    "react-i18next": "^17.0.13",
     "react-native": "0.85.3",
+    "react-native-css-interop": "^0.0.36",
     "react-native-gesture-handler": "~2.31.1",
     "react-native-reanimated": "4.3.1",
     "react-native-safe-area-context": "~5.7.0",
-    "react-native-screens": "4.25.2",
+    "react-native-screens": "~4.26.0",
     "react-native-svg": "15.15.4",
     "react-native-url-polyfill": "^2.0.0",
-    "react-native-vision-camera": "^4.6.3",
     "react-native-web": "^0.21.2",
-    "react-native-worklets": "0.8.3",
-    "react-native-worklets-core": "^1.6.2",
+
     "tailwind-merge": "^3.3.1",
     "zod": "^4.5.4",
     "zustand": "^5.0.15"
@@ -92,11 +97,30 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@types/react": "~19.2.14",
+    "@types/react-native": "^0.72.8",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~56.0.4",
     "prettier-plugin-tailwindcss": "^0.5.14",
     "tailwindcss": "^3.4.17",
     "typescript": "~6.0.3"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "install": {
+      "exclude": [
+        "expo-build-properties",
+        "expo-secure-store"
+      ]
+    },
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@nozbe/watermelondb",
+          "@notifee/react-native",
+          "@nozbe/simdjson"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }
