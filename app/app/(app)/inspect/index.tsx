@@ -1,16 +1,129 @@
-import React from 'react';
-import { View, Text } from 'react-native';
-import { Card } from '../../../src/components/ui/Card';
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+// import { OfflineBanner } from '../../../src/components/OfflineBanner';
+import { StatusBadge } from '../../../src/components/StatusBadge';
+import { useInspections } from '../../../src/hooks/useInspections';
+import { useConnectivity } from '../../../src/hooks/useConnectivity';
 
-export default function InspectScreen() {
+// Assuming authStore provides mineId, mocking it for now
+const mockMineId = '123e4567-e89b-12d3-a456-426614174000';
+
+type FilterType = 'all' | 'active' | 'scheduled' | 'done';
+
+export default function InspectionsScreen() {
+  const router = useRouter();
+  const { isOnline } = useConnectivity();
+  const { active, scheduled, completed, isLoading } = useInspections(mockMineId);
+  const [filter, setFilter] = useState<FilterType>('active');
+
+  const getFilteredData = () => {
+    switch (filter) {
+      case 'active': return active;
+      case 'scheduled': return scheduled;
+      case 'done': return completed;
+      case 'all': return [...active, ...scheduled, ...completed].sort((a, b) => b.createdAt - a.createdAt);
+      default: return [];
+    }
+  };
+
+  const renderInspectionCard = ({ item }: { item: any }) => {
+    const isCompleted = item.status === 'submitted' || item.status === 'reviewed';
+    
+    return (
+      <TouchableOpacity 
+        className="bg-binance-surface-card-dark p-4 rounded-xl mb-3 border border-binance-border-strong"
+        onPress={() => {
+          if (isCompleted) {
+            router.push(`/inspect/${item.id}/summary`);
+          } else if (item.status === 'draft') {
+            router.push(`/inspect/start`); // Should ideally pass id, but start creates a new one in this flow
+          } else {
+            router.push(`/inspect/${item.id}/form`);
+          }
+        }}
+      >
+        <View className="flex-row justify-between items-start mb-2">
+          <View>
+            <Text className="text-binance-primary font-bold text-lg">
+              {item.inspectionType.replace(/_/g, ' ').toUpperCase()}
+            </Text>
+            <Text className="text-binance-muted-strong text-sm mt-1">
+              {item.zone || 'No zone specified'} • {new Date(item.createdAt).toLocaleDateString()}
+            </Text>
+          </View>
+          <StatusBadge status={isCompleted ? item.syncStatus : item.status} />
+        </View>
+
+        <View className="flex-row justify-between items-end mt-4">
+          <View>
+            {isCompleted ? (
+              <Text className="text-binance-on-dark text-sm">
+                Violations: <Text className="font-bold text-binance-trading-down">{item.violationCount}</Text>
+              </Text>
+            ) : (
+              <Text className="text-binance-on-dark text-sm">
+                Progress: <Text className="font-bold text-binance-primary">{item.observationCount}</Text> obs
+              </Text>
+            )}
+          </View>
+          <View className="bg-binance-surface-elevated-dark px-4 py-2 rounded-lg">
+            <Text className="text-binance-on-dark font-medium">
+              {isCompleted ? 'View →' : item.status === 'draft' ? 'Start →' : 'Continue →'}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <View className="flex-1 bg-binance-canvas-dark px-4 py-6">
-      <Text className="text-binance-on-dark text-3xl font-bold mb-6">Inspections</Text>
+    <View className="flex-1 bg-binance-ink px-4 pt-6">
+      {/* {!isOnline && <OfflineBanner />} */}
       
-      <Card>
-        <Text className="text-binance-on-dark font-bold text-xl mb-2">No active inspections</Text>
-        <Text className="text-binance-muted-strong">Tap the new inspection button on the home screen to start one.</Text>
-      </Card>
+      <View className="flex-row justify-between items-center mb-6">
+        <Text className="text-white text-2xl font-bold">INSPECTIONS</Text>
+        <TouchableOpacity 
+          className="bg-binance-primary px-4 py-2 rounded-lg"
+          onPress={() => router.push('/inspect/start')}
+        >
+          <Text className="text-binance-ink font-bold">+ New</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View className="flex-row mb-4 bg-binance-surface-card-dark p-1 rounded-lg">
+        {['all', 'active', 'scheduled', 'done'].map((f) => (
+          <TouchableOpacity
+            key={f}
+            className={`flex-1 py-2 items-center rounded-md ${filter === f ? 'bg-binance-surface-elevated-dark' : ''}`}
+            onPress={() => setFilter(f as FilterType)}
+          >
+            <Text className={`font-semibold ${filter === f ? 'text-binance-primary' : 'text-binance-muted-strong'}`}>
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+              {f === 'active' && active?.length > 0 && ` • ${active.length}`}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <FlatList
+        data={getFilteredData()}
+        keyExtractor={item => item.id}
+        renderItem={renderInspectionCard}
+        contentContainerStyle={{ paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={() => (
+          <View className="items-center justify-center mt-20">
+            <Text className="text-6xl mb-4">📋</Text>
+            <Text className="text-binance-on-dark font-medium text-lg text-center">
+              No inspections found
+            </Text>
+            <Text className="text-binance-muted-strong text-center mt-2">
+              {filter === 'active' ? 'You have no active inspections.' : 'Nothing to show here.'}
+            </Text>
+          </View>
+        )}
+      />
     </View>
   );
 }

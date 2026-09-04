@@ -15,6 +15,22 @@ export class Inspection extends Model {
   @readonly @date('created_at') createdAt!: number;
   @readonly @date('updated_at') updatedAt!: number;
 
+  @field('inspection_type') inspectionType!: string;
+  @field('checklist_template_id') checklistTemplateId!: string;
+  @field('conducted_by') conductedBy!: string;
+  @field('geo_stamp_start') geoStampStart?: string;
+  @field('geo_stamp_end') geoStampEnd?: string;
+  @date('started_at') startedAt?: number;
+  @date('completed_at') completedAt?: number;
+  @date('submitted_at') submittedAt?: number;
+  @date('signed_at') signedAt?: number;
+  @field('sync_status') syncStatus!: string;
+  @field('current_section') currentSection!: number;
+  @field('overall_remarks') overallRemarks?: string;
+  @field('observation_count') observationCount!: number;
+  @field('violation_count') violationCount!: number;
+  @field('remote_id') remoteId?: string;
+
   @children('observations') observations!: any;
 }
 
@@ -31,6 +47,16 @@ export class Observation extends Model {
   @field('photo_uri') photoUri?: string;
   @field('is_compliant') isCompliant!: boolean;
   @readonly @date('created_at') createdAt!: number;
+
+  @field('checklist_item_id') checklistItemId?: string;
+  @field('statute_ref') statuteRef?: string;
+  @field('response_type') responseType?: string;
+  @field('photo_uris') photoUris?: string;
+  @field('sub_zone') subZone?: string;
+  @field('gas_readings') gasReadings?: string;
+  @field('sync_status') syncStatus!: string;
+  @field('remote_id') remoteId?: string;
+  @date('updated_at') updatedAt?: number;
 }
 
 export class IncidentReport extends Model {
@@ -68,4 +94,17 @@ export class ShiftReport extends Model {
   @field('o2_level') o2Level!: number;
   @field('status') status!: string;
   @readonly @date('created_at') createdAt!: number;
+}
+
+export class ChecklistTemplate extends Model {
+  static table = 'checklist_templates';
+
+  @field('remote_id') remoteId!: string;
+  @field('name') name!: string;
+  @field('inspection_type') inspectionType!: string;
+  @field('regulation_ref') regulationRef?: string;
+  @field('checklist_items') checklistItems!: string;
+  @field('version') version!: number;
+  @field('is_active') isActive!: boolean;
+  @date('synced_at') syncedAt!: number;
 }
