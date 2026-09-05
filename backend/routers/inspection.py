@@ -62,10 +62,12 @@ async def create_inspection(
     user_ctx: UserContext = Depends(get_current_user)
 ):
     """Schedule/create a new inspection"""
+    print(f"DEBUG create_inspection: user_ctx={user_ctx}, mine_id={dto.mine_id}")
     # Verify user has access to mine
     if str(dto.mine_id) not in user_ctx.mine_ids and user_ctx.role not in ["system_admin", "regulator"]:
         if user_ctx.role != "subsidiary_admin":
-            raise HTTPException(status_code=403, detail="Not authorized to create inspection for this mine")
+            error_msg = f"Not authorized. User ID: {user_ctx.user_id}, Role: '{user_ctx.role}', Required Mine: {dto.mine_id}, Assigned Mines: {user_ctx.mine_ids}"
+            raise HTTPException(status_code=403, detail=error_msg)
         
     actor_id = uuid.UUID(user_ctx.user_id) if "-" in user_ctx.user_id else uuid.uuid4()
     return await InspectionService.create_inspection(db, dto, actor_id)
@@ -198,6 +200,16 @@ async def get_inspection(id: uuid.UUID, db: AsyncSession = Depends(get_db)):
     if not inspection:
         raise HTTPException(status_code=404, detail="Inspection not found")
     return inspection
+
+@router.post("/{id}/analyze")
+async def analyze_inspection(
+    id: uuid.UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Analyze inspection for anomalies"""
+    from services.ai_service import AIService
+    result = await AIService.analyze_inspection_anomalies(db, str(id))
+    return result
 
 @router.post("/{id}/submit", response_model=InspectionRead)
 async def submit_inspection(

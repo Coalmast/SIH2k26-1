@@ -89,3 +89,23 @@ export function useAddObservation() {
     },
   });
 }
+
+export function useAnalyzeInspection() {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const response = await apiClient.post(`/api/v1/inspections/${id}/analyze`);
+      return response.data;
+    },
+  });
+}
+
+export function useInspectionReport(id: string) {
+  return useQuery({
+    queryKey: ["report", id],
+    queryFn: async () => {
+      const response = await apiClient.get(`/api/v1/reports/inspection/${id}/summary`);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+}

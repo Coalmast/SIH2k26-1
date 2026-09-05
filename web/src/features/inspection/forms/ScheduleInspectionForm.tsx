@@ -14,11 +14,11 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
   const form = useForm<z.infer<typeof InspectionCreateSchema>>({
     resolver: zodResolver(InspectionCreateSchema),
     defaultValues: {
-      mine_id: "",
-      inspection_type: "dgms_annual_general",
-      template_id: "",
+      mine_id: "00000000-0000-0000-0000-000000000004",
+      inspection_type: "environmental_pcb",
+      checklist_template_id: "00000000-0000-0000-0000-000000000020",
       scheduled_date: new Date().toISOString().split('T')[0],
-      zone: "",
+      zone: "Pit 3 East",
     },
   });
 
@@ -59,16 +59,23 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
           )}
         />
         
-        {/* Simplified for now. mine_id and template_id would normally be fetched and selectable */}
+        {/* Hardcoded dropdowns for Demo Workflow to avoid raw UUID inputs */}
         <FormField
           control={form.control}
           name="mine_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mine ID (UUID)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter Mine UUID" {...field} />
-              </FormControl>
+              <FormLabel>Mine</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Mine" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="00000000-0000-0000-0000-000000000004">Umrer OCP</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -76,13 +83,21 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
 
         <FormField
           control={form.control}
-          name="template_id"
+          name="checklist_template_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Template ID (UUID)</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter Template UUID" {...field} />
-              </FormControl>
+              <FormLabel>Template</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Template" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="00000000-0000-0000-0000-000000000020">Environmental Gas & Air Quality</SelectItem>
+                  <SelectItem value="00000000-0000-0000-0000-000000000021">DGMS Annual General Safety</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

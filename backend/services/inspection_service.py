@@ -97,32 +97,68 @@ class InspectionService:
             # Check for critical violations to auto-create compliance breaches
             # To create a ComplianceInstance we need a requirement_id. 
             # We fetch a generic or first requirement for the mine as a fallback to link the breach.
-            # In a full implementation, we'd have a specific "Inspection Breach" requirement mapped.
             req_query = select(ComplianceRequirement).limit(1)
             req_result = await db.execute(req_query)
             generic_req = req_result.scalar_one_or_none()
             
-            if generic_req:
-                has_critical = any(
-                    obs.violation and obs.violation.severity == ViolationSeverity.critical 
-                    for obs in inspection.observations
-                )
-                if has_critical:
-                    breach_instance = ComplianceInstance(
-                        requirement_id=generic_req.id,
-                        mine_id=inspection.mine_id,
-                        subsidiary_id=inspection.subsidiary_id,
-                        period_start=datetime.now(timezone.utc),
-                        period_end=datetime.now(timezone.utc),
-                        due_date=datetime.now(timezone.utc),
-                        status=InstanceStatus.breached,
-                        is_late_submission=True
-                    )
-                    db.add(breach_instance)
+            has_critical = any(
+                obs.violation and obs.violation.severity == ViolationSeverity.critical 
+                for obs in inspection.observations
+            )
             
+            if generic_req and has_critical:
+                breach_instance = ComplianceInstance(
+                    requirement_id=generic_req.id,
+                    mine_id=inspection.mine_id,
+                    subsidiary_id=inspection.subsidiary_id,
+                    period_start=datetime.now().replace(tzinfo=None),
+                    period_end=datetime.now().replace(tzinfo=None),
+                    due_date=datetime.now().replace(tzinfo=None),
+                    status=InstanceStatus.breached,
+                    is_late_submission=True
+                )
+                db.add(breach_instance)
+            
+            # Trigger notifications to mine managers and compliance officers
+            from services.notification_service import send_alert, NotificationRequest
+            from models.notification import AlertPriority
+            from models.mine import User, UserRole, Role
+            
+            # Store values before db.execute to prevent MissingGreenlet from expired object
+            insp_zone = inspection.zone or 'Mine'
+            insp_violation_count = inspection.violation_count
+            insp_mine_id_str = str(inspection.mine_id)
+            insp_id_str = str(inspection.id)
+            
+            notify_roles = ["compliance_officer", "mine_manager", "subsidiary_admin", "system_admin"]
+            target_users = await db.execute(
+                select(User.id)
+                .join(UserRole, UserRole.user_id == User.id)
+                .join(Role, Role.id == UserRole.role_id)
+                .where(
+                    User.mine_id == inspection.mine_id,
+                    Role.name.in_(notify_roles)
+                )
+            )
+            
+            for target_id in target_users.scalars().all():
+                req = NotificationRequest(
+                    title=f"Inspection Submitted: {insp_zone}",
+                    body=f"A new inspection has been submitted with {insp_violation_count} violations.",
+                    priority=AlertPriority.high.value if has_critical else AlertPriority.info.value,
+                    target_user_id=str(target_id),
+                    mine_id=insp_mine_id_str,
+                    entity_type="inspection",
+                    entity_id=insp_id_str,
+                    channels=["push", "realtime"]
+                )
+                try:
+                    await send_alert(req, db)
+                except Exception as e:
+                    print(f"Failed to send alert to {target_id}: {e}")
+                    
             await db.commit()
-            await db.refresh(inspection)
-        return inspection
+        return await InspectionService.get_inspection_detail(db, id)
 
     @staticmethod
     async def add_observation(db: AsyncSession, inspection_id: uuid.UUID, dto: ObservationCreate, user_id: uuid.UUID):
@@ -154,6 +190,7 @@ class InspectionService:
         )
 
         # Auto-promote to violation if severity is high or critical
+        violation = None
         if dto.severity in [ObsSeverity.high, ObsSeverity.critical]:
             v_sev = ViolationSeverity.major if dto.severity == ObsSeverity.high else ViolationSeverity.critical
             violation = Violation(
@@ -178,6 +215,11 @@ class InspectionService:
 
         await db.commit()
         await db.refresh(observation)
+        if violation:
+            await db.refresh(violation)
+            observation.violation = violation
+        else:
+            observation.violation = None
         return observation
 
     @staticmethod

@@ -24,7 +24,7 @@ interface Props {
 export function ComplianceCalendar({ mineId }: Props) {
   const navigate = useNavigate();
   const [filter, setFilter] = useState('All');
-  const [month, setMonth] = useState('2027-02');
+  const [month, setMonth] = useState('2026-09');
   
   const { data: instances, isLoading } = useComplianceInstances(mineId, month);
   
