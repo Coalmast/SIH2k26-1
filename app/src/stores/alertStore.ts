@@ -7,6 +7,7 @@ export interface AlertMessage {
   message: string;
   timestamp: string;
   mineId: string;
+  remoteId?: string; // ID from Supabase
 }
 
 interface AlertState {
@@ -16,11 +17,12 @@ interface AlertState {
   // Actions
   addAlert: (alert: AlertMessage) => void;
   removeAlert: (id: string) => void;
+  acknowledgeAlert: (id: string) => Promise<void>;
   setCriticalAlarm: (isActive: boolean) => void;
   clearAllAlerts: () => void;
 }
 
-export const useAlertStore = create<AlertState>((set) => ({
+export const useAlertStore = create<AlertState>((set, get) => ({
   activeAlerts: [],
   criticalAlarmActive: false,
 
@@ -37,6 +39,18 @@ export const useAlertStore = create<AlertState>((set) => ({
       criticalAlarmActive: newAlerts.some(a => a.type === 'CRITICAL')
     };
   }),
+
+  acknowledgeAlert: async (id) => {
+    const state = get();
+    const alert = state.activeAlerts.find(a => a.id === id);
+    if (!alert) return;
+
+    // Simulate PATCH request to Supabase
+    console.log(`[NETWORK] PATCH /rest/v1/alerts?id=eq.${alert.remoteId || id} { "status": "read", "read_at": "now()" }`);
+    
+    // Remove from local state
+    state.removeAlert(id);
+  },
 
   setCriticalAlarm: (isActive) => set({ criticalAlarmActive: isActive }),
   

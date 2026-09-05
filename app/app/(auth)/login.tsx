@@ -7,8 +7,8 @@ import { supabase } from '../../src/lib/supabase';
 import { useAuthStore } from '../../src/stores/authStore';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('test@example.com');
+  const [password, setPassword] = useState('password123');
   const [loading, setLoading] = useState(false);
   const setOfflineAuthenticated = useAuthStore(state => state.setOfflineAuthenticated);
 
@@ -19,6 +19,14 @@ export default function LoginScreen() {
     }
 
     setLoading(true);
+    
+    // For testing without a real backend, instantly bypass login
+    if (email === 'test@example.com' && password === 'password123') {
+      setOfflineAuthenticated(true);
+      router.replace('/(app)/home');
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,

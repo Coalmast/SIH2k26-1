@@ -16,8 +16,8 @@ export default function HomeScreen() {
       </View>
 
       <Card className="mb-4 bg-binance-primary">
-        <Text className="text-binance-on-primary text-xl font-bold mb-2">Start Shift</Text>
-        <Text className="text-binance-on-primary mb-4">Complete your attendance and baseline gas readings.</Text>
+        <Text className="text-binance-primary text-xl font-bold mb-2">Start Shift</Text>
+        <Text className="text-binance-primary mb-4">Complete your attendance and baseline gas readings.</Text>
         <Button variant="secondary" onPress={() => router.push('/(app)/attendance')}>
           Mark Attendance
         </Button>
