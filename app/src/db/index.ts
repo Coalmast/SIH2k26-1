@@ -2,7 +2,17 @@ import { Database } from '@nozbe/watermelondb';
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 import { schema } from './schema';
 import { migrations } from './migrations';
-import { Inspection, Observation, IncidentReport, AttendanceRecord, ShiftReport, ChecklistTemplate } from './models';
+import { 
+  Inspection, 
+  Observation, 
+  IncidentReport, 
+  AttendanceRecord, 
+  ShiftReport, 
+  ChecklistTemplate,
+  SafetyObservation,
+  ContractWorker,
+  MediaAttachment
+} from './models';
 
 const adapter = new SQLiteAdapter({
   schema,
@@ -21,6 +31,9 @@ export const database = new Database({
     IncidentReport,
     AttendanceRecord,
     ShiftReport,
-    ChecklistTemplate
+    ChecklistTemplate,
+    SafetyObservation,
+    ContractWorker,
+    MediaAttachment
   ],
 });

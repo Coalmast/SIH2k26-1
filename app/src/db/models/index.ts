@@ -50,7 +50,7 @@ export class Observation extends Model {
 
   @field('checklist_item_id') checklistItemId?: string;
   @field('statute_ref') statuteRef?: string;
-  @field('response_type') responseType?: string;
+  @field('response_type') responseType!: string;
   @field('photo_uris') photoUris?: string;
   @field('sub_zone') subZone?: string;
   @field('gas_readings') gasReadings?: string;
@@ -64,22 +64,41 @@ export class IncidentReport extends Model {
 
   @field('mine_id') mineId!: string;
   @field('reported_by') reportedBy!: string;
-  @field('type') type!: string;
   @field('description') description!: string;
-  @field('location') location!: string;
-  @field('status') status!: string;
   @readonly @date('created_at') createdAt!: number;
+  @field('sync_status') syncStatus!: string;
+  
+  @field('incident_type') incidentType!: string;
+  @field('severity') severity!: string;
+  @field('ai_suggested_severity') aiSuggestedSeverity?: string;
+  @field('ai_suggested_category') aiSuggestedCategory?: string;
+  @field('geo_stamp') geoStamp?: string;
+  @field('zone') zone?: string;
+  @field('shift') shift?: string;
+  @field('persons_involved') personsInvolved?: string;
+  @field('immediate_actions_taken') immediateActionsTaken?: string;
+  @field('is_linked_to_accident_register') isLinkedToAccidentRegister!: boolean;
+  @field('corrective_action_id') correctiveActionId?: string;
+  @date('reported_at') reportedAt!: number;
+  @field('remote_id') remoteId?: string;
+  @field('local_photo_ids') localPhotoIds?: string;
 }
 
 export class AttendanceRecord extends Model {
   static table = 'attendance_records';
 
   @field('mine_id') mineId!: string;
-  @field('worker_id') workerId!: string;
-  @date('scan_time') scanTime!: number;
-  @field('scan_type') scanType!: string;
-  @field('location_lat') locationLat?: number;
-  @field('location_lon') locationLon?: number;
+  @field('worker_id_card_number') workerIdCardNumber!: string;
+  @field('worker_name') workerName?: string;
+  @field('worker_type') workerType!: string;
+  @field('contractor_id') contractorId?: string;
+  @field('shift') shift!: string;
+  @date('check_in_at') checkInAt!: number;
+  @field('geo_stamp') geoStamp!: string;
+  @field('location_mismatch') locationMismatch!: boolean;
+  @field('training_expired') trainingExpired!: boolean;
+  @field('flagged_for_review') flaggedForReview!: boolean;
+  @field('sync_status') syncStatus!: string;
   @readonly @date('created_at') createdAt!: number;
 }
 
@@ -87,12 +106,22 @@ export class ShiftReport extends Model {
   static table = 'shift_reports';
 
   @field('mine_id') mineId!: string;
-  @field('overman_id') overmanId!: string;
-  @field('shift_date') shiftDate!: string;
-  @field('ch4_level') ch4Level!: number;
-  @field('co_level') coLevel!: number;
-  @field('o2_level') o2Level!: number;
-  @field('status') status!: string;
+  @field('zone') zone!: string;
+  @field('shift') shift!: string;
+  @date('report_date') reportDate!: number;
+  @field('workforce_count') workforceCount!: number;
+  @field('regular_count') regularCount!: number;
+  @field('contract_count') contractCount!: number;
+  @field('gas_readings') gasReadings!: string;
+  @field('shift_observations') shiftObservations?: string;
+  @field('equipment_status') equipmentStatus?: string;
+  @field('production_coal_tonnes') productionCoalTonnes?: number;
+  @field('production_ob_cum') productionObCum?: number;
+  @field('handover_notes') handoverNotes?: string;
+  @field('ch4_alert_fired') ch4AlertFired!: boolean;
+  @field('geo_stamp') geoStamp!: string;
+  @field('sync_status') syncStatus!: string;
+  @field('remote_id') remoteId?: string;
   @readonly @date('created_at') createdAt!: number;
 }
 
@@ -107,4 +136,49 @@ export class ChecklistTemplate extends Model {
   @field('version') version!: number;
   @field('is_active') isActive!: boolean;
   @date('synced_at') syncedAt!: number;
+}
+
+export class SafetyObservation extends Model {
+  static table = 'safety_observations';
+
+  @field('mine_id') mineId!: string;
+  @field('zone') zone!: string;
+  @field('observation_type') observationType!: string;
+  @field('category') category?: string;
+  @field('description') description!: string;
+  @field('geo_stamp') geoStamp?: string;
+  @field('assigned_to_id') assignedToId?: string;
+  @field('status') status!: string;
+  @date('corrected_at') correctedAt?: number;
+  @field('observed_by') observedBy!: string;
+  @date('observed_at') observedAt!: number;
+  @field('sync_status') syncStatus!: string;
+  @field('remote_id') remoteId?: string;
+  @field('local_photo_id') localPhotoId?: string;
+}
+
+export class ContractWorker extends Model {
+  static table = 'contract_workers';
+
+  @field('remote_id') remoteId!: string;
+  @field('contractor_id') contractorId!: string;
+  @field('name') name!: string;
+  @field('worker_id_card_number') workerIdCardNumber!: string;
+  @field('training_certificates') trainingCertificates!: string;
+  @field('is_active') isActive!: boolean;
+  @date('synced_at') syncedAt!: number;
+}
+
+export class MediaAttachment extends Model {
+  static table = 'media_attachments';
+
+  @field('parent_type') parentType!: string;
+  @field('parent_id') parentId!: string;
+  @field('media_type') mediaType!: string;
+  @field('local_file_path') localFilePath!: string;
+  @field('file_url') fileUrl?: string;
+  @field('sync_status') syncStatus!: string;
+  @field('remote_id') remoteId?: string;
+  @field('captured_by') capturedBy!: string;
+  @readonly @date('created_at') createdAt!: number;
 }
