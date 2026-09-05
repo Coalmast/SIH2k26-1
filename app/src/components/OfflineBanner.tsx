@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useAppStore } from '../stores/appStore';
-import { WifiOff, RefreshCw } from 'lucide-react-native';
+import { WifiOff, RefreshCw, Play } from 'lucide-react-native';
+import { performSync } from '../sync/syncEngine';
 
 export function OfflineBanner() {
   const isOnline = useAppStore((state) => state.isOnline);
@@ -26,6 +27,16 @@ export function OfflineBanner() {
               : `${pendingItems} pending syncs`}
         </Text>
       </View>
+      
+      {isOnline && !isSyncing && pendingItems > 0 && (
+        <TouchableOpacity 
+          className="bg-binance-primary/20 px-3 py-1 rounded flex-row items-center gap-1"
+          onPress={() => performSync()}
+        >
+          <Play size={12} color="#fcd535" />
+          <Text className="text-binance-primary text-xs font-bold">Sync</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

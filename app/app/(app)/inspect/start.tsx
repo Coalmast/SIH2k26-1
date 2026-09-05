@@ -80,12 +80,7 @@ export default function StartInspectionScreen() {
 
   return (
     <View className="flex-1 bg-binance-ink px-4 pt-6">
-      <View className="flex-row items-center mb-6">
-        <TouchableOpacity onPress={() => router.back()} className="mr-4">
-          <Text className="text-white text-xl">←</Text>
-        </TouchableOpacity>
-        <Text className="text-white text-2xl font-bold">Start Inspection</Text>
-      </View>
+
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         

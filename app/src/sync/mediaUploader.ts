@@ -1,8 +1,4 @@
-// import { api } from '../services/api';
-// Assuming api exists, using a mock for now
-const api = {
-  post: async (url: string, data: any, config?: any) => ({ data: { url: `https://mock-storage.com/${Date.now()}.jpg` } })
-};
+import { supabase } from '../lib/supabase';
 
 export class MediaUploader {
   /**
@@ -15,33 +11,39 @@ export class MediaUploader {
 
     for (const uri of uris) {
       try {
-        // In a real implementation with React Native, we'd use FormData
-        // const formData = new FormData();
-        // formData.append('file', {
-        //   uri,
-        //   name: `photo_${Date.now()}.jpg`,
-        //   type: 'image/jpeg',
-        // } as any);
-        
-        // const response = await api.post('/api/v1/upload', formData, {
-        //   headers: { 'Content-Type': 'multipart/form-data' },
-        // });
-        
-        // uploadedUrls.push(response.data.url);
-        
-        // Mock successful upload:
-        console.log(`[MediaUploader] Uploaded ${uri}`);
-        uploadedUrls.push(`https://mock-storage.com/photo_${Date.now()}.jpg`);
-        
+        const url = await this.uploadSinglePhoto(uri);
+        if (url) uploadedUrls.push(url);
       } catch (error) {
         console.error(`[MediaUploader] Failed to upload photo ${uri}:`, error);
-        // Depending on requirements, we might want to throw or continue.
-        // For robustness in sync, continuing with successful ones might be better,
-        // but we'll throw to ensure data integrity for this implementation.
         throw error;
       }
     }
 
     return uploadedUrls;
+  }
+
+  static async uploadSinglePhoto(uri: string): Promise<string | null> {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
+      
+      const { data, error } = await supabase.storage
+        .from('comet-evidence')
+        .upload(fileName, blob, {
+          contentType: 'image/jpeg',
+        });
+        
+      if (error) throw error;
+      
+      const { data: publicData } = supabase.storage
+        .from('comet-evidence')
+        .getPublicUrl(fileName);
+        
+      return publicData.publicUrl;
+    } catch (error) {
+      console.error(`[MediaUploader] Failed to upload single photo ${uri}:`, error);
+      return null;
+    }
   }
 }

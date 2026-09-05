@@ -27,6 +27,7 @@ export default function AppLayout() {
           name="inspect"
           options={{
             title: 'Inspections',
+            headerShown: false,
             tabBarIcon: ({ color }) => <ClipboardList size={24} color={color} />,
           }}
         />

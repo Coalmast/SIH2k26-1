@@ -3,10 +3,12 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { Card } from '../../../src/components/ui/Card';
 import { Button } from '../../../src/components/ui/Button';
-import GeoStampDisplay from '../../../src/components/GeoStampDisplay';
+import { GeoStampDisplay } from '../../../src/components/GeoStampDisplay';
+import { useGeoStamp } from '../../../src/hooks/useGeoStamp';
 import { database } from '../../../src/db';
 import { useAuthStore } from '../../../src/stores/authStore';
 import { SyncStatusEnum, ShiftEnum } from '../../../src/types/enums';
+import { performSync } from '../../../src/sync/syncEngine';
 import { AlertTriangle } from 'lucide-react-native';
 
 const ZONES = ['Pit 3', 'Workshop', 'CHP', 'Entry', 'Magazine', 'Other'];
@@ -48,6 +50,7 @@ export default function ShiftReportScreen() {
   ]);
   
   const [handoverNotes, setHandoverNotes] = useState('');
+  const geoStamp = useGeoStamp();
   
   const ch4AlertFired = useCH4Alert(gasReadings);
 
@@ -85,7 +88,9 @@ export default function ShiftReportScreen() {
         });
       });
       
-      Alert.alert('Success', 'Shift report signed and locked.', [
+      performSync().catch(console.error);
+
+      Alert.alert('Success', 'Shift report submitted successfully.', [
         { text: 'OK', onPress: () => router.back() }
       ]);
     } catch (error) {
@@ -262,15 +267,16 @@ export default function ShiftReportScreen() {
 
       {/* GPS Stamp */}
       <View className="mb-4">
-        <GeoStampDisplay />
+        <GeoStampDisplay {...geoStamp} />
       </View>
 
       {/* Submit */}
       <Button 
-        title="Sign & Lock Shift Report" 
         onPress={handleSubmit} 
         className="mt-4 bg-binance-primary" 
-      />
+      >
+        <Text className="text-black font-bold">Sign & Lock Shift Report</Text>
+      </Button>
     </ScrollView>
   );
 }

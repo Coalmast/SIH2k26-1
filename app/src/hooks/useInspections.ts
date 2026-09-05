@@ -4,14 +4,19 @@ import { Q } from '@nozbe/watermelondb';
 import { useObserve } from './useObserve';
 import { useConnectivity } from './useConnectivity';
 import { Inspection } from '../db/models';
-// import { api } from '../services/api'; // assuming api exists, will use fetch or similar if not
+import { supabase } from '../lib/supabase';
 
-// Define local fetch stand-in if not present
 const fetchInspectionsFromApi = async (mineId: string) => {
-  // Mock API call to be replaced with actual Axios/fetch instance
-  // e.g. return await api.get(`/api/v1/inspections?mine_id=${mineId}`);
-  console.log(`[API] Fetching inspections for mine ${mineId}`);
-  return [];
+  const { data, error } = await supabase
+    .from('inspections')
+    .select('*')
+    .eq('mine_id', mineId);
+    
+  if (error) {
+    console.error('[Supabase] fetchInspections error:', error);
+    return [];
+  }
+  return data || [];
 };
 
 export function useInspections(mineId: string) {
@@ -20,7 +25,7 @@ export function useInspections(mineId: string) {
   // Queries
   const activeQuery = useMemo(() => database.get<Inspection>('inspections').query(
     Q.where('mine_id', mineId),
-    Q.where('status', 'in_progress')
+    Q.where('status', 'in_progress') // Or draft if start uses draft
   ).observe(), [mineId]);
 
   const scheduledQuery = useMemo(() => database.get<Inspection>('inspections').query(
@@ -32,7 +37,8 @@ export function useInspections(mineId: string) {
     Q.where('mine_id', mineId),
     Q.or(
       Q.where('status', 'submitted'),
-      Q.where('status', 'reviewed')
+      Q.where('status', 'reviewed'),
+      Q.where('status', 'completed')
     )
   ).observe(), [mineId]);
 
@@ -64,14 +70,23 @@ export function useInspections(mineId: string) {
                 r.mineId = item.mine_id;
                 r.conductedBy = item.conducted_by;
                 r.inspectionType = item.inspection_type;
+                r.checklistTemplateId = item.checklist_template_id;
                 r.zone = item.zone ?? '';
-                r.status = item.status;
+                r.status = item.status === 'draft' ? 'in_progress' : item.status; 
                 r.syncStatus = 'synced';
-                r.startedAt = new Date(item.started_at).getTime();
+                r.startedAt = item.started_at ? new Date(item.started_at).getTime() : Date.now();
+                r.completedAt = item.completed_at ? new Date(item.completed_at).getTime() : undefined;
+                r.observationCount = item.observation_count || 0;
+                r.violationCount = item.violation_count || 0;
               });
             } else {
-              // Update existing if server is newer? Depends on conflict resolution
-              // For now, we only insert missing ones
+              // Update existing
+              await existing[0].update((r: any) => {
+                r.status = item.status === 'draft' ? 'in_progress' : item.status; 
+                r.observationCount = item.observation_count || r.observationCount;
+                r.violationCount = item.violation_count || r.violationCount;
+                r.syncStatus = 'synced';
+              });
             }
           }
         });

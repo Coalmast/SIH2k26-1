@@ -1,20 +1,11 @@
 import { database } from '../db';
-import { Inspection, Observation } from '../db/models';
+import { Inspection, Observation, IncidentReport, SafetyObservation, ShiftReport, AttendanceRecord, MediaAttachment } from '../db/models';
 import { Q } from '@nozbe/watermelondb';
 import { useAppStore } from '../stores/appStore';
 import { MediaUploader } from './mediaUploader';
-// import { api } from '../services/api';
-
-// Mock API - replace with actual fetch/axios calls to your FastAPI
-const api = {
-  post: async (url: string, data: any) => {
-    console.log(`[API POST] ${url}`, data);
-    return { data: { id: `remote_${Date.now()}` } };
-  }
-};
+import { supabase } from '../lib/supabase';
 
 export async function performSync() {
-  // We'll safely attempt to use appStore, if it doesn't exist, we just proceed
   let setSyncing = (val: boolean) => {};
   let setLastSyncTime = (val: string) => {};
   
@@ -30,9 +21,6 @@ export async function performSync() {
 
   try {
     await pushLocalChanges();
-    // Pull changes if needed (e.g., getting latest templates or other inspections)
-    // pullRemoteChanges(); 
-    
     setLastSyncTime(new Date().toISOString());
   } catch (error) {
     console.error('Sync failed:', error);
@@ -43,26 +31,97 @@ export async function performSync() {
 }
 
 async function pushLocalChanges() {
-  // 1. Find all inspections that need to be submitted
-  const pendingInspections = await database.get<Inspection>('inspections')
-    .query(Q.where('sync_status', 'pending_sync'))
-    .fetch();
+  // 1. Incident Reports
+  const pendingIncidents = await database.get<IncidentReport>('incident_reports').query(Q.where('sync_status', 'pending_sync')).fetch();
+  for (const incident of pendingIncidents) {
+    try {
+      const payload = {
+        mine_id: incident.mineId,
+        incident_type: incident.incidentType,
+        description: incident.description,
+        severity: incident.severity,
+        ai_suggested_severity: incident.aiSuggestedSeverity,
+        ai_suggested_category: incident.aiSuggestedCategory,
+        geo_stamp: incident.geoStamp ? JSON.parse(incident.geoStamp) : null,
+        zone: incident.zone,
+        shift: incident.shift,
+        persons_involved: incident.personsInvolved ? JSON.parse(incident.personsInvolved) : [],
+        immediate_actions_taken: incident.immediateActionsTaken,
+        is_linked_to_accident_register: incident.isLinkedToAccidentRegister,
+        reported_by: incident.reportedBy,
+        reported_at: new Date(incident.reportedAt).toISOString(),
+      };
+      
+      const { data, error } = await supabase.from('incident_reports').insert(payload).select('id').single();
+      if (error) throw error;
+      
+      await database.write(async () => {
+        await incident.update((r: any) => {
+          r.remoteId = data.id;
+          r.syncStatus = 'synced';
+        });
+      });
+    } catch (err) {
+      console.error(`Failed to sync incident ${incident.id}:`, err);
+    }
+  }
 
+  // 2. Safety Observations
+  const pendingSafetyObs = await database.get<SafetyObservation>('safety_observations').query(Q.where('sync_status', 'pending_sync')).fetch();
+  for (const obs of pendingSafetyObs) {
+    try {
+      const payload = {
+        mine_id: obs.mineId,
+        zone: obs.zone,
+        observation_type: obs.observationType,
+        category: obs.category,
+        description: obs.description,
+        geo_stamp: obs.geoStamp ? JSON.parse(obs.geoStamp) : null,
+        status: obs.status,
+        observed_by: obs.observedBy,
+        observed_at: new Date(obs.observedAt).toISOString(),
+      };
+      
+      const { data, error } = await supabase.from('safety_observations').insert(payload).select('id').single();
+      if (error) throw error;
+      
+      await database.write(async () => {
+        await obs.update((o: any) => {
+          o.remoteId = data.id;
+          o.syncStatus = 'synced';
+        });
+      });
+    } catch (err) {
+      console.error(`Failed to sync safety observation ${obs.id}:`, err);
+    }
+  }
+
+  // 3. Inspections
+  const pendingInspections = await database.get<Inspection>('inspections').query(Q.where('sync_status', 'pending_sync')).fetch();
   for (const inspection of pendingInspections) {
     try {
-      // First, create the inspection on server (if it doesn't have a remoteId yet)
       let remoteId = inspection.remoteId;
       if (!remoteId) {
         const createPayload = {
           mine_id: inspection.mineId,
+          conducted_by: inspection.conductedBy,
           inspection_type: inspection.inspectionType,
-          checklist_template_id: inspection.checklistTemplateId,
-          scheduled_date: new Date(inspection.startedAt || Date.now()).toISOString(),
+          checklist_template_id: inspection.checklistTemplateId || null,
           zone: inspection.zone,
+          geo_stamp: inspection.geoStampStart ? JSON.parse(inspection.geoStampStart) : null,
+          started_at: new Date(inspection.startedAt || Date.now()).toISOString(),
+          status: inspection.status === 'in_progress' ? 'draft' : inspection.status, // Map status correctly
+          observation_count: inspection.observationCount,
+          violation_count: inspection.violationCount,
+          overall_remarks: inspection.overallRemarks,
         };
         
-        const createRes = await api.post('/api/v1/inspections', createPayload);
-        remoteId = createRes.data.id;
+        const { data, error } = await supabase.from('inspections').insert(createPayload).select('id').single();
+        if (error) {
+          console.error("Supabase error inserting inspection:", error);
+          throw error;
+        }
+        remoteId = data.id;
         
         await database.write(async () => {
           await inspection.update((i: any) => {
@@ -71,81 +130,81 @@ async function pushLocalChanges() {
         });
       }
 
-      // 2. Find all pending observations for this inspection
+      // Sync Observations
       const pendingObservations = await database.get<Observation>('observations')
-        .query(
-          Q.where('inspection_id', inspection.id),
-          Q.where('sync_status', 'pending_sync')
-        )
+        .query(Q.where('inspection_id', inspection.id), Q.where('sync_status', 'pending_sync'))
         .fetch();
 
       for (const obs of pendingObservations) {
-        // Upload photos first if any
-        let uploadedPhotoUrls: string[] = [];
-        if (obs.photoUris) {
-          const localUris = JSON.parse(obs.photoUris);
-          uploadedPhotoUrls = await MediaUploader.uploadPhotos(localUris);
-        }
-
         const obsPayload = {
+          inspection_id: remoteId,
           checklist_item_id: obs.checklistItemId,
           category: obs.category,
           description: obs.description,
-          status: obs.responseType, // 'ok' | 'non_compliant' | 'observation_only'
           severity: obs.severity,
-          // geo_stamp can be appended if saved in observation
         };
 
-        const obsRes = await api.post(`/api/v1/inspections/${remoteId}/observations`, obsPayload);
+        const { data: obsData, error: obsError } = await supabase.from('observations').insert(obsPayload).select('id').single();
+        if (obsError) throw obsError;
         
         await database.write(async () => {
           await obs.update((o: any) => {
-            o.remoteId = obsRes.data.id;
+            o.remoteId = obsData.id;
             o.syncStatus = 'synced';
-            // Optional: update photo_uris to the remote URLs
-            if (uploadedPhotoUrls.length > 0) {
-              o.photoUris = JSON.stringify(uploadedPhotoUrls);
-            }
           });
         });
       }
 
-      // 3. If inspection is submitted, call the submit endpoint
-      if (inspection.status === 'submitted') {
-        let geoStamp = undefined;
-        if (inspection.geoStampEnd) {
-          geoStamp = JSON.parse(inspection.geoStampEnd);
-        }
-
-        const submitPayload = {
-          geo_stamp: geoStamp,
-          overall_remarks: inspection.overallRemarks,
+      // Mark inspection synced if submitted
+      if (inspection.status === 'submitted' || inspection.status === 'completed') {
+        const updatePayload = {
+          completed_at: inspection.completedAt ? new Date(inspection.completedAt).toISOString() : null,
+          submitted_at: inspection.submittedAt ? new Date(inspection.submittedAt).toISOString() : null,
+          status: 'submitted'
         };
-
-        await api.post(`/api/v1/inspections/${remoteId}/submit`, submitPayload);
-
+        await supabase.from('inspections').update(updatePayload).eq('id', remoteId);
         await database.write(async () => {
-          await inspection.update((i: any) => {
-            i.syncStatus = 'synced';
-          });
+          await inspection.update((i: any) => { i.syncStatus = 'synced'; });
         });
       } else {
-        // If it's just in_progress but we synced observations, we can mark the inspection itself as synced for now
         await database.write(async () => {
-          await inspection.update((i: any) => {
-            i.syncStatus = 'synced';
+          await inspection.update((i: any) => { i.syncStatus = 'synced'; });
+        });
+      }
+    } catch (err) {
+      console.error(`Failed to push inspection ${inspection.id}:`, err);
+    }
+  }
+
+  // 4. Media Attachments
+  await uploadPendingMedia();
+}
+
+async function uploadPendingMedia() {
+  const pendingMedia = await database.get<MediaAttachment>('media_attachments').query(Q.where('sync_status', 'pending_upload')).fetch();
+  for (const media of pendingMedia) {
+    try {
+      const fileUrl = await MediaUploader.uploadSinglePhoto(media.localFilePath);
+      if (fileUrl) {
+        // Also insert to media_attachments table
+        const payload = {
+           parent_type: media.parentType,
+           parent_id: media.parentId, // Might need to map local ID to remote ID later
+           media_type: media.mediaType,
+           file_url: fileUrl,
+           captured_by: media.capturedBy,
+        };
+        // await supabase.from('media_attachments').insert(payload);
+        
+        await database.write(async () => {
+          await media.update((m: any) => {
+            m.fileUrl = fileUrl;
+            m.syncStatus = 'uploaded';
           });
         });
       }
-
-    } catch (err) {
-      console.error(`Failed to push inspection ${inspection.id}:`, err);
-      // Mark as error so we can retry or show UI indicator
-      await database.write(async () => {
-        await inspection.update((i: any) => {
-          i.syncStatus = 'error';
-        });
-      });
+    } catch (error) {
+      console.error(`Failed to upload media ${media.id}:`, error);
     }
   }
 }

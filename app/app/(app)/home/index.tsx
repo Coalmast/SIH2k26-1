@@ -4,9 +4,13 @@ import { router } from 'expo-router';
 import { Card } from '../../../src/components/ui/Card';
 import { Button } from '../../../src/components/ui/Button';
 import { useAuthStore } from '../../../src/stores/authStore';
+import { useInspections } from '../../../src/hooks/useInspections';
+
+const mockMineId = '123e4567-e89b-12d3-a456-426614174000';
 
 export default function HomeScreen() {
   const user = useAuthStore(state => state.user);
+  const { active, scheduled } = useInspections(mockMineId);
 
   return (
     <ScrollView className="flex-1 bg-binance-canvas-dark px-4 py-6">
@@ -25,12 +29,12 @@ export default function HomeScreen() {
 
       <View className="flex-row gap-4 mb-6">
         <Card className="flex-1">
-          <Text className="text-binance-primary text-3xl font-bold mb-1">3</Text>
-          <Text className="text-binance-muted-strong text-sm">Pending Tasks</Text>
+          <Text className="text-binance-primary text-3xl font-bold mb-1">{scheduled?.length || 0}</Text>
+          <Text className="text-binance-muted-strong text-sm">Scheduled Tasks</Text>
         </Card>
         <Card className="flex-1">
-          <Text className="text-binance-primary text-3xl font-bold mb-1">2</Text>
-          <Text className="text-binance-muted-strong text-sm">Draft Reports</Text>
+          <Text className="text-binance-primary text-3xl font-bold mb-1">{active?.length || 0}</Text>
+          <Text className="text-binance-muted-strong text-sm">Active Inspections</Text>
         </Card>
       </View>
 

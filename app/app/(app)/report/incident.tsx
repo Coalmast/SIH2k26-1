@@ -3,13 +3,15 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { Card } from '../../../src/components/ui/Card';
 import { Button } from '../../../src/components/ui/Button';
-import GeoStampDisplay from '../../../src/components/GeoStampDisplay';
-import MediaCapture from '../../../src/components/MediaCapture';
+import { GeoStampDisplay } from '../../../src/components/GeoStampDisplay';
+import { useGeoStamp } from '../../../src/hooks/useGeoStamp';
+import { MediaCapture } from '../../../src/components/MediaCapture';
 import { SeverityPicker } from '../../../src/components/SeverityPicker';
 import { database } from '../../../src/db';
 import { useAuthStore } from '../../../src/stores/authStore';
 import { IncidentTypeEnum, SyncStatusEnum, SeverityEnum, ShiftEnum } from '../../../src/types/enums';
 import { Sparkles } from 'lucide-react-native';
+import { performSync } from '../../../src/sync/syncEngine';
 
 const ZONES = ['Pit 3', 'Workshop', 'CHP', 'Entry', 'Magazine', 'Other'];
 
@@ -47,6 +49,7 @@ export default function IncidentReportScreen() {
   const [immediateActions, setImmediateActions] = useState('');
   const [manualSeverity, setManualSeverity] = useState<SeverityEnum | null>(null);
   const [mediaPaths, setMediaPaths] = useState<string[]>([]);
+  const geoStamp = useGeoStamp();
   
   const aiSeverity = useAISeverity(description);
   const finalSeverity = manualSeverity || aiSeverity || SeverityEnum.MINOR;
@@ -69,7 +72,7 @@ export default function IncidentReportScreen() {
           record.aiSuggestedSeverity = aiSeverity;
           record.zone = zone;
           record.shift = shift;
-          record.personsInvolved = JSON.stringify(personsInvolved.split(',').map(s => s.trim()).filter(Boolean));
+          record.personsInvolved = JSON.stringify(personsInvolved.split(',').map((s: string) => s.trim()).filter(Boolean));
           record.immediateActionsTaken = immediateActions;
           record.isLinkedToAccidentRegister = false;
           record.reportedAt = Date.now();
@@ -86,6 +89,9 @@ export default function IncidentReportScreen() {
           });
         }
       });
+      
+      // Attempt priority sync immediately
+      performSync().catch(console.error);
       
       Alert.alert('Success', 'Incident report submitted.', [
         { text: 'OK', onPress: () => router.back() }
@@ -188,25 +194,18 @@ export default function IncidentReportScreen() {
       {/* Media */}
       <View className="mb-4">
         <Text className="text-binance-on-dark font-bold mb-2">Evidence Photos ({mediaPaths.length}/4)</Text>
-        <View className="flex-row gap-2 flex-wrap">
-          {mediaPaths.map((path, idx) => (
-            <View key={idx} className="w-16 h-16 bg-binance-surface rounded items-center justify-center">
-               <Text className="text-xs text-binance-muted-strong">IMG</Text>
-            </View>
-          ))}
-          {mediaPaths.length < 4 && (
-            <MediaCapture onMediaCaptured={(path) => setMediaPaths(prev => [...prev, path])} />
-          )}
-        </View>
+        <MediaCapture uris={mediaPaths} onChange={setMediaPaths} maxPhotos={4} />
       </View>
 
       {/* GPS Stamp */}
       <View className="mb-4">
-        <GeoStampDisplay />
+        <GeoStampDisplay {...geoStamp} />
       </View>
 
       {/* Submit */}
-      <Button title="Submit Incident Report" onPress={handleSubmit} className="mt-4" />
+      <Button onPress={handleSubmit} className="mt-4 bg-binance-primary">
+        <Text className="text-black font-bold">Submit Incident Report</Text>
+      </Button>
     </ScrollView>
   );
 }

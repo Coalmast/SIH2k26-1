@@ -3,11 +3,13 @@ import { View, Text, TextInput, ScrollView, TouchableOpacity, Alert } from 'reac
 import { useRouter } from 'expo-router';
 import { Card } from '../../../src/components/ui/Card';
 import { Button } from '../../../src/components/ui/Button';
-import GeoStampDisplay from '../../../src/components/GeoStampDisplay';
-import MediaCapture from '../../../src/components/MediaCapture';
+import { GeoStampDisplay } from '../../../src/components/GeoStampDisplay';
+import { useGeoStamp } from '../../../src/hooks/useGeoStamp';
+import { MediaCapture } from '../../../src/components/MediaCapture';
 import { database } from '../../../src/db';
 import { useAuthStore } from '../../../src/stores/authStore';
 import { ObservationTypeEnum, SyncStatusEnum } from '../../../src/types/enums';
+import { performSync } from '../../../src/sync/syncEngine';
 
 const ZONES = ['Pit 3', 'Workshop', 'CHP', 'Entry', 'Magazine', 'Other'];
 const CATEGORIES = ['PPE', 'Housekeeping', 'Equipment Guard', 'Fall Protection', 'Fire', 'Traffic', 'Ventilation', 'Explosives', 'Other'];
@@ -21,10 +23,7 @@ export default function ObservationScreen() {
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [description, setDescription] = useState('');
   const [mediaPaths, setMediaPaths] = useState<string[]>([]);
-  const [geoStamp, setGeoStamp] = useState<any>(null); // from GeoStampDisplay? Actually GeoStampDisplay just displays. We need to fetch it.
-  
-  // Need a hook or utility to get current location for the record. 
-  // Let's assume GeoStampDisplay manages it or we fetch separately. For speed, we will save what we have.
+  const geoStamp = useGeoStamp();
 
   const handleSubmit = async () => {
     if (!description.trim()) {
@@ -58,6 +57,8 @@ export default function ObservationScreen() {
           });
         }
       });
+      
+      performSync().catch(console.error);
       
       Alert.alert('Success', 'Safety observation recorded.', [
         { text: 'OK', onPress: () => router.back() }
@@ -144,16 +145,18 @@ export default function ObservationScreen() {
       {/* Photo */}
       <View className="mb-4">
         <Text className="text-binance-on-dark font-bold mb-2">Photo (Optional)</Text>
-        <MediaCapture onMediaCaptured={(path) => setMediaPaths([path])} />
+        <MediaCapture uris={mediaPaths} onChange={setMediaPaths} maxPhotos={1} />
       </View>
 
       {/* GPS Stamp */}
       <View className="mb-4">
-        <GeoStampDisplay />
+        <GeoStampDisplay {...geoStamp} />
       </View>
 
       {/* Submit */}
-      <Button title="Submit Observation" onPress={handleSubmit} className="mt-4" />
+      <Button onPress={handleSubmit} className="mt-4 bg-binance-primary">
+        <Text className="text-black font-bold">Submit Observation</Text>
+      </Button>
     </ScrollView>
   );
 }
