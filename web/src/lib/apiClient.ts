@@ -1,4 +1,5 @@
 import axios from "axios";
+import { supabase } from "./supabase";
 
 // Create an Axios instance for the FastAPI backend
 export const apiClient = axios.create({
@@ -8,11 +9,11 @@ export const apiClient = axios.create({
   },
 });
 
-// Interceptor for attaching auth tokens if needed in the future
-apiClient.interceptors.request.use((config) => {
-  // const token = localStorage.getItem('token');
-  // if (token) {
-  //   config.headers.Authorization = `Bearer ${token}`;
-  // }
+// Interceptor for attaching auth tokens
+apiClient.interceptors.request.use(async (config) => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.access_token) {
+    config.headers.Authorization = `Bearer ${session.access_token}`;
+  }
   return config;
 });

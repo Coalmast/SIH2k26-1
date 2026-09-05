@@ -24,7 +24,7 @@ export function InspectionCard({ inspection }: { inspection: any }) {
           <div className="text-sm text-muted-foreground flex items-center gap-4 mt-2">
             <span className="flex items-center gap-1"><MapPin className="h-3 w-3" /> Zone {inspection.zone || 'General'}</span>
             <span className="flex items-center gap-1"><Calendar className="h-3 w-3" /> {new Date(inspection.started_at || inspection.created_at).toLocaleDateString()}</span>
-            <span className="flex items-center gap-1"><User className="h-3 w-3" /> Inspector {inspection.inspector_id.substring(0,6)}</span>
+            <span className="flex items-center gap-1"><User className="h-3 w-3" /> Inspector {inspection.conducted_by ? inspection.conducted_by.substring(0,6) : 'N/A'}</span>
           </div>
         </div>
         <Badge variant="outline" className={getStatusColor(inspection.status)}>
@@ -37,11 +37,11 @@ export function InspectionCard({ inspection }: { inspection: any }) {
            <div className="flex gap-4 text-sm">
              <div className="flex items-center gap-1">
                <Eye className="h-4 w-4 text-slate-400" />
-               <span className="font-medium">{inspection.observations_count}</span> obs
+               <span className="font-medium">{inspection.observation_count || 0}</span> obs
              </div>
              <div className="flex items-center gap-1">
-               <ShieldAlert className={`h-4 w-4 ${inspection.violations_count > 0 ? 'text-red-500' : 'text-slate-400'}`} />
-               <span className="font-medium">{inspection.violations_count}</span> violations
+               <ShieldAlert className={`h-4 w-4 ${(inspection.violation_count || 0) > 0 ? 'text-red-500' : 'text-slate-400'}`} />
+               <span className="font-medium">{inspection.violation_count || 0}</span> violations
              </div>
            </div>
            

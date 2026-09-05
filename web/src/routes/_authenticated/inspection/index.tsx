@@ -37,6 +37,7 @@ function InspectionListPage() {
               <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="dgms_annual_general">DGMS Annual</SelectItem>
               <SelectItem value="internal_safety_committee">Safety Committee</SelectItem>
+              <SelectItem value="environmental_pcb">Environmental PCB</SelectItem>
             </SelectContent>
           </Select>
           
@@ -46,10 +47,10 @@ function InspectionListPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="SCHEDULED">Scheduled</SelectItem>
-              <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-              <SelectItem value="SUBMITTED">Submitted</SelectItem>
-              <SelectItem value="APPROVED">Approved</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="in_progress">In Progress</SelectItem>
+              <SelectItem value="submitted">Submitted</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
             </SelectContent>
           </Select>
 

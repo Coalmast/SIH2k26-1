@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useScheduleInspection, useSubmitInspection } from '../hooks/useInspections';
+import { useScheduleInspection, useSubmitInspection, useAnalyzeInspection } from '../hooks/useInspections';
 import { AddObservationForm } from './AddObservationForm';
+import { AnomalyResultCard } from './AnomalyResultCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,12 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export function MobileInspectionSimulator() {
   const schedule = useScheduleInspection();
   const submit = useSubmitInspection();
+  const analyze = useAnalyzeInspection();
   const [activeInspectionId, setActiveInspectionId] = useState<string | null>(null);
+  const [analysisResult, setAnalysisResult] = useState<any>(null);
   
   const [formData, setFormData] = useState({
-    mine_id: '',
-    inspector_id: '00000000-0000-0000-0000-000000000003', // Dummy inspector ID
-    inspection_type: 'routine',
+    mine_id: '00000000-0000-0000-0000-000000000004',
+    checklist_template_id: '00000000-0000-0000-0000-000000000020',
+    inspection_type: 'environmental_pcb',
     zone: 'Zone A',
   });
 
@@ -23,8 +26,8 @@ export function MobileInspectionSimulator() {
     try {
       const result = await schedule.mutateAsync({
         ...formData,
-        scheduled_at: new Date().toISOString(),
-      });
+        scheduled_date: new Date().toISOString().split('T')[0],
+      } as any);
       // Assuming result returns the created inspection
       if (result && result.id) {
          setActiveInspectionId(result.id);
@@ -37,11 +40,22 @@ export function MobileInspectionSimulator() {
     }
   };
 
+  const handleAnalyze = async () => {
+    if (!activeInspectionId) return;
+    try {
+      const result = await analyze.mutateAsync(activeInspectionId);
+      setAnalysisResult(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handleComplete = async () => {
     if (!activeInspectionId) return;
     try {
       await submit.mutateAsync(activeInspectionId);
       setActiveInspectionId(null);
+      setAnalysisResult(null);
       alert('Inspection Completed successfully');
     } catch (error) {
       console.error(error);
@@ -82,15 +96,24 @@ export function MobileInspectionSimulator() {
                   />
                 </div>
                 <div className="space-y-2">
+                  <label className="text-xs font-medium">Template ID</label>
+                  <Input 
+                    placeholder="UUID of Template" 
+                    value={formData.checklist_template_id} 
+                    onChange={e => setFormData({...formData, checklist_template_id: e.target.value})} 
+                  />
+                </div>
+                <div className="space-y-2">
                   <label className="text-xs font-medium">Type</label>
                   <Select value={formData.inspection_type} onValueChange={v => setFormData({...formData, inspection_type: v})}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="routine">Routine</SelectItem>
-                      <SelectItem value="surprise">Surprise</SelectItem>
-                      <SelectItem value="targeted">Targeted</SelectItem>
+                      <SelectItem value="dgms_annual_general">DGMS Annual General</SelectItem>
+                      <SelectItem value="dgms_surprise">DGMS Surprise</SelectItem>
+                      <SelectItem value="internal_safety_committee">Internal Safety Committee</SelectItem>
+                      <SelectItem value="environmental_pcb">Environmental PCB</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -118,6 +141,16 @@ export function MobileInspectionSimulator() {
                   />
                 </CardContent>
               </Card>
+
+              {analysisResult ? (
+                <div className="mt-4 mb-4">
+                  <AnomalyResultCard analysis={analysisResult} />
+                </div>
+              ) : (
+                <Button onClick={handleAnalyze} disabled={analyze.isPending} variant="outline" className="w-full mt-4 border-primary text-primary">
+                  {analyze.isPending ? "Analyzing..." : "Analyze Anomalies"}
+                </Button>
+              )}
 
               <Button onClick={handleComplete} disabled={submit.isPending} variant="secondary" className="w-full mt-auto bg-green-500 hover:bg-green-600 text-white">
                 <CheckCircle2 className="mr-2 h-4 w-4" /> Finish Inspection

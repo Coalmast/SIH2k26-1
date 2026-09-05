@@ -26,6 +26,14 @@ async def generate_report(request: GenerateReportRequest):
     )
     return {"job_id": job_id, "message": "Report generation started."}
 
+@router.get("/inspection/{id}/summary")
+async def get_inspection_summary(id: uuid.UUID, db=Depends(get_db)):
+    """Generate AI summary for an inspection"""
+    result = await ReportService.generate_inspection_summary(db, str(id))
+    if "error" in result:
+        raise HTTPException(status_code=400, detail=result["error"])
+    return result
+
 @router.get("/jobs/{job_id}")
 async def get_job_status(job_id: str):
     """Poll job status"""
