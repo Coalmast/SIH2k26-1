@@ -50,8 +50,8 @@ async def list_inspections(
     items = []
     for ins in inspections:
         item = InspectionListItem.model_validate(ins)
-        item.observations_count = len(ins.observations)
-        item.violations_count = sum(1 for obs in ins.observations if obs.violation)
+        item.observation_count = len(ins.observations)
+        item.violation_count = sum(1 for obs in ins.observations if getattr(obs, "violation", None) is not None)
         items.append(item)
     return items
 

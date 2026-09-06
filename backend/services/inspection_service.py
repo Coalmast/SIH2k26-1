@@ -18,7 +18,9 @@ from models.compliance import ComplianceInstance, InstanceStatus, ComplianceRequ
 class InspectionService:
     @staticmethod
     async def get_inspections(db: AsyncSession, mine_id: uuid.UUID, type_filter: str = None, status_filter: str = None):
-        query = select(Inspection).options(selectinload(Inspection.observations))
+        query = select(Inspection).options(
+            selectinload(Inspection.observations).selectinload(Observation.violation)
+        )
         
         if mine_id:
             query = query.where(Inspection.mine_id == mine_id)

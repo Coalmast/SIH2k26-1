@@ -1,12 +1,12 @@
-import { supabase } from './supabase';
+import { useAuthStore } from '../stores/authStore';
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL;
 
 async function getAuthHeaders() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const token = useAuthStore.getState().session?.access_token;
   return {
     'Content-Type': 'application/json',
-    ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
 

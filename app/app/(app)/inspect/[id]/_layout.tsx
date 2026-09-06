@@ -4,7 +4,7 @@ export default function InspectLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="form" />
-      <Stack.Screen name="summary" />
+      <Stack.Screen name="report" />
     </Stack>
   );
 }

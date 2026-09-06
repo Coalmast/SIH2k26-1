@@ -1,43 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-// import { OfflineBanner } from '../../../src/components/OfflineBanner';
 import { StatusBadge } from '../../../src/components/StatusBadge';
-import { useInspections } from '../../../src/hooks/useInspections';
-import { useConnectivity } from '../../../src/hooks/useConnectivity';
+import { useInspectionList } from '../../../src/hooks/useInspectionApi';
+import { useAuthStore } from '../../../src/stores/authStore';
 
-// Assuming authStore provides mineId, mocking it for now
-const mockMineId = '123e4567-e89b-12d3-a456-426614174000';
-
-type FilterType = 'all' | 'active' | 'scheduled' | 'done';
+type FilterType = 'all' | 'active' | 'done';
 
 export default function InspectionsScreen() {
   const router = useRouter();
-  const { isOnline } = useConnectivity();
-  const { active, scheduled, completed, isLoading } = useInspections(mockMineId);
+  const mineId = useAuthStore(state => state.mineId);
+  const { active, completed } = useInspectionList(mineId || '');
   const [filter, setFilter] = useState<FilterType>('active');
 
   const getFilteredData = () => {
     switch (filter) {
       case 'active': return active;
-      case 'scheduled': return scheduled;
       case 'done': return completed;
-      case 'all': return [...active, ...scheduled, ...completed].sort((a, b) => b.createdAt - a.createdAt);
+      case 'all': return [...active, ...completed].sort((a, b) => (b.startedAt || 0) - (a.startedAt || 0));
       default: return [];
     }
   };
 
   const renderInspectionCard = ({ item }: { item: any }) => {
-    const isCompleted = item.status === 'submitted' || item.status === 'reviewed';
+    const isCompleted = item.status === 'submitted' || item.status === 'completed';
     
     return (
       <TouchableOpacity 
         className="bg-binance-surface-card-dark p-4 rounded-xl mb-3 border border-binance-border-strong"
         onPress={() => {
           if (isCompleted) {
-            router.push(`/inspect/${item.id}/summary`);
-          } else if (item.status === 'draft') {
-            router.push(`/inspect/start`); // Should ideally pass id, but start creates a new one in this flow
+            router.push(`/inspect/${item.id}/report`);
           } else {
             router.push(`/inspect/${item.id}/form`);
           }
@@ -46,10 +39,10 @@ export default function InspectionsScreen() {
         <View className="flex-row justify-between items-start mb-2">
           <View>
             <Text className="text-binance-primary font-bold text-lg">
-              {item.inspectionType.replace(/_/g, ' ').toUpperCase()}
+              {(item.inspectionType || '').replace(/_/g, ' ').toUpperCase()}
             </Text>
             <Text className="text-binance-muted-strong text-sm mt-1">
-              {item.zone || 'No zone specified'} • {new Date(item.createdAt).toLocaleDateString()}
+              {item.zone || 'No zone specified'} • {item.startedAt ? new Date(item.startedAt).toLocaleDateString() : 'N/A'}
             </Text>
           </View>
           <StatusBadge status={isCompleted ? item.syncStatus : item.status} />
@@ -59,17 +52,17 @@ export default function InspectionsScreen() {
           <View>
             {isCompleted ? (
               <Text className="text-binance-on-dark text-sm">
-                Violations: <Text className="font-bold text-binance-trading-down">{item.violationCount}</Text>
+                Violations: <Text className="font-bold text-binance-trading-down">{item.violationCount || 0}</Text>
               </Text>
             ) : (
               <Text className="text-binance-on-dark text-sm">
-                Progress: <Text className="font-bold text-binance-primary">{item.observationCount}</Text> obs
+                Progress: <Text className="font-bold text-binance-primary">{item.observationCount || 0}</Text> obs
               </Text>
             )}
           </View>
           <View className="bg-binance-surface-elevated-dark px-4 py-2 rounded-lg">
             <Text className="text-binance-on-dark font-medium">
-              {isCompleted ? 'View →' : item.status === 'draft' ? 'Start →' : 'Continue →'}
+              {isCompleted ? 'View Report →' : 'Continue →'}
             </Text>
           </View>
         </View>
@@ -79,7 +72,6 @@ export default function InspectionsScreen() {
 
   return (
     <View className="flex-1 bg-binance-ink px-4 pt-6">
-      {/* {!isOnline && <OfflineBanner />} */}
       
       <View className="flex-row justify-between items-center mb-6">
         <Text className="text-white text-2xl font-bold">INSPECTIONS</Text>
@@ -92,7 +84,7 @@ export default function InspectionsScreen() {
       </View>
 
       <View className="flex-row mb-4 bg-binance-surface-card-dark p-1 rounded-lg">
-        {['all', 'active', 'scheduled', 'done'].map((f) => (
+        {['all', 'active', 'done'].map((f) => (
           <TouchableOpacity
             key={f}
             className={`flex-1 py-2 items-center rounded-md ${filter === f ? 'bg-binance-surface-elevated-dark' : ''}`}

@@ -14,35 +14,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setAuth = useAuthStore((state) => state.setAuth);
 
   useEffect(() => {
-    // 1. Initial session fetch
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        const role = session.user.app_metadata?.role || null;
-        const mineId = session.user.app_metadata?.mine_id || null;
-        const user = { id: session.user.id, email: session.user.email || '' };
-        setAuth(session, user, role, mineId);
-      } else {
-        setAuth(null, null, null, null);
-      }
-      setIsInitialized(true);
-    });
-
-    // 2. Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (session) {
-          const role = session.user.app_metadata?.role || null;
-          const mineId = session.user.app_metadata?.mine_id || null;
-          const user = { id: session.user.id, email: session.user.email || '' };
-          setAuth(session, user, role, mineId);
-        } else {
-          setAuth(null, null, null, null);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, [setAuth]);
+    // In demo mode, we strictly rely on the Zustand store for auth state,
+    // not the global supabase client, because our demo users don't exist
+    // in the real Supabase GoTrue database and would trigger 403 errors.
+    
+    // Just mark as initialized since Zustand handles persistence.
+    setIsInitialized(true);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isInitialized }}>

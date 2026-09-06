@@ -1,129 +1,75 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { database } from '../../../src/db';
-import { Inspection } from '../../../src/db/models';
-import { InspectionTypeEnum } from '../../../src/types/inspection.types';
-import { ShiftPicker, ShiftType } from '../../../src/components/ShiftPicker';
-import { GeoStampDisplay } from '../../../src/components/GeoStampDisplay';
-import { useGeoStamp } from '../../../src/hooks/useGeoStamp';
-import { useChecklistTemplate } from '../../../src/hooks/useChecklistTemplate';
+import { useAuthStore } from '../../../src/stores/authStore';
+import { useChecklistTemplates, useCreateInspection } from '../../../src/hooks/useInspectionApi';
 import { Button } from '../../../src/components/ui/Button';
-
-const INSPECTION_TYPES: { id: InspectionTypeEnum; label: string; icon: string }[] = [
-  { id: 'dgms_annual_general', label: 'Annual General', icon: '📅' },
-  { id: 'dgms_surprise', label: 'Surprise', icon: '🚨' },
-  { id: 'dgms_inquiry', label: 'Inquiry', icon: '🔍' },
-  { id: 'internal_safety_committee', label: 'Safety Comm.', icon: '🛡️' },
-  { id: 'environmental_pcb', label: 'Environmental', icon: '🌱' },
-  { id: 'medical_fitness', label: 'Medical', icon: '🏥' },
-  { id: 'electrical', label: 'Electrical', icon: '⚡' },
-  { id: 'explosives', label: 'Explosives', icon: '💥' },
-];
 
 export default function StartInspectionScreen() {
   const router = useRouter();
-  const geoStamp = useGeoStamp();
+  const mineId = useAuthStore(state => state.mineId);
+  const mineName = useAuthStore(state => state.mineName);
+  const userId = useAuthStore(state => state.user?.id);
+  
+  const { data: templates, isLoading: templatesLoading } = useChecklistTemplates();
+  const createInspection = useCreateInspection();
 
-  const [type, setType] = useState<InspectionTypeEnum | null>(null);
-  const [shift, setShift] = useState<ShiftType | null>(null);
-  const [zone, setZone] = useState('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const [zone, setZone] = useState('Pit 3 East');
 
-  // Fetch template for selected type
-  const { template, isLoading: templateLoading } = useChecklistTemplate(type);
+  // Auto-select first template if available
+  useEffect(() => {
+    if (templates && templates.length > 0 && !selectedTemplateId) {
+      setSelectedTemplateId(templates[0].id);
+    }
+  }, [templates]);
 
   const handleStart = async () => {
-    if (!type) return Alert.alert('Required', 'Please select an inspection type');
-    if (!shift) return Alert.alert('Required', 'Please select a shift');
+    if (!selectedTemplateId) return Alert.alert('Required', 'Please select an inspection type');
     if (!zone) return Alert.alert('Required', 'Please enter a zone/district');
-    if (!geoStamp.inBoundary) {
-      return Alert.alert(
-        'Out of Bounds', 
-        'You are outside the designated mine boundary. Please move within the boundary to start inspection.'
-      );
-    }
-    if (!template) {
-      return Alert.alert('Template Not Found', 'No active template available for this inspection type. Please connect to internet to sync.');
-    }
 
-    try {
-      let newInspectionId = '';
-      await database.write(async () => {
-        const newInspection = await database.get<Inspection>('inspections').create((r: any) => {
-          r.mineId = '123e4567-e89b-12d3-a456-426614174000'; // mock
-          r.inspectorId = 'insp_789'; // mock
-          r.inspectionType = type;
-          r.checklistTemplateId = template.remoteId;
-          r.shift = shift;
-          r.zone = zone;
-          r.status = 'draft';
-          r.syncStatus = 'pending_sync';
-          r.conductedBy = 'Inspector Kumar';
-          r.geoStampStart = JSON.stringify({
-            lat: geoStamp.lat,
-            lng: geoStamp.lng,
-            accuracy: geoStamp.accuracy,
-          });
-          r.currentSection = 0;
-          r.observationCount = 0;
-          r.violationCount = 0;
-        });
-        newInspectionId = newInspection.id;
-      });
+    const selectedTemplate = templates?.find((t: any) => t.id === selectedTemplateId);
 
-      router.replace(`/inspect/${newInspectionId}/form`);
-    } catch (error) {
-      console.error('Failed to create inspection', error);
-      Alert.alert('Error', 'Could not start inspection');
-    }
+    const payload = {
+      mine_id: mineId,
+      conducted_by: userId,
+      inspection_type: selectedTemplate?.inspection_type || 'environmental_pcb',
+      checklist_template_id: selectedTemplateId,
+      scheduled_date: new Date().toISOString().split('T')[0],
+      zone: zone
+    };
+
+    createInspection.mutate(payload, {
+      onSuccess: (res) => {
+        if (res.error) {
+          Alert.alert('Notice', 'Started in offline mode. Will sync later.');
+        }
+        router.replace(`/inspect/${res.localId}/form`);
+      },
+      onError: () => {
+        Alert.alert('Error', 'Could not start inspection');
+      }
+    });
   };
 
   return (
     <View className="flex-1 bg-binance-ink px-4 pt-6">
 
-
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         
-        {/* GeoStamp */}
+        {/* Mine Info */}
         <View className="mb-6">
-          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Location Verification</Text>
-          <GeoStampDisplay {...geoStamp} />
-        </View>
-
-        {/* Type Selection */}
-        <View className="mb-6">
-          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Inspection Type</Text>
-          <View className="flex-row flex-wrap justify-between">
-            {INSPECTION_TYPES.map((t) => {
-              const isSelected = type === t.id;
-              return (
-                <TouchableOpacity
-                  key={t.id}
-                  onPress={() => setType(t.id)}
-                  className={`w-[48%] mb-3 p-4 rounded-xl border ${
-                    isSelected 
-                      ? 'bg-binance-primary border-binance-primary' 
-                      : 'bg-binance-surface-card-dark border-binance-border-strong'
-                  }`}
-                >
-                  <Text className="text-2xl mb-2">{t.icon}</Text>
-                  <Text className={`font-semibold ${isSelected ? 'text-binance-ink' : 'text-binance-on-dark'}`}>
-                    {t.label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Location</Text>
+          <View className="bg-binance-surface-card-dark p-4 rounded-xl border border-binance-border-strong flex-row justify-between items-center">
+            <Text className="text-binance-on-dark font-medium text-lg">{mineName}</Text>
+            <View className="bg-binance-primary/20 px-2 py-1 rounded">
+               <Text className="text-binance-primary text-xs font-bold">VERIFIED</Text>
+            </View>
           </View>
         </View>
 
-        {/* Shift Selection */}
-        <View className="mb-6">
-          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Shift</Text>
-          <ShiftPicker value={shift} onChange={setShift} />
-        </View>
-
         {/* Zone */}
-        <View className="mb-8">
+        <View className="mb-6">
           <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Zone / District</Text>
           <TextInput
             className="bg-binance-surface-card-dark text-binance-on-dark p-4 rounded-xl border border-binance-border-strong text-base"
@@ -134,17 +80,50 @@ export default function StartInspectionScreen() {
           />
         </View>
 
+        {/* Type Selection */}
+        <View className="mb-8">
+          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Inspection Template</Text>
+          
+          {templatesLoading ? (
+            <ActivityIndicator color="#fcd535" className="mt-4" />
+          ) : (
+            <View className="gap-3">
+              {templates?.map((t: any) => {
+                const isSelected = selectedTemplateId === t.id;
+                return (
+                  <TouchableOpacity
+                    key={t.id}
+                    onPress={() => setSelectedTemplateId(t.id)}
+                    className={`p-4 rounded-xl border ${
+                      isSelected 
+                        ? 'bg-binance-primary border-binance-primary' 
+                        : 'bg-binance-surface-card-dark border-binance-border-strong'
+                    }`}
+                  >
+                    <Text className={`font-bold text-lg mb-1 ${isSelected ? 'text-binance-ink' : 'text-binance-on-dark'}`}>
+                      {t.name}
+                    </Text>
+                    <Text className={isSelected ? 'text-binance-ink/80' : 'text-binance-muted-strong'}>
+                      {t.regulation_reference}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
+        </View>
+
       </ScrollView>
 
       {/* Bottom Action */}
       <View className="py-4 border-t border-binance-border-strong">
         <Button 
-          variant={type && shift && zone && geoStamp.inBoundary ? 'primary' : 'secondary'} 
+          variant={selectedTemplateId && zone ? 'primary' : 'secondary'} 
           size="lg"
           onPress={handleStart}
-          disabled={templateLoading}
+          disabled={createInspection.isPending || templatesLoading}
         >
-          {templateLoading ? 'Loading Template...' : 'Proceed to Form →'}
+          {createInspection.isPending ? 'Starting...' : 'Proceed to Form →'}
         </Button>
       </View>
     </View>

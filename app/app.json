@@ -61,6 +61,7 @@
         "expo-build-properties",
         {
           "android": {
+            "ndkVersion": "24.0.8215888",
             "extraMavenRepos": [
               "../../node_modules/@notifee/react-native/android/libs"
             ]

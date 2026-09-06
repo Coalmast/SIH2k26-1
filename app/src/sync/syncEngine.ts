@@ -3,16 +3,25 @@ import { Inspection, Observation, IncidentReport, SafetyObservation, ShiftReport
 import { Q } from '@nozbe/watermelondb';
 import { useAppStore } from '../stores/appStore';
 import { MediaUploader } from './mediaUploader';
-import { supabase } from '../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Get URL and Key once
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 
 export async function performSync() {
   let setSyncing = (val: boolean) => {};
   let setLastSyncTime = (val: string) => {};
+  let token = '';
   
   try {
     const store = useAppStore.getState();
     setSyncing = store.setSyncing;
     setLastSyncTime = store.setLastSyncTime;
+    
+    // Get the token from authStore directly
+    const { useAuthStore } = require('../stores/authStore');
+    token = useAuthStore.getState().session?.access_token || '';
   } catch (e) {
     // appStore might not be properly set up, ignore
   }
@@ -20,7 +29,14 @@ export async function performSync() {
   setSyncing(true);
 
   try {
-    await pushLocalChanges();
+    // Create a dedicated client for syncing to avoid triggering global auth listeners
+    const syncSupabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      }
+    });
+
+    await pushLocalChanges(syncSupabase);
     setLastSyncTime(new Date().toISOString());
   } catch (error) {
     console.error('Sync failed:', error);
@@ -30,7 +46,7 @@ export async function performSync() {
   }
 }
 
-async function pushLocalChanges() {
+async function pushLocalChanges(syncSupabase: any) {
   // 1. Incident Reports
   const pendingIncidents = await database.get<IncidentReport>('incident_reports').query(Q.where('sync_status', 'pending_sync')).fetch();
   for (const incident of pendingIncidents) {
@@ -52,7 +68,7 @@ async function pushLocalChanges() {
         reported_at: new Date(incident.reportedAt).toISOString(),
       };
       
-      const { data, error } = await supabase.from('incident_reports').insert(payload).select('id').single();
+      const { data, error } = await syncSupabase.from('incident_reports').insert(payload).select('id').single();
       if (error) throw error;
       
       await database.write(async () => {
@@ -82,7 +98,7 @@ async function pushLocalChanges() {
         observed_at: new Date(obs.observedAt).toISOString(),
       };
       
-      const { data, error } = await supabase.from('safety_observations').insert(payload).select('id').single();
+      const { data, error } = await syncSupabase.from('safety_observations').insert(payload).select('id').single();
       if (error) throw error;
       
       await database.write(async () => {
@@ -116,7 +132,7 @@ async function pushLocalChanges() {
           overall_remarks: inspection.overallRemarks,
         };
         
-        const { data, error } = await supabase.from('inspections').insert(createPayload).select('id').single();
+        const { data, error } = await syncSupabase.from('inspections').insert(createPayload).select('id').single();
         if (error) {
           console.error("Supabase error inserting inspection:", error);
           throw error;
@@ -141,10 +157,11 @@ async function pushLocalChanges() {
           checklist_item_id: obs.checklistItemId,
           category: obs.category,
           description: obs.description,
-          severity: obs.severity,
+          status: (obs as any).responseType || 'ok',
+          severity: obs.severity === 'none' ? 'low' : (obs.severity || 'low'),
         };
 
-        const { data: obsData, error: obsError } = await supabase.from('observations').insert(obsPayload).select('id').single();
+        const { data: obsData, error: obsError } = await syncSupabase.from('observations').insert(obsPayload).select('id').single();
         if (obsError) throw obsError;
         
         await database.write(async () => {
@@ -162,7 +179,7 @@ async function pushLocalChanges() {
           submitted_at: inspection.submittedAt ? new Date(inspection.submittedAt).toISOString() : null,
           status: 'submitted'
         };
-        await supabase.from('inspections').update(updatePayload).eq('id', remoteId);
+        await syncSupabase.from('inspections').update(updatePayload).eq('id', remoteId);
         await database.write(async () => {
           await inspection.update((i: any) => { i.syncStatus = 'synced'; });
         });

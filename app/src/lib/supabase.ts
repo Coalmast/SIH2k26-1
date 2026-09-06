@@ -1,4 +1,7 @@
 import 'react-native-url-polyfill/auto';
+import { Event, EventTarget } from 'event-target-shim';
+global.Event = Event as any;
+global.EventTarget = EventTarget as any;
 import * as SecureStore from 'expo-secure-store';
 import { createClient } from '@supabase/supabase-js';
 
