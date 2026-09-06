@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/card'
 import {
   Table,
@@ -8,8 +9,38 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { supabase } from '@/lib/supabase'
+import { useAuthStore } from '@/stores/auth-store'
+import { formatDistanceToNow } from 'date-fns'
 
 export function OpenViolationsTable() {
+  const [violations, setViolations] = useState<any[]>([])
+  const { user } = useAuthStore()
+
+  useEffect(() => {
+    async function fetchViolations() {
+      const mineId = user?.mine_ids?.[0] || '00000000-0000-0000-0000-000000000004'
+      
+      const { data } = await supabase
+        .from('compliance_instances')
+        .select(`
+          id,
+          due_date,
+          status,
+          compliance_requirements ( title, regulation_reference, severity )
+        `)
+        .eq('mine_id', mineId)
+        .eq('status', 'breached')
+        .order('due_date', { ascending: true })
+        .limit(5)
+
+      if (data) {
+        setViolations(data)
+      }
+    }
+    fetchViolations()
+  }, [user?.mine_ids])
+
   return (
     <Card className="flex flex-col flex-1 shadow-sm mt-6">
       <div className="p-4 border-b bg-muted/30 rounded-t-lg">
@@ -26,36 +57,32 @@ export function OpenViolationsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-semibold">CMR Reg 68</TableCell>
-              <TableCell className="text-muted-foreground">Roof Support Plan deviation at Panel B.</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/30 rounded-full">
-                  Critical
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right font-semibold text-red-600 dark:text-red-400">14 Days</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-semibold">CMR Reg 102</TableCell>
-              <TableCell className="text-muted-foreground">PPE Non-compliance observed in Section 4.</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30 rounded-full">
-                  Moderate
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right text-muted-foreground">3 Days</TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell className="font-semibold">Env Rule 14</TableCell>
-              <TableCell className="text-muted-foreground">Dust suppression log incomplete.</TableCell>
-              <TableCell>
-                <Badge variant="outline" className="bg-muted text-muted-foreground border-transparent rounded-full">
-                  Low
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right text-muted-foreground">1 Day</TableCell>
-            </TableRow>
+            {violations.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground p-8">
+                  No open violations found.
+                </TableCell>
+              </TableRow>
+            ) : (
+              violations.map((v) => (
+                <TableRow key={v.id}>
+                  <TableCell className="font-semibold">{v.compliance_requirements?.regulation_reference || 'Unknown'}</TableCell>
+                  <TableCell className="text-muted-foreground line-clamp-1 max-w-[200px] block truncate pt-4 pb-0 border-0">{v.compliance_requirements?.title}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className={`rounded-full ${
+                      v.compliance_requirements?.severity === 'critical' ? 'bg-red-50 dark:bg-red-950/20 text-red-600 border-red-200' :
+                      v.compliance_requirements?.severity === 'major' ? 'bg-orange-50 text-orange-600 border-orange-200' :
+                      'bg-primary/10 text-primary border-primary/30'
+                    }`}>
+                      {v.compliance_requirements?.severity || 'Moderate'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right font-semibold text-red-600 dark:text-red-400">
+                    {formatDistanceToNow(new Date(v.due_date))} ago
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>

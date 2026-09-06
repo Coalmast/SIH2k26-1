@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useScheduleInspection, useSubmitInspection, useAnalyzeInspection } from '../hooks/useInspections';
 import { AddObservationForm } from './AddObservationForm';
 import { AnomalyResultCard } from './AnomalyResultCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Smartphone, CheckCircle2, Navigation } from 'lucide-react';
+import { Smartphone, CheckCircle2, Navigation, Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { supabase } from '@/lib/supabase';
+import { InspectionReportCard } from './InspectionReportCard';
 
 export function MobileInspectionSimulator() {
   const schedule = useScheduleInspection();
@@ -14,13 +16,39 @@ export function MobileInspectionSimulator() {
   const analyze = useAnalyzeInspection();
   const [activeInspectionId, setActiveInspectionId] = useState<string | null>(null);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [isCompleted, setIsCompleted] = useState(false);
+  
+  const [mines, setMines] = useState<any[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [isLoadingMetadata, setIsLoadingMetadata] = useState(true);
   
   const [formData, setFormData] = useState({
-    mine_id: '00000000-0000-0000-0000-000000000004',
-    checklist_template_id: '00000000-0000-0000-0000-000000000020',
+    mine_id: '',
+    checklist_template_id: '',
     inspection_type: 'environmental_pcb',
-    zone: 'Zone A',
+    zone: 'Pit 3 East — Gas Monitoring Zone',
   });
+
+  useEffect(() => {
+    async function loadMetadata() {
+      const [minesRes, templatesRes] = await Promise.all([
+        supabase.from('mines').select('id, name').limit(10),
+        supabase.from('checklist_templates').select('id, name, inspection_type').limit(10)
+      ]);
+      
+      if (minesRes.data) {
+        setMines(minesRes.data);
+        if (minesRes.data.length > 0) setFormData(f => ({...f, mine_id: minesRes.data[0].id}));
+      }
+      
+      if (templatesRes.data) {
+        setTemplates(templatesRes.data);
+        if (templatesRes.data.length > 0) setFormData(f => ({...f, checklist_template_id: templatesRes.data[0].id}));
+      }
+      setIsLoadingMetadata(false);
+    }
+    loadMetadata();
+  }, []);
 
   const handleStart = async () => {
     try {
@@ -28,11 +56,9 @@ export function MobileInspectionSimulator() {
         ...formData,
         scheduled_date: new Date().toISOString().split('T')[0],
       } as any);
-      // Assuming result returns the created inspection
       if (result && result.id) {
          setActiveInspectionId(result.id);
       } else {
-         // Fallback if backend doesn't return full object immediately
          alert("Inspection scheduled. Please check dashboard for ID.");
       }
     } catch (error) {
@@ -54,12 +80,16 @@ export function MobileInspectionSimulator() {
     if (!activeInspectionId) return;
     try {
       await submit.mutateAsync(activeInspectionId);
-      setActiveInspectionId(null);
-      setAnalysisResult(null);
-      alert('Inspection Completed successfully');
+      setIsCompleted(true);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleReset = () => {
+    setActiveInspectionId(null);
+    setAnalysisResult(null);
+    setIsCompleted(false);
   };
 
   return (
@@ -68,26 +98,58 @@ export function MobileInspectionSimulator() {
         {/* Notch */}
         <div className="absolute top-0 inset-x-0 h-7 bg-slate-900 rounded-b-3xl w-1/2 mx-auto z-10"></div>
         
-        <div className="flex-1 overflow-y-auto p-4 pt-12 flex flex-col gap-4">
+        <div className="flex-1 overflow-y-auto p-4 pt-12 flex flex-col gap-4 relative">
           <div className="flex items-center gap-2 justify-center mb-4 text-primary">
             <Smartphone className="h-5 w-5" />
             <h2 className="font-bold">Inspector App</h2>
           </div>
 
-          {!activeInspectionId ? (
+          {isLoadingMetadata ? (
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+              <Loader2 className="h-8 w-8 animate-spin mb-4" />
+              Loading Config...
+            </div>
+          ) : isCompleted && activeInspectionId ? (
+            <div className="flex flex-col gap-4">
+              <InspectionReportCard inspectionId={activeInspectionId} />
+              <Button onClick={handleReset} variant="outline" className="w-full">
+                Start New Inspection
+              </Button>
+            </div>
+          ) : !activeInspectionId ? (
             <Card className="border-border/50">
               <CardHeader>
                 <CardTitle className="text-lg">Start Inspection</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <label className="text-xs font-medium">Mine ID</label>
-                  <Input 
-                    placeholder="UUID of Mine" 
-                    value={formData.mine_id} 
-                    onChange={e => setFormData({...formData, mine_id: e.target.value})} 
-                  />
+                  <label className="text-xs font-medium">Mine</label>
+                  <Select value={formData.mine_id} onValueChange={v => setFormData({...formData, mine_id: v})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Mine" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {mines.map(m => (
+                        <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+                
+                <div className="space-y-2">
+                  <label className="text-xs font-medium">Template</label>
+                  <Select value={formData.checklist_template_id} onValueChange={v => setFormData({...formData, checklist_template_id: v})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Template" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {templates.map(t => (
+                        <SelectItem key={t.id} value={t.id}>{t.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                 <div className="space-y-2">
                   <label className="text-xs font-medium">Zone</label>
                   <Input 
@@ -95,14 +157,7 @@ export function MobileInspectionSimulator() {
                     onChange={e => setFormData({...formData, zone: e.target.value})} 
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium">Template ID</label>
-                  <Input 
-                    placeholder="UUID of Template" 
-                    value={formData.checklist_template_id} 
-                    onChange={e => setFormData({...formData, checklist_template_id: e.target.value})} 
-                  />
-                </div>
+                
                 <div className="space-y-2">
                   <label className="text-xs font-medium">Type</label>
                   <Select value={formData.inspection_type} onValueChange={v => setFormData({...formData, inspection_type: v})}>
@@ -118,7 +173,7 @@ export function MobileInspectionSimulator() {
                   </Select>
                 </div>
                 
-                <Button onClick={handleStart} disabled={schedule.isPending} className="w-full mt-4">
+                <Button onClick={handleStart} disabled={schedule.isPending || !formData.mine_id || !formData.checklist_template_id} className="w-full mt-4">
                   <Navigation className="mr-2 h-4 w-4" /> Start Route
                 </Button>
               </CardContent>
@@ -137,7 +192,7 @@ export function MobileInspectionSimulator() {
                 <CardContent>
                   <AddObservationForm 
                     inspectionId={activeInspectionId} 
-                    onSuccess={() => alert('Observation added')}
+                    onSuccess={() => {}}
                   />
                 </CardContent>
               </Card>

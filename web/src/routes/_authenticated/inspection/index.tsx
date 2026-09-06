@@ -75,8 +75,15 @@ function InspectionListPage() {
       ) : error ? (
         <div className="text-red-500 bg-red-50 p-4 rounded-md">Failed to load inspections.</div>
       ) : inspections?.length === 0 ? (
-        <div className="text-center p-12 border rounded-lg bg-slate-50 text-slate-500">
-          No inspections found matching the filters.
+        <div className="text-center p-16 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 flex flex-col items-center justify-center space-y-4 shadow-inner">
+          <div className="bg-slate-100 p-4 rounded-full">
+            <Search className="h-8 w-8 text-slate-400" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-700">No inspections found</h3>
+            <p className="text-sm text-slate-500 mt-1 max-w-[300px]">We couldn't find any inspections matching your current filter criteria. Try adjusting the filters or schedule a new inspection.</p>
+          </div>
+          <Button variant="outline" onClick={() => { setType('all'); setStatus('all'); }}>Clear Filters</Button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
