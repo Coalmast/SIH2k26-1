@@ -49,5 +49,35 @@ class AIService:
         pass
     
     @staticmethod
-    async def run_recurrence_cluster_check(db: AsyncSession, mine_id: uuid.UUID, statute_ref: str) -> bool: 
-        pass
+    async def analyze_inspection_anomalies(db: AsyncSession, inspection_id: str):
+        # Mock implementation matching demo_implementation_plan.md structure
+        return {
+          "inspection_id": inspection_id,
+          "risk_level": "critical",
+          "risk_score": 84,
+          "total_anomalies": 2,
+          "anomalies": [
+            {
+              "type": "dangerous_cooccurrence",
+              "title": "⚠ Critical: Methane + O₂ Deficiency",
+              "message": "Simultaneous CH₄ > 0.25% and O₂ < 19.5%. This is a known precursor to firedamp explosion. Immediate mine evacuation required.",
+              "affected_items": ["GAS-CH4", "GAS-O2"],
+              "regulation_ref": "CMR 2017, Reg. 5(2) & 68",
+              "severity": "critical",
+              "recommended_action": "Immediately evacuate. Activate emergency ventilation."
+            },
+            {
+              "type": "recurrence_pattern",
+              "title": "⚠ High: Recurrence Pattern",
+              "message": "CO₂ violation has been recorded in 2 consecutive inspections. This indicates a systemic ventilation failure, not an isolated incident.",
+              "affected_items": ["GAS-CO2"],
+              "regulation_ref": "CMR 2017, Reg. 68(6)",
+              "severity": "high",
+              "recommended_action": "Corrective action required within 24 hours of detection."
+            }
+          ],
+          "observations_analyzed": 12,
+          "threshold_breaches": 3,
+          "can_submit": True
+        }
+

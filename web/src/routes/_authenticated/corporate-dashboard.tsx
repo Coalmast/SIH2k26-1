@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { ArrowRight, ArrowDownRight, ArrowUpRight, MoreHorizontal, Truck, AlertTriangle, FileText, Minus } from 'lucide-react'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { ArrowRight, ArrowDownRight, ArrowUpRight, MoreHorizontal, Truck, AlertTriangle, FileText, Minus, Map as MapIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -130,10 +130,12 @@ function CorporateDashboard() {
             <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="pt-6 flex flex-col gap-3">
-            <Button variant="outline" className="w-full justify-between h-14 text-base font-medium">
-              Deploy Resources
-              <Truck className="text-muted-foreground h-5 w-5" />
-            </Button>
+            <Link to="/mine-map" className="block w-full outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md">
+              <Button variant="outline" className="w-full justify-between h-14 text-base font-medium hover:bg-primary/5 hover:text-primary hover:border-primary/50 transition-colors">
+                View Risk Map
+                <MapIcon className="h-5 w-5" />
+              </Button>
+            </Link>
             <Button variant="outline" className="w-full justify-between h-14 text-base font-medium border-red-500/20 hover:bg-red-500/10 hover:text-red-500 transition-colors group">
               <span className="group-hover:text-red-500">Halt Operations</span>
               <AlertTriangle className="text-red-500 h-5 w-5" />
