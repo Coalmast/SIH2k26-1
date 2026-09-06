@@ -1,23 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { AppState, LogBox } from 'react-native';
-
-// Bypass read-only property 'NONE' crash in Event target polyfills
-if (typeof Event !== 'undefined') {
-  try {
-    Object.defineProperty(Event, 'NONE', {
-      writable: true,
-      value: 0,
-    });
-  } catch (e) {}
-}
-
-// Ignore WatermelonDB JSI warning
-LogBox.ignoreLogs([
-  'JSI SQLiteAdapter not available',
-  'Cannot assign to read-only property',
-]);
+import { AppState } from 'react-native';
 
 import { AuthProvider } from '../src/context/AuthContext';
 import { OfflineBanner } from '../src/components/OfflineBanner';

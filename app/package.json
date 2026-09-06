@@ -1,6 +1,6 @@
 {
   "name": "comet-field-app",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "version": "0.1.0",
   "description": "A production-ready Expo template with NativeWind, TypeScript, and 20+ pre-built UI components",
   "author": "Krishna Kumar",
