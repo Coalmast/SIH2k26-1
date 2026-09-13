@@ -16,7 +16,7 @@ export default function DevSettingsScreen() {
     try {
       const savedApi = await AsyncStorage.getItem('DEV_API_URL');
       const savedSupabase = await AsyncStorage.getItem('DEV_SUPABASE_URL');
-      
+
       setApiUrl(savedApi || process.env.EXPO_PUBLIC_API_URL || '');
       setSupabaseUrl(savedSupabase || process.env.EXPO_PUBLIC_SUPABASE_URL || '');
     } catch (e) {
@@ -33,7 +33,7 @@ export default function DevSettingsScreen() {
       else await AsyncStorage.removeItem('DEV_SUPABASE_URL');
 
       Alert.alert(
-        'Saved successfully', 
+        'Saved successfully',
         'Please restart the app (close it entirely from the app switcher and reopen it) to apply the new URLs.',
         [{ text: 'OK', onPress: () => router.back() }]
       );
@@ -57,10 +57,10 @@ export default function DevSettingsScreen() {
   return (
     <ScrollView className="flex-1 bg-binance-canvas-dark px-4 pt-12">
       <Text className="text-binance-primary font-bold text-3xl mb-6">Dev Settings</Text>
-      
+
       <View className="mb-6">
         <Text className="text-binance-muted-strong font-bold mb-2">API URL (Backend)</Text>
-        <TextInput 
+        <TextInput
           value={apiUrl}
           onChangeText={setApiUrl}
           className="bg-binance-surface-card-dark text-binance-on-dark p-4 rounded-xl border border-binance-border-strong mb-2"
@@ -76,7 +76,7 @@ export default function DevSettingsScreen() {
 
       <View className="mb-8">
         <Text className="text-binance-muted-strong font-bold mb-2">Supabase URL</Text>
-        <TextInput 
+        <TextInput
           value={supabaseUrl}
           onChangeText={setSupabaseUrl}
           className="bg-binance-surface-card-dark text-binance-on-dark p-4 rounded-xl border border-binance-border-strong mb-2"

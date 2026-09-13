@@ -6,7 +6,7 @@ async function getAuthHeaders() {
   const token = useAuthStore.getState().session?.access_token;
   return {
     'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 }
 
@@ -34,16 +34,16 @@ export const checkBackendHealth = async (): Promise<boolean> => {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
-    
+
     console.log("Checking health for:", getApiUrl());
-    const response = await fetch(`${getApiUrl()}/`, { 
+    const response = await fetch(`${getApiUrl()}/`, {
       signal: controller.signal,
       headers: {
         'Bypass-Tunnel-Reminder': 'true',
         'ngrok-skip-browser-warning': 'true',
       }
     });
-    
+
     clearTimeout(timeoutId);
     console.log("Health check response status:", response.status);
     return true;
