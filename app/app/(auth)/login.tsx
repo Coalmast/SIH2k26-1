@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Platform, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { Card } from '../../src/components/ui/Card';
 import { useAuthStore } from '../../src/stores/authStore';
 import { DEMO_USERS } from '../../src/lib/demoAuth';
+import { checkBackendHealth } from '../../src/lib/api';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
@@ -12,8 +13,18 @@ export default function LoginScreen() {
 
   const handleLogin = async (role: 'mine_manager' | 'field_officer') => {
     setLoadingRole(role);
-    
+
     try {
+      const isHealthy = await checkBackendHealth();
+      if (!isHealthy) {
+        Alert.alert(
+          'Connection Error',
+          'The backend server is unreachable. Please click the gear icon in the top right to configure the dynamic URLs in Dev Settings.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
       const demoUser = DEMO_USERS[role];
       const session = {
         access_token: demoUser.token,
@@ -22,7 +33,7 @@ export default function LoginScreen() {
         token_type: 'bearer',
         user: { id: demoUser.userId, role: demoUser.role, email: '', app_metadata: {}, user_metadata: {}, aud: '', created_at: '' }
       };
-      
+
       const user = {
         id: demoUser.userId,
         email: '',
@@ -33,7 +44,7 @@ export default function LoginScreen() {
 
       // Call the existing setAuth method
       setAuth(session as any, user, demoUser.role, demoUser.mineId, demoUser.mineName);
-      
+
       // The _layout.tsx in root listens to auth state changes, but we also push to be safe
       router.replace('/(app)/home');
     } catch (e) {
@@ -45,6 +56,13 @@ export default function LoginScreen() {
 
   return (
     <View className="flex-1 justify-center px-6 bg-binance-canvas-dark">
+      <TouchableOpacity 
+        className="absolute top-12 right-6 p-2 z-10"
+        onPress={() => router.push('/(auth)/dev-settings')}
+      >
+        <Ionicons name="settings-outline" size={28} color="#848E9C" />
+      </TouchableOpacity>
+
       <View className="mb-12 items-center">
         <Text className="text-binance-primary font-bold text-5xl mb-2 tracking-tighter">COMET</Text>
         <Text className="text-binance-muted-strong text-lg">Demo Mode</Text>
@@ -54,7 +72,7 @@ export default function LoginScreen() {
 
       <View className="gap-6">
         {/* Mine Manager Card */}
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => handleLogin('mine_manager')}
           disabled={loadingRole !== null}
         >
@@ -70,7 +88,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
 
         {/* Field Officer Card */}
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => handleLogin('field_officer')}
           disabled={loadingRole !== null}
         >

@@ -1,11 +1,12 @@
 {
   "expo": {
-    "name": "COMET Field App",
+    "name": "COMET",
     "slug": "comet-field-app",
     "version": "0.1.0",
     "orientation": "portrait",
     "scheme": "comet",
     "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "in.gov.coalindia.comet",
@@ -24,6 +25,10 @@
     },
     "android": {
       "package": "in.gov.coalindia.comet",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
       "permissions": [
         "CAMERA",
         "ACCESS_FINE_LOCATION",

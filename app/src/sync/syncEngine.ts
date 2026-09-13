@@ -6,7 +6,7 @@ import { MediaUploader } from './mediaUploader';
 import { createClient } from '@supabase/supabase-js';
 
 // Get URL and Key once
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const supabaseUrl = (global as any).DEV_SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 
 export async function performSync() {

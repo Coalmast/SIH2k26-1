@@ -1,4 +1,4 @@
 <resources>
-  <string name="app_name">COMET Field App</string>
+  <string name="app_name">COMET</string>
   <string name="expo_system_ui_user_interface_style" translatable="false">automatic</string>
 </resources>
