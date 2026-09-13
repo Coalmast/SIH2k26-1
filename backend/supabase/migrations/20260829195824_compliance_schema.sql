@@ -110,7 +110,7 @@ CREATE TABLE mines (
 
 CREATE TABLE users (
     id                 UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    keycloak_subject   TEXT UNIQUE,
+    auth_provider_uid  TEXT UNIQUE,          -- Supabase Auth uid (auth.users.id as text)
     full_name          TEXT NOT NULL,
     designation        TEXT,
     email              TEXT,
@@ -524,8 +524,7 @@ CREATE TABLE alerts (
 
 CREATE TABLE escalation_workflow_instances (
     id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    temporal_workflow_id TEXT,
-    workflow_template_id UUID NOT NULL,
+    workflow_type        TEXT NOT NULL,                    -- e.g. 'compliance_escalation', 'capa_overdue'
     entity_type          escalation_entity NOT NULL,
     entity_id            UUID NOT NULL,
     mine_id              UUID NOT NULL REFERENCES mines(id),
@@ -600,7 +599,7 @@ CREATE TABLE mine_risk_scores (
     category_scores            JSONB DEFAULT '{}',
     trend                      risk_trend_enum,
     previous_score             NUMERIC(5,2),
-    model_version              TEXT NOT NULL,
+    gemini_agent_version       TEXT NOT NULL,              -- e.g. 'RiskScoringAgent-v1/gemini-1.5-pro'
     computed_at                TIMESTAMPTZ NOT NULL DEFAULT now(),
     next_scheduled_computation TIMESTAMPTZ
 );
@@ -622,7 +621,7 @@ CREATE TABLE anomaly_flags (
     is_acknowledged          BOOLEAN DEFAULT false,
     acknowledged_by          UUID REFERENCES users(id) ON DELETE SET NULL,
     acknowledged_at          TIMESTAMPTZ,
-    model_version            TEXT,
+    gemini_agent_version     TEXT,                         -- e.g. 'AnomalyDetectionAgent-v1/gemini-2.0-flash'
     detected_at              TIMESTAMPTZ NOT NULL DEFAULT now(),
     created_at               TIMESTAMPTZ DEFAULT now()
 );
@@ -682,20 +681,19 @@ ALTER TABLE incident_reports            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE safety_observations         ENABLE ROW LEVEL SECURITY;
 ALTER TABLE alerts                      ENABLE ROW LEVEL SECURITY;
 
--- Master data: read-only to all
-CREATE POLICY "regulations_select_all"  ON regulations             FOR SELECT USING (true);
-CREATE POLICY "requirements_select_all" ON compliance_requirements  FOR SELECT USING (true);
+-- All tables: authenticated users only (prototype policy — tighten to mine-scoped in production)
+CREATE POLICY "regulations_authenticated"    ON regulations             FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "requirements_authenticated"   ON compliance_requirements FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "ci_authenticated"             ON compliance_instances    FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "ce_authenticated"             ON compliance_evidences    FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "insp_authenticated"           ON inspections             FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "obs_authenticated"            ON observations            FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "vio_authenticated"            ON violations              FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "capa_authenticated"           ON corrective_actions      FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "ir_authenticated"             ON incident_reports        FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "so_authenticated"             ON safety_observations     FOR ALL USING ((select auth.role()) = 'authenticated');
+CREATE POLICY "alerts_authenticated"         ON alerts                  FOR ALL USING ((select auth.role()) = 'authenticated');
 
--- Operational tables: authenticated access (tighten per role in app layer)
-CREATE POLICY "ci_authenticated"   ON compliance_instances  FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "ce_authenticated"   ON compliance_evidences  FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "insp_authenticated" ON inspections           FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "obs_authenticated"  ON observations          FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "vio_authenticated"  ON violations            FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "capa_authenticated" ON corrective_actions    FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "ir_authenticated"   ON incident_reports      FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "so_authenticated"   ON safety_observations   FOR ALL USING ((select auth.role()) = 'authenticated');
-CREATE POLICY "alerts_own"         ON alerts                FOR SELECT USING (target_user_id = (select auth.uid()));
 
 -- ============================================================================
 -- SEED DATA – Regulations (from input.json)

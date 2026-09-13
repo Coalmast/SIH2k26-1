@@ -57,15 +57,16 @@
 |-------|--------|---------|---------|
 | Framework | **React Native** (New Architecture) | 0.85 | iOS/Android; Fabric + TurboModules + Hermes |
 | Tooling | **Expo Bare + EAS Build** (SDK 52) | — | OTA updates, simplified native CI signing |
-| Navigation | **React Navigation** | v7 | Stack, Bottom Tabs, Drawer navigators |
+| Navigation | **Expo Router** (file-based) | — | Stack, Bottom Tabs, Drawer navigators |
 | Offline DB | **WatermelonDB** | v0.27 | SQLite-backed reactive local DB — offline-first |
 | Sync | Custom (WatermelonDB sync protocol) | — | Pull/push against FastAPI `/api/v1/sync` |
 | **Backend / Auth** | **Supabase JS Client** (React Native) | v2 | Auth sessions, Storage uploads, Realtime push alerts |
 | Maps/GPS | **react-native-maps + expo-location** | — | GPS geo-tagging, mine boundary display |
 | Camera | **react-native-vision-camera** | v4 | High-perf photo/video for observations |
-| Voice | **Bhashini STT** (primary) + **Whisper** (fallback) | — | Regional language voice narration |
+| Voice | **Gemini Audio API** | — | Multilingual voice input — grievances, inspection notes, incident reports (Hindi, Bengali, Odia, Marathi, English natively) |
 | Background | **expo-background-task** | — | Queued sync on connectivity resume |
-| Push | **FCM via expo-notifications** | — | Alerts, CAPA, reminders from Supabase Realtime |
+| Standard Push | **expo-notifications + FCM** | — | Alerts, CAPA, reminders from Supabase Realtime |
+| Emergency Alarms | **Notifee** | — | Bypasses DND/silent mode; custom siren; Full-Screen Intent (Android) + Critical Alerts (iOS) |
 | Server State | **TanStack Query v5** | — | Same pattern as web (online lookups) |
 | Client State | **Zustand v4** | — | Auth, sync status, app settings |
 | Secure Store | **expo-secure-store** | — | Supabase session tokens (Keystore/Keychain) |
@@ -86,15 +87,16 @@ comet-platform/                # pnpm workspaces + Turborepo
 │   │       │   ├── compliance/        # Calendar, instance detail, evidence upload
 │   │       │   ├── inspection/        # List, detail, observation, CAPA
 │   │       │   ├── contractor/        # Profile, docs, workers, trust score
-│   │       │   ├── environment/       # EC conditions, sensor readings, forecast
-│   │       │   ├── production/        # Shift readings, anomaly flags
+│   │       │   ├── environment/       # EC conditions, sensor readings, AI forecast
+│   │       │   ├── production/        # Shift readings, anomaly flags, CCO Daily Return
+│   │       │   ├── attendance/        # Shift-wise headcount, labour flags, absenteeism
 │   │       │   ├── incident/          # Reports, Form 4-A/4-B/4-C
+│   │       │   ├── grievance/         # Intake, multilingual chatbot, status, resolution
 │   │       │   ├── ocr/               # Upload, review queue, side-by-side
 │   │       │   ├── gis/               # MapLibre fullscreen + deck.gl layers
 │   │       │   ├── alerts/            # Notification center (Supabase Realtime)
-│   │       │   ├── grievance/         # Intake, status, resolution
-│   │       │   ├── ai-analytics/      # Risk score, clusters, anomalies
-│   │       │   ├── reports/           # Statutory PDF generator
+│   │       │   ├── ai-analytics/      # Risk score, clusters, anomalies, chatbot
+│   │       │   ├── reports/           # Statutory PDF generator + blockchain verify
 │   │       │   └── admin/             # Mine, user, regulations, checklist builder
 │   │       ├── components/            # AppShell, Sidebar, TopBar, common UI
 │   │       ├── hooks/                 # useAuth, usePermission, useRealtimeAlerts
@@ -694,7 +696,7 @@ HEADER: [Mine ▾] [Status: Active ▾] [Trust Score ▾]  [+ Onboard Contractor
 │ [PM10] [PM2.5] [pH] [Noise dB] [SO2] — toggle each line        │
 │ Red horizontal line = EC prescribed limit                       │
 ├─────────────────────────────────────────────────────────────────┤
-│ AI FORECAST PANEL (Prophet model, 8h ahead)                     │
+│ AI FORECAST PANEL (Gemini AnomalyDetectionAgent)                │
 │ "Predicted PM10 at CAAQMS-01: 740 µg/m³ by 3:00 PM (+/-80)"   │
 │ "⚠ Recommend activating haul road sprinklers by 2:00 PM"       │
 ├─────────────────────────────────────────────────────────────────┤
@@ -896,7 +898,7 @@ FILTER: [All | Critical | High | Medium | Low | Unread ●3]   [Mark All Read]
 **Alert channels from `alerts.channels TEXT[]`:**
 - `in_app`: shown in this panel + Realtime bell badge
 - `push`: FCM notification to mobile app
-- `sms`: SMS via Bhashini/Twilio (CRITICAL only)
+- `sms`: not used (removed — emergency alerts handled by Notifee on mobile; statutory submissions via Resend email)
 - `email`: email digest (HIGH+)
 
 ---
@@ -943,7 +945,7 @@ SIMILAR GRIEVANCES (AI cluster detection)
 │  67/100 🟡 HIGH  |  Trend: WORSENING ▲  |  Last: 30 Aug 10:00 │
 │  [Animated gauge from 0→67]                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│ CONTRIBUTING FACTORS (XGBoost — contributing_factors JSONB)     │
+│ CONTRIBUTING FACTORS (Gemini RiskScoringAgent — contributing_factors JSONB) │
 │  Violation Frequency (90d):    34% — 12 violations (3x avg)     │
 │  CAPA Closure Latency:         28% — avg 9.2d vs 7d target      │
 │  Contractor Compliance:        18% — 74% (below 85% threshold)  │
@@ -1131,7 +1133,7 @@ Progress: 7 / 24 checkpoints  ████████░░░░░░░░�
 - Photos stored as local files with `sync_status: 'pending_upload'`
 - Lazy upload to Supabase Storage on sync
 - GeoStamp captured once per observation at save time
-- Voice notes transcribed by Bhashini STT on connectivity restore
+- Voice notes uploaded to Supabase Storage on sync → Gemini Audio API transcribes → written back to observation description
 
 ---
 
@@ -1655,7 +1657,7 @@ Notifications.addNotificationResponseReceivedListener((response) => {
 }
 ```
 
-**Voice Input (Mobile):** Bhashini STT API (GoI, 22 scheduled languages) — primary. Fallback: Whisper API. Transcription queued offline; processed on connectivity restore.
+**Voice Input (Mobile):** Gemini Audio API — natively supports Hindi (hi), Bengali (bn), Odia (or), Marathi (mr), English (en). Audio recorded offline via `expo-av`, queued in WatermelonDB `audio_queue` table, uploaded and processed server-side via `GrievanceAudioAgent` on connectivity restore.
 
 **Font:** `Noto Sans Devanagari` loaded via Google Fonts for Hindi/Marathi rendering. `Noto Sans Bengali` for Bengali. English/default uses `Inter Variable`.
 

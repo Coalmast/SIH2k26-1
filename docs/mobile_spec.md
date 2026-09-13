@@ -236,7 +236,7 @@ app/
 │   │   ├── RiskChip.tsx         # Minor/moderate/major/critical color chip
 │   │   ├── GeoStampDisplay.tsx  # lat/lng/accuracy display
 │   │   ├── MediaCapture.tsx     # Camera trigger + gallery preview
-│   │   └── VoiceInput.tsx       # Bhashini STT recorder
+│   │   └── VoiceInput.tsx       # Record voice note → audio queued offline → Gemini Audio API transcribes on sync
 │   └── types/
 │       ├── db.types.ts          # Supabase generated types
 │       ├── inspection.types.ts
@@ -283,7 +283,11 @@ App (Expo Router root)
     ├── /attendance                  Tab 4: Attendance 👥
     │   └── AttendanceScreen         QR scan / manual check-in + geo-fence verification
     │
-    └── /profile                     Tab 5: Profile 👤
+    ├── /grievance                   Tab 5: Grievance / Help 💬
+    │   ├── GrievanceScreen          File voice or text grievance; chat with AI assistant
+    │   └── /grievance/status        My grievances list + status tracker
+    │
+    └── /profile                     Tab 6: Profile 👤
         ├── ProfileScreen            User info, mine assignment, language
         ├── /profile/sync            SyncStatusScreen — WatermelonDB queue manager
         └── /profile/settings        SettingsScreen — offline limits, biometric, language
@@ -335,7 +339,7 @@ fonts: {
 | `GeoStampDisplay` | `src/components/GeoStampDisplay.tsx` | lat/lng + accuracy + boundary indicator |
 | `SyncDot` | `src/components/SyncDot.tsx` | Green/yellow/red dot for sync status inline |
 | `MediaCapture` | `src/components/MediaCapture.tsx` | Camera button + thumbnail row |
-| `VoiceInput` | `src/components/VoiceInput.tsx` | Record / transcribe with Bhashini STT |
+| `VoiceInput` | `src/components/VoiceInput.tsx` | Record voice note locally → queued → Gemini Audio API transcribes & classifies on sync |
 | `ShiftPicker` | `src/components/ShiftPicker.tsx` | Shift A / B / C / General horizontal selector |
 | `SeverityPicker` | `src/components/SeverityPicker.tsx` | Minor / Moderate / HIGH / Critical row |
 | `ChecklistItem` | `src/components/ChecklistItem.tsx` | OK / Non-Compliant / Observation 3-button row |
@@ -840,7 +844,7 @@ INSPECTION COMPLETE — 24/24 checkpoints
 |---|---|---|---|
 | Any checkpoint tap | Instant write `observations` | Queued | < 50ms, no loading state |
 | Photo captured | Local file path stored | Queued upload | Uses `mediaUploader.ts` |
-| Voice note recorded | Local path stored | Queued transcription | Bhashini STT on sync |
+| Voice note recorded | Local audio path stored | Queued upload + Gemini Audio transcription | Gemini Audio API transcribes & writes back `description` on sync |
 | Gas reading entry | `shift_observations` JSONB | Queued | CH4 > 1.5% → sync bypass |
 | Section "Next" | `inspections.current_section` updated | Queued | Resume-safe |
 | "Save Draft" | No-op (already saved) | Queued | Toast confirmation |
@@ -981,7 +985,7 @@ INSPECTION COMPLETE — 24/24 checkpoints
 │ │        SUBMIT REPORT  →          │    │
 │ └─────────────────────────────────┘    │
 │ → Notifications: Mine Manager + Safety │
-│   Officer via FCM + SMS within 60s     │
+│   Officer via FCM push + Resend email  │
 │ → If severity=critical: DGMS initial   │
 │   alert auto-triggered by FastAPI      │
 └─────────────────────────────────────────┘
@@ -1285,6 +1289,70 @@ INSPECTION COMPLETE — 24/24 checkpoints
 - `vibrationPattern: [0, 500, 300, 500]` — aggressive vibration
 - Sound: `comet_alarm.wav` in `android/app/src/main/res/raw/`
 - On acknowledge: PATCH to `/api/v1/alerts/{id}/acknowledge` (queued if offline)
+- **Offline-safe:** Notifee fires the alarm locally the moment CH4 > 1.5% is entered, with zero server dependency. Sync push queued for escalation when connectivity returns.
+
+---
+
+### 5.14 Grievance & AI Chatbot Screen
+
+**Route:** `/(app)/grievance`  
+**WatermelonDB:** `audio_queue` table (offline audio queuing)  
+**Supabase:** `grievances` table + FastAPI `/api/v1/grievances/chatbot/session`  
+**AI:** Gemini GrievanceAudioAgent (voice) + Gemini WorkerChatbotAgent (chat)
+
+```
+┌─────────────────────────────────────────┐
+│ GRIEVANCE & HELP                       │
+├─────────────────────────────────────────┤
+│ [File New Grievance 🎤] [My Status 📋]│
+├─────────────────────────────────────────┤
+│ AI ASSISTANT (Gemini)                  │
+│ Respond in your language               │
+│ ─────────────────────────────────────── │
+│ 🤖 नमस्ते! मैं COMET सहायक हूं।       │
+│    आप हिंदी में बात कर सकते हैं।     │
+│ ─────────────────────────────────────── │
+│ 👤 मेरी शिकायत का क्या हुआ?        │
+│ ─────────────────────────────────────── │
+│ 🤖 आपकी शिकायत (GR-2341) Safety    │
+│    Officer को दी गई है।              │
+│    जवाब: 2 दिनों में मिलेगा।         │
+│ ─────────────────────────────────────── │
+├─────────────────────────────────────────┤
+│ [🎤 Record Voice]  [Type message...]  │
+└─────────────────────────────────────────┘
+```
+
+**Voice Grievance Flow:**
+1. Worker taps [Record Voice] → `expo-av` records audio locally
+2. Recording saved as local file → written to `audio_queue` WatermelonDB table (`sync_status: 'pending'`)
+3. On connectivity → audio uploaded to Supabase Storage → FastAPI `/ai/grievance/process-audio`
+4. Gemini Audio API → `{transcription, category, priority, summary, language_detected}`
+5. Grievance record auto-created → worker notified via push + chatbot confirmation message
+
+**Text/Chat Flow:**
+1. Worker types in any language → sent to FastAPI `/grievances/chatbot/session/{session_id}`
+2. Gemini WorkerChatbotAgent responds in detected language
+3. If intent = file grievance: agent calls `file_grievance` tool → record created
+4. If intent = status check: agent calls `get_grievance_status` tool → responds naturally
+
+**My Status View** (`/grievance/status`):
+```
+┌─────────────────────────────────────────┐
+│ MY GRIEVANCES                          │
+│                                        │
+│ GR-2341 — Safety Issue               │
+│ Filed: 28 Aug 2026 (voice, Hindi)     │
+│ Status: 🟡 Under Review               │
+│ Assigned to: Safety Officer            │
+│                                        │
+│ GR-2318 — Wages Discrepancy          │
+│ Filed: 15 Aug 2026 (text)             │
+│ Status: ✅ Resolved (22 Aug 2026)     │
+└─────────────────────────────────────────┘
+```
+
+**Workflow Connection:** Implements **Workflow 7 (Grievance Handling)** end-to-end including offline audio queuing, Gemini multilingual processing, and conversational status checking.
 
 ---
 
@@ -1426,7 +1494,25 @@ export const schema = appSchema({
       ],
     }),
 
+    // ── Audio Queue (Voice notes — offline Gemini Audio queuing) ─────────
+    tableSchema({
+      name: 'audio_queue',
+      columns: [
+        { name: 'server_id',            type: 'string',  isOptional: true },
+        { name: 'mine_id',              type: 'string' },
+        { name: 'worker_id',            type: 'string' },
+        { name: 'local_audio_path',     type: 'string' },  // expo-av local URI
+        { name: 'purpose',              type: 'string' },  // 'grievance' | 'inspection_note' | 'incident'
+        { name: 'entity_local_id',      type: 'string',  isOptional: true }, // parent record local ID
+        { name: 'language_hint',        type: 'string',  isOptional: true }, // 'hi'|'bn'|'or'|'mr'|'en'
+        { name: 'gemini_result',        type: 'string',  isOptional: true }, // JSONB once processed
+        { name: 'recorded_at',          type: 'number' },
+        { name: 'sync_status',          type: 'string' }, // 'pending'|'uploaded'|'processed'|'failed'
+      ],
+    }),
+
     // ── Checklist Templates (cached, read-only) ───────────────────────
+
     tableSchema({
       name: 'checklist_templates',
       columns: [

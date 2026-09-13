@@ -29,6 +29,9 @@ export default defineConfig({
       },
     },
   },
+  optimizeDeps: {
+    exclude: ['maplibre-gl'],
+  },
   test: {
     silent: 'passed-only',
     unstubEnvs: true,

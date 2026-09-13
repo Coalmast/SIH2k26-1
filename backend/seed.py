@@ -34,8 +34,8 @@ def pick(seq):    return rng.choice(seq)
 def rint(a, b):   return rng.randint(a, b)
 def ufloat(a, b): return round(rng.uniform(a, b), 2)
 
-BASE_DT = datetime.datetime(2026, 9, 1, 8, 0, 0, tzinfo=datetime.timezone.utc)
-BASE_D  = datetime.date(2026, 9, 1)
+BASE_DT = datetime.datetime.now(datetime.timezone.utc).replace(hour=8, minute=0, second=0, microsecond=0)
+BASE_D  = BASE_DT.date()
 def ts_ago(days, hours=0): return BASE_DT - datetime.timedelta(days=days, hours=hours)
 def d_ago(days):           return BASE_D - datetime.timedelta(days=days)
 
@@ -333,36 +333,52 @@ def seed():
                 " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", rows_buf)
             conn.commit()
             rows_buf = []
-            for mo in [6,7,8]:
-                mstart = datetime.date(2026,mo,1)
-                mend   = datetime.date(2026,mo,calendar.monthrange(2026,mo)[1])
+            # Last 3 full calendar months + current partial month + next month (upcoming)
+            today = BASE_D
+            months_to_seed = []
+            # Go back 3 months and forward 1 month from current
+            for delta in range(-2, 2):  # -2, -1, 0, +1 relative to current month
+                y = today.year + (today.month + delta - 1) // 12
+                m = (today.month + delta - 1) % 12 + 1
+                months_to_seed.append((y, m))
+            for (yr, mo) in months_to_seed:
+                mstart = datetime.date(yr, mo, 1)
+                mend   = datetime.date(yr, mo, calendar.monthrange(yr, mo)[1])
                 due    = mend + datetime.timedelta(days=7)
-                ds     = (BASE_D - due).days
+                ds     = (today - due).days
+                is_future = due > today
                 for code in MONTHLY_CODES:
                     req_id = req_by_code.get(code)
                     if not req_id: continue
                     r = rng.random()
-                    if ds<0:    status = "pending" if r<0.5 else "in_progress"
-                    elif ds<14: status = pick(["submitted","approved","in_progress"])
-                    else:       status = "approved" if r<0.75 else "breached"
+                    if is_future:
+                        status = "pending"
+                    elif ds < 0:
+                        status = "pending" if r < 0.5 else "in_progress"
+                    elif ds < 14:
+                        status = pick(["submitted", "approved", "in_progress"])
+                    else:
+                        status = "approved" if r < 0.75 else "breached"
                     who    = env_off if "ENV" in code else (mgr if "PRD" in code else comp_off)
-                    sub_by = comp_off if status in ("submitted","approved") else None
-                    sub_at = ts_ago(abs(ds)+rint(0,4)) if status in ("submitted","approved") else None
+                    sub_by = comp_off if status in ("submitted", "approved") else None
+                    sub_at = ts_ago(abs(ds)+rint(0,4)) if status in ("submitted", "approved") else None
                     ci_id  = uid()
-                    rows_buf.append((ci_id,req_id,mine["id"],mine["sub"],
-                                     mstart,mend,due,status,False,who,sub_by,sub_at))
-                    ci_all.append({"id":ci_id,"mine_id":mine["id"],"status":status})
+                    rows_buf.append((ci_id, req_id, mine["id"], mine["sub"],
+                                     mstart, mend, due, status, False, who, sub_by, sub_at))
+                    ci_all.append({"id": ci_id, "mine_id": mine["id"], "status": status})
                     inst_n += 1
             for code in ANNUAL_CODES:
-                req_id = req_by_code.get(code)
+                req_id  = req_by_code.get(code)
                 if not req_id: continue
-                ci_id  = uid()
-                status = pick(["in_progress","pending"])
-                who    = env_off if "ENV" in code else safety
-                rows_buf.append((ci_id,req_id,mine["id"],mine["sub"],
-                                 datetime.date(2026,4,1),datetime.date(2027,3,31),
-                                 datetime.date(2027,6,30),status,False,who,None,None))
-                ci_all.append({"id":ci_id,"mine_id":mine["id"],"status":status})
+                ci_id   = uid()
+                status  = pick(["in_progress", "pending"])
+                who     = env_off if "ENV" in code else safety
+                fy_start = datetime.date(BASE_D.year, 4, 1)
+                fy_end   = datetime.date(BASE_D.year + 1, 3, 31)
+                fy_due   = datetime.date(BASE_D.year + 1, 6, 30)
+                rows_buf.append((ci_id, req_id, mine["id"], mine["sub"],
+                                 fy_start, fy_end, fy_due, status, False, who, None, None))
+                ci_all.append({"id": ci_id, "mine_id": mine["id"], "status": status})
                 inst_n += 1
             psycopg2.extras.execute_batch(cur,
                 "INSERT INTO compliance_instances"
@@ -697,11 +713,11 @@ def seed():
                          {"feature":"capa_overdue_count","weight":0.12,"value":rint(0,6),"comparison":"current"},
                          {"feature":"grievance_open_count","weight":0.08,"value":rint(0,8),"comparison":">7 days"}]
                 rs_buf.append((uid(),mine["id"],mine["sub"],score,risk_lvl,
-                               json.dumps(factors),trend,prev,"xgb-v2.1",comp_at))
+                               json.dumps(factors),trend,prev,"RiskScoringAgent-v1/gemini-1.5-pro",comp_at))
                 prev=score; base=score; score_n+=1
             psycopg2.extras.execute_batch(cur,
                 "INSERT INTO mine_risk_scores (id,mine_id,subsidiary_id,score,risk_level,"
-                " contributing_factors,trend,previous_score,model_version,computed_at)"
+                " contributing_factors,trend,previous_score,gemini_agent_version,computed_at)"
                 " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", rs_buf)
             conn.commit()
         print(f"      => {score_n} risk score snapshots")
@@ -723,12 +739,12 @@ def seed():
                                pick(["shift_production_tonnes","pm10_daily_avg","workforce_headcount","sensor_delta","billing_per_unit"]),
                                expected,actual,deviation,round(rng.uniform(0.75,0.98),4),
                                ack,mgr if ack else None,ts_ago(day_off-1) if ack else None,
-                               "xgb-v2.1",detected))
+                               "AnomalyDetectionAgent-v1/gemini-2.0-flash",detected))
                 anom_n+=1
             psycopg2.extras.execute_batch(cur,
                 "INSERT INTO anomaly_flags (id,mine_id,subsidiary_id,anomaly_type,data_source,severity,"
                 " description,metric_name,expected_value,actual_value,deviation_pct,confidence,"
-                " is_acknowledged,acknowledged_by,acknowledged_at,model_version,detected_at)"
+                " is_acknowledged,acknowledged_by,acknowledged_at,gemini_agent_version,detected_at)"
                 " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", af_buf)
             conn.commit()
         print(f"      => {anom_n} anomaly flags")
@@ -783,36 +799,21 @@ def seed():
                 history.append({"level":1,"assignee":U_WCL_ADM,"escalated_at":str(ts_ago(od-3)),
                                   "reason":"Unresolved after 3 days - escalated to Subsidiary Admin"})
             esc_id=uid()
-            esc_buf.append((esc_id,FAKE_TMPL,"corrective_action",capa["id"],mid,sub_id,capa["due_date"],
+            esc_buf.append((esc_id,"capa_overdue","corrective_action",capa["id"],mid,sub_id,capa["due_date"],
                             2 if esc_status=="escalated_level_2" else 1 if "escalated" in esc_status else 0,
                             U_WCL_ADM if "escalated" in esc_status else mgr,
                             esc_status,json.dumps(history)))
             capa_esc.append((esc_id,capa["id"])); esc_n+=1
         if esc_buf:
             psycopg2.extras.execute_batch(cur,
-                "INSERT INTO escalation_workflow_instances (id,workflow_template_id,entity_type,entity_id,"
+                "INSERT INTO escalation_workflow_instances (id,workflow_type,entity_type,entity_id,"
                 " mine_id,subsidiary_id,due_date,current_level,current_assignee_id,status,history)"
                 " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", esc_buf)
         for esc_id,capa_id in capa_esc:
             cur.execute("UPDATE corrective_actions SET escalation_workflow_id=%s WHERE id=%s",(esc_id,capa_id))
         conn.commit(); print(f"      => {esc_n} escalation workflow instances")
 
-        print("   [19/19] Seeding model feedback + media attachments ...")
-        cur.execute("SELECT id FROM observations WHERE ai_auto_applied = true LIMIT 100")
-        obs_sample=[str(r["id"]) for r in cur.fetchall()]
-        fb_buf=[]
-        for obs_id in rng.sample(obs_sample, min(35,len(obs_sample))):
-            mine_id=pick([m["id"] for m in MINES]); safety=get_u(mine_id,"safety_officer")
-            fb_buf.append((uid(),obs_id,
-                           pick(["ventilation","roof_support","blasting","haulage","electrical"]),
-                           round(rng.uniform(0.55,0.84),4),
-                           pick(["roof_support","ventilation","general","electrical"]),
-                           safety,ts_ago(rint(1,60)),rng.random()>0.5))
-        if fb_buf:
-            psycopg2.extras.execute_batch(cur,
-                "INSERT INTO model_feedback (id,observation_id,original_ai_category,"
-                " original_ai_confidence,corrected_category,corrected_by,corrected_at,used_in_training)"
-                " VALUES (%s,%s,%s,%s,%s,%s,%s,%s)", fb_buf)
+        # Step 19: Media attachments only (model_feedback table removed — using Gemini ADK)
         med_buf=[]
         for capa in capa_all[:40]:
             mid=capa["mine_id"]; safety=get_u(mid,"safety_officer")
@@ -830,12 +831,12 @@ def seed():
                 " file_size_bytes,mime_type,geo_stamp,sync_status,captured_by)"
                 " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", med_buf)
         conn.commit()
-        print(f"      => {len(fb_buf)} model feedback, {len(med_buf)} media attachments")
+        print(f"      => {len(med_buf)} media attachments")
 
         print("\n" + "="*60)
         print(" COMET Database Seeding COMPLETE")
         print("="*60)
-        print(f"  Period       : June - August 2026 (90 days)")
+        print(f"  Period       : Last 90 days + Sep & Oct {BASE_D.year} (current + upcoming month)")
         print(f"  Mines        : 3 (Umrer OCP, Sillewara UG, Gevra OCP)")
         print(f"  Users        : {len(user_list)}")
         print(f"  Env readings : {env_n}")

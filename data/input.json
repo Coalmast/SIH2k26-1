@@ -130,6 +130,7 @@
     {
       "checklistId": "CHK-SAF-002",
       "title": "Roof and Side Support (Strata Control) Inspection Checklist",
+      "description": "Underground mines must conduct systematic support of roof and sides. The checklist verifies the presence and condition of support elements at all working faces, roadways, and return airways.",
       "observationIds": ["OBS-SAF-002-01", "OBS-SAF-002-02", "OBS-SAF-002-03", "OBS-SAF-002-04"]
     },
     {

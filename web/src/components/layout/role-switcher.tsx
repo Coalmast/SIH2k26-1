@@ -3,16 +3,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useNavigate } from '@tanstack/react-router'
 
 const ROLES: { value: AppRole; label: string }[] = [
-  { value: 'system_admin', label: 'System Admin' },
-  { value: 'mine_manager', label: 'Mine Manager' },
-  { value: 'corporate_executive', label: 'Corporate Exec' },
-  { value: 'subsidiary_admin', label: 'Subsidiary Admin' },
-  { value: 'safety_officer', label: 'Safety Officer' },
-  { value: 'compliance_officer', label: 'Compliance Officer' },
-  { value: 'environmental_officer', label: 'Env. Officer' },
-  { value: 'contractor_manager', label: 'Contractor Mgr' },
-  { value: 'field_officer', label: 'Field Officer' },
-  { value: 'regulator', label: 'Regulator' },
+  { value: 'super_admin', label: '👑 Super Admin' },
+  { value: 'corporate_executive', label: '🏢 Corporate & Subsidiary Mgmt' },
+  { value: 'mine_manager', label: '⛏️ Mine Manager' },
+  { value: 'field_inspector', label: '🔍 Field Inspector' },
+  { value: 'safety_official', label: '🦺 Safety Official' },
+  { value: 'contractor', label: '🏗️ Contractor & Vendor' },
 ]
 
 export function RoleSwitcher() {
@@ -25,12 +21,14 @@ export function RoleSwitcher() {
     setUserMeta(newRole, [], null)
     
     // Redirect logic to show off different dashboards based on role
-    if (['corporate_executive', 'subsidiary_admin', 'system_admin'].includes(newRole)) {
+    if (['super_admin', 'corporate_executive'].includes(newRole)) {
       navigate({ to: '/corporate-dashboard', replace: true })
     } else if (newRole === 'mine_manager') {
       navigate({ to: '/mine-manager', replace: true })
-    } else if (newRole === 'compliance_officer' || newRole === 'regulator') {
-      navigate({ to: '/compliance', replace: true })
+    } else if (newRole === 'safety_official' || newRole === 'field_inspector') {
+      navigate({ to: '/inspection', replace: true })
+    } else if (newRole === 'contractor') {
+      navigate({ to: '/contractors', replace: true })
     } else {
       navigate({ to: '/mine-manager', replace: true })
     }

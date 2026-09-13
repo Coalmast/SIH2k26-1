@@ -13,16 +13,16 @@ function DashboardDirector() {
   useEffect(() => {
     if (isLoading) return; // Wait until role is fetched
 
-    if (role === 'corporate_executive' || role === 'subsidiary_admin' || role === 'system_admin') {
+    if (role === 'super_admin' || role === 'corporate_executive') {
       navigate({ to: '/corporate-dashboard', replace: true })
     } else if (role === 'mine_manager') {
       navigate({ to: '/mine-manager', replace: true })
-    } else if (role === 'compliance_officer' || role === 'regulator') {
-      // Regulators or Compliance officers might primarily look at compliance
-      navigate({ to: '/compliance', replace: true })
+    } else if (role === 'safety_official' || role === 'field_inspector') {
+      navigate({ to: '/inspection', replace: true })
+    } else if (role === 'contractor') {
+      navigate({ to: '/contractors', replace: true })
     } else {
-      // Fallback for safety officer, field officer, etc. 
-      navigate({ to: '/mine-manager', replace: true }) // Assuming they share the mine view but with reduced access
+      navigate({ to: '/mine-manager', replace: true })
     }
   }, [role, isLoading, navigate])
 

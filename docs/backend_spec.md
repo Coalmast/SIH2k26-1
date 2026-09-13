@@ -91,34 +91,43 @@
 | Layer | Choice | Version | Purpose |
 |-------|--------|---------|----|
 | **Backend Framework** | FastAPI | 0.115+ | Async REST API, auto OpenAPI, native Python |
-| **Language** | Python | 3.12 | Backend compute, AI, OCR, PDF |
+| **Language** | Python | 3.12 | Backend compute, AI orchestration, OCR, PDF |
 | **Data Validation** | Pydantic v2 | 2.x | Strict schemas mirroring frontend Zod schemas |
 | **Database ORM** | SQLAlchemy 2.0 (Async) | 2.x | Async DB access; GeoAlchemy2 for PostGIS |
 | **Primary Database** | Supabase PostgreSQL + PostGIS | 15+ | Relational + spatial data, time-series readings |
 | **Auth** | Supabase Auth / GoTrue | — | OIDC/OAuth2, Magic Links, PKCE for mobile |
-| **Storage** | Supabase Storage | — | S3-compatible: photos, PDFs, OCR scans |
+| **Storage** | Supabase Storage | — | S3-compatible: photos, PDFs, OCR scans, voice notes |
 | **Real-time** | Supabase Realtime | — | WebSocket channels for live dashboard alerts |
 | **Event Bus** | Supabase Webhooks | — | Postgres triggers to FastAPI HTTP handlers |
 | **Background Jobs** | FastAPI Background Tasks | — | Escalation ladders, SLA timers, PDF generation |
 | **Cache** | Redis | 7.x | Corporate dashboard rollup cache (heavy queries) |
 | **Search** | OpenSearch | 2.x | Full-text search on grievances & inspection narratives |
-| **AI Risk Engine** | XGBoost + scikit-learn | — | Tabular risk score computation |
-| **Anomaly Detection** | PyTorch / Facebook Prophet | — | Time-series production & environmental forecasting |
-| **OCR** | Tesseract 5 | — | Legacy scanned form digitization |
-| **PDF Generation** | WeasyPrint / ReportLab | — | Statutory document rendering (pure Python) |
+| **AI / Agents** | **Google ADK + Gemini API** | — | All AI intelligence: risk scoring, anomaly detection, report drafting, chatbot, voice grievance |
+| **AI Model (complex tasks)** | `gemini-1.5-pro` | — | Mine risk scoring, statutory report narrative generation |
+| **AI Model (fast tasks)** | `gemini-2.0-flash` | — | Anomaly flags, chatbot responses, grievance classification |
+| **AI Model (voice/audio)** | `gemini-2.0-flash` (Audio API) | — | Multilingual voice grievance transcription & classification |
+| **OCR** | Tesseract 5 | — | Legacy scanned form digitization (offline-capable) |
+| **PDF Generation** | WeasyPrint | — | Statutory document rendering (pure Python, no headless browser) |
+| **PDF Templates** | Jinja2 | — | HTML templates for all statutory forms |
 | **Containerisation** | Docker | — | FastAPI worker services |
 | **Orchestration** | Kubernetes (K8s) + Helm | — | Scalable backend deployments |
 | **CI/CD** | GitHub Actions | — | Automated test, lint, build, deploy |
 | **Observability** | OpenTelemetry + Prometheus/Grafana + Loki | — | Tracing, metrics, logs |
 
 > **What this stack replaces from older drafts:**
-> - ~~NestJS~~ -> FastAPI (Python)
-> - ~~Keycloak~~ -> Supabase Auth
-> - ~~Kafka~~ -> Supabase Webhooks (Postgres triggers)
-> - ~~MinIO~~ -> Supabase Storage
-> - ~~BullMQ~~ -> FastAPI Background Tasks
-> - ~~Apollo Federation / GraphQL gateway~~ -> PostgREST + Redis-cached materialized views
-> - ~~Prisma~~ -> SQLAlchemy 2.0 Async
+> - ~~NestJS~~ → FastAPI (Python)
+> - ~~Keycloak~~ → Supabase Auth
+> - ~~Kafka~~ → Supabase Webhooks (Postgres triggers)
+> - ~~MinIO~~ → Supabase Storage
+> - ~~BullMQ~~ → FastAPI Background Tasks
+> - ~~Apollo Federation / GraphQL gateway~~ → PostgREST + Redis-cached materialized views
+> - ~~Prisma~~ → SQLAlchemy 2.0 Async
+> - ~~XGBoost / scikit-learn / LightGBM~~ → Google ADK + Gemini API
+> - ~~Facebook Prophet~~ → Gemini AnomalyDetectionAgent
+> - ~~TF-IDF + LightGBM NLP~~ → Gemini GrievanceAudioAgent
+> - ~~Claude API~~ → Gemini ReportDraftingAgent
+> - ~~Bhashini STT / Whisper~~ → Gemini Audio API
+> - ~~MLflow / Apache Airflow~~ → Not needed (no local model training)- ~~Prisma~~ -> SQLAlchemy 2.0 Async
 
 ---
 
@@ -259,11 +268,22 @@ GET    /subsidiaries/{id}/mines                      # All mines under a subsidi
 
 ```
 GET    /grievances                                   # List grievances (filter: mine, status, category, priority)
-POST   /grievances                                   # File new grievance (triggers NLP classification)
+POST   /grievances                                   # File new grievance via text (triggers WorkerChatbotAgent classification)
 GET    /grievances/{id}                              # Grievance detail
 PATCH  /grievances/{id}                              # Update status / add notes
 POST   /grievances/{id}/escalate                     # Escalate to next authority
 POST   /grievances/{id}/resolve                      # Mark resolved with outcome
+
+POST   /grievances/process-audio                     # Process queued audio grievance file via GrievanceAudioAgent
+                                                     # Body: { audio_url, worker_id, mine_id, language_hint? }
+                                                     # Returns: { transcription_original, transcription_english,
+                                                     #            category, priority, summary, grievance_id }
+
+GET    /grievances/chatbot/session/{session_id}      # WorkerChatbotAgent stateful chat session
+POST   /grievances/chatbot/session/{session_id}      # Send message to WorkerChatbotAgent
+                                                     # Body: { message, language? }
+                                                     # WorkerChatbotAgent tools: get_grievance_status, file_grievance,
+                                                     #   get_attendance, get_capa_status
 ```
 
 ### 4.9 Notifications (REST + Supabase Realtime)
@@ -300,23 +320,27 @@ POST   /reports/{id}/sign                            # Digitally sign a generate
 POST   /reports/{id}/submit                          # Mark as submitted to authority
 ```
 
-### 4.12 AI
+### 4.12 AI (Gemini ADK Agents)
 
 ```
-POST   /ai/score/mine/{mine_id}                      # On-demand mine risk score recomputation
+POST   /ai/score/mine/{mine_id}                      # On-demand risk score (triggers RiskScoringAgent)
+GET    /ai/score/mine/{mine_id}/latest               # Latest score + contributing factors
 GET    /ai/anomalies/{mine_id}                       # List AI-flagged anomalies for a mine
-POST   /ai/classify-incident                         # NLP incident classification (called internally on report submission)
-POST   /ai/contractor-trust/{contractor_id}          # Recompute contractor trust score
+POST   /ai/classify-incident                         # Gemini incident classification (called internally)
+POST   /ai/contractor-trust/{contractor_id}          # Recompute contractor trust score (deterministic)
+POST   /ai/grievance/process-audio                   # Process queued voice grievance via GrievanceAudioAgent
 ```
 
-### 4.13 Attendance / Shift
+### 4.13 Attendance & Labour Compliance
 
 ```
-POST   /attendance                                   # Submit attendance batch (from sync push)
-GET    /attendance/mines/{mine_id}                   # Records (filter: date, shift)
+POST   /attendance                                   # Submit attendance batch (from sync push; triggers geo-fence check)
+GET    /attendance/mines/{mine_id}                   # Records (filter: date, shift, worker_id)
 GET    /attendance/mines/{mine_id}/summary           # Shift-wise headcount summary
+GET    /attendance/mines/{mine_id}/labour-flags      # Labour law violation flags (consecutive night shifts, hours)
+GET    /attendance/mines/{mine_id}/absenteeism       # Absenteeism trend (last 30 days)
 
-POST   /overman-reports                              # Submit overman shift report (triggers gas reading alert check)
+POST   /overman-reports                              # Submit overman shift report (triggers gas reading alert check synchronously)
 GET    /overman-reports/mines/{mine_id}              # List reports (filter: date, shift, zone)
 GET    /overman-reports/{id}                         # Report detail
 ```
@@ -651,40 +675,84 @@ Human review (web OCR Review screen):
 
 ---
 
-## 9. AI / Analytics Engine
+## 9. AI / Analytics Engine (Google ADK + Gemini)
 
-The AI engine runs as a set of FastAPI routers within the same Python service. It reads from Supabase PostgreSQL and writes results back.
+All AI intelligence is powered exclusively by **Google Agent Development Kit (ADK)** with **Gemini API** models. Agents use tool-calling to query Supabase PostgreSQL, reason over the results, and return structured outputs. No separate ML model training or MLOps pipeline is required.
 
-### 9.1 Mine Risk Score Computation
+### 9.1 Mine Risk Score — Gemini RiskScoringAgent
 
-**Trigger:** Every 6 hours via `pg_cron`, or on-demand when a `violation.created` Supabase Webhook or `environment_readings.threshold_breached` fires.
+**Trigger:** Every 6 hours via `pg_cron` → FastAPI background task. Also event-driven: `violation.created`, `environment_readings.threshold_breached`, `incident_reports.INSERT`.
 
-**Input Features (queried from Supabase PostgreSQL):**
+**Model:** `gemini-1.5-pro`
 
 ```python
-features = {
-    # Safety signals
-    "violation_count_90d":           count of violations in last 90 days,
-    "violation_critical_count_90d":  count of CRITICAL violations in 90d,
-    "capa_avg_closure_days":         avg days to close CAPA (last 12 months),
-    "capa_overdue_count":            currently overdue CAPAs,
-    "inspection_frequency_score":    inspections per month vs expected,
+import google.generativeai as genai
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
 
-    # Environment signals
-    "env_breach_count_30d":          EC condition breaches in last 30 days,
-    "breach_recurrence_flag":        same condition breached > 2x in 30d (bool),
+# ADK Tools — each calls Supabase PostgreSQL via SQLAlchemy
+async def get_violations(mine_id: str, days: int) -> dict:
+    """Fetch violation counts and severity breakdown for a mine over N days."""
+    ...
 
-    # Production signals
-    "production_pressure_index":     actual / target ratio,
+async def get_capa_metrics(mine_id: str) -> dict:
+    """Fetch CAPA avg closure days, overdue count, escalated count."""
+    ...
 
-    # Labour signals
-    "contractor_compliance_pct":     % contractors with all-valid docs,
-    "grievance_open_count":          unresolved grievances > 7 days,
+async def get_env_breaches(mine_id: str, days: int) -> dict:
+    """Fetch EC condition breach events in last N days."""
+    ...
 
-    # Historical
-    "fatal_accident_36m_flag":       fatal accident in last 3 years (bool),
-    "dgms_adverse_inspection_flag":  DGMS adverse finding in last 12 months (bool),
-}
+async def get_production_pressure(mine_id: str) -> dict:
+    """Fetch actual vs target production ratio and anomaly flags."""
+    ...
+
+async def get_contractor_compliance(mine_id: str) -> dict:
+    """Fetch % contractors with all-valid documents."""
+    ...
+
+async def get_incident_history(mine_id: str, months: int) -> dict:
+    """Fetch fatal accident flag and DGMS adverse findings."""
+    ...
+
+async def get_grievance_backlog(mine_id: str) -> dict:
+    """Fetch unresolved grievances > 7 days old."""
+    ...
+
+async def get_regulation_text(regulation_ref: str) -> str:
+    """Fetch exact regulation text from the regulations table."""
+    ...
+
+# ADK Agent
+risk_agent = Agent(
+    model="gemini-1.5-pro",
+    tools=[
+        FunctionTool(get_violations),
+        FunctionTool(get_capa_metrics),
+        FunctionTool(get_env_breaches),
+        FunctionTool(get_production_pressure),
+        FunctionTool(get_contractor_compliance),
+        FunctionTool(get_incident_history),
+        FunctionTool(get_grievance_backlog),
+    ],
+    instruction="""You are a mining compliance risk analyst.
+    Call your tools to gather data about this mine, then compute a risk score.
+    Return JSON only:
+    {
+      "score": 0-100,
+      "risk_level": "low|medium|high|critical",
+      "trend": "improving|stable|worsening",
+      "contributing_factors": [{"feature": str, "weight": float, "explanation": str}],
+      "recommendations": [str]
+    }"""
+)
+
+# FastAPI AI Router — called by pg_cron or webhook
+async def compute_mine_risk_score(mine_id: str) -> dict:
+    result = await risk_agent.run(f"Compute risk score for mine_id={mine_id}")
+    score_data = json.loads(result.text)
+    await save_risk_score(mine_id, score_data)
+    return score_data
 ```
 
 **Output written to `mine_risk_scores`:**
@@ -696,64 +764,179 @@ features = {
   "risk_level": "high",
   "trend": "worsening",
   "contributing_factors": [
-    { "feature": "violation_count_90d", "weight": 0.34, "value": 12, "comparison": "3x avg" },
-    { "feature": "capa_avg_closure_days", "weight": 0.28, "value": 9.2, "comparison": "vs 7 target" }
+    { "feature": "violation_count_90d", "weight": 0.34, "explanation": "12 violations in 90d — 3x the subsidiary average" },
+    { "feature": "capa_avg_closure_days", "weight": 0.28, "explanation": "9.2 days avg vs 7-day target — 4 CAPAs currently overdue" }
   ],
-  "model_version": "xgb-v2.1",
+  "recommendations": [
+    "Schedule DGMS-style inspection of Pit 3 East within 7 days",
+    "Escalate CMR Reg 100 roof support CAPAs to Mine Manager"
+  ],
   "computed_at": "2026-08-30T06:00:00Z"
 }
 ```
 
-### 9.2 Recurring Violation Cluster Detection
+### 9.2 Recurring Violation Cluster Detection — Gemini AnomalyDetectionAgent
+
+**Model:** `gemini-2.0-flash`  
+**Trigger:** Weekly per mine via `pg_cron` → FastAPI background task.
 
 ```python
-# Runs weekly per mine via pg_cron -> FastAPI background task
-async def detect_recurring_clusters(mine_id: str) -> list[ViolationCluster]:
-    violations = await query_violations_18m(mine_id)
-    groups = groupby(
-        sorted(violations, key=lambda v: (v.zone, v.statute_reference)),
-        key=lambda v: (v.zone, v.statute_reference)
+async def get_all_violations_18m(mine_id: str) -> list:
+    """Fetch all violations in last 18 months with zone and statute_reference."""
+    ...
+
+anomaly_agent = Agent(
+    model="gemini-2.0-flash",
+    tools=[FunctionTool(get_all_violations_18m)],
+    instruction="""You are a mining safety pattern analyst.
+    Fetch violations for the given mine and identify recurring patterns.
+    Flag any zone+statute combination with ≥3 occurrences in 18 months as a ViolationCluster.
+    Flag ≥5 occurrences as systemic_risk=true.
+    Return JSON:
+    {
+      "clusters": [{
+        "zone": str, "statute_reference": str,
+        "occurrence_count": int, "is_systemic": bool,
+        "first_seen": str, "last_seen": str, "explanation": str
+      }]
+    }"""
+)
+
+async def detect_recurring_clusters(mine_id: str):
+    result = await anomaly_agent.run(f"Analyse recurring violations for mine_id={mine_id}")
+    return json.loads(result.text)
+```
+
+### 9.3 Incident & Grievance Classification — Gemini Agent
+
+**Model:** `gemini-2.0-flash`  
+**Trigger:** `incident_reports` INSERT via Supabase Webhook.
+
+```python
+async def classify_incident(description: str, incident_type: str) -> dict:
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    response = model.generate_content([
+        f"Incident type: {incident_type}. Description: {description}",
+        """Classify this mine safety incident. Return JSON only:
+        {
+          "suggested_category": "roof_fall|gas_explosion|equipment_failure|fire|electrical|surface_subsidence|other",
+          "suggested_severity": "minor|moderate|major|fatal",
+          "statutory_form_required": "4-A|4-B|4-C|none",
+          "immediate_actions": [str]
+        }"""
+    ])
+    return json.loads(response.text)
+```
+
+### 9.4 Voice Grievance Processing — Gemini GrievanceAudioAgent
+
+**Model:** `gemini-2.0-flash` (Audio API)  
+**Trigger:** Worker syncs audio file → FastAPI processes via Gemini Audio.
+
+```python
+async def process_grievance_audio(audio_url: str, worker_id: str, mine_id: str) -> dict:
+    # Download audio from Supabase Storage
+    audio_bytes = await download_from_storage(audio_url)
+
+    model = genai.GenerativeModel("gemini-2.0-flash")
+    response = model.generate_content([
+        {
+            "inline_data": {
+                "mime_type": "audio/wav",
+                "data": base64.b64encode(audio_bytes).decode()
+            }
+        },
+        """This audio is from an Indian coal mine worker filing a grievance.
+        They may speak Hindi (hi), Bengali (bn), Odia (or), Marathi (mr), or English (en).
+        Return JSON only:
+        {
+          "transcription_original": str,      // verbatim in spoken language
+          "transcription_english": str,        // English translation
+          "category": "safety|wages|harassment|environment|facilities|other",
+          "priority": "critical|high|medium|low",
+          "summary": str,                      // 1 sentence in English
+          "language_detected": "hi|bn|or|mr|en"
+        }"""
+    ])
+    result = json.loads(response.text)
+
+    # Create grievance record in Supabase
+    grievance = await create_grievance_from_audio(worker_id, mine_id, result)
+    result["grievance_id"] = grievance.id
+    return result
+```
+
+### 9.5 Statutory Report Drafting — Gemini ReportDraftingAgent
+
+**Model:** `gemini-1.5-pro`  
+**Called by:** Report generation background task (Section 15).
+
+```python
+async def get_incident_details(incident_id: str) -> dict: ...
+async def get_compliance_instances(mine_id: str, start: str, end: str) -> list: ...
+async def get_env_readings(mine_id: str, start: str, end: str) -> list: ...
+async def get_regulation_text(regulation_ref: str) -> str: ...
+async def get_contractor_register(mine_id: str) -> list: ...
+
+report_agent = Agent(
+    model="gemini-1.5-pro",
+    tools=[
+        FunctionTool(get_incident_details),
+        FunctionTool(get_compliance_instances),
+        FunctionTool(get_env_readings),
+        FunctionTool(get_regulation_text),
+        FunctionTool(get_contractor_register),
+    ],
+    instruction="""You are a statutory report writer for Indian coal mines.
+    Use your tools to gather all required data, then draft the narrative sections
+    of the requested statutory report in formal government report language.
+    Always cite the exact regulation text. Return JSON:
+    {
+      "narrative_sections": {"section_name": "formal statutory text"},
+      "statutory_citations": [str],
+      "data_summary": {"key": "value"}
+    }"""
+)
+```
+
+### 9.6 Worker Chatbot — Gemini WorkerChatbotAgent
+
+**Model:** `gemini-2.0-flash`  
+**Access:** Mobile app (Tab 5) + Web portal chatbot widget. Workers only.
+
+```python
+async def get_grievance_status(worker_id: str) -> list: ...
+async def file_grievance(text: str, mine_id: str, worker_id: str) -> dict: ...
+async def get_attendance(worker_id: str, date_range: str) -> dict: ...
+async def get_capa_status(capa_id: str) -> dict: ...
+
+chatbot_agent = Agent(
+    model="gemini-2.0-flash",
+    tools=[
+        FunctionTool(get_grievance_status),
+        FunctionTool(file_grievance),
+        FunctionTool(get_attendance),
+    ],
+    instruction="""You are a helpful assistant for Indian coal mine workers.
+    Respond ONLY in the worker's detected or preferred language.
+    You can: check grievance status, file a new grievance, check attendance.
+    Be concise. Use simple language — some workers have limited literacy.
+    Never reveal data about other workers."""
+)
+
+async def chat_with_worker(session_id: str, message: str, user_ctx: dict) -> str:
+    chat = chatbot_agent.start_chat(history=await get_chat_history(session_id))
+    response = await chat.send_message(
+        f"Worker: {user_ctx['name']} | Mine: {user_ctx['mine_name']} | "
+        f"Language: {user_ctx['preferred_lang']}\n\n{message}"
     )
-    clusters = []
-    for key, items in groups:
-        items = list(items)
-        if len(items) >= 3:
-            clusters.append(ViolationCluster(
-                zone=key[0],
-                statute=key[1],
-                occurrence_count=len(items),
-                first_seen=min(v.created_at for v in items),
-                last_seen=max(v.created_at for v in items),
-                is_systemic=len(items) >= 5,
-            ))
-    return clusters
+    await save_chat_history(session_id, message, response.text)
+    return response.text
 ```
 
-### 9.3 Incident Classification (NLP)
+### 9.7 Contractor Trust Score (Deterministic)
 
-On `incident_reports` INSERT (via Supabase Webhook):
-1. Extract `description` + `incident_type`
-2. Run through pre-trained TF-IDF + LightGBM multi-class classifier
-3. Return `ai_suggested_category` + `ai_suggested_severity`
-4. Written back to the `incident_reports` row
-5. Mobile app displays suggestion; officer can accept or override
-6. Officer corrections feed labeled training data for model refinement
-
-### 9.4 Environmental Forecast (Prophet)
-
-```python
-# Runs every hour per CAAQMS station via pg_cron -> FastAPI background task
-async def forecast_pm10(station_id: str, horizon_hours: int = 8) -> Forecast:
-    readings = await get_readings_72h(station_id, parameter="pm10")
-    model = Prophet(seasonality_mode="multiplicative")
-    model.fit(readings_to_df(readings))
-    future = model.make_future_dataframe(periods=horizon_hours, freq="H")
-    forecast = model.predict(future)
-    breach_risk = any(v > EC_LIMIT_PM10 for v in forecast["yhat"].tail(horizon_hours))
-    return Forecast(station_id=station_id, breach_risk=breach_risk, predicted=forecast)
-```
-
-### 9.5 Contractor Trust Score
+The contractor trust score uses a **deterministic formula** — no AI reasoning needed here:
 
 ```python
 # Recomputed on: document upload, doc expiry event, violation linked, CAPA closed
@@ -773,16 +956,23 @@ async def compute_trust_score(contractor_id: str) -> float:
 
 ```
 Supabase Webhook fires (e.g., environment_readings INSERT with threshold_breached = true)
-  |
+  │
 FastAPI Webhook handler (POST /internal/webhook)
-  |
+  │
   1. Determine priority (CRITICAL / HIGH / MEDIUM / LOW) from event payload
-  2. Determine target recipients (mine_id -> user roles via user_roles table)
+  2. Determine target recipients (mine_id → user roles via user_roles table)
   3. INSERT into alerts table
   4. Supabase Realtime broadcasts INSERT to channel "alerts:mine_id=eq.{mine_id}"
-     -> Web dashboard receives live push notification (no polling)
-  5. If priority = CRITICAL or HIGH: FCM push via Firebase Admin SDK (BackgroundTask)
-  6. If priority = CRITICAL: SMS via Bhashini / Twilio (BackgroundTask)
+     → Web dashboard receives live push notification (no polling)
+  5. If priority = HIGH or above: FCM push via Firebase Admin SDK (BackgroundTask)
+     → Standard notifications: expo-notifications channel
+     → CRITICAL notifications: Notifee high-priority data payload
+       → Bypasses device DND/silent mode
+       → Triggers full-screen intent (Android) / Critical Alert (iOS)
+       → Loops siren audio until officer acknowledges
+  6. If email required (statutory breach, regulator alert):
+     → FastAPI BackgroundTask → Resend API
+     → HTML email + PDF attachment (for statutory submissions)
 ```
 
 ### 10.2 Supabase Realtime Integration
@@ -1106,19 +1296,23 @@ For statutory documents (Form 3, Form 4-A, signed compliance evidence):
 
 ```
 PDF generated
-  -> SHA-256 hash computed
-  -> POST to National Blockchain for Governance (NBG) API:
+  → SHA-256 hash computed (IMPLEMENTED in prototype)
+  → Store hash in statutory_reports.sha256_hash column
+  → [Production] POST to National Blockchain for Governance (NBG / Vishvasya):
       { documentId, hash, timestamp, mine_name, document_type }
-  -> NBG returns { tx_id, block_hash, timestamp }
-  -> Store tx_id in report record
-  -> Display on web: "Verified | Blockchain TX: {tx_id}"
+  → NBG returns { tx_id, block_hash, timestamp }
+  → Store tx_id in report record
+  → Display on web: "Verified | Blockchain TX: {tx_id}"
 
 Verification flow (Regulator portal):
-  -> Regulator clicks "Verify Integrity"
-  -> Download PDF -> compute SHA-256 locally
-  -> GET NBG API: verify { tx_id, hash }
-  -> Match confirms document untampered since submission
+  → Regulator clicks "Verify Integrity"
+  → Download PDF → compute SHA-256 locally
+  → GET NBG API: verify { tx_id, hash }
+  → Match confirms document untampered since submission
 ```
+
+> [!NOTE]
+> **Prototype Note:** SHA-256 hash computation and storage are fully implemented. The NBG/Vishvasya blockchain network integration (HTTP POST + verification) is architected and documented. Active consortium network connection is planned for the production deployment phase — the prototype displays the computed hash and simulates the verification flow.
 
 ---
 
@@ -1239,8 +1433,10 @@ All service-to-service communication over TLS 1.3.
 | Dashboard composite query (Redis-cached) | < 50ms | < 200ms | < 400ms |
 | Corporate rollup (materialized view + Redis) | < 50ms | < 200ms | < 400ms |
 | Sync push (50 records) | < 400ms | < 1.2s | < 3s |
-| Risk score recomputation (XGBoost) | < 1s | < 2s | < 5s |
-| PDF report generation (WeasyPrint) | < 4s | < 12s | < 25s |
+| Risk score (Gemini RiskScoringAgent, ADK) | < 3s | < 8s | < 15s |
+| Incident classification (gemini-2.0-flash) | < 1s | < 3s | < 6s |
+| Grievance audio processing (Gemini Audio) | < 2s | < 5s | < 10s |
+| PDF report generation (Gemini draft + WeasyPrint) | < 8s | < 20s | < 40s |
 | OCR extraction (A4 page, Tesseract) | < 8s | < 20s | < 45s |
 
 ### 19.2 Throughput Targets
@@ -1274,6 +1470,6 @@ All service-to-service communication over TLS 1.3.
 
 ---
 
-*Version 2.0 | Backend Specification | SIH 2026*
-*Stack: Python 3.12 + FastAPI + Supabase (PostgreSQL / Auth / Storage / Realtime / Webhooks) + Redis + OpenSearch*
+*Version 3.0 | Backend Specification | SIH 2026*
+*Stack: Python 3.12 + FastAPI + Google ADK + Gemini API + Supabase (PostgreSQL / Auth / Storage / Realtime / Webhooks) + Tesseract 5 + WeasyPrint + Redis + OpenSearch*
 *References: [TECH_STACK.md](file:///c:/Coding/SIH2026/docs/TECH_STACK.md) | [workflows.md](file:///c:/Coding/SIH2026/docs/workflows.md) | [PRD.md](file:///c:/Coding/SIH2026/docs/PRD.md) | [migration SQL](file:///c:/Coding/SIH2026/backend/supabase/migrations/20260829195824_compliance_schema.sql)*

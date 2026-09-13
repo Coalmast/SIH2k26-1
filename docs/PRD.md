@@ -252,7 +252,7 @@ graph TD
 ### 7.8 Workflow Automation & Notifications
 
 - FR-8.1: Configurable escalation matrix (role-based, time-based)
-- FR-8.2: Multi-channel notifications (Push, SMS, Email, WhatsApp Business API)
+- FR-8.2: Multi-channel notifications — FCM push (standard), Notifee (emergency, DND bypass), Resend email (statutory/compliance)
 - FR-8.3: Digital approval workflows (multi-level sign-off)
 - FR-8.4: Automated statutory report generation and submission reminders
 
@@ -347,12 +347,12 @@ graph TB
         SVC_REPORT[Reporting Service]
     end
 
-    subgraph AI[AI/ML Platform - FastAPI]
-        AI_RISK[Risk Scoring Engine]
-        AI_ANOM[Anomaly Detection]
-        AI_NLP[NLP/Chatbot Engine - LLM]
-        AI_FORECAST[Predictive Forecasting]
-        MLOPS[MLflow + Model Registry]
+    subgraph AI[AI/ML Platform - Google ADK + Gemini]
+        AI_RISK[RiskScoringAgent - gemini-1.5-pro]
+        AI_ANOM[AnomalyDetectionAgent - gemini-2.0-flash]
+        AI_NLP[WorkerChatbotAgent - gemini-2.0-flash]
+        AI_VOICE[GrievanceAudioAgent - gemini-2.0-flash Audio]
+        AI_REPORT[ReportDraftingAgent - gemini-1.5-pro]
     end
 
     subgraph Messaging[Event Backbone]
@@ -383,11 +383,11 @@ graph TB
     SVC_PROD --> KAFKA
     SVC_COMP --> KAFKA
     SVC_GRIEV --> KAFKA
-    KAFKA --> AI_RISK & AI_ANOM & AI_FORECAST
+    KAFKA --> AI_RISK & AI_ANOM & AI_VOICE
     KAFKA --> SVC_NOTIF
 
     AI_NLP --> BOT
-    AI_RISK & AI_ANOM & AI_FORECAST --> MLOPS
+    AI_RISK & AI_ANOM --> PG
 
     SVC_COMP --> PG
     SVC_INSP --> PG
@@ -485,17 +485,17 @@ sequenceDiagram
     FI->>GW: Sync batch of observations (JWT auth)
     GW->>INSP: POST /inspections/sync
     INSP->>INSP: Validate & deduplicate records
-    INSP->>KAFKA: Publish InspectionCreated event
+    INSP->>KAFKA: Supabase Webhook fired (InspectionCreated)
     INSP-->>GW: 201 Created (sync ack)
     GW-->>FI: Sync success, clear local queue
 
-    KAFKA->>AI: Consume InspectionCreated
-    AI->>AI: Recompute mine risk score
-    AI->>KAFKA: Publish RiskScoreUpdated
+    KAFKA->>AI: Webhook → FastAPI bg task → RiskScoringAgent
+    AI->>AI: Recompute mine risk score (Gemini ADK)
+    AI->>PG: Save score to mine_risk_scores
 
-    KAFKA->>NOTIF: Consume violation events (if severity=Critical)
+    KAFKA->>NOTIF: Supabase Webhook (if severity=Critical)
     NOTIF->>NOTIF: Resolve escalation matrix
-    NOTIF-->>Mine Manager: Push/SMS alert
+    NOTIF-->>Mine Manager: FCM push (standard) / Notifee (critical)
 
     KAFKA->>AUDIT: Consume InspectionCreated
     AUDIT->>AUDIT: Hash record + anchor to ledger
@@ -707,30 +707,35 @@ stateDiagram-v2
 
 |Layer|Technology|
 |---|---|
-|Framework|**React Native** (via Expo, bare workflow for native modules)|
+|Framework|**React Native** (Expo Bare workflow, SDK 56)|
 |Language|TypeScript|
-|Navigation|React Navigation|
-|Offline Storage|WatermelonDB / SQLite (op-sqlite)|
-|State Management|Redux Toolkit / Zustand|
+|Navigation|**Expo Router** (file-based routing)|
+|Offline Storage|WatermelonDB (SQLite-backed reactive local DB)|
+|State Management|Zustand v4|
 |Geo/Maps|react-native-maps, expo-location|
-|Camera/OCR capture|expo-camera, react-native-vision-camera|
-|Background Sync|react-native-background-fetch + custom sync engine|
-|Push Notifications|Firebase Cloud Messaging (FCM)|
+|Camera|react-native-vision-camera|
+|Voice Input|**Gemini Audio API** (multilingual: Hindi, Bengali, Odia, Marathi, English)|
+|Background Sync|expo-background-task|
+|Standard Push|expo-notifications + FCM|
+|Emergency Alarms|**Notifee** (DND bypass, full-screen intent, custom siren)|
 |Biometric|expo-local-authentication|
+|Secure Storage|expo-secure-store (Keychain/Keystore)|
 
 ### 11.3 Backend
-| **Layer**                    | **Recommended Technology**                                 | **Key Architectural Advantages**                                                                                        |
-| ---------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| **API Framework**            | **FastAPI** (with **Pydantic v2**)                         | Native async support, high throughput with Rust-based Pydantic validation, and automated OpenAPI 3.1 schema generation. |
-| **ASGI Server**              | **Granian** / **Uvicorn** (with `uvloop` & `httptools`)    | Rust-based HTTP server (Granian) providing near C-level concurrency and memory safety under heavy I/O workloads.        |
-| **Relational ORM & Spatial** | **SQLAlchemy 2.0 (Async)** + **GeoAlchemy2** + **asyncpg** | Full async ORM capabilities, strict typing, and native spatial geometry operations for PostGIS mine boundary tracking.  |
-| **Workflow Engine**          | **Temporal Python SDK** (`temporalio`)                     | Deterministic, stateful workflow execution for regulatory escalations, SLA timers, and multi-tier approval chains.      |
-| **Event Streaming**          | **`aiokafka`** / **`confluent-kafka`**                     | High-throughput async event publishing and consumption for real-time risk scoring, notifications, and ledger anchoring. |
-| **Task Queue & Cache**       | **TaskIQ** / **Celery** + **`redis-py` (asyncio)**         | Non-blocking background task scheduling, distributed locking, and rate-limiting.                                        |
-| **Document/OCR Engine**      | **PaddleOCR** + **PyMuPDF**                                | High-accuracy layout analysis and text extraction for legacy Hindi and English statutory registers.                     |
-| Search                       | Elasticsearch / OpenSearch                                 |                                                                                                                         |
-| Caching                      | Redis                                                      |                                                                                                                         |
-| API Style                    | REST + GraphQL (Apollo Federation for aggregated queries)  |                                                                                                                         |
+
+| **Layer** | **Technology** | **Purpose** |
+| -------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| **API Framework** | **FastAPI** (with **Pydantic v2**) | Native async, auto OpenAPI 3.1, high throughput |
+| **ASGI Server** | **Uvicorn** (with `uvloop`) | Production-grade async HTTP server |
+| **ORM & Spatial** | **SQLAlchemy 2.0 (Async)** + **GeoAlchemy2** + asyncpg | Full async ORM, native PostGIS geometry |
+| **Background Jobs** | **FastAPI Background Tasks** | Escalation ladders, SLA timers, PDF generation (replaces Kafka/Temporal) |
+| **Event Bus** | **Supabase Webhooks** (Postgres triggers → FastAPI HTTP) | Async event delivery on DB mutations |
+| **AI / Agents** | **Google ADK + Gemini API** | All AI intelligence — no separate ML training pipeline |
+| **OCR Engine** | **Tesseract 5** | Offline-capable legacy document digitization |
+| **PDF Generation** | **WeasyPrint + Jinja2** | Pure Python statutory document rendering |
+| **Search** | OpenSearch | Full-text search on grievances & inspection narratives |
+| **Cache** | Redis 7 | Corporate dashboard rollup cache |
+| **Scheduled Jobs** | **pg_cron** (Supabase PostgreSQL) | Risk score recomputation, compliance escalation, report generation |
 
 ### 11.4 Databases & Storage
 
@@ -743,20 +748,25 @@ stateDiagram-v2
 |Cache/Session|Redis|
 |Search & Logs|Elasticsearch|
 
-### 11.5 AI / ML Stack
+### 11.5 AI / Agents Stack
 
 |Purpose|Technology|
 |---|---|
-|Model Training|Python, scikit-learn, XGBoost/LightGBM (risk scoring, anomaly detection)|
-|Time-Series Forecasting|Prophet / statsmodels / Temporal Fusion Transformer|
-|NLP / Conversational AI|LLM via Claude API (Anthropic) or open-weight models (Llama) fine-tuned/RAG|
-|Vector DB (RAG for regulations Q&A)|pgvector / Weaviate|
-|Speech-to-Text (voice interface)|Whisper / Bhashini (govt multilingual ASR-TTS)|
-|Translation|Bhashini API (Ministry of Electronics & IT's multilingual initiative)|
-|OCR Engine|baidu/Unlimited-OCR|
-|Model Serving|NVIDIA Triton / TorchServe / BentoML|
-|MLOps|MLflow (experiment tracking + model registry), Kubeflow Pipelines|
-|Model Monitoring|Evidently AI (drift detection)|
+|**AI Agent Framework**|**Google ADK (Agent Development Kit)**|
+|**AI Model (complex tasks)**|**Gemini 1.5 Pro** — mine risk scoring, statutory report narrative drafting|
+|**AI Model (fast tasks)**|**Gemini 2.0 Flash** — anomaly detection, incident classification, chatbot|
+|**AI Model (voice/audio)**|**Gemini 2.0 Flash Audio API** — multilingual voice grievance processing|
+|**Regulation Retrieval**|ADK FunctionTool querying `regulations` PostgreSQL table (replaces pgvector/RAG)|
+|**OCR Engine**|**Tesseract 5** (offline-capable; no cloud dependency for document digitization)|
+|**Agent Implementations**|RiskScoringAgent, AnomalyDetectionAgent, ReportDraftingAgent, GrievanceAudioAgent, WorkerChatbotAgent|
+
+> **What this replaces from earlier drafts:**
+> - ~~scikit-learn / XGBoost / LightGBM~~ → Gemini RiskScoringAgent
+> - ~~Facebook Prophet / statsmodels~~ → Gemini AnomalyDetectionAgent
+> - ~~Claude API / Llama~~ → Gemini ReportDraftingAgent
+> - ~~Bhashini STT / Whisper~~ → Gemini Audio API
+> - ~~pgvector / Weaviate~~ → ADK FunctionTool over `regulations` table
+> - ~~MLflow / Kubeflow / Triton / BentoML~~ → Not required (no local model training/serving)
 
 ### 11.6 DevOps & Infrastructure
 
@@ -797,32 +807,29 @@ graph LR
         OCRIN[OCR Pipeline]
     end
     subgraph Processing
-        KAFKA[Kafka Topics]
-        STREAM[Stream Processing - Kafka Streams/Flink]
+        WEBHOOKS[Supabase Webhooks]
+        BGTASKS[FastAPI Background Tasks]
     end
     subgraph Storage
-        PG[(PostgreSQL - OLTP)]
-        MONGO[(MongoDB)]
-        TS[(Supabase PostgreSQL)]
-        S3[(Object Storage)]
-        DWH[(Data Warehouse - ClickHouse/BigQuery)]
+        PG[(Supabase PostgreSQL + PostGIS)]
+        S3[(Supabase Storage - Media, PDFs, Audio)]
+        REDIS[(Redis - Dashboard Cache)]
+        ES[(OpenSearch - Full-text Search)]
     end
     subgraph Consumption
-        BI[BI Dashboards - Superset/Metabase]
-        AI[AI/ML Models]
+        DASH[Web/Mobile Dashboards]
+        AI[Google ADK Gemini Agents]
         API[Reporting APIs]
     end
-    MOB --> KAFKA
+    MOB --> BGTASKS
     WEB --> PG
-    SENSOR --> KAFKA
+    SENSOR --> WEBHOOKS
     OCRIN --> S3
-    KAFKA --> STREAM --> TS
-    STREAM --> DWH
-    PG --> DWH
-    MONGO --> DWH
-    DWH --> BI
-    DWH --> AI
+    WEBHOOKS --> BGTASKS --> PG
+    BGTASKS --> AI
     PG --> API
+    REDIS --> DASH
+    PG --> DASH
 ```
 
 - **Multi-tenancy model:** Schema-per-subsidiary or row-level security (RLS) in PostgreSQL keyed by `subsidiary_id`/`mine_id`, enforced at the API Gateway and DB layer.
@@ -831,47 +838,54 @@ graph LR
 
 ---
 
-## 13. AI/ML Architecture
+## 13. AI Architecture (Google ADK + Gemini)
+
+All AI intelligence is powered exclusively by **Google Agent Development Kit (ADK)** with **Gemini API** models. Agents use `FunctionTool` to call Supabase PostgreSQL, reason over live data, and return structured outputs. No separate ML training pipeline or model registry is needed.
 
 ```mermaid
 graph TB
     subgraph DataSources
         D1[Inspection Records]
         D2[Violation History]
-        D3[Production Data]
-        D4[Environmental Readings]
-        D5[Grievance Text]
+        D3[Environmental Readings]
+        D4[Grievance Audio / Text]
+        D5[Production Data]
     end
-    subgraph FeaturePipeline
-        FE[Feature Engineering - Spark/Pandas]
-        FS[(Feast Feature Store)]
+    subgraph ADK_Agents[Google ADK Agents]
+        A1[RiskScoringAgent - gemini-1.5-pro]
+        A2[AnomalyDetectionAgent - gemini-2.0-flash]
+        A3[ReportDraftingAgent - gemini-1.5-pro]
+        A4[GrievanceAudioAgent - gemini-2.0-flash Audio]
+        A5[WorkerChatbotAgent - gemini-2.0-flash]
     end
-    subgraph Models
-        M1[Risk Scoring Model - Gradient Boosted Trees]
-        M2[Anomaly Detection - Isolation Forest / Autoencoder]
-        M3[Forecasting - Time Series Transformer]
-        M4[NLP Classifier - Grievance/Violation categorization]
-        M5[Conversational LLM - RAG over Regulation Corpus]
+    subgraph Tools[FunctionTools - query Supabase PostgreSQL]
+        T1[get_violations]
+        T2[get_capa_metrics]
+        T3[get_env_readings]
+        T4[get_regulation_text]
+        T5[get_grievance_status]
+        T6[file_grievance]
     end
-    subgraph Serving
-        REG[Model Registry - MLflow]
-        SVC[Inference API - FastAPI + Triton]
-    end
-    D1 & D2 & D3 & D4 & D5 --> FE --> FS
-    FS --> M1 & M2 & M3 & M4
-    M1 & M2 & M3 & M4 --> REG --> SVC
-    M5 --> SVC
-    SVC --> DASH[Dashboards & Alerts]
+    D1 & D2 & D3 & D4 & D5 --> Tools
+    Tools --> A1 & A2 & A3 & A4 & A5
+    A1 --> R1[mine_risk_scores table]
+    A2 --> R2[violation_clusters table]
+    A3 --> R3[PDF report narrative]
+    A4 --> R4[grievances table]
+    A5 --> R5[Chat response to worker]
 ```
 
-### 13.1 Key Models
+### 13.1 Agent Responsibilities
 
-1. **Mine Risk Score (0–100):** Weighted model combining violation frequency, severity, CAPA closure delay, inspection coverage, and historical incident rate. Retrained monthly.
-2. **Anomaly Detection:** Flags unusual production dips/spikes or environmental readings outside statistical control limits (Isolation Forest / seasonal decomposition).
-3. **Predictive Compliance Breach Alerts:** Time-series forecasting on task completion trends to flag mines likely to miss upcoming deadlines.
-4. **Recurring Violation Clustering:** Unsupervised clustering (K-Means/DBSCAN) on violation category + location + text embeddings to surface systemic issues.
-5. **NLP Auto-Classification:** Classifies free-text grievances/observations into predefined categories and routes to the right department.
-6. **Conversational Assistant (RAG):** LLM grounded on a vector store of regulations, SOPs, and FAQs to answer multilingual compliance queries and guide grievance filing.
+1. **RiskScoringAgent** (`gemini-1.5-pro`): Every 6 hours per mine + event-driven. Calls tools to gather violations, CAPAs, env breaches, production pressure, contractor compliance, incident history. Returns `score (0–100)`, `risk_level`, `trend`, `contributing_factors`, `recommendations`.
+
+2. **AnomalyDetectionAgent** (`gemini-2.0-flash`): Weekly per mine. Analyses 18 months of violations. Flags recurring zone+statute clusters (≥3 occurrences = cluster; ≥5 = systemic risk).
+
+3. **ReportDraftingAgent** (`gemini-1.5-pro`): Called during statutory report generation. Fetches data via tools and writes formal narrative sections citing exact regulation text.
+
+4. **GrievanceAudioAgent** (`gemini-2.0-flash` Audio API): Triggered when worker syncs audio. Transcribes + translates + classifies (category, priority, summary) in Hindi, Bengali, Odia, Marathi, or English.
+
+5. **WorkerChatbotAgent** (`gemini-2.0-flash`): Always-on chatbot for workers. Responds in the worker's language. Can file grievances, check status, and check attendance via tool calls.
 
 ---
 
@@ -990,10 +1004,11 @@ graph LR
     SGCMP <--> MOEFCC[MoEFCC / Parivesh Portal]
     SGCMP <--> SPCB[State Pollution Control Boards]
     SGCMP <--> ERP[CIL ERP / SAP]
-    SGCMP <--> BHASHINI[Bhashini - Translation/Speech]
-    SGCMP <--> SMSGW[SMS/WhatsApp Gateway]
+    SGCMP <--> GEMINI[Google Gemini API / ADK]
+    SGCMP <--> RESEND[Resend Email API]
     SGCMP <--> BIOMETRIC[Biometric Attendance Systems]
     SGCMP <--> GEOPORTAL[Bhuvan/GIS National Portal]
+    SGCMP <--> NBG[National Blockchain for Governance]
 ```
 
 - Integration via secure REST/SOAP adapters and message queues; each external integration isolated behind an **Anti-Corruption Layer (ACL)** microservice to shield core domain from external schema changes.
@@ -1014,10 +1029,10 @@ graph LR
 
 ## 20. Workflow Automation & Alerts
 
-- **Escalation Matrix Engine:** Configurable rules (e.g., overdue > 48h → Mine Manager; > 96h → Subsidiary Admin; > 7 days → Corporate + Regulator visibility).
-- **Multi-channel notification:** Push (FCM), SMS (bulk SMS gateway), Email (SMTP), WhatsApp Business API.
-- **Digital Approvals:** Multi-level sign-off workflows for CAPA closure, contract approval, statutory report submission (Camunda/Temporal-based).
-- **Automated Report Generation:** Scheduled jobs generate statutory reports (DGMS returns, environmental compliance reports) in prescribed formats and route for digital signature.
+- **Escalation Matrix Engine:** Configurable rules (e.g., overdue > 48h → Mine Manager; > 96h → Subsidiary Admin; > 7 days → Corporate + Regulator visibility). Implemented via `pg_cron` + FastAPI background tasks.
+- **Multi-channel notification:** Standard alerts via FCM push + Resend email. Emergency alarms (CH4 breach, fatal incident) via Notifee (DND bypass, custom siren, full-screen intent).
+- **Digital Approvals:** Multi-level sign-off workflows for CAPA closure, contract approval, statutory report submission (FastAPI background tasks + Supabase Realtime status updates).
+- **Automated Report Generation:** `pg_cron` scheduled jobs generate statutory reports (DGMS returns, environmental compliance reports) in prescribed formats; Gemini ReportDraftingAgent populates narrative sections; WeasyPrint renders PDF.
 
 ---
 
@@ -1060,7 +1075,7 @@ sequenceDiagram
 ```mermaid
 graph LR
     SCAN[Scan/Photo of Document] --> PREPROC[Image Pre-processing - deskew, denoise]
-    PREPROC --> OCR[OCR Engine - Tesseract/PaddleOCR/Textract]
+    PREPROC --> OCR[OCR Engine - Tesseract 5 (offline-capable)]
     OCR --> NER[AI Field Extraction - NER Model]
     NER --> VALIDATE[Validation UI - human-in-the-loop]
     VALIDATE --> STORE[(Store structured data + original scan)]
@@ -1074,18 +1089,19 @@ graph LR
 
 ## 24. Multilingual Conversational Interface
 
-- **Channels:** In-app chatbot (web/mobile), WhatsApp bot, IVR voice bot for low-literacy field workers.
-- **Languages:** Hindi, English, Bengali, Odia, Telugu (extensible to all Eighth Schedule languages via Bhashini).
+- **Channels:** In-app chatbot (web dashboard + mobile Tab 5), voice note filing (mobile).
+- **Languages natively supported:** Hindi (hi), English (en), Bengali (bn), Odia (or), Marathi (mr).
+- **AI Engine:** **Google Gemini API** exclusively — both text and audio modalities.
 - **Capabilities:**
-    - Compliance status queries ("What is my mine's compliance percentage this month?")
-    - Grievance filing via natural conversation
-    - Guided inspection checklist walkthrough via voice for field workers
-    - RAG-grounded answers to "What does CMR 2017 Rule 106 require?" type regulatory queries
-- **Architecture:** Speech-to-Text (Bhashini/Whisper) → LLM (RAG over regulation corpus, Claude API) → Text-to-Speech (Bhashini) response, with text fallback for connectivity-constrained areas.
+    - Compliance status queries in any supported language via WorkerChatbotAgent
+    - Grievance filing via natural text conversation (WorkerChatbotAgent → `file_grievance` tool)
+    - Voice grievance filing: worker records audio → offline-queued → Gemini Audio API processes on sync (transcription + translation + classification)
+    - Regulation queries: WorkerChatbotAgent calls `get_regulation_text` FunctionTool → cites CMR 2017 / EC conditions directly
+- **Architecture:** Worker speaks/types → Gemini Audio API (voice) or Gemini 2.0 Flash (text) → WorkerChatbotAgent with FunctionTools → structured response in worker's language. No separate STT/TTS pipeline needed.
 
 ---
 
-## 25. Offline-First Strategy
+## 25. -First Strategy
 
 |Aspect|Approach|
 |---|---|
@@ -1146,7 +1162,7 @@ graph LR
 - Government cloud (MeghRaj/NIC) is the preferred hosting environment; architecture remains cloud-agnostic for portability.
 - Regulatory bodies (DGMS, MoEFCC, SPCB) will provide API/data exchange specifications during integration phase.
 - Existing legacy data (paper registers) will be digitized progressively via OCR, not a one-time bulk migration.
-- Bhashini APIs are assumed available for multilingual speech/translation (Government of India initiative).
+- Multilingual voice/text input handled natively via Google Gemini API (no dependency on Bhashini or external STT services).
 
 ---
 

@@ -4,7 +4,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, UserPlus } from 'lucide-react'
 import { toast } from 'sonner'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -18,6 +17,22 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+const ROLE_OPTIONS = [
+  { value: 'super_admin', label: '👑 Super Admin' },
+  { value: 'corporate_executive', label: '🏢 Corporate & Subsidiary Mgmt' },
+  { value: 'mine_manager', label: '⛏️ Mine Manager' },
+  { value: 'field_inspector', label: '🔍 Field Inspector' },
+  { value: 'safety_official', label: '🦺 Safety Official' },
+  { value: 'contractor', label: '🏗️ Contractor & Vendor' },
+]
 
 const formSchema = z
   .object({
@@ -30,6 +45,7 @@ const formSchema = z
       .min(1, 'Please enter your password.')
       .min(7, 'Password must be at least 7 characters long.'),
     confirmPassword: z.string().min(1, 'Please confirm your password.'),
+    role: z.string().min(1, 'Please select your role.'),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match.",
@@ -48,6 +64,7 @@ export function SignUpForm({
       email: '',
       password: '',
       confirmPassword: '',
+      role: '',
     },
   })
 
@@ -57,6 +74,9 @@ export function SignUpForm({
     supabase.auth.signUp({
       email: data.email,
       password: data.password,
+      options: {
+        data: { role: data.role },
+      },
     }).then(({ error }) => {
       setIsLoading(false)
       if (error) {
@@ -81,8 +101,32 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder='name@example.com' {...field} />
+                <Input placeholder='name@coalmines.gov.in' {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name='role'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Role</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger id='signup-role'>
+                    <SelectValue placeholder='Select your role...' />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {ROLE_OPTIONS.map((r) => (
+                    <SelectItem key={r.value} value={r.value}>
+                      {r.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
@@ -94,7 +138,7 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder='********' {...field} />
+                <PasswordInput placeholder='••••••••' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -107,7 +151,7 @@ export function SignUpForm({
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <PasswordInput placeholder='********' {...field} />
+                <PasswordInput placeholder='••••••••' {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,37 +161,8 @@ export function SignUpForm({
           {isLoading ? <Loader2 className='animate-spin' /> : <UserPlus />}
           Create Account
         </Button>
-
-        <div className='relative my-2'>
-          <div className='absolute inset-0 flex items-center'>
-            <span className='w-full border-t' />
-          </div>
-          <div className='relative flex justify-center text-xs uppercase'>
-            <span className='bg-background px-2 text-muted-foreground'>
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <div className='grid grid-cols-2 gap-2'>
-          <Button
-            variant='outline'
-            className='w-full'
-            type='button'
-            disabled={isLoading}
-          >
-            <IconGithub className='h-4 w-4' /> GitHub
-          </Button>
-          <Button
-            variant='outline'
-            className='w-full'
-            type='button'
-            disabled={isLoading}
-          >
-            <IconFacebook className='h-4 w-4' /> Facebook
-          </Button>
-        </div>
       </form>
     </Form>
   )
 }
+

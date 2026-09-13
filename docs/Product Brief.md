@@ -1,23 +1,29 @@
-# Product Brief: AI-Based Smart Governance & Compliance Monitoring System for Coal Mines
+# Product Brief: COMET — AI-Based Smart Governance & Compliance Monitoring System for Coal Mines
 
 |---|---|
 |**Sponsor Organization**|Ministry of Coal|
 |**Owning Department**|Coal India Limited (CIL)|
 |**Category**|Software|
 |**Theme**|Smart Automation|
+|**Problem Statement ID**|SIH 2026 — 26024|
+|**Platform Name**|COMET (Coal Operations Monitoring, Enforcement & Transparency)|
 |**Document Owner**|Product Management|
-|**Status**|Draft v1.0|
-|**Last Updated**|August 2026|
+|**Status**|Draft v2.0|
+|**Last Updated**|September 2026|
 
 ---
 
 ## 1. Executive Summary
 
-Coal India Limited operates through multiple subsidiaries, mine sites, contractors, and regulatory touchpoints. Today, governance activities — statutory compliance, inspections, safety observations, production reporting, environmental monitoring, attendance, contractor management, and grievance handling — run on **fragmented spreadsheets, manual registers, and delayed paper trails**.
+Coal India Limited operates through multiple subsidiaries, mine sites, contractors, and regulatory touchpoints. Today, governance activities — statutory compliance, inspections, safety observations, production reporting, environmental monitoring, worker attendance, contractor management, and grievance handling — run on **fragmented spreadsheets, manual registers, and delayed paper trails**.
 
-This document frames the product problem for a **centralized, AI-enabled Smart Governance and Compliance Monitoring Platform** that unifies these workflows into one digital ecosystem, spanning web dashboards, a geo-tagged mobile app, and an analytics/AI layer for risk detection and predictive alerts.
+COMET is a **centralized, AI-enabled Smart Governance and Compliance Monitoring Platform** that unifies these workflows into one digital ecosystem, spanning:
+- Role-based web dashboards for mine officials, corporate management, and regulators
+- A geo-tagged, offline-capable mobile field app for inspectors, overmen, and field officers
+- A Google Gemini + ADK powered AI layer for risk scoring, anomaly detection, predictive alerts, and statutory report generation
+- Multilingual voice/text interfaces for low-literacy field workers and regional language speakers
 
-This brief is intentionally **scope-first**: it exists to pin down _what problem we are solving, for whom, and what "done" looks like_ before any design or engineering begins.
+This brief defines **what problem we are solving, for whom, and what "done" looks like**.
 
 ---
 
@@ -39,7 +45,7 @@ flowchart TD
     D --> H[Slow corrective action on violations]
     E --> I[Recurring safety/environmental failures go undetected]
 
-    F --> J[Regulatory & Reputational Risk]
+    F --> J[Regulatory & Reputational Risk for CIL]
     G --> J
     H --> J
     I --> J
@@ -47,35 +53,28 @@ flowchart TD
 
 ### 2.2 Who Feels This Pain
 
-|Stakeholder|Pain Today|
+| Stakeholder | Pain Today |
 |---|---|
-|Mine Safety/Compliance Officer|Manually logs inspections, chases paperwork, no real-time visibility into violations|
-|Corporate Management (CIL HQ)|No consolidated, real-time view across subsidiaries; relies on periodic manual roll-ups|
-|Regulatory Authorities (DGMS, MoEFCC, Labour Dept.)|Delayed, inconsistent statutory reporting; hard to audit|
-|Contractors / Field Workers|Attendance, safety observations, and grievances tracked on paper, prone to loss/error|
-|Environmental Officers|Manual environmental monitoring logs, delayed escalation of breaches|
+| Mine Safety/Compliance Officer | Manually logs inspections, chases paperwork, no real-time visibility into violations |
+| Corporate Management (CIL HQ) | No consolidated real-time view across subsidiaries; relies on periodic manual roll-ups |
+| Regulatory Authorities (DGMS, MoEFCC, Labour Dept.) | Delayed, inconsistent statutory reporting; hard to audit; no tamper-evidence |
+| Contractors / Field Workers | Attendance, safety observations, and grievances tracked on paper, prone to loss or error |
+| Environmental Officers | Manual environmental monitoring logs, delayed escalation of breaches |
 
 ---
 
 ## 3. Business Goals & Success Metrics
 
-Ruthless focus: we are not building "a dashboard." We are building a system that **shrinks the time between a field event and a corrective/regulatory action**, and gives leadership a truthful, real-time picture of compliance risk.
+COMET is not a dashboard — it is a system that **shrinks the time between a field event and a corrective or regulatory action**, and gives leadership a truthful, real-time picture of compliance risk.
 
-|Business Goal|Metric|Target (Year 1 post-rollout)|
+| Business Goal | Metric | Target (Year 1 post-rollout) |
 |---|---|---|
-|Reduce compliance reporting delay|Avg. time from field observation → statutory report submission|↓ from days to < 24 hrs|
-|Improve violation closure|Avg. time to close a flagged violation/corrective action|↓ by 50%|
-|Increase field reporting coverage|% of inspections/observations geo-tagged & digitally logged|≥ 90% of scheduled inspections|
-|Reduce manual paperwork|% of statutory forms generated automatically vs. manually|≥ 70% automated|
-|Improve risk visibility|# of high-risk sites flagged proactively by AI before an incident/audit finding|Baseline established, trending up quarter-over-quarter|
-|Scale across subsidiaries|# of mine sites / subsidiaries onboarded|Phase 1: 1 subsidiary pilot → Phase 2: all CIL subsidiaries|
-
-### Non-Goals (Explicitly Out of Scope for v1)
-
-- Replacing core ERP/finance systems of CIL subsidiaries.
-- Full blockchain-based audit trail in Phase 1 (evaluated as Phase 2+ enhancement).
-- Automated regulatory decision-making (system **flags and informs**; humans retain approval authority for statutory action).
-- Multilingual conversational (chatbot) interface in Phase 1 — planned as a later enhancement, not an MVP dependency.
+| Reduce compliance reporting delay | Avg time: field observation → statutory report submission | ↓ from days to < 24 hrs |
+| Improve violation closure | Avg time to close a flagged violation/CAPA | ↓ by 50% |
+| Increase field reporting coverage | % of inspections geo-tagged & digitally logged | ≥ 90% of scheduled inspections |
+| Reduce manual paperwork | % of statutory forms auto-generated vs manual | ≥ 70% automated |
+| Improve risk visibility | AI-flagged high-risk sites before incident/audit finding | Baseline established; quarterly improvement |
+| Scale across subsidiaries | Mine sites / subsidiaries onboarded | Phase 1: 1 subsidiary pilot → Phase 2: all CIL |
 
 ---
 
@@ -87,72 +86,98 @@ graph LR
         FW[Field Worker / Contractor]
         MO[Mine Safety & Compliance Officer]
         EO[Environmental Officer]
+        OV[Overman / Shift Supervisor]
     end
     subgraph Corporate
         CM[Corporate Management - CIL HQ]
         SA[System Administrator]
     end
     subgraph External
-        RA[Regulatory Authority - DGMS / MoEFCC / Labour Dept.]
+        RA[Regulatory Authority - DGMS / MoEFCC / SPCB / Labour Dept.]
     end
 
-    FW -- logs observations, attendance --> MO
+    FW -- logs observations, attendance, grievances --> MO
+    OV -- shift reports, gas readings --> MO
     MO -- inspections, corrective actions --> CM
-    EO -- environmental readings, breaches --> CM
+    EO -- environmental readings, breach reports --> CM
     CM -- statutory reports --> RA
     SA -- configures workflows, users, mines --> CM
 ```
 
-|Persona|Primary Need|Primary Surface|
+| Persona | Primary Need | Primary Surface |
 |---|---|---|
-|Field Worker / Contractor|Log attendance, safety observations, incidents quickly, even offline|Mobile app|
-|Mine Safety & Compliance Officer|Track inspections, violations, corrective actions per mine|Mobile + Web|
-|Environmental Officer|Log & escalate environmental monitoring data|Mobile + Web|
-|Corporate Management|Real-time, cross-subsidiary compliance & risk dashboard|Web dashboard|
-|Regulatory Authority|Access verifiable, auditable statutory reports|Web portal (restricted view)|
-|System Administrator|Configure mines, users, workflows, compliance rule sets|Web (admin console)|
+| Field Worker / Contractor | Log attendance, safety observations, incidents quickly — even offline | Mobile app |
+| Mine Safety & Compliance Officer | Track inspections, violations, corrective actions per mine | Mobile + Web |
+| Overman / Shift Supervisor | Submit shift reports, gas readings, workforce data | Mobile app |
+| Environmental Officer | Log & escalate environmental monitoring readings | Mobile + Web |
+| Corporate Management | Real-time cross-subsidiary compliance & risk dashboard | Web dashboard |
+| Regulatory Authority | Access verifiable, blockchain-anchored statutory reports | Web portal (read-only) |
+| System Administrator | Configure mines, users, workflows, compliance rule sets | Web (admin console) |
 
 ---
 
 ## 5. Scope
 
-### 5.1 In Scope (Phase 1 — MVP)
+### 5.1 In Scope — All PS Requirements
 
-1. Statutory compliance tracking (safety, environment, production, labour).
-2. Real-time inspection, observation, violation, and corrective-action logging.
-3. Geo-tagged, time-stamped mobile field reporting with **offline-first support**.
-4. Role-based dashboards (mine official / corporate / regulator view).
-5. Automated alerts, reminders, and escalation workflows.
-6. OCR-based digitization of existing paper compliance records.
-7. AI/analytics layer: risk scoring, recurring-violation detection, anomaly flagging.
+All 9 governance activities and all 7 PS-listed optional technologies are in scope:
 
-### 5.2 Phase 2+ (Explicitly Deferred)
+**Core Governance Modules:**
+1. Statutory compliance tracking (safety, environment, production, labour — Mines Act, CMR 2017, EP Act, CLRA, MMR 1961)
+2. Real-time inspection, observation, violation, and corrective-action (CAPA) management
+3. Contractor onboarding, contract lifecycle, and compliance trust scoring
+4. Production reporting (shift-wise, mine-wise, subsidiary-wise)
+5. Environmental monitoring (manual CAAQMS entry, threshold alerting, EC compliance)
+6. Worker attendance & labour compliance (geo-fenced, QR/manual)
+7. Grievance handling (multilingual, AI-classified, escalated)
+8. Regulatory reporting (DGMS, MoEFCC, SPCB, Labour Dept.)
+9. Admin & master data management (mines, regulations, users, roles)
 
-- GIS-based spatial risk mapping overlays.
-- Blockchain-anchored audit trail for tamper-evident statutory records.
-- Multilingual conversational interface for field workers.
-- Predictive maintenance / production-anomaly correlation models.
+**Enabling Technologies (all 7 from PS):**
+- **AI/ML** — Google Gemini API + ADK for risk scoring, anomaly detection, report drafting, chatbot
+- **Mobile applications** — React Native + Expo offline-first field app (Android/iOS)
+- **GIS mapping** — MapLibre + PostGIS: mine boundaries, incident overlays, risk heatmaps
+- **OCR/document digitization** — Tesseract 5: legacy register and contractor document scanning
+- **Workflow automation** — Configurable escalation ladders, multi-level digital approvals, pg_cron scheduling
+- **Blockchain-based audit trails** — SHA-256 hash anchoring to Hyperledger Fabric (NBF/Vishvasya); architecture complete *(integration with consortium network is post-prototype)*
+- **Multilingual conversational interfaces** — Gemini Audio API + WorkerChatbotAgent (Hindi, Bengali, Odia, Marathi, English); i18next UI labels
 
-### 5.3 Scope Boundary Diagram
+### 5.2 Phased Delivery
+
+| Phase | Scope |
+|---|---|
+| **Phase 1 — SIH Demo Prototype** | Core modules (compliance, inspection, CAPA, contractor, production, attendance, grievance), all 7 technologies demonstrated end-to-end at one mine site |
+| **Phase 2 — Pilot Deployment** | Multi-mine subsidiary rollout, blockchain consortium network live, full regulator portal access, biometric hardware integration |
+| **Phase 3 — Full Scale** | All CIL subsidiaries, IoT sensor auto-ingestion, predictive maintenance, ERP integration |
 
 ```mermaid
 flowchart LR
-    subgraph InScope [Phase 1 - In Scope]
+    subgraph Phase1 [Phase 1 - SIH Prototype]
         A1[Compliance Tracking]
-        A2[Inspection & Violation Mgmt]
-        A3[Mobile Field Reporting]
-        A4[Dashboards - Mine/Corporate/Regulator]
+        A2[Inspection & CAPA]
+        A3[Offline Mobile Field App]
+        A4[Dashboards]
         A5[Alerts & Escalation]
         A6[OCR Digitization]
-        A7[AI Risk Scoring]
+        A7[AI Risk Scoring - Gemini]
+        A8[Contractor Management]
+        A9[Production Reporting]
+        A10[Attendance]
+        A11[Grievance - Multilingual]
+        A12[GIS Mapping]
+        A13[Blockchain - Hash + Audit]
     end
-    subgraph Deferred [Phase 2+ - Deferred]
-        B1[GIS Spatial Mapping]
-        B2[Blockchain Audit Trail]
-        B3[Multilingual Chat Interface]
-        B4[Predictive Production Models]
+    subgraph Phase2 [Phase 2 - Pilot]
+        B1[Blockchain Consortium Live]
+        B2[Biometric Hardware Integration]
+        B3[Multi-Subsidiary Rollout]
     end
-    InScope -.evolves into.-> Deferred
+    subgraph Phase3 [Phase 3 - Scale]
+        C1[IoT Sensor Auto-Ingestion]
+        C2[ERP Integration]
+        C3[All CIL Subsidiaries]
+    end
+    Phase1 -.evolves.-> Phase2 -.evolves.-> Phase3
 ```
 
 ---
@@ -163,226 +188,181 @@ flowchart LR
 
 ```mermaid
 sequenceDiagram
-    participant FW as Field Worker
-    participant App as Mobile App
-    participant SVC as Backend Services
-    participant AI as AI/Analytics Engine
+    participant FW as Field Inspector
+    participant App as Mobile App (WatermelonDB)
+    participant SVC as FastAPI Backend
+    participant AI as Gemini ADK RiskScoringAgent
     participant MO as Mine Officer
     participant CM as Corporate Dashboard
 
-    FW->>App: Log safety observation (geo + timestamp + photo)
-    App->>SVC: Sync (queued if offline)
-    SVC->>AI: Evaluate against historical patterns
-    AI-->>SVC: Risk score + duplicate/recurrence flag
-    SVC->>MO: Alert - violation flagged
-    MO->>SVC: Assign corrective action + deadline
-    SVC->>CM: Real-time dashboard update
-    MO->>SVC: Mark corrective action closed (evidence attached)
+    FW->>App: Log geo-tagged observation (offline or online)
+    App->>App: Save to WatermelonDB instantly
+    App->>SVC: Sync on connectivity (POST /sync/push)
+    SVC->>SVC: Validate + geo-fence check + insert to Supabase
+    SVC->>AI: Trigger RiskScoringAgent (Gemini tool-calling)
+    AI-->>SVC: Updated risk score + contributing factors
+    SVC->>MO: Push alert — violation flagged
+    MO->>SVC: Assign CAPA + deadline
+    SVC->>CM: Real-time dashboard update (Supabase Realtime)
+    MO->>SVC: Mark CAPA closed (evidence attached)
     SVC->>CM: Compliance status updated
-    SVC->>RA: Auto-generate statutory report (if applicable)
+    SVC->>RA: Auto-draft statutory report (if applicable)
 ```
 
-### 6.2 Statutory Reporting Workflow
+### 6.2 Worker Grievance → AI Classification → Resolution
+
+```mermaid
+sequenceDiagram
+    participant W as Mine Worker
+    participant App as Mobile App
+    participant SVC as FastAPI Backend
+    participant AI as Gemini GrievanceAudioAgent
+    participant SO as Safety Officer
+    participant CB as WorkerChatbotAgent
+
+    W->>App: Record voice grievance in Hindi (offline OK)
+    App->>App: Audio queued in WatermelonDB
+    App->>SVC: Sync audio on connectivity
+    SVC->>AI: Send audio to Gemini Audio API
+    AI-->>SVC: {category: safety, priority: high, transcription, summary}
+    SVC->>SO: Push + email — grievance assigned
+    SO->>SVC: Investigate & resolve
+    W->>CB: "मेरी शिकायत का क्या हुआ?" (chatbot query)
+    CB-->>W: Reply in Hindi with status + timeline
+```
+
+### 6.3 Statutory Report Generation & Regulatory Submission
 
 ```mermaid
 stateDiagram-v2
     [*] --> DataCollected: Field data logged
     DataCollected --> Validated: Auto-validation + OCR digitization
-    Validated --> RiskAssessed: AI risk/anomaly check
-    RiskAssessed --> DraftReport: Auto-generate statutory report draft
-    DraftReport --> OfficerReview: Mine/Corporate officer review
-    OfficerReview --> Approved: Approved for submission
+    Validated --> AIGenerated: Gemini ReportDraftingAgent drafts narrative
+    AIGenerated --> PDF: WeasyPrint renders PDF + SHA-256 hash
+    PDF --> OfficerReview: Mine Manager reviews draft
+    OfficerReview --> Signed: Digital signature recorded
     OfficerReview --> Rejected: Sent back for correction
     Rejected --> DataCollected
-    Approved --> Submitted: Submitted to Regulatory Authority
-    Submitted --> [*]
+    Signed --> Submitted: Mine Manager clicks Submit to Authority
+    Submitted --> EmailSent: Resend delivers PDF to DGMS/SPCB inbox
+    EmailSent --> Verified: Regulator verifies SHA-256 + blockchain anchor
+    Verified --> [*]
 ```
 
 ---
 
-## 7. Solution Alignment — How This Maps to Business Goals
+## 7. Solution Alignment — How COMET Addresses Every PS Requirement
 
-|Capability|Business Goal Served|
+| PS Requirement | COMET Capability |
 |---|---|
-|Geo-tagged offline mobile reporting|Increases field reporting coverage; reduces reporting delay|
-|AI risk scoring & anomaly detection|Improves proactive risk visibility|
-|Automated statutory report generation|Reduces manual paperwork; speeds up reporting|
-|Escalation workflows|Reduces violation closure time|
-|Centralized cross-subsidiary dashboard|Enables real-time, data-driven corporate decision-making|
-|OCR digitization of legacy records|Enables historical trend analysis without a costly manual re-entry project|
+| Centralized AI-enabled governance platform | Unified Supabase + FastAPI backend; single source of truth |
+| Statutory compliance tracking | Compliance Management Module — auto-generated task calendar per mine |
+| Real-time monitoring of inspections and violations | Inspection & CAPA Module + Supabase Realtime dashboard |
+| AI/analytics for risk, anomalies, recurring failures | Google Gemini ADK Agents (Risk, Anomaly, Clustering) |
+| Geo-tagged time-stamped mobile field reporting | React Native app + expo-location + WatermelonDB |
+| Offline mobile support | WatermelonDB + expo-background-task sync |
+| Role-based dashboards for mine, corporate, regulators | Web dashboard with 5 distinct role views |
+| Automated alerts, reminders, escalations | pg_cron + Supabase Webhooks + Notifee/FCM/Resend |
+| Minimize manual paperwork | PDF auto-generation via Gemini + WeasyPrint |
+| GIS mapping | MapLibre + deck.gl + PostGIS |
+| OCR digitization | Tesseract 5 pipeline |
+| Blockchain audit trail | SHA-256 hash anchoring (NBF/Vishvasya) |
+| Multilingual conversational interface | Gemini Audio API + WorkerChatbotAgent |
+| Scalable across mines and subsidiaries | Multi-tenant RLS; subsidiary-scoped data |
+| Contractor management | Contractor Module with OCR onboarding + Trust Score |
+| Production reporting | Production & Overman Shift Report Module |
+| Worker attendance | Attendance Module — geo-fenced QR/manual |
+| Grievance handling | AI-classified + escalated Grievance Module |
+| Environmental monitoring | Environmental Monitoring Module — threshold alerting |
+| Regulatory reporting | Statutory Report Generation + Resend delivery |
 
 ---
 
 ## 8. High-Level System Architecture
 
-The architecture favors a **modular, API-first, offline-tolerant** design, since field connectivity at mine sites is unreliable and the system must scale independently across subsidiaries.
-
 ```mermaid
 flowchart TB
-    subgraph Client Layer
-        WebApp[Web Dashboard - React + TS]
-        MobileApp[Mobile App - React Native, Offline-first]
+    subgraph Clients
+        WebApp[Web Dashboard\nReact 19 + Vite + TanStack Router]
+        MobileApp[Mobile Field App\nReact Native + Expo + WatermelonDB]
+        RegPortal[Regulator Portal\nRead-only Web View]
+        ChatBot[Worker Chatbot\nMobile + Web]
     end
 
     subgraph Edge
-        Gateway[API Gateway / BFF]
-        CDN[CDN + Edge Cache]
+        CDN[CDN / Cloudflare]
+        WAF[WAF + DDoS]
     end
 
-    subgraph AppServices
-        AuthSvc[Auth & RBAC Service]
-        ComplianceSvc[Compliance & Inspection Service]
-        WorkflowSvc[Workflow & Escalation Engine]
-        ReportSvc[Statutory Reporting Service]
-        OCRSvc[OCR & Document Digitization Service]
-        NotifySvc[Notification Service]
-    end
-
-    subgraph AI Layer
-        RiskEngine[AI Risk Scoring & Anomaly Detection]
-        MLOps[Model Training / MLOps Pipeline]
-    end
-
-    subgraph Data Layer
-        PG[(PostgreSQL - transactional data)]
-        TS[(Time-series DB - sensor/env readings)]
-        ObjStore[(Object Storage - photos, docs, PDFs)]
-        Search[(Search Index - full-text/audit search)]
-        Cache[(Redis Cache)]
-    end
-
-    subgraph Platform
-        Queue[Event Bus / Message Queue]
-        Observability[Logging, Metrics, Tracing]
-        IAM[Identity Provider / SSO]
-    end
-
-    WebApp --> Gateway
-    MobileApp -->|Sync on reconnect| Gateway
-    Gateway --> AuthSvc
-    Gateway --> ComplianceSvc
-    Gateway --> WorkflowSvc
-    Gateway --> ReportSvc
-    Gateway --> OCRSvc
-
-    ComplianceSvc --> Queue
-    WorkflowSvc --> Queue
-    OCRSvc --> Queue
-    Queue --> RiskEngine
-    Queue --> NotifySvc
-    RiskEngine --> MLOps
-
-    ComplianceSvc --> PG
-    ReportSvc --> PG
-    OCRSvc --> ObjStore
-    ComplianceSvc --> TS
-    ComplianceSvc --> Search
-    Gateway --> Cache
-
-    AuthSvc --> IAM
-    AppServices --> Observability
-```
-
----
-
-## 9. Our Tech Stack
-
-### 9.1 Frontend
-
-| Layer                   | Technology                                        | Rationale                                                                             |
-| ----------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Web application         | **Vite + React + TypeScript + Framer Motions**    | Fast dev/build cycle, strong typing for a compliance-critical system, large ecosystem |
-| UI component system     | **shadcn/ui + Radix Primitives + Tailwind CSS**   | Accessible, composable, themeable for multi-tenant subsidiary branding                |
-| State/data layer        | **TanStack Query + Zustand**                      | Server-state caching + lightweight client state, avoids Redux boilerplate             |
-| Forms & validation      | **React Hook Form + Zod**                         | Type-safe schema validation shared with backend contracts                             |
-| Charts/dashboards       | **Recharts / Apache ECharts**                     | Compliance & risk visualizations, drill-down dashboards                               |
-| Mobile application      | **React Native (New Architecture) + Expo**        | Single codebase for Android/iOS, matches web team's React/TS skillset                 |
-| Mobile offline layer    | **WatermelonDB / SQLite + background sync queue** | Offline-first field data capture at low-connectivity mine sites                       |
-| Maps/GIS (mobile & web) | **MapLibre GL JS**                                | Open-source, avoids vendor lock-in for GIS mapping needs                              |
-
-### 9.2 Backend & Services
-
-| Layer                      | Technology                                                                            | Rationale                                                                |
-| -------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Core backend API & Auth    | **Supabase (PostgREST + GoTrue Auth)**                                                | Auto-generated CRUD APIs and authentication, zero backend boilerplate    |
-| AI/ML & Compute services   | **Python (FastAPI)**                                                                  | Heavy lifting, background tasks (OCR), and AI anomaly detection          |
-| Background tasks           | **FastAPI BackgroundTasks / Supabase Webhooks**                                       | Replaces heavy queues like Celery for hackathon simplicity               |
-| OCR/document digitization  | **Unlimited OCR** | Digitizes legacy paper compliance records                                |
-
-### 9.3 Data Layer
-
-|Purpose|Technology|
-|---|---|
-|Transactional data|**Supabase PostgreSQL (with PostGIS extension for geo-queries)**|
-|Search / audit trail search|**OpenSearch**|
-|Caching|**Redis**|
-
-### 9.4 AI / Analytics
-
-|Purpose|Technology|
-|---|---|
-|Risk scoring & anomaly detection|**Python, scikit-learn / XGBoost** for tabular risk models|
-|LLM-assisted report drafting & summarization|**Claude (Anthropic API)** for auto-drafting statutory report narratives from structured field data|
-|MLOps / model lifecycle|**MLflow** for experiment tracking and model registry|
-|Feature/data pipeline|**Apache Airflow** for scheduled ETL and model retraining pipelines|
-
-### 9.5 Infrastructure & Platform
-
-|Layer|Technology|
-|---|---|
-|Cloud (data-sovereignty compliant)|**MeghRaj (NIC GI Cloud) / empanelled Indian government cloud**, or on-prem NIC data centers|
-|Containerization/orchestration|**Docker + Kubernetes**|
-|CI/CD|**GitHub Actions / GitLab CI**|
-|IaC|**Terraform**|
-|API gateway|**Kong / NGINX Ingress**|
-|Observability|**OpenTelemetry + Grafana + Prometheus + Loki**|
-|Security scanning|**Trivy (container scanning), OWASP ZAP (DAST)**|
-
-### 9.6 Tech Stack Overview (Visual)
-
-```mermaid
-flowchart LR
-    subgraph Frontend
-        A1[Vite + React + TS]
-        A2[React Native + Expo]
-        A3[shadcn/ui + Tailwind]
-    end
     subgraph Backend
-        B1[Supabase - PostgREST API]
-        B2[FastAPI - Compute/AI Services]
-        B3[Supabase Webhooks]
-    end
-    subgraph Data
-        C1[(Supabase PostgreSQL + PostGIS)]
-        C2[(Supabase Storage)]
-        C3[(OpenSearch)]
-        C4[(Redis)]
-    end
-    subgraph AI
-        D1[XGBoost Risk Models]
-        D2[Claude API - Report Drafting]
-        D3[MLflow + Airflow]
-    end
-    subgraph Platform
-        E1[Kubernetes + Docker]
-        E2[Terraform]
-        E3[Supabase Auth]
-        E4[Grafana/Prometheus/Loki]
+        SB[Supabase\nPostgREST + Auth + Realtime + Storage + pg_cron + Webhooks]
+        FA[FastAPI\nAI agents · OCR · PDF · Sync · Webhooks]
     end
 
-    Frontend --> Backend --> Data
-    Backend --> AI
-    Backend --> Platform
+    subgraph AI
+        ADK[Google ADK\nRiskScoring · Anomaly · Report · Chatbot · GrievanceAudio]
+        GEM[Gemini API\ngemini-1.5-pro · gemini-2.0-flash · Audio]
+    end
+
+    subgraph Data
+        PG[(Supabase PostgreSQL\n+ PostGIS)]
+        OS[(OpenSearch)]
+        RD[(Redis Cache)]
+        ST[(Supabase Storage\nPhotos · PDFs · Audio)]
+    end
+
+    subgraph Notify
+        FCM[FCM / APNs]
+        NTF[Notifee\nEmergency Alarms]
+        RESEND[Resend API\nEmail]
+    end
+
+    WebApp --> CDN --> WAF --> SB
+    MobileApp --> SB
+    MobileApp --> FA
+    RegPortal --> SB
+    ChatBot --> FA --> ADK --> GEM
+    SB --> FA
+    FA --> PG
+    FA --> OS
+    FA --> RD
+    FA --> ST
+    FA --> FCM
+    FA --> RESEND
+    FCM --> NTF
 ```
 
 ---
 
-## 10. Compliance, Security & Data Sovereignty Considerations
+## 9. Technology Stack (Summary)
 
-- All data residency must comply with Government of India data localization norms — infrastructure hosted on empanelled Indian cloud (MeghRaj) or NIC data centers.
-- Role-Based Access Control (RBAC) enforced at API gateway and service layer; regulators get **read-only, scoped** access.
-- End-to-end audit logging of every compliance record change (who/what/when), stored immutably in the audit search index — a precursor to the Phase 2 blockchain-anchored trail.
-- PII of field workers (attendance, identity) encrypted at rest and in transit; access restricted by RBAC.
+| Layer | Technology |
+|---|---|
+| Web frontend | React 19 + Vite + TypeScript + TanStack Router/Query + shadcn/ui + Tailwind v4 |
+| Mobile app | React Native 0.85 + Expo SDK 52 + WatermelonDB + Expo Router |
+| Backend compute | FastAPI (Python 3.12) + SQLAlchemy 2.0 + Pydantic v2 + Tesseract 5 + WeasyPrint |
+| AI / agents | Google Gemini API (gemini-1.5-pro + gemini-2.0-flash) + Google ADK |
+| Database | Supabase PostgreSQL 15 + PostGIS |
+| Search | OpenSearch |
+| Auth & RLS | Supabase Auth (GoTrue) + PostgreSQL Row-Level Security |
+| Realtime | Supabase Realtime (WebSocket) |
+| Storage | Supabase Storage (S3-compatible) |
+| Notifications | expo-notifications + FCM + Notifee + Resend |
+| Maps | MapLibre GL JS + deck.gl (web) + react-native-maps (mobile) + PostGIS |
+| Blockchain | Hyperledger Fabric / NBF Vishvasya — SHA-256 hash anchoring |
+| Infrastructure | Kubernetes + Docker + Terraform + GitHub Actions + NIC/MeghRaj Cloud |
+| Observability | OpenTelemetry + Prometheus + Grafana + Loki + Sentry |
+
+---
+
+## 10. Compliance, Security & Data Sovereignty
+
+- All data residency must comply with Government of India data localisation norms — infrastructure hosted on MeghRaj (NIC GI Cloud) or empanelled NIC data centres
+- Row-Level Security (RLS) enforced at the PostgreSQL layer — regulators receive read-only, mine-scoped access
+- End-to-end audit logging: every compliance record change (who/what/when) stored in append-only audit table
+- Blockchain-anchored audit trail for tamper-evident statutory record verification by regulatory authorities
+- PII of field workers (attendance, identity) encrypted at rest (AES-256) and in transit (TLS 1.3); access restricted by RBAC
+- Aligned with: MeitY GIGW guidelines, CERT-In empanelment readiness, DPDP Act 2023
 
 ---
 
@@ -390,31 +370,32 @@ flowchart LR
 
 ```mermaid
 gantt
-    title Phased Rollout
+    title COMET Phased Rollout
     dateFormat  YYYY-MM
-    section Phase 1 - MVP
-    Discovery & Design           :2026-09, 2M
-    Core Platform Build          :2026-11, 4M
-    Pilot at 1 Subsidiary        :2027-03, 2M
-    section Phase 2 - Scale
-    Multi-Subsidiary Rollout     :2027-05, 4M
-    GIS + Blockchain Audit Trail :2027-09, 3M
-    section Phase 3 - Expand
-    Multilingual Interface       :2027-12, 3M
+    section Phase 1 — SIH Prototype
+    Discovery & Architecture Design    :2026-09, 1M
+    Core Platform Build                :2026-10, 3M
+    SIH Demo Submission                :2026-12, 1M
+    section Phase 2 — Pilot Deployment
+    Pilot at 1 Subsidiary (ECL / CCL)  :2027-01, 3M
+    Blockchain Consortium Live         :2027-04, 2M
+    Regulator Portal Onboarding        :2027-05, 1M
+    section Phase 3 — Full Scale
+    All CIL Subsidiaries               :2027-06, 6M
+    IoT Sensor Integration             :2027-09, 3M
 ```
 
 ---
 
-## 12. Open Questions (For Alignment Before Design Starts)
+## 12. Open Questions for Production Alignment
 
-1. Which single subsidiary is the best-fit Phase 1 pilot site (connectivity, leadership buy-in, existing digitization maturity)?
-2. What is the authoritative source of truth for existing statutory compliance rule sets — is there a digitized rule repository, or does this need to be built from regulatory documents?
-3. What are the actual field-connectivity conditions (offline duration, sync windows) we should design the mobile app's offline tolerance around?
-4. Who owns final sign-off authority on AI-flagged risk scores before they reach a regulator-facing report?
-5. What existing identity systems (if any) does Supabase Auth need to federate with across subsidiaries?
+1. Which single subsidiary is the best-fit Phase 2 pilot site (connectivity profile, leadership buy-in, existing digitisation maturity)?
+2. What existing identity systems (if any) does Supabase Auth need to federate with across subsidiaries (LDAP, MeghRaj SSO)?
+3. What are the actual field-connectivity windows we should optimise the mobile app's sync scheduling around?
+4. Who owns final sign-off authority on AI-generated risk scores before they surface on regulator-facing reports?
+5. Which DGMS district offices receive statutory reports electronically vs. continue to require physical submission?
 
 ---
 
-## 13. Appendix: Source Problem Statement Reference
-
-This brief is derived from the Ministry of Coal / Coal India Limited problem statement: _"AI-Based Smart Governance and Compliance Monitoring System for Coal Mines"_ (Category: Software, Theme: Smart Automation).
+*Version 2.0 | Product Brief | SIH 2026 — PS 26024*  
+*References: [ps.md](file:///c:/Coding/SIH2026/docs/ps.md) · [workflows.md](file:///c:/Coding/SIH2026/docs/workflows.md) · [TECH_STACK.md](file:///c:/Coding/SIH2026/docs/TECH_STACK.md) · [PRD.md](file:///c:/Coding/SIH2026/docs/PRD.md)*

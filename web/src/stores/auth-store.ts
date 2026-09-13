@@ -3,16 +3,12 @@ import { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
 export type AppRole =
-  | 'field_officer'
-  | 'mine_manager'
-  | 'safety_officer'
-  | 'environmental_officer'
-  | 'compliance_officer'
-  | 'contractor_manager'
-  | 'subsidiary_admin'
+  | 'super_admin'
   | 'corporate_executive'
-  | 'regulator'
-  | 'system_admin'
+  | 'mine_manager'
+  | 'field_inspector'
+  | 'safety_official'
+  | 'contractor'
 
 interface AuthUser {
   id: string
@@ -88,14 +84,13 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
        
        // Fallback mock based on email for hackathon demo
        if (!role) {
-         if (email.includes('admin')) role = 'system_admin';
+         if (email.includes('admin') || email.includes('super')) role = 'super_admin';
+         else if (email.includes('corporate') || email.includes('subsidiary') || email.includes('exec')) role = 'corporate_executive';
          else if (email.includes('manager')) role = 'mine_manager';
-         else if (email.includes('safety')) role = 'safety_officer';
-         else if (email.includes('compliance')) role = 'compliance_officer';
-         else if (email.includes('regulator')) role = 'regulator';
-         else if (email.includes('corporate')) role = 'corporate_executive';
-         else if (email.includes('sub')) role = 'subsidiary_admin';
-         else role = 'field_officer';
+         else if (email.includes('inspector') || email.includes('field')) role = 'field_inspector';
+         else if (email.includes('safety')) role = 'safety_official';
+         else if (email.includes('contractor') || email.includes('vendor')) role = 'contractor';
+         else role = 'field_inspector';
        }
 
        get().setUserMeta(role, [], null);
@@ -107,10 +102,12 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
   setUserMeta: (role, mineIds, subsidiaryId) =>
     set((state) => {
       const permissions: string[] = [];
-      if (role === 'system_admin') permissions.push('all');
-      if (role === 'mine_manager') permissions.push('compliance:approve', 'capa:verify', 'mine:write');
-      if (role === 'safety_officer') permissions.push('inspection:create', 'violation:create', 'incident:create');
-      if (role === 'compliance_officer') permissions.push('compliance:approve', 'ocr:review');
+      if (role === 'super_admin') permissions.push('all');
+      if (role === 'corporate_executive') permissions.push('compliance:view', 'reports:view', 'mine:read');
+      if (role === 'mine_manager') permissions.push('compliance:approve', 'capa:verify', 'mine:write', 'reports:view');
+      if (role === 'field_inspector') permissions.push('inspection:create', 'violation:create', 'incident:create');
+      if (role === 'safety_official') permissions.push('inspection:create', 'violation:create', 'incident:create', 'capa:verify');
+      if (role === 'contractor') permissions.push('contractor:view', 'grievance:create');
       
       const user = state.auth.user ? { ...state.auth.user, role } : null;
       
