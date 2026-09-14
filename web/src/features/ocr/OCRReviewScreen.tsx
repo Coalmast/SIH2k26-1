@@ -42,7 +42,7 @@ export function OCRReviewScreen() {
   return (
     <>
       <Header fixed />
-      <Main className="flex flex-1 flex-col p-6 bg-slate-50/50 min-h-screen">
+      <Main className="flex flex-1 flex-col p-6 bg-muted/30 min-h-screen">
         <div className="w-full max-w-7xl mx-auto space-y-4 animate-in fade-in duration-300">
           
           <div className="flex items-center justify-between">
@@ -53,8 +53,8 @@ export function OCRReviewScreen() {
                 </Link>
               </Button>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-slate-900">Review Extraction</h1>
-                <p className="text-sm text-slate-500">Document ID: {itemId}</p>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">Review Extraction</h1>
+                <p className="text-sm text-muted-foreground">Document ID: {itemId}</p>
               </div>
             </div>
             <div className="flex gap-3">
@@ -68,14 +68,14 @@ export function OCRReviewScreen() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[calc(100vh-140px)]">
             
             {/* PDF Viewer Side */}
-            <Card className="h-full flex flex-col shadow-sm border-slate-200">
+            <Card className="h-full flex flex-col shadow-sm border-border">
               <CardHeader className="py-3 px-4 border-b">
                 <CardTitle className="text-sm font-medium">Original Document</CardTitle>
               </CardHeader>
               <CardContent className="flex-1 p-0 relative bg-slate-200/50">
                 {/* Mock PDF Viewer */}
-                <div className="absolute inset-4 bg-white shadow rounded flex items-center justify-center border border-slate-300 text-slate-400 flex-col gap-4">
-                  <div className="w-48 h-64 border-2 border-dashed border-slate-300 flex items-center justify-center text-xs">
+                <div className="absolute inset-4 bg-background shadow rounded flex items-center justify-center border border-border text-muted-foreground/70 flex-col gap-4">
+                  <div className="w-48 h-64 border-2 border-dashed border-border flex items-center justify-center text-xs">
                     PDF Page 1
                   </div>
                   <p>Document Preview</p>
@@ -84,11 +84,11 @@ export function OCRReviewScreen() {
             </Card>
 
             {/* Extracted Fields Side */}
-            <Card className="h-full flex flex-col shadow-sm border-slate-200">
-              <CardHeader className="py-3 px-4 border-b bg-slate-50">
+            <Card className="h-full flex flex-col shadow-sm border-border">
+              <CardHeader className="py-3 px-4 border-b bg-muted/50">
                 <CardTitle className="text-sm font-medium flex justify-between items-center">
                   <span>Extracted Data</span>
-                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">
                     AI Confidence: 90%
                   </Badge>
                 </CardTitle>
@@ -104,13 +104,13 @@ export function OCRReviewScreen() {
                   {fields.map((field) => (
                     <div key={field.id} className="space-y-1.5">
                       <div className="flex justify-between items-center">
-                        <Label htmlFor={field.id} className="text-slate-700 font-semibold">{field.label}</Label>
+                        <Label htmlFor={field.id} className="text-foreground/80 font-semibold">{field.label}</Label>
                         <Badge 
                           variant={field.confidence >= 0.9 ? 'secondary' : 'outline'}
                           className={
-                            field.confidence >= 0.9 ? 'bg-emerald-100 text-emerald-700' :
+                            field.confidence >= 0.9 ? 'bg-[#0ecb81]/15 text-comet-up' :
                             field.confidence >= 0.7 ? 'bg-amber-100 text-amber-700 border-amber-200' :
-                            'bg-red-100 text-red-700 border-red-200'
+                            'bg-[#f6465d]/15 text-comet-down border-[#f6465d]/30'
                           }
                         >
                           {(field.confidence * 100).toFixed(0)}% Match
@@ -120,7 +120,7 @@ export function OCRReviewScreen() {
                         id={field.id}
                         value={field.value}
                         onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                        className={`transition-colors ${field.confidence < 0.9 ? 'border-amber-300 focus-visible:ring-amber-500' : 'border-slate-200'}`}
+                        className={`transition-colors ${field.confidence < 0.9 ? 'border-amber-300 focus-visible:ring-amber-500' : 'border-border'}`}
                       />
                     </div>
                   ))}

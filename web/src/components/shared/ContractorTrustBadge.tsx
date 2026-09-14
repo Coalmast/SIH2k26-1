@@ -31,7 +31,7 @@ export function ContractorTrustBadge({
   const colors = {
     LOW: "border-green-500 text-green-700 bg-green-50 dark:text-green-400 dark:bg-green-950/50",
     MEDIUM: "border-amber-500 text-amber-700 bg-amber-50 dark:text-amber-400 dark:bg-amber-950/50",
-    HIGH: "border-red-500 text-red-700 bg-red-50 dark:text-red-400 dark:bg-red-950/50"
+    HIGH: "border-red-500 text-comet-down bg-[#f6465d]/10 dark:text-comet-down dark:bg-red-950/50"
   }
 
   return (

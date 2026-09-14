@@ -75,7 +75,7 @@ export function ProductionTrendChart() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4 text-emerald-500" />
+          Trending up by 5.2% this month <TrendingUp className="h-4 w-4 text-comet-up" />
         </div>
         <div className="leading-none text-muted-foreground">
           Showing total production for the last 6 months

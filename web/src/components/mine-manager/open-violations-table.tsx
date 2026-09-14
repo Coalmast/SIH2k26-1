@@ -70,14 +70,14 @@ export function OpenViolationsTable() {
                   <TableCell className="text-muted-foreground line-clamp-1 max-w-[200px] block truncate pt-4 pb-0 border-0">{v.compliance_requirements?.title}</TableCell>
                   <TableCell>
                     <Badge variant="outline" className={`rounded-full ${
-                      v.compliance_requirements?.severity === 'critical' ? 'bg-red-50 dark:bg-red-950/20 text-red-600 border-red-200' :
+                      v.compliance_requirements?.severity === 'critical' ? 'bg-[#f6465d]/10 dark:bg-red-950/20 text-comet-down border-[#f6465d]/30' :
                       v.compliance_requirements?.severity === 'major' ? 'bg-orange-50 text-orange-600 border-orange-200' :
                       'bg-primary/10 text-primary border-primary/30'
                     }`}>
                       {v.compliance_requirements?.severity || 'Moderate'}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right font-semibold text-red-600 dark:text-red-400">
+                  <TableCell className="text-right font-semibold text-comet-down dark:text-comet-down">
                     {formatDistanceToNow(new Date(v.due_date))} ago
                   </TableCell>
                 </TableRow>

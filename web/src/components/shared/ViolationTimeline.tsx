@@ -46,7 +46,7 @@ export function ViolationTimeline({
                 "flex size-8 items-center justify-center rounded-full border-2 bg-background transition-colors",
                 isCompleted ? "border-primary bg-primary text-primary-foreground" :
                 isCurrent ? "border-primary text-primary" : "border-muted text-muted-foreground",
-                (isCurrent && isOverdue) && "border-red-500 text-red-500 animate-pulse bg-red-50 dark:bg-red-950"
+                (isCurrent && isOverdue) && "border-red-500 text-comet-down animate-pulse bg-[#f6465d]/10 dark:bg-red-950"
               )}
             >
               <Icon className="size-4" />
@@ -54,7 +54,7 @@ export function ViolationTimeline({
             <span className={cn(
               "text-xs font-medium",
               (isCurrent || isCompleted) ? "text-foreground" : "text-muted-foreground",
-              (isCurrent && isOverdue) && "text-red-500"
+              (isCurrent && isOverdue) && "text-comet-down"
             )}>
               {step.label}
             </span>

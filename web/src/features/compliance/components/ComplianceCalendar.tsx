@@ -14,7 +14,7 @@ const COLUMNS = [
   { id: 'in_progress', label: 'IN PROGRESS', color: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20' },
   { id: 'submitted', label: 'SUBMITTED', color: 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' },
   { id: 'approved', label: 'APPROVED', color: 'bg-green-500/10 text-green-500 hover:bg-green-500/20' },
-  { id: 'breached', label: 'BREACHED', color: 'bg-red-500/10 text-red-500 hover:bg-red-500/20' }
+  { id: 'breached', label: 'BREACHED', color: 'bg-comet-down/10 text-comet-down hover:bg-comet-down/20' }
 ];
 
 interface Props {

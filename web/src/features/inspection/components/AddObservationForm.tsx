@@ -143,7 +143,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
               <span className="text-sm font-medium text-muted-foreground w-12">{selectedGas.unit}</span>
             </div>
             {autoAlert && (
-              <div className={`flex items-center gap-2 p-2 rounded text-xs font-semibold ${autoAlert.isDanger ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-amber-100 text-amber-700 border border-amber-200'}`}>
+              <div className={`flex items-center gap-2 p-2 rounded text-xs font-semibold ${autoAlert.isDanger ? 'bg-[#f6465d]/15 text-comet-down border border-[#f6465d]/30' : 'bg-amber-100 text-amber-700 border border-amber-200'}`}>
                 <AlertTriangle className="h-4 w-4" />
                 {autoAlert.message}
               </div>

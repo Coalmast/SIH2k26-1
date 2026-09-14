@@ -71,7 +71,7 @@ export function Header({ className, fixed, children, ...props }: HeaderProps) {
            
            <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
              <Bell className="h-5 w-5" />
-             <span className="absolute top-1 right-2 h-2 w-2 bg-red-500 rounded-full border border-background"></span>
+             <span className="absolute top-1 right-2 h-2 w-2 bg-comet-down rounded-full border border-background"></span>
            </Button>
            
            <Button variant="ghost" size="sm" className="font-semibold text-xs text-muted-foreground hover:text-foreground">

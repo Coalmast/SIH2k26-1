@@ -43,30 +43,30 @@ export function ContractorsModule() {
   })
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 min-h-screen text-slate-900 w-full space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/50 min-h-screen text-foreground w-full space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#0a192f] p-6 rounded-xl text-white shadow-lg">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#0a192f] p-6 rounded-xl text-foreground shadow-lg">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <HardHat className="h-8 w-8 text-emerald-400" />
+            <HardHat className="h-8 w-8 text-comet-up" />
             Contractor & Vendor Portal
           </h1>
-          <p className="text-slate-300 mt-1">Manage vendor compliance, AI trust scores, and real-time attendance.</p>
+          <p className="text-muted-foreground/50 mt-1">Manage vendor compliance, AI trust scores, and real-time attendance.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-slate-800">
+          <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">
             Mine: All Active <ChevronDown className="ml-2 h-4 w-4" />
           </Button>
           <div className="relative">
-            <Button variant="outline" size="icon" className="bg-transparent border-slate-600 text-slate-200 hover:bg-slate-800">
+            <Button variant="outline" size="icon" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">
               <Bell className="h-5 w-5" />
             </Button>
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-comet-down opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-comet-down"></span>
             </span>
           </div>
-          <Button className="bg-emerald-600 hover:bg-emerald-500 text-white border-0">
+          <Button className="bg-emerald-600 hover:bg-comet-up text-foreground border-0">
             <Plus className="h-4 w-4 mr-2" /> Onboard Vendor
           </Button>
         </div>
@@ -77,19 +77,19 @@ export function ContractorsModule() {
         {[
           { title: "Workers Expiring Medicals", count: 42, color: "bg-blue-500", label: "Next 30 Days" },
           { title: "Expiring Machinery Fitness", count: 8, color: "bg-amber-500", label: "MRN Checks" },
-          { title: "Overdue Training Renewals", count: 15, color: "bg-red-500", label: "Action Req" },
-          { title: "Pending Corrective Actions", count: 4, color: "bg-emerald-500", label: "CAPAs" },
+          { title: "Overdue Training Renewals", count: 15, color: "bg-comet-down", label: "Action Req" },
+          { title: "Pending Corrective Actions", count: 4, color: "bg-comet-up", label: "CAPAs" },
         ].map((stat, i) => (
-          <Card key={i} className="shadow-sm hover:shadow-md transition-shadow border-slate-200 bg-white">
+          <Card key={i} className="shadow-sm hover:shadow-md transition-shadow border-border bg-background">
             <CardContent className="p-5">
-              <div className="text-sm font-semibold text-slate-500">{stat.title}</div>
+              <div className="text-sm font-semibold text-muted-foreground">{stat.title}</div>
               <div className="flex items-end justify-between mt-2">
-                <div className="text-4xl font-black text-slate-800">
+                <div className="text-4xl font-black text-foreground">
                   <NumberTicker value={stat.count} />
                 </div>
                 <Badge variant="outline" className="text-xs">{stat.label}</Badge>
               </div>
-              <div className="w-full h-1.5 bg-slate-100 rounded-full mt-4 overflow-hidden">
+              <div className="w-full h-1.5 bg-muted rounded-full mt-4 overflow-hidden">
                 <div className={`h-full ${stat.color} transition-all duration-1000`} style={{ width: `${(stat.count / 50) * 100}%` }}></div>
               </div>
             </CardContent>
@@ -99,9 +99,9 @@ export function ContractorsModule() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Resource Utilization Chart */}
-        <Card className="shadow-sm border-slate-200">
+        <Card className="shadow-sm border-border">
           <CardHeader>
-            <CardTitle className="text-lg text-slate-800">Resource Utilization (RFID Attendance)</CardTitle>
+            <CardTitle className="text-lg text-foreground">Resource Utilization (RFID Attendance)</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -119,9 +119,9 @@ export function ContractorsModule() {
         </Card>
 
         {/* Production vs Target Chart */}
-        <Card className="shadow-sm border-slate-200">
+        <Card className="shadow-sm border-border">
           <CardHeader>
-            <CardTitle className="text-lg text-slate-800">Production vs Target (Daily Tonnage)</CardTitle>
+            <CardTitle className="text-lg text-foreground">Production vs Target (Daily Tonnage)</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -142,35 +142,35 @@ export function ContractorsModule() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Contractor List */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="flex gap-4 items-center bg-white p-3 rounded-lg shadow-sm border border-slate-200">
+          <div className="flex gap-4 items-center bg-background p-3 rounded-lg shadow-sm border border-border">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <Input placeholder="Search contractors..." className="pl-9 bg-slate-50 border-transparent focus-visible:ring-emerald-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
+              <Input placeholder="Search contractors..." className="pl-9 bg-muted/50 border-transparent focus-visible:ring-emerald-500" />
             </div>
-            <Button variant="outline" className="border-slate-200"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
+            <Button variant="outline" className="border-border"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
           </div>
 
           <div className="grid gap-4">
             {mockContractors.map((contractor) => (
-              <Card key={contractor.id} className="hover:shadow-md transition-shadow border-slate-200 overflow-hidden">
+              <Card key={contractor.id} className="hover:shadow-md transition-shadow border-border overflow-hidden">
                 <CardContent className="p-0 flex items-center">
-                  <div className={`w-2 h-full absolute left-0 ${contractor.status === 'active' ? 'bg-emerald-500' : contractor.status === 'warning' ? 'bg-amber-500' : 'bg-red-500'}`}></div>
+                  <div className={`w-2 h-full absolute left-0 ${contractor.status === 'active' ? 'bg-comet-up' : contractor.status === 'warning' ? 'bg-amber-500' : 'bg-comet-down'}`}></div>
                   <div className="p-5 flex flex-1 items-center gap-6 pl-6">
                     <ContractorTrustBadge score={contractor.trustScore} />
                     <div className="flex-1">
-                      <h3 className="font-bold text-slate-900 text-lg">{contractor.name}</h3>
-                      <div className="text-sm text-slate-500 flex items-center gap-2 mt-1">
+                      <h3 className="font-bold text-foreground text-lg">{contractor.name}</h3>
+                      <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                         <Badge variant="secondary" className="font-normal">{contractor.type}</Badge>
                         <span>ID: {contractor.id}</span>
                       </div>
                     </div>
                     <div className="text-right mr-4">
-                      <div className="text-2xl font-black text-slate-700">{contractor.workers}</div>
-                      <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Workers</div>
+                      <div className="text-2xl font-black text-foreground/80">{contractor.workers}</div>
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Workers</div>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <Button variant="outline" size="sm" className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">View Profile</Button>
-                      <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50">Suspend</Button>
+                      <Button variant="outline" size="sm" className="border-[#0ecb81]/30 text-comet-up hover:bg-[#0ecb81]/10">View Profile</Button>
+                      <Button variant="ghost" size="sm" className="text-comet-down hover:bg-[#f6465d]/10">Suspend</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -180,35 +180,35 @@ export function ContractorsModule() {
         </div>
 
         {/* AI Document Upload Zone */}
-        <Card className="shadow-sm border-slate-200 h-fit bg-[#0a192f] text-white">
+        <Card className="shadow-sm border-border h-fit bg-[#0a192f] text-foreground">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <FileText className="h-5 w-5 text-emerald-400" /> 
+              <FileText className="h-5 w-5 text-comet-up" /> 
               AI Document Extraction
             </CardTitle>
-            <p className="text-xs text-slate-400">Upload CLRA, EPF, or medical certificates for auto-verification.</p>
+            <p className="text-xs text-muted-foreground/70">Upload CLRA, EPF, or medical certificates for auto-verification.</p>
           </CardHeader>
           <CardContent>
             <div 
               {...getRootProps()} 
               className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-                isDragActive ? 'border-emerald-400 bg-emerald-900/20' : 'border-slate-600 hover:bg-slate-800'
+                isDragActive ? 'border-emerald-400 bg-emerald-900/20' : 'border-slate-600 hover:bg-muted'
               }`}
             >
               <input {...getInputProps()} />
-              <UploadCloud className="h-10 w-10 mx-auto text-slate-400 mb-4" />
+              <UploadCloud className="h-10 w-10 mx-auto text-muted-foreground/70 mb-4" />
               <p className="font-medium">Drag & drop files here</p>
-              <p className="text-xs text-slate-500 mt-2">Supports PDF, JPEG, PNG (Max 10MB)</p>
+              <p className="text-xs text-muted-foreground mt-2">Supports PDF, JPEG, PNG (Max 10MB)</p>
             </div>
             
             <div className="mt-6">
-              <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Recent Uploads</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-3">Recent Uploads</h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-sm bg-slate-800 p-2 rounded border border-slate-700">
-                  <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400"/> Medical_Roster.pdf</span>
-                  <Badge className="bg-emerald-500/20 text-emerald-300">Verified</Badge>
+                <div className="flex items-center justify-between text-sm bg-muted p-2 rounded border border-border">
+                  <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-comet-up"/> Medical_Roster.pdf</span>
+                  <Badge className="bg-comet-up/20 text-emerald-300">Verified</Badge>
                 </div>
-                <div className="flex items-center justify-between text-sm bg-slate-800 p-2 rounded border border-slate-700">
+                <div className="flex items-center justify-between text-sm bg-muted p-2 rounded border border-border">
                   <span className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-amber-400"/> CLRA_Renew.pdf</span>
                   <span className="text-amber-400 text-xs animate-pulse">Scanning...</span>
                 </div>

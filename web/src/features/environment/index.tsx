@@ -21,10 +21,10 @@ export function EnvironmentModule() {
   const [selectedStation, setSelectedStation] = useState('all')
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50 max-w-[1400px] mx-auto w-full space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1400px] mx-auto w-full space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <Wind className="h-8 w-8 text-primary" />
             Environment & Emissions
           </h1>
@@ -54,11 +54,11 @@ export function EnvironmentModule() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground flex justify-between">
               PM10 Avg (24h)
-              <Badge variant="outline" className="bg-red-100 text-red-700 hover:bg-red-100">Exceeding</Badge>
+              <Badge variant="outline" className="bg-[#f6465d]/15 text-comet-down hover:bg-[#f6465d]/15">Exceeding</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-red-600">105 µg/m³</div>
+            <div className="text-3xl font-black text-comet-down">105 µg/m³</div>
             <div className="text-xs text-muted-foreground mt-1">Limit: 100 µg/m³</div>
           </CardContent>
         </Card>
@@ -67,11 +67,11 @@ export function EnvironmentModule() {
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-muted-foreground flex justify-between">
               Noise Level
-              <Badge variant="outline" className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Normal</Badge>
+              <Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up hover:bg-[#0ecb81]/15">Normal</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-emerald-600">68 dB(A)</div>
+            <div className="text-3xl font-black text-comet-up">68 dB(A)</div>
             <div className="text-xs text-muted-foreground mt-1">Limit: 75 dB(A) (Day)</div>
           </CardContent>
         </Card>
@@ -131,13 +131,13 @@ export function EnvironmentModule() {
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y">
-              <div className="p-4 flex justify-between items-center bg-red-50/30">
+              <div className="p-4 flex justify-between items-center bg-[#f6465d]/10/30">
                 <div>
                   <div className="font-semibold text-sm">PM10 Exceedance</div>
                   <div className="text-xs text-muted-foreground mt-0.5">Station 2 (Crusher) • Today, 14:22</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-red-600">118 µg/m³</div>
+                  <div className="font-bold text-comet-down">118 µg/m³</div>
                   <div className="text-[10px] text-muted-foreground uppercase">Limit: 100</div>
                 </div>
               </div>
@@ -147,7 +147,7 @@ export function EnvironmentModule() {
                   <div className="text-xs text-muted-foreground mt-0.5">Station 1 (Pit) • Yesterday, 22:15</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-red-600">76 dB(A)</div>
+                  <div className="font-bold text-comet-down">76 dB(A)</div>
                   <div className="text-[10px] text-muted-foreground uppercase">Limit: 70 (Night)</div>
                 </div>
               </div>
@@ -169,7 +169,7 @@ export function EnvironmentModule() {
                 <div>
                   <div className="font-semibold text-sm">Zero Liquid Discharge Maintained</div>
                   <div className="text-xs text-muted-foreground mt-1 mb-2">EC Condition ix(a): No effluent shall be discharged outside the mine premises.</div>
-                  <Badge variant="outline" className="bg-emerald-50 text-emerald-600 border-emerald-200">Compliant</Badge>
+                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">Compliant</Badge>
                 </div>
               </div>
               <div className="p-4 flex items-start gap-4">

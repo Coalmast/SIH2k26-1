@@ -11,11 +11,11 @@ export function KpiCards() {
         <Card className="flex flex-col shadow-sm hover:border-primary/50 transition-colors h-full">
           <CardHeader className="pb-2 pt-5 px-5 flex flex-row justify-between items-start">
             <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground">Compliance Score</CardTitle>
-            <CheckCircle className="h-5 w-5 text-emerald-500" />
+            <CheckCircle className="h-5 w-5 text-comet-up" />
           </CardHeader>
           <CardContent className="px-5 pb-5 flex-1 flex items-end justify-between">
             <div className="text-4xl font-bold text-foreground">84</div>
-            <div className="text-xs font-semibold text-emerald-500 flex items-center gap-1">
+            <div className="text-xs font-semibold text-comet-up flex items-center gap-1">
               <ArrowUp className="h-3 w-3" /> 2 MoM
             </div>
           </CardContent>
@@ -27,11 +27,11 @@ export function KpiCards() {
         <Card className="flex flex-col shadow-sm hover:border-primary/50 transition-colors h-full">
           <CardHeader className="pb-2 pt-5 px-5 flex flex-row justify-between items-start">
             <CardTitle className="text-xs uppercase tracking-wider text-muted-foreground">Open Violations</CardTitle>
-            <AlertTriangle className="h-5 w-5 text-red-500" />
+            <AlertTriangle className="h-5 w-5 text-comet-down" />
           </CardHeader>
           <CardContent className="px-5 pb-5 flex-1 flex items-end justify-between">
             <div className="text-4xl font-bold text-foreground">12</div>
-            <Badge variant="outline" className="bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 rounded-sm font-semibold">
+            <Badge variant="outline" className="bg-[#f6465d]/10 dark:bg-red-950/30 text-comet-down dark:text-comet-down border-[#f6465d]/30 dark:border-red-900/50 rounded-sm font-semibold">
               3 Critical
             </Badge>
           </CardContent>

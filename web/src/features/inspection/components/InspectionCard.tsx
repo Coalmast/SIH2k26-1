@@ -11,8 +11,8 @@ export function InspectionCard({ inspection }: { inspection: any }) {
       case 'approved': return 'bg-green-100 text-green-800 border-green-200';
       case 'submitted': return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'in_progress': return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'scheduled': return 'bg-slate-100 text-slate-800 border-slate-200';
-      default: return 'bg-slate-100 text-slate-800 border-slate-200';
+      case 'scheduled': return 'bg-muted text-foreground border-border';
+      default: return 'bg-muted text-foreground border-border';
     }
   };
 
@@ -36,11 +36,11 @@ export function InspectionCard({ inspection }: { inspection: any }) {
         <div className="flex justify-between items-center mt-2">
            <div className="flex gap-4 text-sm">
              <div className="flex items-center gap-1">
-               <Eye className="h-4 w-4 text-slate-400" />
+               <Eye className="h-4 w-4 text-muted-foreground/70" />
                <span className="font-medium">{inspection.observation_count || 0}</span> obs
              </div>
              <div className="flex items-center gap-1">
-               <ShieldAlert className={`h-4 w-4 ${(inspection.violation_count || 0) > 0 ? 'text-red-500' : 'text-slate-400'}`} />
+               <ShieldAlert className={`h-4 w-4 ${(inspection.violation_count || 0) > 0 ? 'text-comet-down' : 'text-muted-foreground/70'}`} />
                <span className="font-medium">{inspection.violation_count || 0}</span> violations
              </div>
            </div>

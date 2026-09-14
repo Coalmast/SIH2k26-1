@@ -37,7 +37,7 @@ export function ComplianceHealthScore({ mineId }: { mineId: string }) {
     <Card className="w-full bg-card/50 backdrop-blur border-border/50">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm font-medium">Compliance Health</CardTitle>
-        <span className={`text-xs font-bold px-2 py-1 rounded-full ${mom_change >= 0 ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
+        <span className={`text-xs font-bold px-2 py-1 rounded-full ${mom_change >= 0 ? 'bg-green-500/10 text-green-500' : 'bg-comet-down/10 text-comet-down'}`}>
           {mom_change > 0 ? '+' : ''}{mom_change} MoM
         </span>
       </CardHeader>
@@ -63,8 +63,8 @@ export function ComplianceHealthScore({ mineId }: { mineId: string }) {
               <span className="font-semibold">{pending}</span>
             </div>
             <div className="flex justify-between w-32">
-              <span className="text-red-500">Overdue</span>
-              <span className="font-semibold text-red-500">{overdue}</span>
+              <span className="text-comet-down">Overdue</span>
+              <span className="font-semibold text-comet-down">{overdue}</span>
             </div>
           </div>
         </div>

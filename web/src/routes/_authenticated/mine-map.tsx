@@ -259,8 +259,8 @@ function MineMap() {
                   </div>
                 </div>
                 <div className={`text-xs font-bold px-2 py-1 rounded ${
-                  site.status === 'critical' ? 'bg-red-500/10 text-red-500' :
-                  site.status === 'healthy' ? 'bg-emerald-500/10 text-emerald-500' :
+                  site.status === 'critical' ? 'bg-comet-down/10 text-comet-down' :
+                  site.status === 'healthy' ? 'bg-comet-up/10 text-comet-up' :
                   'bg-amber-500/10 text-amber-600'
                 }`}>
                   Risk {site.risk.toFixed(1)}
@@ -299,42 +299,42 @@ function MineMap() {
                 <div className="flex gap-4">
                   <div className="flex-1 bg-muted/50 p-3 rounded-lg text-center">
                     <div className="text-xs text-muted-foreground uppercase font-bold mb-1">Risk Score</div>
-                    <div className={`text-2xl font-black ${selectedMine.status === 'critical' ? 'text-red-500' : 'text-emerald-500'}`}>
+                    <div className={`text-2xl font-black ${selectedMine.status === 'critical' ? 'text-comet-down' : 'text-comet-up'}`}>
                       {selectedMine.risk}
                     </div>
                   </div>
                   <div className="flex-1 bg-muted/50 p-3 rounded-lg text-center">
                     <div className="text-xs text-muted-foreground uppercase font-bold mb-1">Active Alerts</div>
-                    <div className={`text-2xl font-black ${selectedMine.activeAlerts > 0 ? 'text-red-500' : 'text-slate-700'}`}>
+                    <div className={`text-2xl font-black ${selectedMine.activeAlerts > 0 ? 'text-comet-down' : 'text-foreground/80'}`}>
                       {selectedMine.activeAlerts}
                     </div>
                   </div>
                 </div>
 
                 {selectedMine.status === 'critical' && (
-                  <div className="bg-red-50 border border-red-100 p-3 rounded-lg flex gap-3">
-                    <Activity className="h-5 w-5 text-red-500 shrink-0" />
+                  <div className="bg-[#f6465d]/10 border border-red-100 p-3 rounded-lg flex gap-3">
+                    <Activity className="h-5 w-5 text-comet-down shrink-0" />
                     <div>
-                      <h4 className="text-sm font-semibold text-red-800">Critical Alerts Detected</h4>
-                      <p className="text-xs text-red-600 mt-1">PM10 levels exceeding limits and pending DGMS notices.</p>
-                      <Button size="sm" variant="outline" className="h-7 text-xs mt-2 text-red-700 border-red-200">View Alerts</Button>
+                      <h4 className="text-sm font-semibold text-comet-down">Critical Alerts Detected</h4>
+                      <p className="text-xs text-comet-down mt-1">PM10 levels exceeding limits and pending DGMS notices.</p>
+                      <Button size="sm" variant="outline" className="h-7 text-xs mt-2 text-comet-down border-[#f6465d]/30">View Alerts</Button>
                     </div>
                   </div>
                 )}
 
                 <div className="space-y-3">
                   <h4 className="font-semibold text-sm border-b pb-2">Quick Actions</h4>
-                  <Link to="/environment" className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-md group">
-                    <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
+                  <Link to="/environment" className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-md group">
+                    <div className="flex items-center gap-3 text-sm font-medium text-foreground/80">
                       <Wind className="h-4 w-4 text-blue-500" /> View Environment Dashboard
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
                   </Link>
-                  <Link to="/compliance" className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-md group">
-                    <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
-                      <Droplets className="h-4 w-4 text-emerald-500" /> Check EC Conditions
+                  <Link to="/compliance" className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-md group">
+                    <div className="flex items-center gap-3 text-sm font-medium text-foreground/80">
+                      <Droplets className="h-4 w-4 text-comet-up" /> Check EC Conditions
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
                   </Link>
                 </div>
               </div>

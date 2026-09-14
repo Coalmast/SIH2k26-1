@@ -52,18 +52,18 @@ function CAPADetailPage() {
     <>
       <Header fixed />
       
-      <Main className='flex flex-1 flex-col p-6 bg-slate-50/50 min-h-screen'>
+      <Main className='flex flex-1 flex-col p-6 bg-muted/30 min-h-screen'>
         <div className="max-w-5xl mx-auto w-full space-y-6 animate-in fade-in duration-500">
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-3xl font-bold tracking-tight text-slate-900">CAPA: {id}</h1>
-                <Badge variant={capa.status === 'closed' ? 'default' : 'secondary'} className={capa.status === 'closed' ? 'bg-emerald-500' : ''}>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">CAPA: {id}</h1>
+                <Badge variant={capa.status === 'closed' ? 'default' : 'secondary'} className={capa.status === 'closed' ? 'bg-comet-up' : ''}>
                   {capa.status.replace('_', ' ').toUpperCase()}
                 </Badge>
               </div>
-              <p className="text-slate-500 flex items-center gap-2">
+              <p className="text-muted-foreground flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 Linked to Violation: {capa.violationCategory}
               </p>
@@ -92,19 +92,19 @@ function CAPADetailPage() {
                 <CardHeader>
                   <CardTitle className="text-lg">Corrective Action Details</CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4 text-slate-700">
+                <CardContent className="space-y-4 text-foreground/80">
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900 mb-1">Description</h4>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Description</h4>
                     <p>{capa.description}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-slate-900 mb-1">Preventive Measures</h4>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">Preventive Measures</h4>
                     <p>{capa.preventiveMeasures}</p>
                   </div>
                   
                   {capa.status !== 'closed' && (
-                    <div className="pt-4 border-t border-slate-100 mt-4">
-                      <h4 className="text-sm font-semibold text-slate-900 mb-2">Completion Notes</h4>
+                    <div className="pt-4 border-t border-border/50 mt-4">
+                      <h4 className="text-sm font-semibold text-foreground mb-2">Completion Notes</h4>
                       <Textarea 
                         placeholder="Enter details about how the issue was resolved..."
                         value={notes}
@@ -125,7 +125,7 @@ function CAPADetailPage() {
                   {capa.evidences.length > 0 ? (
                     <MediaGallery media={capa.evidences} />
                   ) : (
-                    <div className="text-center p-6 bg-slate-50 rounded-lg border border-dashed text-slate-500">
+                    <div className="text-center p-6 bg-muted/50 rounded-lg border border-dashed text-muted-foreground">
                       No evidences uploaded yet.
                     </div>
                   )}
@@ -134,13 +134,13 @@ function CAPADetailPage() {
                     <div 
                       {...getRootProps()} 
                       className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${
-                        isDragActive ? 'border-primary bg-primary/5' : 'border-slate-300 hover:bg-slate-50'
+                        isDragActive ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/50'
                       }`}
                     >
                       <input {...getInputProps()} />
-                      <UploadCloud className="h-10 w-10 mx-auto text-slate-400 mb-4" />
+                      <UploadCloud className="h-10 w-10 mx-auto text-muted-foreground/70 mb-4" />
                       <p className="font-medium">Drag & drop files here to upload</p>
-                      <p className="text-xs text-slate-500 mt-2">Supports Image, Video, PDF</p>
+                      <p className="text-xs text-muted-foreground mt-2">Supports Image, Video, PDF</p>
                     </div>
                   )}
                 </CardContent>
@@ -156,12 +156,12 @@ function CAPADetailPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="bg-slate-100 p-2 rounded-full">
-                      <FileText className="h-4 w-4 text-slate-600" />
+                    <div className="bg-muted p-2 rounded-full">
+                      <FileText className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">Assigned To</p>
-                      <p className="text-sm text-slate-500">{capa.assignedTo}</p>
+                      <p className="text-sm font-medium text-foreground">Assigned To</p>
+                      <p className="text-sm text-muted-foreground">{capa.assignedTo}</p>
                     </div>
                   </div>
                   
@@ -170,7 +170,7 @@ function CAPADetailPage() {
                       <Calendar className="h-4 w-4 text-amber-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-slate-900">Due Date</p>
+                      <p className="text-sm font-medium text-foreground">Due Date</p>
                       <p className="text-sm text-amber-600 font-medium">{capa.dueDate}</p>
                     </div>
                   </div>

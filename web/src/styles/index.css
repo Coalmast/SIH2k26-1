@@ -190,3 +190,14 @@
     }
   }
 }
+
+@layer utilities {
+  .text-comet-up    { color: var(--color-comet-up); }
+  .bg-comet-up      { background-color: var(--color-comet-up); }
+  .text-comet-down  { color: var(--color-comet-down); }
+  .bg-comet-down    { background-color: var(--color-comet-down); }
+  .text-comet-yellow { color: var(--color-comet-yellow); }
+  .bg-comet-yellow  { background-color: var(--color-comet-yellow); }
+  .border-comet     { border-color: var(--color-comet-yellow); }
+  .font-numeric { font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace; }
+}

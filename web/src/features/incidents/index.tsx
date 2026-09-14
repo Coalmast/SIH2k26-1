@@ -48,23 +48,23 @@ export function IncidentsList() {
       case 'critical': return <Badge variant="destructive">Critical</Badge>
       case 'high': return <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-200">High</Badge>
       case 'medium': return <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">Medium</Badge>
-      default: return <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-200">Minor</Badge>
+      default: return <Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up border-[#0ecb81]/30">Minor</Badge>
     }
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'investigating': return <Badge variant="secondary">Investigating</Badge>
-      case 'resolved': return <Badge variant="outline" className="bg-slate-100">Resolved</Badge>
+      case 'resolved': return <Badge variant="outline" className="bg-muted">Resolved</Badge>
       default: return <Badge>{status}</Badge>
     }
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50 max-w-[1200px] mx-auto w-full space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1200px] mx-auto w-full space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <ShieldAlert className="h-8 w-8 text-primary" />
             Incident Register
           </h1>
@@ -73,7 +73,7 @@ export function IncidentsList() {
         <Button><Plus className="h-4 w-4 mr-2" /> File Incident Report</Button>
       </div>
 
-      <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow-sm border">
+      <div className="flex gap-4 items-center bg-background p-4 rounded-lg shadow-sm border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search incidents..." className="pl-9" />
@@ -106,8 +106,8 @@ export function IncidentsList() {
                   {getSeverityBadge(incident.severity)}
                   {getStatusBadge(incident.status)}
                 </div>
-                <p className="text-sm text-slate-600 line-clamp-1">{incident.desc}</p>
-                <div className="flex gap-4 text-xs font-medium text-slate-500">
+                <p className="text-sm text-muted-foreground line-clamp-1">{incident.desc}</p>
+                <div className="flex gap-4 text-xs font-medium text-muted-foreground">
                   <span>📍 {incident.zone}</span>
                   <span>⏰ {incident.shift}</span>
                   <span>📅 {new Date(incident.date).toLocaleDateString()}</span>

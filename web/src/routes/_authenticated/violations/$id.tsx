@@ -17,7 +17,7 @@ function ViolationDetailPage() {
     <>
       <Header fixed />
       
-      <Main className='flex flex-1 flex-col p-4 md:p-8 bg-slate-50/50 max-w-[1000px] mx-auto w-full space-y-6'>
+      <Main className='flex flex-1 flex-col p-4 md:p-8 bg-muted/30 max-w-[1000px] mx-auto w-full space-y-6'>
         <div className="flex items-center gap-4">
           <Link to="/">
             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
@@ -31,23 +31,23 @@ function ViolationDetailPage() {
               </span>
               <Badge variant="destructive">Non-Compliant</Badge>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">PM10 Limit Exceeded - Pit 2</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground mt-1">PM10 Limit Exceeded - Pit 2</h1>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 space-y-6">
             <Card className="shadow-sm">
-              <CardHeader className="pb-3 border-b bg-slate-50/50">
+              <CardHeader className="pb-3 border-b bg-muted/30">
                 <CardTitle className="text-base flex items-center gap-2">
                   <AlertCircle className="h-4 w-4" /> Violation Details
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-5 space-y-4">
-                <p className="text-sm text-slate-700 leading-relaxed">
+                <p className="text-sm text-foreground/80 leading-relaxed">
                   Continuous Ambient Air Quality Monitoring Station (CAAQMS) recorded PM10 levels at 165µg/m³ for a 24-hour period, exceeding the statutory limit of 100µg/m³.
                 </p>
-                <div className="bg-red-50 p-3 rounded-lg border border-red-100 flex gap-3 text-red-800 text-sm">
+                <div className="bg-[#f6465d]/10 p-3 rounded-lg border border-red-100 flex gap-3 text-comet-down text-sm">
                   <AlertCircle className="h-5 w-5 shrink-0" />
                   <div>
                     <strong>Action Required:</strong> Immediate implementation of corrective dust suppression measures and submission of Corrective and Preventive Action (CAPA) report.
@@ -57,7 +57,7 @@ function ViolationDetailPage() {
             </Card>
 
             <Card className="shadow-sm">
-              <CardHeader className="pb-3 border-b bg-slate-50/50">
+              <CardHeader className="pb-3 border-b bg-muted/30">
                 <CardTitle className="text-base flex items-center gap-2">
                   <FileText className="h-4 w-4" /> Submit CAPA Report
                 </CardTitle>
@@ -66,7 +66,7 @@ function ViolationDetailPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm font-semibold mb-1 flex items-center gap-2"><Users className="h-4 w-4" /> Assign to (Safety Officer / Contractor)</label>
-                    <select className="w-full h-10 px-3 border rounded-md text-sm bg-white mb-4">
+                    <select className="w-full h-10 px-3 border rounded-md text-sm bg-background mb-4">
                       <option>Select assignee...</option>
                       <option>Rajesh K. (Safety Officer, Pit 2)</option>
                       <option>Balaji Mining (Contractor)</option>
@@ -74,17 +74,17 @@ function ViolationDetailPage() {
                   </div>
                   <div>
                     <label className="text-sm font-semibold mb-1 block">Root Cause Analysis</label>
-                    <textarea className="w-full h-24 p-3 border rounded-md text-sm bg-white" placeholder="Describe the root cause..."></textarea>
+                    <textarea className="w-full h-24 p-3 border rounded-md text-sm bg-background" placeholder="Describe the root cause..."></textarea>
                   </div>
                   <div>
                     <label className="text-sm font-semibold mb-1 block">Corrective Actions Taken</label>
-                    <textarea className="w-full h-24 p-3 border rounded-md text-sm bg-white" placeholder="Describe immediate actions taken..."></textarea>
+                    <textarea className="w-full h-24 p-3 border rounded-md text-sm bg-background" placeholder="Describe immediate actions taken..."></textarea>
                   </div>
                   <div>
                     <label className="text-sm font-semibold mb-1 block">Supporting Evidence</label>
-                    <div className="w-full h-20 border-2 border-dashed border-slate-300 rounded-lg flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 cursor-pointer">
-                      <UploadCloud className="h-6 w-6 text-slate-400 mb-1" />
-                      <div className="text-xs font-semibold text-slate-600">Upload photos/documents</div>
+                    <div className="w-full h-20 border-2 border-dashed border-border rounded-lg flex flex-col items-center justify-center bg-muted/50 hover:bg-muted cursor-pointer">
+                      <UploadCloud className="h-6 w-6 text-muted-foreground/70 mb-1" />
+                      <div className="text-xs font-semibold text-muted-foreground">Upload photos/documents</div>
                     </div>
                   </div>
                   <Button className="w-full">Submit CAPA for Review</Button>
@@ -95,30 +95,30 @@ function ViolationDetailPage() {
 
           <div className="space-y-6">
             <Card className="shadow-sm">
-              <CardHeader className="pb-3 border-b bg-slate-50/50">
+              <CardHeader className="pb-3 border-b bg-muted/30">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Clock className="h-4 w-4" /> Resolution Timeline
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-5">
-                <div className="relative border-l-2 border-slate-200 ml-3 space-y-6">
+                <div className="relative border-l-2 border-border ml-3 space-y-6">
                   <div className="relative pl-6">
-                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-red-500 bg-white"></div>
+                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-red-500 bg-background"></div>
                     <div className="text-sm font-semibold">Violation Logged</div>
                     <div className="text-xs text-muted-foreground mt-0.5">Sep 04, 2026 • 14:30</div>
                   </div>
                   <div className="relative pl-6">
-                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-primary bg-white"></div>
+                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-primary bg-background"></div>
                     <div className="text-sm font-semibold text-primary">CAPA Submission Pending</div>
-                    <div className="text-xs font-bold text-red-500 mt-0.5">Due in 2 days</div>
+                    <div className="text-xs font-bold text-comet-down mt-0.5">Due in 2 days</div>
                   </div>
                   <div className="relative pl-6 opacity-40">
-                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-slate-300 bg-slate-100"></div>
+                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-border bg-muted"></div>
                     <div className="text-sm font-semibold">Regulatory Review</div>
                     <div className="text-xs text-muted-foreground mt-0.5">Pending submission</div>
                   </div>
                   <div className="relative pl-6 opacity-40">
-                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-slate-300 bg-slate-100"></div>
+                    <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-border bg-muted"></div>
                     <div className="text-sm font-semibold">Violation Closed</div>
                   </div>
                 </div>
@@ -126,30 +126,30 @@ function ViolationDetailPage() {
             </Card>
 
             <Card className="shadow-sm mt-6">
-              <CardHeader className="pb-3 border-b bg-red-50/50">
-                <CardTitle className="text-base flex items-center gap-2 text-red-700">
+              <CardHeader className="pb-3 border-b bg-[#f6465d]/10/50">
+                <CardTitle className="text-base flex items-center gap-2 text-comet-down">
                   <ArrowUp className="h-4 w-4" /> Escalation Ladder
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-5">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">L1</div>
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center font-bold text-muted-foreground text-xs">L1</div>
                     <div className="flex-1">
                       <div className="text-sm font-semibold">Mine Manager</div>
                       <div className="text-xs text-muted-foreground">Notified immediately</div>
                     </div>
-                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                    <CheckCircle2 className="h-5 w-5 text-comet-up" />
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center font-bold text-red-600 text-xs">L2</div>
+                    <div className="h-8 w-8 rounded-full bg-[#f6465d]/15 flex items-center justify-center font-bold text-comet-down text-xs">L2</div>
                     <div className="flex-1">
                       <div className="text-sm font-semibold">Corporate HQ</div>
-                      <div className="text-xs text-red-500 font-medium">Triggers in 48 hours</div>
+                      <div className="text-xs text-comet-down font-medium">Triggers in 48 hours</div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 opacity-50">
-                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">L3</div>
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center font-bold text-muted-foreground text-xs">L3</div>
                     <div className="flex-1">
                       <div className="text-sm font-semibold">DGMS / Regulatory</div>
                       <div className="text-xs text-muted-foreground">Triggers in 7 days</div>

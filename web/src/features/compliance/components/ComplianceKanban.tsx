@@ -30,7 +30,7 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
           </div>
           <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-1">
             <span>Reg: {data.requirement?.regulation?.code || 'N/A'}</span>
-            <div className={`flex items-center gap-1 mt-1 ${isOverdue ? 'text-red-500 font-medium' : ''}`}>
+            <div className={`flex items-center gap-1 mt-1 ${isOverdue ? 'text-comet-down font-medium' : ''}`}>
               <Calendar className="h-3 w-3" />
               {isOverdue 
                 ? `Overdue by ${formatDistanceToNow(new Date(data.due_date))}` 

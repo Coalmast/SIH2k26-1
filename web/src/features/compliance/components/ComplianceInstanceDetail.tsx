@@ -36,7 +36,7 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
             <Badge className={
               instance.status === 'pending' ? "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 border-yellow-500/20" :
               instance.status === 'approved' ? "bg-green-500/10 text-green-500 hover:bg-green-500/20 border-green-500/20" :
-              instance.status === 'breached' ? "bg-red-500/10 text-red-500 hover:bg-red-500/20 border-red-500/20" :
+              instance.status === 'breached' ? "bg-comet-down/10 text-comet-down hover:bg-comet-down/20 border-red-500/20" :
               "bg-blue-500/10 text-blue-500 border-blue-500/20"
             }>{instance.status?.toUpperCase()}</Badge>
           </div>
@@ -45,12 +45,12 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
             {instance.requirement?.regulation && <span>•</span>}
             {instance.requirement?.regulation && <span>Authority: {instance.requirement.regulation.authority}</span>}
             {instance.requirement?.regulation && <span>•</span>}
-            <span className={instance.status === 'breached' ? "text-red-500" : "text-yellow-500"}>Due: {new Date(instance.due_date).toLocaleDateString()}</span>
+            <span className={instance.status === 'breached' ? "text-comet-down" : "text-yellow-500"}>Due: {new Date(instance.due_date).toLocaleDateString()}</span>
           </div>
         </div>
         {instance.status === 'in_progress' && (
           <div className="flex gap-2">
-            <Button variant="outline" className="border-red-500/50 text-red-500 hover:bg-red-500/10">
+            <Button variant="outline" className="border-red-500/50 text-comet-down hover:bg-comet-down/10">
               Reject
             </Button>
             <Button onClick={handleApprove} disabled={approveMutation.isPending} className="bg-[#FCD535] text-black hover:bg-[#FCD535]/90 gap-2">

@@ -17,10 +17,10 @@ const mockProductionData = [
 
 export function ProductionModule() {
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50 max-w-[1400px] mx-auto w-full space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1400px] mx-auto w-full space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <Pickaxe className="h-8 w-8 text-primary" />
             Production & Dispatch
           </h1>
@@ -46,15 +46,15 @@ export function ProductionModule() {
           </CardContent>
         </Card>
         
-        <Card className="shadow-sm border-emerald-100 bg-emerald-50/30">
+        <Card className="shadow-sm border-emerald-100 bg-[#0ecb81]/10/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-emerald-800 flex justify-between">
+            <CardTitle className="text-sm text-comet-up flex justify-between">
               Total Dispatched
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-emerald-600">3,800 T</div>
-            <div className="text-xs text-emerald-600/70 mt-1">142 Trucks Cleared</div>
+            <div className="text-3xl font-black text-comet-up">3,800 T</div>
+            <div className="text-xs text-comet-up/70 mt-1">142 Trucks Cleared</div>
           </CardContent>
         </Card>
 
@@ -113,15 +113,15 @@ export function ProductionModule() {
           <CardHeader className="pb-2 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
               Active Truck Dispatches (OIT)
-              <Badge variant="outline" className="bg-slate-100">Live</Badge>
+              <Badge variant="outline" className="bg-muted">Live</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y">
-              <div className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
+              <div className="p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                    <Truck className="h-5 w-5 text-slate-600" />
+                  <div className="h-10 w-10 bg-muted rounded-lg flex items-center justify-center">
+                    <Truck className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
                     <div className="font-bold font-mono text-sm">MH-40-AK-8922</div>
@@ -129,14 +129,14 @@ export function ProductionModule() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge className="bg-emerald-500 mb-1">Cleared Weighbridge</Badge>
+                  <Badge className="bg-comet-up mb-1">Cleared Weighbridge</Badge>
                   <div className="text-xs text-muted-foreground font-semibold">Net: 32.4 T</div>
                 </div>
               </div>
-              <div className="p-4 flex justify-between items-center hover:bg-slate-50 transition-colors">
+              <div className="p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                    <Truck className="h-5 w-5 text-slate-600" />
+                  <div className="h-10 w-10 bg-muted rounded-lg flex items-center justify-center">
+                    <Truck className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
                     <div className="font-bold font-mono text-sm">CG-10-BM-1104</div>
@@ -162,8 +162,8 @@ export function ProductionModule() {
                 <span>G8 Grade Coal</span>
                 <span>8,400 T</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div className="h-full bg-slate-800" style={{width: '35%'}}></div>
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-full bg-muted" style={{width: '35%'}}></div>
               </div>
             </div>
             <div>
@@ -171,7 +171,7 @@ export function ProductionModule() {
                 <span>G9 Grade Coal</span>
                 <span>12,200 T</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-slate-600" style={{width: '50%'}}></div>
               </div>
             </div>
@@ -180,7 +180,7 @@ export function ProductionModule() {
                 <span>G11 Grade Coal</span>
                 <span>3,900 T</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-slate-400" style={{width: '15%'}}></div>
               </div>
             </div>

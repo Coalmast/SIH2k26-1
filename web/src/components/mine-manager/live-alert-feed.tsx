@@ -57,10 +57,10 @@ export function LiveAlertFeed({ mineId = 'mock-mine-1' }: { mineId?: string }) {
 
   const getAlertIcon = (priority: string) => {
     switch(priority) {
-      case 'critical': return <AlertTriangle className="text-red-500 h-5 w-5 shrink-0 mt-0.5" />
+      case 'critical': return <AlertTriangle className="text-comet-down h-5 w-5 shrink-0 mt-0.5" />
       case 'high': return <AlertTriangle className="text-orange-500 h-5 w-5 shrink-0 mt-0.5" />
       case 'medium': return <AlertTriangle className="text-amber-500 h-5 w-5 shrink-0 mt-0.5" />
-      case 'low': return <CheckCircle className="text-slate-500 h-5 w-5 shrink-0 mt-0.5" />
+      case 'low': return <CheckCircle className="text-muted-foreground h-5 w-5 shrink-0 mt-0.5" />
       default: return <Info className="text-blue-500 h-5 w-5 shrink-0 mt-0.5" />
     }
   }

@@ -63,25 +63,25 @@ export function WorkerApp() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto bg-slate-100 min-h-screen w-full flex justify-center">
+    <div className="flex-1 overflow-y-auto bg-muted min-h-screen w-full flex justify-center">
       
       {/* Mobile Frame Constraint (To simulate phone layout on desktop screens) */}
-      <div className="w-full max-w-md bg-white min-h-screen shadow-2xl relative flex flex-col">
+      <div className="w-full max-w-md bg-background min-h-screen shadow-2xl relative flex flex-col">
         
         {/* App Header */}
-        <header className="bg-slate-900 text-white p-4 flex justify-between items-center sticky top-0 z-10 shadow-md">
+        <header className="bg-background text-foreground p-4 flex justify-between items-center sticky top-0 z-10 shadow-md">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center border-2 border-emerald-500">
-              <ShieldCheck className="h-5 w-5 text-emerald-400" />
+              <ShieldCheck className="h-5 w-5 text-comet-up" />
             </div>
             <div>
               <h1 className="font-bold text-lg leading-tight">{t('greeting')}, Ramesh</h1>
-              <p className="text-xs text-slate-400">{t('role')}</p>
+              <p className="text-xs text-muted-foreground/70">{t('role')}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <Select value={lang} onValueChange={(v) => setLang(v as Lang)}>
-              <SelectTrigger className="w-[80px] h-8 bg-slate-800 border-slate-700 text-xs">
+              <SelectTrigger className="w-[80px] h-8 bg-muted border-border text-xs">
                 <SelectValue placeholder="Lang" />
               </SelectTrigger>
               <SelectContent>
@@ -89,7 +89,7 @@ export function WorkerApp() {
                 <SelectItem value="hi">हिंदी</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-300">
+            <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground/50">
               <Menu className="h-5 w-5" />
             </Button>
           </div>
@@ -99,23 +99,23 @@ export function WorkerApp() {
         <main className="flex-1 p-4 flex flex-col gap-5 overflow-y-auto pb-24">
           
           {/* Shift & Location Card */}
-          <Card className="border-slate-200 shadow-sm rounded-xl overflow-hidden">
-            <div className="bg-emerald-600 text-white p-3 flex justify-between items-center">
+          <Card className="border-border shadow-sm rounded-xl overflow-hidden">
+            <div className="bg-emerald-600 text-foreground p-3 flex justify-between items-center">
               <div className="font-bold flex items-center gap-2">
                 <Clock className="h-4 w-4" /> {t('shift')}
               </div>
-              <Badge className="bg-emerald-500 hover:bg-emerald-500 text-white border-0 shadow-none">Live</Badge>
+              <Badge className="bg-comet-up hover:bg-comet-up text-foreground border-0 shadow-none">Live</Badge>
             </div>
-            <CardContent className="p-4 bg-emerald-50/50">
-              <div className="text-xl font-black text-slate-800 mb-1">{t('shiftTime')}</div>
-              <div className="flex items-center gap-2 text-slate-600 font-medium">
-                <MapPin className="h-4 w-4 text-emerald-600" /> {t('zone')}
+            <CardContent className="p-4 bg-[#0ecb81]/10/50">
+              <div className="text-xl font-black text-foreground mb-1">{t('shiftTime')}</div>
+              <div className="flex items-center gap-2 text-muted-foreground font-medium">
+                <MapPin className="h-4 w-4 text-comet-up" /> {t('zone')}
               </div>
             </CardContent>
           </Card>
 
           {/* Gamified Safety Score */}
-          <Card className="border-slate-200 shadow-sm rounded-xl">
+          <Card className="border-border shadow-sm rounded-xl">
             <CardContent className="p-5 flex items-center gap-5">
               <div className="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
@@ -125,18 +125,18 @@ export function WorkerApp() {
                     fill="none" stroke="currentColor" strokeWidth="4"
                   />
                   <path
-                    className="text-emerald-500"
+                    className="text-comet-up"
                     strokeDasharray="94, 100"
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round"
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center">
-                  <span className="text-xl font-black text-slate-800"><NumberTicker value={94} /></span>
+                  <span className="text-xl font-black text-foreground"><NumberTicker value={94} /></span>
                 </div>
               </div>
               <div className="flex-1">
-                <h3 className="font-bold text-slate-800 text-lg">{t('safetyScore')}</h3>
+                <h3 className="font-bold text-foreground text-lg">{t('safetyScore')}</h3>
                 <div className="flex items-center gap-1 text-amber-500 font-semibold mt-1 text-sm">
                   <Trophy className="h-4 w-4" /> {t('rank')}: #4 / 150
                 </div>
@@ -146,11 +146,11 @@ export function WorkerApp() {
 
           {/* Quick Actions (High Touch Targets) */}
           <div className="grid grid-cols-2 gap-4">
-            <Button className="h-24 flex flex-col gap-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border-2 border-slate-200 shadow-sm" variant="outline">
+            <Button className="h-24 flex flex-col gap-2 rounded-xl bg-muted text-foreground/80 hover:bg-slate-200 border-2 border-border shadow-sm" variant="outline">
               <AlertTriangle className="h-8 w-8 text-amber-500" />
               <span className="font-bold text-sm whitespace-normal text-center leading-tight">{t('report')}</span>
             </Button>
-            <Button className="h-24 flex flex-col gap-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 border-2 border-slate-200 shadow-sm" variant="outline">
+            <Button className="h-24 flex flex-col gap-2 rounded-xl bg-muted text-foreground/80 hover:bg-slate-200 border-2 border-border shadow-sm" variant="outline">
               <PhoneCall className="h-8 w-8 text-blue-500" />
               <span className="font-bold text-sm whitespace-normal text-center leading-tight">{t('call')}</span>
             </Button>
@@ -158,14 +158,14 @@ export function WorkerApp() {
 
           {/* Alerts */}
           <div>
-            <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
-              <Megaphone className="h-4 w-4 text-slate-500" /> {t('alerts')}
+            <h3 className="font-bold text-foreground mb-3 flex items-center gap-2">
+              <Megaphone className="h-4 w-4 text-muted-foreground" /> {t('alerts')}
             </h3>
             <div className="space-y-3">
               <div className="bg-amber-50 border-l-4 border-amber-500 p-3 rounded-r-lg text-sm text-amber-900 shadow-sm font-medium">
                 {t('alert1')}
               </div>
-              <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-r-lg text-sm text-red-900 shadow-sm font-medium">
+              <div className="bg-[#f6465d]/10 border-l-4 border-red-500 p-3 rounded-r-lg text-sm text-comet-down shadow-sm font-medium">
                 {t('alert2')}
               </div>
             </div>
@@ -174,14 +174,14 @@ export function WorkerApp() {
         </main>
 
         {/* SOS Footer (Fixed at bottom of mobile view) */}
-        <div className="p-4 bg-white border-t border-slate-200 sticky bottom-0 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]">
+        <div className="p-4 bg-background border-t border-border sticky bottom-0 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]">
           {sosActivated ? (
             <div className="bg-red-600 rounded-full h-16 w-full flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.6)]">
-              <span className="text-white font-black text-xl uppercase tracking-widest">SOS TRANSMITTED</span>
+              <span className="text-foreground font-black text-xl uppercase tracking-widest">SOS TRANSMITTED</span>
             </div>
           ) : (
-            <div className="relative bg-slate-100 rounded-full h-16 w-full flex items-center overflow-hidden border border-red-200 shadow-inner group">
-              <div className="absolute inset-0 flex items-center justify-center text-red-700/50 font-bold uppercase tracking-widest text-sm z-0">
+            <div className="relative bg-muted rounded-full h-16 w-full flex items-center overflow-hidden border border-[#f6465d]/30 shadow-inner group">
+              <div className="absolute inset-0 flex items-center justify-center text-comet-down/50 font-bold uppercase tracking-widest text-sm z-0">
                 {t('sos')}
               </div>
               
@@ -190,13 +190,13 @@ export function WorkerApp() {
                 onPointerDown={handleSOS}
                 className={`absolute h-14 w-14 rounded-full bg-red-600 shadow-lg left-1 z-10 flex items-center justify-center transition-transform duration-[1500ms] ${sosSliding ? 'translate-x-[calc(100vw-5.5rem)] md:translate-x-[360px]' : 'translate-x-0 group-hover:translate-x-2'}`}
               >
-                <ShieldAlert className="h-6 w-6 text-white" />
+                <ShieldAlert className="h-6 w-6 text-foreground" />
               </button>
             </div>
           )}
           
           <div className="text-center mt-4 mb-2 flex flex-col items-center justify-center opacity-40">
-            <div className="w-12 h-1 bg-slate-800 rounded-full mb-1"></div>
+            <div className="w-12 h-1 bg-muted rounded-full mb-1"></div>
             <p className="text-[10px] font-bold tracking-widest uppercase">{t('nfc')}</p>
           </div>
         </div>

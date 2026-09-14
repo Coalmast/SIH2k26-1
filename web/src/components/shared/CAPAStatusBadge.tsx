@@ -19,7 +19,7 @@ const statusConfig = {
   },
   overdue: {
     label: "Overdue",
-    className: "bg-red-100 text-red-800 animate-pulse hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400"
+    className: "bg-[#f6465d]/15 text-comet-down animate-pulse hover:bg-[#f6465d]/15 dark:bg-red-900/30 dark:text-comet-down"
   },
   verified_closed: {
     label: "Verified & Closed",

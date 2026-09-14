@@ -151,7 +151,7 @@ export function ReportGenerator() {
             </CardHeader>
             <CardContent className="flex-1 p-0 bg-[#0B0E11] relative flex items-center justify-center">
               {/* Mock PDF Container */}
-              <div className="w-[80%] h-[90%] bg-white rounded shadow-2xl p-12 text-black overflow-y-auto">
+              <div className="w-[80%] h-[90%] bg-background rounded shadow-2xl p-12 text-black overflow-y-auto">
                 <div className="max-w-2xl mx-auto flex flex-col gap-8">
                   <div className="text-center border-b pb-4 border-gray-200">
                     <h2 className="text-2xl font-bold uppercase font-serif tracking-wide">Form III</h2>

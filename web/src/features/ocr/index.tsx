@@ -37,10 +37,10 @@ export function OCRModule() {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50 max-w-[1200px] mx-auto w-full space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1200px] mx-auto w-full space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <ScanText className="h-8 w-8 text-primary" />
             AI Document OCR
           </h1>
@@ -56,13 +56,13 @@ export function OCRModule() {
           <CardContent className="p-6 flex-1 flex flex-col items-center justify-center">
             {!file ? (
               <div 
-                className="w-full h-full border-2 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
+                className="w-full h-full border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
                 onDragOver={e => e.preventDefault()}
                 onDrop={handleDrop}
                 onClick={() => document.getElementById('file-upload')?.click()}
               >
-                <UploadCloud className="h-12 w-12 text-slate-400 mb-4" />
-                <div className="text-sm font-semibold text-slate-700">Drag & drop your document here</div>
+                <UploadCloud className="h-12 w-12 text-muted-foreground/70 mb-4" />
+                <div className="text-sm font-semibold text-foreground/80">Drag & drop your document here</div>
                 <div className="text-xs text-muted-foreground mt-1">PDF, JPG, PNG up to 10MB</div>
                 <input id="file-upload" type="file" className="hidden" onChange={e => e.target.files && setFile(e.target.files[0])} accept=".pdf,image/*" />
               </div>
@@ -70,7 +70,7 @@ export function OCRModule() {
               <div className="w-full h-full flex flex-col items-center justify-center space-y-6">
                 <FileText className="h-20 w-20 text-primary" />
                 <div className="text-center">
-                  <div className="font-semibold text-slate-900">{file.name}</div>
+                  <div className="font-semibold text-foreground">{file.name}</div>
                   <div className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</div>
                 </div>
                 <div className="flex gap-3">
@@ -89,7 +89,7 @@ export function OCRModule() {
           <CardHeader className="pb-2 border-b">
             <CardTitle className="text-lg flex justify-between items-center">
               Extraction Results
-              {result && <Badge className="bg-emerald-500 hover:bg-emerald-600">{(result.confidence * 100).toFixed(0)}% Confidence</Badge>}
+              {result && <Badge className="bg-comet-up hover:bg-emerald-600">{(result.confidence * 100).toFixed(0)}% Confidence</Badge>}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0 flex-1 overflow-y-auto">
@@ -104,15 +104,15 @@ export function OCRModule() {
               <div className="h-full p-6 space-y-6">
                 <div className="space-y-2 animate-pulse">
                   <div className="h-4 bg-slate-200 rounded w-1/3"></div>
-                  <div className="h-10 bg-slate-100 rounded w-full"></div>
+                  <div className="h-10 bg-muted rounded w-full"></div>
                 </div>
                 <div className="space-y-2 animate-pulse">
                   <div className="h-4 bg-slate-200 rounded w-1/4"></div>
-                  <div className="h-10 bg-slate-100 rounded w-full"></div>
+                  <div className="h-10 bg-muted rounded w-full"></div>
                 </div>
                 <div className="space-y-2 animate-pulse">
                   <div className="h-4 bg-slate-200 rounded w-1/2"></div>
-                  <div className="h-10 bg-slate-100 rounded w-full"></div>
+                  <div className="h-10 bg-muted rounded w-full"></div>
                 </div>
               </div>
             )}
@@ -121,7 +121,7 @@ export function OCRModule() {
               <div className="p-6 space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="bg-primary/5 p-4 rounded-lg border border-primary/20">
                   <Label className="text-primary font-bold text-xs uppercase">Detected Document Type</Label>
-                  <div className="text-lg font-semibold mt-1 text-slate-900">{result.documentType}</div>
+                  <div className="text-lg font-semibold mt-1 text-foreground">{result.documentType}</div>
                 </div>
 
                 <div className="space-y-4">
@@ -129,7 +129,7 @@ export function OCRModule() {
                     <Label htmlFor="lic">License / Form Number</Label>
                     <div className="relative">
                       <Input id="lic" defaultValue={result.extractedData.licenseNumber} />
-                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500" />
+                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-comet-up" />
                     </div>
                   </div>
                   
@@ -137,7 +137,7 @@ export function OCRModule() {
                     <Label htmlFor="contractor">Contractor / Agency Name</Label>
                     <div className="relative">
                       <Input id="contractor" defaultValue={result.extractedData.contractorName} />
-                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500" />
+                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-comet-up" />
                     </div>
                   </div>
 
@@ -145,7 +145,7 @@ export function OCRModule() {
                     <Label htmlFor="date">Valid Until</Label>
                     <div className="relative">
                       <Input id="date" defaultValue={result.extractedData.validUntil} />
-                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-500" />
+                      <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-comet-up" />
                     </div>
                   </div>
                   

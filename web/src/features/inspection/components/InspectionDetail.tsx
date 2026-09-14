@@ -125,7 +125,7 @@ export function InspectionDetail({ id }: { id: string }) {
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">High/Critical Severity</p>
-              <p className="text-2xl font-bold text-red-500">
+              <p className="text-2xl font-bold text-comet-down">
                 {inspection.observations?.filter((o: any) => o.severity === 'high' || o.severity === 'critical').length || 0}
               </p>
             </div>

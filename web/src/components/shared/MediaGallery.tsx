@@ -50,7 +50,7 @@ export function MediaGallery({ media }: MediaGalleryProps) {
               <>
                 <img src={item.thumbnailUrl || "/video-placeholder.png"} alt="video" className="h-full w-full object-cover blur-[2px]" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Play className="size-8 text-white drop-shadow-md transition-transform group-hover:scale-110" />
+                  <Play className="size-8 text-foreground drop-shadow-md transition-transform group-hover:scale-110" />
                 </div>
               </>
             )}
@@ -71,17 +71,17 @@ export function MediaGallery({ media }: MediaGalleryProps) {
             
             <button 
               onClick={() => setActiveIndex(null)}
-              className="absolute right-4 top-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
+              className="absolute right-4 top-4 z-50 rounded-full bg-black/50 p-2 text-foreground hover:bg-black/70"
             >
               <X className="size-5" />
             </button>
 
             {media.length > 1 && (
               <>
-                <button onClick={handlePrev} className="absolute left-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-opacity opacity-0 group-hover:opacity-100">
+                <button onClick={handlePrev} className="absolute left-4 z-50 rounded-full bg-black/50 p-2 text-foreground hover:bg-black/70 transition-opacity opacity-0 group-hover:opacity-100">
                   <ChevronLeft className="size-6" />
                 </button>
-                <button onClick={handleNext} className="absolute right-4 z-50 rounded-full bg-black/50 p-2 text-white hover:bg-black/70 transition-opacity opacity-0 group-hover:opacity-100">
+                <button onClick={handleNext} className="absolute right-4 z-50 rounded-full bg-black/50 p-2 text-foreground hover:bg-black/70 transition-opacity opacity-0 group-hover:opacity-100">
                   <ChevronRight className="size-6" />
                 </button>
               </>
@@ -102,7 +102,7 @@ export function MediaGallery({ media }: MediaGalleryProps) {
               </div>
             )}
             
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-xs text-white">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-3 py-1 text-xs text-foreground">
               {activeIndex! + 1} / {media.length}
             </div>
           </div>

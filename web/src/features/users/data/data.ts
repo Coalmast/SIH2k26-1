@@ -7,7 +7,7 @@ export const userTypes = [
 
 export const callTypes = new Map<string, string>([
   ['active', 'bg-green-500'],
-  ['inactive', 'bg-red-500'],
+  ['inactive', 'bg-comet-down'],
 ])
 
 export const roles = [

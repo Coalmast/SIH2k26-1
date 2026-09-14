@@ -20,7 +20,7 @@ export function EnvironmentalStatus() {
           <span className="text-xs font-semibold text-muted-foreground uppercase mb-1">Water pH</span>
           <div className="flex items-center gap-2">
             <span className="text-3xl font-bold text-foreground">7.2</span>
-            <Droplet className="h-5 w-5 text-emerald-500 fill-emerald-500/20" />
+            <Droplet className="h-5 w-5 text-comet-up fill-emerald-500/20" />
           </div>
           {/* Progress representing pH value around 7 (neutral) out of 14, ~50% */}
           <Progress value={50} className="mt-2 h-2 bg-secondary" />

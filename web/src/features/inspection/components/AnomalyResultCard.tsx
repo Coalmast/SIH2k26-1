@@ -8,7 +8,7 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
 
   const getRiskColor = (level: string) => {
     switch (level?.toLowerCase()) {
-      case 'critical': return 'text-red-600 bg-red-100 border-red-200';
+      case 'critical': return 'text-comet-down bg-[#f6465d]/15 border-[#f6465d]/30';
       case 'high': return 'text-orange-600 bg-orange-100 border-orange-200';
       case 'medium': return 'text-amber-600 bg-amber-100 border-amber-200';
       default: return 'text-green-600 bg-green-100 border-green-200';
@@ -17,7 +17,7 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
 
   const getRiskTextColor = (level: string) => {
     switch (level?.toLowerCase()) {
-      case 'critical': return 'text-red-600';
+      case 'critical': return 'text-comet-down';
       case 'high': return 'text-orange-600';
       case 'medium': return 'text-amber-600';
       default: return 'text-green-600';
@@ -50,7 +50,7 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
         
         <div className="space-y-3">
           {analysis.anomalies?.map((anomaly: any, i: number) => (
-            <div key={i} className="bg-white rounded-md p-3 border shadow-sm">
+            <div key={i} className="bg-background rounded-md p-3 border shadow-sm">
               <div className="flex justify-between items-start mb-2">
                 <div className="flex items-center gap-2">
                   <AlertCircle className={`h-4 w-4 ${getRiskTextColor(anomaly.severity)}`} />
@@ -58,11 +58,11 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
                 </div>
                 <SeverityChip severity={anomaly.severity} />
               </div>
-              <p className="text-sm text-slate-700 mb-2">{anomaly.message}</p>
+              <p className="text-sm text-foreground/80 mb-2">{anomaly.message}</p>
               
               <div className="text-xs space-y-1">
                 {anomaly.regulation_ref && (
-                  <div className="flex text-slate-500">
+                  <div className="flex text-muted-foreground">
                     <span className="font-semibold w-24">Regulation:</span>
                     <span>{anomaly.regulation_ref}</span>
                   </div>
