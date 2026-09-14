@@ -1,9 +1,14 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { AlertTriangle, Info, AlertCircle } from 'lucide-react';
 import { SeverityChip } from '@/components/shared/SeverityChip';
 
 export function AnomalyResultCard({ analysis }: { analysis: any }) {
+  const {
+    t
+  } = useTranslation();
+
   if (!analysis) return null;
 
   const getRiskColor = (level: string) => {
@@ -29,24 +34,19 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5" /> 
-            AI Anomaly Analysis
-          </CardTitle>
+            <AlertTriangle className="h-5 w-5" />{t("ai_anomaly_analysis", "AI Anomaly Analysis")}</CardTitle>
           <div className="text-right">
             <div className={`text-2xl font-black ${getRiskTextColor(analysis.risk_level)}`}>
-              {analysis.risk_score} / 100
-            </div>
+              {analysis.risk_score}{t("100", "/ 100")}</div>
             <div className={`text-xs font-bold uppercase tracking-wider ${getRiskTextColor(analysis.risk_level)}`}>
-              {analysis.risk_level} RISK
-            </div>
+              {analysis.risk_level}{t("risk", "RISK")}</div>
           </div>
         </div>
       </CardHeader>
-      
+
       <CardContent>
         <div className="font-medium text-sm mb-3">
-          {analysis.total_anomalies} Anomalies Detected
-        </div>
+          {analysis.total_anomalies}{t("anomalies_detected", "Anomalies Detected")}</div>
         
         <div className="space-y-3">
           {analysis.anomalies?.map((anomaly: any, i: number) => (
@@ -63,7 +63,7 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
               <div className="text-xs space-y-1">
                 {anomaly.regulation_ref && (
                   <div className="flex text-muted-foreground">
-                    <span className="font-semibold w-24">Regulation:</span>
+                    <span className="font-semibold w-24">{t("regulation", "Regulation:")}</span>
                     <span>{anomaly.regulation_ref}</span>
                   </div>
                 )}
@@ -78,9 +78,10 @@ export function AnomalyResultCard({ analysis }: { analysis: any }) {
           ))}
           
           {analysis.anomalies?.length === 0 && (
-             <div className="text-center p-4 text-green-600 bg-green-50 rounded border border-green-100">
-               No anomalies detected. Operations normal.
-             </div>
+             <div className="text-center p-4 text-green-600 bg-green-50 rounded border border-green-100">{t(
+               "no_anomalies_detected_operatio",
+               "No anomalies detected. Operations normal."
+             )}</div>
           )}
         </div>
       </CardContent>

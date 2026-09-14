@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { ChevronDownIcon } from '@radix-ui/react-icons'
@@ -27,6 +28,10 @@ const appearanceFormSchema = z.object({
 type AppearanceFormValues = z.infer<typeof appearanceFormSchema>
 
 export function AppearanceForm() {
+  const {
+    t
+  } = useTranslation();
+
   const { font, setFont } = useFont()
   const { theme, setTheme } = useTheme()
 
@@ -56,7 +61,7 @@ export function AppearanceForm() {
           name='font'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Font</FormLabel>
+              <FormLabel>{t("font", "Font")}</FormLabel>
               <div className='relative w-max'>
                 <FormControl>
                   <select
@@ -76,9 +81,10 @@ export function AppearanceForm() {
                 </FormControl>
                 <ChevronDownIcon className='absolute inset-e-3 top-2.5 h-4 w-4 opacity-50' />
               </div>
-              <FormDescription className='font-manrope'>
-                Set the font you want to use in the dashboard.
-              </FormDescription>
+              <FormDescription className='font-manrope'>{t(
+                "set_the_font_you_want_to_use_i",
+                "Set the font you want to use in the dashboard."
+              )}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -88,10 +94,8 @@ export function AppearanceForm() {
           name='theme'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Theme</FormLabel>
-              <FormDescription>
-                Select the theme for the dashboard.
-              </FormDescription>
+              <FormLabel>{t("theme", "Theme")}</FormLabel>
+              <FormDescription>{t("select_the_theme_for_the_dashb", "Select the theme for the dashboard.")}</FormDescription>
               <FormMessage />
               <RadioGroup
                 onValueChange={field.onChange}
@@ -119,9 +123,7 @@ export function AppearanceForm() {
                         </div>
                       </div>
                     </div>
-                    <span className='block w-full p-2 text-center font-normal'>
-                      Light
-                    </span>
+                    <span className='block w-full p-2 text-center font-normal'>{t("light", "Light")}</span>
                   </FormLabel>
                 </FormItem>
                 <FormItem>
@@ -145,9 +147,7 @@ export function AppearanceForm() {
                         </div>
                       </div>
                     </div>
-                    <span className='block w-full p-2 text-center font-normal'>
-                      Dark
-                    </span>
+                    <span className='block w-full p-2 text-center font-normal'>{t("dark", "Dark")}</span>
                   </FormLabel>
                 </FormItem>
               </RadioGroup>
@@ -155,8 +155,8 @@ export function AppearanceForm() {
           )}
         />
 
-        <Button type='submit'>Update preferences</Button>
+        <Button type='submit'>{t("update_preferences", "Update preferences")}</Button>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -32,8 +33,12 @@ const MOCK_CAPA = {
 }
 
 function CAPADetailPage() {
+  const {
+    t
+  } = useTranslation();
+
   const { id } = Route.useParams()
-  const [capa, setCapa] = useState(MOCK_CAPA)
+  const [capa, setCapa] = useState<Omit<typeof MOCK_CAPA, 'status'> & { status: 'in_progress' | 'closed' }>(MOCK_CAPA)
   const [notes, setNotes] = useState("")
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -51,30 +56,27 @@ function CAPADetailPage() {
   return (
     <>
       <Header fixed />
-      
+
       <Main className='flex flex-1 flex-col p-6 bg-muted/30 min-h-screen'>
         <div className="max-w-5xl mx-auto w-full space-y-6 animate-in fade-in duration-500">
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">CAPA: {id}</h1>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">{t("capa", "CAPA:")}{id}</h1>
                 <Badge variant={capa.status === 'closed' ? 'default' : 'secondary'} className={capa.status === 'closed' ? 'bg-comet-up' : ''}>
                   {capa.status.replace('_', ' ').toUpperCase()}
                 </Badge>
               </div>
               <p className="text-muted-foreground flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4 text-amber-500" />
-                Linked to Violation: {capa.violationCategory}
+                <AlertTriangle className="h-4 w-4 text-amber-500" />{t("linked_to_violation", "Linked to Violation:")}{capa.violationCategory}
               </p>
             </div>
             
             <div className="flex gap-3">
               {capa.status !== 'closed' && (
                 <Button onClick={handleVerify} className="bg-emerald-600 hover:bg-emerald-700">
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Verify & Close
-                </Button>
+                  <CheckCircle2 className="mr-2 h-4 w-4" />{t("verify_close", "Verify & Close")}</Button>
               )}
             </div>
           </div>
@@ -90,21 +92,21 @@ function CAPADetailPage() {
               
               <Card className="shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg">Corrective Action Details</CardTitle>
+                  <CardTitle className="text-lg">{t("corrective_action_details", "Corrective Action Details")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-foreground/80">
                   <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">Description</h4>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{t("description", "Description")}</h4>
                     <p>{capa.description}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">Preventive Measures</h4>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{t("preventive_measures", "Preventive Measures")}</h4>
                     <p>{capa.preventiveMeasures}</p>
                   </div>
                   
                   {capa.status !== 'closed' && (
                     <div className="pt-4 border-t border-border/50 mt-4">
-                      <h4 className="text-sm font-semibold text-foreground mb-2">Completion Notes</h4>
+                      <h4 className="text-sm font-semibold text-foreground mb-2">{t("completion_notes", "Completion Notes")}</h4>
                       <Textarea 
                         placeholder="Enter details about how the issue was resolved..."
                         value={notes}
@@ -118,16 +120,17 @@ function CAPADetailPage() {
 
               <Card className="shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg">Evidences</CardTitle>
-                  <CardDescription>Photos, videos, or documents proving completion.</CardDescription>
+                  <CardTitle className="text-lg">{t("evidences", "Evidences")}</CardTitle>
+                  <CardDescription>{t(
+                    "photos_videos_or_documents_pro",
+                    "Photos, videos, or documents proving completion."
+                  )}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {capa.evidences.length > 0 ? (
                     <MediaGallery media={capa.evidences} />
                   ) : (
-                    <div className="text-center p-6 bg-muted/50 rounded-lg border border-dashed text-muted-foreground">
-                      No evidences uploaded yet.
-                    </div>
+                    <div className="text-center p-6 bg-muted/50 rounded-lg border border-dashed text-muted-foreground">{t("no_evidences_uploaded_yet", "No evidences uploaded yet.")}</div>
                   )}
 
                   {capa.status !== 'closed' && (
@@ -139,8 +142,8 @@ function CAPADetailPage() {
                     >
                       <input {...getInputProps()} />
                       <UploadCloud className="h-10 w-10 mx-auto text-muted-foreground/70 mb-4" />
-                      <p className="font-medium">Drag & drop files here to upload</p>
-                      <p className="text-xs text-muted-foreground mt-2">Supports Image, Video, PDF</p>
+                      <p className="font-medium">{t("drag_drop_files_here_to_upload", "Drag & drop files here to upload")}</p>
+                      <p className="text-xs text-muted-foreground mt-2">{t("supports_image_video_pdf", "Supports Image, Video, PDF")}</p>
                     </div>
                   )}
                 </CardContent>
@@ -152,7 +155,7 @@ function CAPADetailPage() {
               
               <Card className="shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg">Assignment Info</CardTitle>
+                  <CardTitle className="text-lg">{t("assignment_info", "Assignment Info")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-start gap-3">
@@ -160,7 +163,7 @@ function CAPADetailPage() {
                       <FileText className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">Assigned To</p>
+                      <p className="text-sm font-medium text-foreground">{t("assigned_to", "Assigned To")}</p>
                       <p className="text-sm text-muted-foreground">{capa.assignedTo}</p>
                     </div>
                   </div>
@@ -170,7 +173,7 @@ function CAPADetailPage() {
                       <Calendar className="h-4 w-4 text-amber-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">Due Date</p>
+                      <p className="text-sm font-medium text-foreground">{t("due_date", "Due Date")}</p>
                       <p className="text-sm text-amber-600 font-medium">{capa.dueDate}</p>
                     </div>
                   </div>
@@ -183,5 +186,5 @@ function CAPADetailPage() {
         </div>
       </Main>
     </>
-  )
+  );
 }

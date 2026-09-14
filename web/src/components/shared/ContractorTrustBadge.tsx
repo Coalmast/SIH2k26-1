@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Tooltip,
   TooltipContent,
@@ -26,6 +27,10 @@ export function ContractorTrustBadge({
   breakdown,
   className
 }: ContractorTrustBadgeProps) {
+  const {
+    t
+  } = useTranslation();
+
   const rating = riskRating || (score >= 75 ? "LOW" : score >= 50 ? "MEDIUM" : "HIGH")
 
   const colors = {
@@ -53,25 +58,25 @@ export function ContractorTrustBadge({
           <TooltipContent className="w-56 p-3 shadow-lg">
             <div className="space-y-3 text-sm">
               <div className="flex items-center justify-between font-semibold border-b pb-2">
-                <span>Trust Score</span>
-                <span className={colors[rating].split(" ")[1]}>{score}/100</span>
+                <span>{t("trust_score", "Trust Score")}</span>
+                <span className={colors[rating].split(" ")[1]}>{score}{t("100", "/100")}</span>
               </div>
               <div className="space-y-1.5">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Document Validity</span>
-                  <span>{breakdown.documents}%</span>
+                  <span className="text-muted-foreground">{t("document_validity", "Document Validity")}</span>
+                  <span>{breakdown.documents}{t("text", "%")}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Safety Record</span>
-                  <span>{breakdown.safety}%</span>
+                  <span className="text-muted-foreground">{t("safety_record", "Safety Record")}</span>
+                  <span>{breakdown.safety}{t("text", "%")}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">CAPA Resolution</span>
-                  <span>{breakdown.capa}%</span>
+                  <span className="text-muted-foreground">{t("capa_resolution", "CAPA Resolution")}</span>
+                  <span>{breakdown.capa}{t("text", "%")}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Billing Accuracy</span>
-                  <span>{breakdown.billing}%</span>
+                  <span className="text-muted-foreground">{t("billing_accuracy", "Billing Accuracy")}</span>
+                  <span>{breakdown.billing}{t("text", "%")}</span>
                 </div>
               </div>
             </div>
@@ -79,5 +84,5 @@ export function ContractorTrustBadge({
         )}
       </Tooltip>
     </TooltipProvider>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -36,6 +37,10 @@ const productionData = [
 ]
 
 export function ContractorsModule() {
+  const {
+    t
+  } = useTranslation();
+
   const [filter, setFilter] = useState('all')
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -48,14 +53,14 @@ export function ContractorsModule() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#0a192f] p-6 rounded-xl text-foreground shadow-lg">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <HardHat className="h-8 w-8 text-comet-up" />
-            Contractor & Vendor Portal
-          </h1>
-          <p className="text-muted-foreground/50 mt-1">Manage vendor compliance, AI trust scores, and real-time attendance.</p>
+            <HardHat className="h-8 w-8 text-comet-up" />{t("contractor_vendor_portal", "Contractor & Vendor Portal")}</h1>
+          <p className="text-muted-foreground/50 mt-1">{t(
+            "manage_vendor_compliance_ai_tr",
+            "Manage vendor compliance, AI trust scores, and real-time attendance."
+          )}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">
-            Mine: All Active <ChevronDown className="ml-2 h-4 w-4" />
+          <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">{t("mine_all_active", "Mine: All Active")}<ChevronDown className="ml-2 h-4 w-4" />
           </Button>
           <div className="relative">
             <Button variant="outline" size="icon" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">
@@ -67,8 +72,7 @@ export function ContractorsModule() {
             </span>
           </div>
           <Button className="bg-emerald-600 hover:bg-comet-up text-foreground border-0">
-            <Plus className="h-4 w-4 mr-2" /> Onboard Vendor
-          </Button>
+            <Plus className="h-4 w-4 mr-2" />{t("onboard_vendor", "Onboard Vendor")}</Button>
         </div>
       </div>
 
@@ -101,7 +105,7 @@ export function ContractorsModule() {
         {/* Resource Utilization Chart */}
         <Card className="shadow-sm border-border">
           <CardHeader>
-            <CardTitle className="text-lg text-foreground">Resource Utilization (RFID Attendance)</CardTitle>
+            <CardTitle className="text-lg text-foreground">{t("resource_utilization_rfid_atte", "Resource Utilization (RFID Attendance)")}</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -121,7 +125,7 @@ export function ContractorsModule() {
         {/* Production vs Target Chart */}
         <Card className="shadow-sm border-border">
           <CardHeader>
-            <CardTitle className="text-lg text-foreground">Production vs Target (Daily Tonnage)</CardTitle>
+            <CardTitle className="text-lg text-foreground">{t("production_vs_target_daily_ton", "Production vs Target (Daily Tonnage)")}</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -147,7 +151,7 @@ export function ContractorsModule() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
               <Input placeholder="Search contractors..." className="pl-9 bg-muted/50 border-transparent focus-visible:ring-emerald-500" />
             </div>
-            <Button variant="outline" className="border-border"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
+            <Button variant="outline" className="border-border"><Filter className="h-4 w-4 mr-2" />{t("filter", "Filter")}</Button>
           </div>
 
           <div className="grid gap-4">
@@ -161,16 +165,16 @@ export function ContractorsModule() {
                       <h3 className="font-bold text-foreground text-lg">{contractor.name}</h3>
                       <div className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
                         <Badge variant="secondary" className="font-normal">{contractor.type}</Badge>
-                        <span>ID: {contractor.id}</span>
+                        <span>{t("id", "ID:")}{contractor.id}</span>
                       </div>
                     </div>
                     <div className="text-right mr-4">
                       <div className="text-2xl font-black text-foreground/80">{contractor.workers}</div>
-                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Workers</div>
+                      <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("workers", "Workers")}</div>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <Button variant="outline" size="sm" className="border-[#0ecb81]/30 text-comet-up hover:bg-[#0ecb81]/10">View Profile</Button>
-                      <Button variant="ghost" size="sm" className="text-comet-down hover:bg-[#f6465d]/10">Suspend</Button>
+                      <Button variant="outline" size="sm" className="border-[#0ecb81]/30 text-comet-up hover:bg-[#0ecb81]/10">{t("view_profile", "View Profile")}</Button>
+                      <Button variant="ghost" size="sm" className="text-comet-down hover:bg-[#f6465d]/10">{t("suspend", "Suspend")}</Button>
                     </div>
                   </div>
                 </CardContent>
@@ -183,10 +187,11 @@ export function ContractorsModule() {
         <Card className="shadow-sm border-border h-fit bg-[#0a192f] text-foreground">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <FileText className="h-5 w-5 text-comet-up" /> 
-              AI Document Extraction
-            </CardTitle>
-            <p className="text-xs text-muted-foreground/70">Upload CLRA, EPF, or medical certificates for auto-verification.</p>
+              <FileText className="h-5 w-5 text-comet-up" />{t("ai_document_extraction", "AI Document Extraction")}</CardTitle>
+            <p className="text-xs text-muted-foreground/70">{t(
+              "upload_clra_epf_or_medical_cer",
+              "Upload CLRA, EPF, or medical certificates for auto-verification."
+            )}</p>
           </CardHeader>
           <CardContent>
             <div 
@@ -197,20 +202,20 @@ export function ContractorsModule() {
             >
               <input {...getInputProps()} />
               <UploadCloud className="h-10 w-10 mx-auto text-muted-foreground/70 mb-4" />
-              <p className="font-medium">Drag & drop files here</p>
-              <p className="text-xs text-muted-foreground mt-2">Supports PDF, JPEG, PNG (Max 10MB)</p>
+              <p className="font-medium">{t("drag_drop_files_here", "Drag & drop files here")}</p>
+              <p className="text-xs text-muted-foreground mt-2">{t("supports_pdf_jpeg_png_max_10mb", "Supports PDF, JPEG, PNG (Max 10MB)")}</p>
             </div>
             
             <div className="mt-6">
-              <h4 className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-3">Recent Uploads</h4>
+              <h4 className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-3">{t("recent_uploads", "Recent Uploads")}</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm bg-muted p-2 rounded border border-border">
-                  <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-comet-up"/> Medical_Roster.pdf</span>
-                  <Badge className="bg-comet-up/20 text-emerald-300">Verified</Badge>
+                  <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-comet-up"/>{t("medical_roster_pdf", "Medical_Roster.pdf")}</span>
+                  <Badge className="bg-comet-up/20 text-emerald-300">{t("verified", "Verified")}</Badge>
                 </div>
                 <div className="flex items-center justify-between text-sm bg-muted p-2 rounded border border-border">
-                  <span className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-amber-400"/> CLRA_Renew.pdf</span>
-                  <span className="text-amber-400 text-xs animate-pulse">Scanning...</span>
+                  <span className="flex items-center gap-2"><AlertTriangle className="h-4 w-4 text-amber-400"/>{t("clra_renew_pdf", "CLRA_Renew.pdf")}</span>
+                  <span className="text-amber-400 text-xs animate-pulse">{t("scanning", "Scanning...")}</span>
                 </div>
               </div>
             </div>
@@ -218,6 +223,6 @@ export function ContractorsModule() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
 

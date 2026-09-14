@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
@@ -60,6 +61,10 @@ const defaultValues: Partial<AccountFormValues> = {
 }
 
 export function AccountForm() {
+  const {
+    t
+  } = useTranslation();
+
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
     defaultValues,
@@ -77,14 +82,14 @@ export function AccountForm() {
           name='name'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t("name", "Name")}</FormLabel>
               <FormControl>
                 <Input placeholder='Your name' {...field} />
               </FormControl>
-              <FormDescription>
-                This is the name that will be displayed on your profile and in
-                emails.
-              </FormDescription>
+              <FormDescription>{t(
+                "this_is_the_name_that_will_be_",
+                "This is the name that will be displayed on your profile and in\n                emails."
+              )}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -94,11 +99,12 @@ export function AccountForm() {
           name='dob'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
-              <FormLabel>Date of birth</FormLabel>
+              <FormLabel>{t("date_of_birth", "Date of birth")}</FormLabel>
               <DatePicker selected={field.value} onSelect={field.onChange} />
-              <FormDescription>
-                Your date of birth is used to calculate your age.
-              </FormDescription>
+              <FormDescription>{t(
+                "your_date_of_birth_is_used_to_",
+                "Your date of birth is used to calculate your age."
+              )}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -108,7 +114,7 @@ export function AccountForm() {
           name='language'
           render={({ field }) => (
             <FormItem className='flex flex-col'>
-              <FormLabel>Language</FormLabel>
+              <FormLabel>{t("language", "Language")}</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -132,7 +138,7 @@ export function AccountForm() {
                 <PopoverContent className='w-50 p-0'>
                   <Command>
                     <CommandInput placeholder='Search language...' />
-                    <CommandEmpty>No language found.</CommandEmpty>
+                    <CommandEmpty>{t("no_language_found", "No language found.")}</CommandEmpty>
                     <CommandGroup>
                       <CommandList>
                         {languages.map((language) => (
@@ -159,15 +165,16 @@ export function AccountForm() {
                   </Command>
                 </PopoverContent>
               </Popover>
-              <FormDescription>
-                This is the language that will be used in the dashboard.
-              </FormDescription>
+              <FormDescription>{t(
+                "this_is_the_language_that_will",
+                "This is the language that will be used in the dashboard."
+              )}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type='submit'>Update account</Button>
+        <Button type='submit'>{t("update_account", "Update account")}</Button>
       </form>
     </Form>
-  )
+  );
 }

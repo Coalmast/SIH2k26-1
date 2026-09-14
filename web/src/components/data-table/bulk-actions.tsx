@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect, useRef } from 'react'
 import { type Table } from '@tanstack/react-table'
 import { X } from 'lucide-react'
@@ -32,6 +33,10 @@ export function DataTableBulkActions<TData>({
   entityName,
   children,
 }: DataTableBulkActionsProps<TData>): React.ReactNode | null {
+  const {
+    t
+  } = useTranslation();
+
   const selectedRows = table.getFilteredSelectedRowModel().rows
   const selectedCount = selectedRows.length
   const toolbarRef = useRef<HTMLDivElement>(null)
@@ -167,11 +172,11 @@ export function DataTableBulkActions<TData>({
                 title='Clear selection (Escape)'
               >
                 <X />
-                <span className='sr-only'>Clear selection</span>
+                <span className='sr-only'>{t("clear_selection", "Clear selection")}</span>
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Clear selection (Escape)</p>
+              <p>{t("clear_selection_escape", "Clear selection (Escape)")}</p>
             </TooltipContent>
           </Tooltip>
 
@@ -195,9 +200,7 @@ export function DataTableBulkActions<TData>({
             <span className='hidden sm:inline'>
               {entityName}
               {selectedCount > 1 ? 's' : ''}
-            </span>{' '}
-            selected
-          </div>
+            </span>{' '}{t("selected", "selected")}</div>
 
           <Separator
             className='h-5'
@@ -209,5 +212,5 @@ export function DataTableBulkActions<TData>({
         </div>
       </div>
     </>
-  )
+  );
 }

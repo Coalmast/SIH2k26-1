@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from "react"
 import { Play, FileAudio, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
@@ -13,6 +14,10 @@ interface MediaGalleryProps {
 }
 
 export function MediaGallery({ media }: MediaGalleryProps) {
+  const {
+    t
+  } = useTranslation();
+
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   if (!media || media.length === 0) return null
@@ -66,7 +71,7 @@ export function MediaGallery({ media }: MediaGalleryProps) {
 
       <Dialog open={activeIndex !== null} onOpenChange={(open) => !open && setActiveIndex(null)}>
         <DialogContent className="max-w-4xl bg-black/95 p-0 border-none shadow-2xl overflow-hidden group">
-          <DialogTitle className="sr-only">Media View</DialogTitle>
+          <DialogTitle className="sr-only">{t("media_view", "Media View")}</DialogTitle>
           <div className="relative flex h-[80vh] w-full items-center justify-center">
             
             <button 
@@ -109,5 +114,5 @@ export function MediaGallery({ media }: MediaGalleryProps) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

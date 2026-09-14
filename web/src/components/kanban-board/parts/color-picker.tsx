@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { Check, Palette } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -18,6 +19,10 @@ export function ColumnColorPicker({
   onChange: (id: string | undefined) => void;
   disabled?: boolean;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const currentSwatch = findSwatch(palette, current);
   const currentColor = swatchCssColor(currentSwatch);
 
@@ -81,9 +86,7 @@ export function ColumnColorPicker({
             size="sm"
             className="h-7 text-xs"
             onClick={() => onChange(undefined)}
-          >
-            Clear color
-          </Button>
+          >{t("clear_color", "Clear color")}</Button>
         </div>
       </PopoverContent>
     </Popover>

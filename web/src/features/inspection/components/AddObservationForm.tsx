@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { type z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAddObservation } from '../hooks/useInspections';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,10 @@ const GAS_ITEMS = [
 ];
 
 export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: string, onSuccess?: () => void }) {
+  const {
+    t
+  } = useTranslation();
+
   const addObservation = useAddObservation();
   const [selectedGas, setSelectedGas] = useState<typeof GAS_ITEMS[0] | null>(null);
   const [measuredValue, setMeasuredValue] = useState<string>('');
@@ -111,7 +116,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
           name="checklist_item_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Checklist Item</FormLabel>
+              <FormLabel>{t("checklist_item", "Checklist Item")}</FormLabel>
               <Select onValueChange={handleItemChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -120,7 +125,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
                 </FormControl>
                 <SelectContent>
                   {GAS_ITEMS.map(item => (
-                    <SelectItem key={item.id} value={item.id}>{item.id} — {item.name}</SelectItem>
+                    <SelectItem key={item.id} value={item.id}>{item.id}{t("text", "—")}{item.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -131,7 +136,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
 
         {selectedGas && selectedGas.type !== 'none' && (
           <div className="space-y-2">
-            <FormLabel>Measured Value ({selectedGas.unit})</FormLabel>
+            <FormLabel>{t("measured_value", "Measured Value (")}{selectedGas.unit}{t("text", ")")}</FormLabel>
             <div className="flex items-center gap-2">
               <Input 
                 type="number" 
@@ -156,7 +161,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Description</FormLabel>
+              <FormLabel>{t("description", "Description")}</FormLabel>
               <FormControl>
                 <Textarea placeholder="Describe the observation..." {...field} />
               </FormControl>
@@ -171,7 +176,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
             name="severity"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Severity</FormLabel>
+                <FormLabel>{t("severity", "Severity")}</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -179,10 +184,10 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="minor">Minor</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
+                    <SelectItem value="minor">{t("minor", "Minor")}</SelectItem>
+                    <SelectItem value="medium">{t("medium", "Medium")}</SelectItem>
+                    <SelectItem value="high">{t("high", "High")}</SelectItem>
+                    <SelectItem value="critical">{t("critical", "Critical")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -194,7 +199,7 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
             name="status"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Status</FormLabel>
+                <FormLabel>{t("status", "Status")}</FormLabel>
                 <Select onValueChange={field.onChange} value={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -202,9 +207,9 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="ok">OK</SelectItem>
-                    <SelectItem value="observation">Observation</SelectItem>
-                    <SelectItem value="non_compliant">Non-Compliant</SelectItem>
+                    <SelectItem value="ok">{t("ok", "OK")}</SelectItem>
+                    <SelectItem value="observation">{t("observation", "Observation")}</SelectItem>
+                    <SelectItem value="non_compliant">{t("non_compliant", "Non-Compliant")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -214,14 +219,12 @@ export function AddObservationForm({ inspectionId, onSuccess }: { inspectionId: 
         </div>
 
         <div className="flex items-center justify-between mt-4 mb-1">
-          <span className="text-xs font-medium text-muted-foreground">Progress: {progress}/15 items</span>
+          <span className="text-xs font-medium text-muted-foreground">{t("progress", "Progress:")}{progress}{t("15_items", "/15 items")}</span>
         </div>
         <Progress value={(progress / 15) * 100} className="h-2 mb-4" />
 
         <Button type="submit" className="w-full" disabled={addObservation.isPending}>
-          {addObservation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}
-          + Add Observation
-        </Button>
+          {addObservation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="mr-2 h-4 w-4" />}{t("add_observation", "+ Add Observation")}</Button>
       </form>
     </Form>
   );

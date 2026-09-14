@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useComplianceHealth } from '../hooks/useCompliance';
@@ -5,10 +6,14 @@ import { ResponsiveContainer, RadialBarChart, RadialBar, Tooltip } from 'rechart
 import { AlertCircle } from 'lucide-react';
 
 export function ComplianceHealthScore({ mineId }: { mineId: string }) {
+  const {
+    t
+  } = useTranslation();
+
   const { data: health, isLoading, error } = useComplianceHealth(mineId);
 
   if (isLoading) {
-    return <Card className="w-full h-[200px] flex items-center justify-center bg-card/50 backdrop-blur border-border/50"><div className="animate-pulse">Loading health score...</div></Card>;
+    return <Card className="w-full h-[200px] flex items-center justify-center bg-card/50 backdrop-blur border-border/50"><div className="animate-pulse">{t("loading_health_score", "Loading health score...")}</div></Card>;
   }
 
   if (error || !health) {
@@ -16,7 +21,7 @@ export function ComplianceHealthScore({ mineId }: { mineId: string }) {
       <Card className="w-full h-[200px] flex items-center justify-center bg-card/50 backdrop-blur border-border/50 text-muted-foreground">
         <div className="flex flex-col items-center gap-2">
           <AlertCircle className="w-6 h-6" />
-          <p>No health data available for this mine</p>
+          <p>{t("no_health_data_available_for_t", "No health data available for this mine")}</p>
         </div>
       </Card>
     );
@@ -36,10 +41,9 @@ export function ComplianceHealthScore({ mineId }: { mineId: string }) {
   return (
     <Card className="w-full bg-card/50 backdrop-blur border-border/50">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
-        <CardTitle className="text-sm font-medium">Compliance Health</CardTitle>
+        <CardTitle className="text-sm font-medium">{t("compliance_health", "Compliance Health")}</CardTitle>
         <span className={`text-xs font-bold px-2 py-1 rounded-full ${mom_change >= 0 ? 'bg-green-500/10 text-green-500' : 'bg-comet-down/10 text-comet-down'}`}>
-          {mom_change > 0 ? '+' : ''}{mom_change} MoM
-        </span>
+          {mom_change > 0 ? '+' : ''}{mom_change}{t("mom", "MoM")}</span>
       </CardHeader>
       <CardContent>
         <div className="flex items-center justify-between">
@@ -55,15 +59,15 @@ export function ComplianceHealthScore({ mineId }: { mineId: string }) {
           </div>
           <div className="flex flex-col gap-2 text-sm">
             <div className="flex justify-between w-32">
-              <span className="text-muted-foreground">Total</span>
+              <span className="text-muted-foreground">{t("total", "Total")}</span>
               <span className="font-semibold">{total}</span>
             </div>
             <div className="flex justify-between w-32">
-              <span className="text-muted-foreground">Pending</span>
+              <span className="text-muted-foreground">{t("pending", "Pending")}</span>
               <span className="font-semibold">{pending}</span>
             </div>
             <div className="flex justify-between w-32">
-              <span className="text-comet-down">Overdue</span>
+              <span className="text-comet-down">{t("overdue", "Overdue")}</span>
               <span className="font-semibold text-comet-down">{overdue}</span>
             </div>
           </div>

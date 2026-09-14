@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,10 @@ export const Route = createFileRoute('/_authenticated/admin/checklist-builder')(
 })
 
 function AdminChecklistBuilderPage() {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div className="p-4 md:p-8 bg-muted/50 min-h-screen text-foreground">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -17,14 +22,15 @@ function AdminChecklistBuilderPage() {
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <CheckSquare className="h-6 w-6 text-primary" />
-              Checklist Builder
-            </h1>
-            <p className="text-muted-foreground mt-1">Drag-and-drop builder for custom inspection checklists.</p>
+              <CheckSquare className="h-6 w-6 text-primary" />{t("checklist_builder", "Checklist Builder")}</h1>
+            <p className="text-muted-foreground mt-1">{t(
+              "drag_and_drop_builder_for_cust",
+              "Drag-and-drop builder for custom inspection checklists."
+            )}</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline"><LayoutList className="h-4 w-4 mr-2" /> Templates</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700"><Save className="h-4 w-4 mr-2" /> Save Checklist</Button>
+            <Button variant="outline"><LayoutList className="h-4 w-4 mr-2" />{t("templates", "Templates")}</Button>
+            <Button className="bg-emerald-600 hover:bg-emerald-700"><Save className="h-4 w-4 mr-2" />{t("save_checklist", "Save Checklist")}</Button>
           </div>
         </div>
 
@@ -32,7 +38,7 @@ function AdminChecklistBuilderPage() {
           <div className="lg:col-span-1 space-y-4">
             <Card className="shadow-sm">
               <CardHeader>
-                <CardTitle className="text-md">Available Elements</CardTitle>
+                <CardTitle className="text-md">{t("available_elements", "Available Elements")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {['Yes/No/NA Question', 'Text Input', 'Photo Evidence', 'Dropdown Select', 'Date Picker', 'Section Header'].map((item, i) => (
@@ -58,14 +64,14 @@ function AdminChecklistBuilderPage() {
                   <div className="cursor-move pt-2 opacity-50 hover:opacity-100"><GripVertical className="h-5 w-5" /></div>
                   <div className="flex-1 space-y-3">
                     <div className="flex justify-between">
-                      <Badge variant="secondary" className="bg-blue-50 text-blue-700">Yes/No/NA Question</Badge>
+                      <Badge variant="secondary" className="bg-blue-50 text-blue-700">{t("yes_no_na_question", "Yes/No/NA Question")}</Badge>
                       <Button variant="ghost" size="icon" className="h-6 w-6 text-comet-down opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
                     </div>
                     <Input defaultValue="Is the backup alarm functioning correctly?" className="font-medium" />
                     <div className="flex gap-2">
-                      <Button variant="outline" size="sm" disabled>Yes</Button>
-                      <Button variant="outline" size="sm" disabled>No</Button>
-                      <Button variant="outline" size="sm" disabled>N/A</Button>
+                      <Button variant="outline" size="sm" disabled>{t("yes", "Yes")}</Button>
+                      <Button variant="outline" size="sm" disabled>{t("no", "No")}</Button>
+                      <Button variant="outline" size="sm" disabled>{t("n_a", "N/A")}</Button>
                     </div>
                   </div>
                 </div>
@@ -75,19 +81,18 @@ function AdminChecklistBuilderPage() {
                   <div className="cursor-move pt-2 opacity-50 hover:opacity-100"><GripVertical className="h-5 w-5" /></div>
                   <div className="flex-1 space-y-3">
                     <div className="flex justify-between">
-                      <Badge variant="secondary" className="bg-[#0ecb81]/10 text-comet-up">Photo Evidence</Badge>
+                      <Badge variant="secondary" className="bg-[#0ecb81]/10 text-comet-up">{t("photo_evidence", "Photo Evidence")}</Badge>
                       <Button variant="ghost" size="icon" className="h-6 w-6 text-comet-down opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
                     </div>
                     <Input defaultValue="Upload photo of tire tread depth" className="font-medium" />
-                    <div className="border-2 border-dashed border-border rounded-md p-4 text-center text-sm text-muted-foreground/70">
-                      Camera Upload Zone
-                    </div>
+                    <div className="border-2 border-dashed border-border rounded-md p-4 text-center text-sm text-muted-foreground/70">{t("camera_upload_zone", "Camera Upload Zone")}</div>
                   </div>
                 </div>
 
-                <div className="border-2 border-dashed border-border rounded-xl p-8 text-center text-muted-foreground font-medium bg-muted/50">
-                  Drag and drop elements here to build your checklist
-                </div>
+                <div className="border-2 border-dashed border-border rounded-xl p-8 text-center text-muted-foreground font-medium bg-muted/50">{t(
+                  "drag_and_drop_elements_here_to",
+                  "Drag and drop elements here to build your checklist"
+                )}</div>
 
               </CardContent>
             </Card>
@@ -96,5 +101,5 @@ function AdminChecklistBuilderPage() {
 
       </div>
     </div>
-  )
+  );
 }

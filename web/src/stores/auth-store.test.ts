@@ -1,76 +1,103 @@
-import { clearCookies } from '@/test-utils/cookies'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { type Session } from '@supabase/supabase-js'
 
 async function importAuthStore() {
   const { useAuthStore } = await import('./auth-store')
   return useAuthStore
 }
 
-const sampleUser = {
-  accountNo: 'ACC-1',
-  email: 'user@example.com',
-  role: ['user'],
-  exp: 1_700_000_000,
+const sampleSession: Session = {
+  access_token: 'session-token',
+  refresh_token: 'refresh-token',
+  expires_in: 3600,
+  expires_at: 1_700_000_000,
+  token_type: 'bearer',
+  user: {
+    id: 'user-1',
+    email: 'user@example.com',
+    app_metadata: {},
+    user_metadata: {},
+    aud: 'authenticated',
+    created_at: '2023-01-01T00:00:00Z',
+  },
 }
 
 describe('useAuthStore', () => {
   beforeEach(() => {
-    clearCookies()
     vi.resetModules()
+    vi.mock('@/lib/supabase', () => ({
+      supabase: {
+        from: () => ({
+          select: () => ({
+            eq: () => ({
+              maybeSingle: () => Promise.resolve({ data: { roles: { name: 'mine_manager' } }, error: null }),
+            }),
+          }),
+        }),
+      },
+    }))
   })
 
-  it('starts with an empty access token when nothing is persisted', async () => {
+  it('starts with initial state', async () => {
     const useAuthStore = await importAuthStore()
-
-    expect(useAuthStore.getState().auth.accessToken).toBe('')
-    expect(useAuthStore.getState().auth.user).toBeNull()
-  })
-
-  it('persists access token so a new store instance reads it back', async () => {
-    const useAuthStore = await importAuthStore()
-    useAuthStore.getState().auth.setAccessToken('session-token')
-
-    vi.resetModules()
-    const useAuthStoreAfterReload = await importAuthStore()
-
-    expect(useAuthStoreAfterReload.getState().auth.accessToken).toBe(
-      'session-token'
-    )
-  })
-
-  it('clears persisted access token when resetAccessToken is used', async () => {
-    const useAuthStore = await importAuthStore()
-    useAuthStore.getState().auth.setAccessToken('to-clear')
-    useAuthStore.getState().auth.resetAccessToken()
-
-    vi.resetModules()
-    const useAuthStoreAfterReload = await importAuthStore()
-
-    expect(useAuthStoreAfterReload.getState().auth.accessToken).toBe('')
-  })
-
-  it('updates the signed-in user via setUser', async () => {
-    const useAuthStore = await importAuthStore()
-
-    useAuthStore.getState().auth.setUser({ ...sampleUser })
-
-    expect(useAuthStore.getState().auth.user).toEqual(sampleUser)
-  })
-
-  it('reset clears user and access token and drops persistence', async () => {
-    const useAuthStore = await importAuthStore()
-    useAuthStore.getState().auth.setAccessToken('will-be-cleared')
-    useAuthStore.getState().auth.setUser({ ...sampleUser })
-
-    useAuthStore.getState().auth.reset()
 
     expect(useAuthStore.getState().auth.user).toBeNull()
-    expect(useAuthStore.getState().auth.accessToken).toBe('')
+    expect(useAuthStore.getState().auth.session).toBeNull()
+    expect(useAuthStore.getState().auth.isLoading).toBe(true)
+  })
 
-    vi.resetModules()
-    const useAuthStoreAfterReload = await importAuthStore()
+  it('updates state when session is set', async () => {
+    const useAuthStore = await importAuthStore()
+    
+    // Mock the fetchRoleAndPermissions to prevent actual async call side-effects in simple setSession test
+    const fetchSpy = vi.spyOn(useAuthStore.getState(), 'fetchRoleAndPermissions').mockImplementation(async () => {})
 
-    expect(useAuthStoreAfterReload.getState().auth.user).toBeNull()
-    expect(useAuthStoreAfterReload.getState().auth.accessToken).toBe('')
+    useAuthStore.getState().setSession(sampleSession)
+
+    expect(useAuthStore.getState().auth.session).toEqual(sampleSession)
+    expect(useAuthStore.getState().auth.user?.id).toBe('user-1')
+    expect(useAuthStore.getState().auth.user?.email).toBe('user@example.com')
+    expect(useAuthStore.getState().auth.isLoading).toBe(false)
+    expect(fetchSpy).toHaveBeenCalledWith('user-1', 'user@example.com')
+  })
+
+  it('clears state when session is set to null', async () => {
+    const useAuthStore = await importAuthStore()
+    useAuthStore.getState().setSession(null)
+
+    expect(useAuthStore.getState().auth.session).toBeNull()
+    expect(useAuthStore.getState().auth.user).toBeNull()
+    expect(useAuthStore.getState().auth.isLoading).toBe(false)
+  })
+
+  it('updates role and permissions via setUserMeta', async () => {
+    const useAuthStore = await importAuthStore()
+    
+    // Set a dummy user first
+    useAuthStore.setState((state) => ({
+      auth: { ...state.auth, user: { id: 'u1', email: 'u1@ex.com', role: 'authenticated' } }
+    }))
+
+    useAuthStore.getState().setUserMeta('mine_manager', ['mine-1'], 'sub-1')
+
+    expect(useAuthStore.getState().auth.role).toBe('mine_manager')
+    expect(useAuthStore.getState().auth.mineIds).toEqual(['mine-1'])
+    expect(useAuthStore.getState().auth.subsidiaryId).toBe('sub-1')
+    expect(useAuthStore.getState().auth.permissions).toContain('mine:write')
+  })
+
+  it('reset clears all state', async () => {
+    const useAuthStore = await importAuthStore()
+    
+    // Set dummy state
+    useAuthStore.setState((state) => ({
+      auth: { ...state.auth, session: sampleSession, user: { id: 'u1', email: 'u1@ex.com', role: 'authenticated' } }
+    }))
+
+    useAuthStore.getState().reset()
+
+    expect(useAuthStore.getState().auth.user).toBeNull()
+    expect(useAuthStore.getState().auth.session).toBeNull()
+    expect(useAuthStore.getState().auth.isLoading).toBe(false)
   })
 })

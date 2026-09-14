@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -26,6 +27,10 @@ const MOCK_FIELDS: ExtractedField[] = [
 ]
 
 export function OCRReviewScreen() {
+  const {
+    t
+  } = useTranslation();
+
   const { itemId } = Route.useParams()
   const router = useRouter()
   const [fields, setFields] = useState<ExtractedField[]>(MOCK_FIELDS)
@@ -53,15 +58,14 @@ export function OCRReviewScreen() {
                 </Link>
               </Button>
               <div>
-                <h1 className="text-2xl font-bold tracking-tight text-foreground">Review Extraction</h1>
-                <p className="text-sm text-muted-foreground">Document ID: {itemId}</p>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("review_extraction", "Review Extraction")}</h1>
+                <p className="text-sm text-muted-foreground">{t("document_id", "Document ID:")}{itemId}</p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline"><Save className="h-4 w-4 mr-2" /> Save Draft</Button>
+              <Button variant="outline"><Save className="h-4 w-4 mr-2" />{t("save_draft", "Save Draft")}</Button>
               <Button onClick={handleApprove} className="bg-emerald-600 hover:bg-emerald-700">
-                <CheckCircle2 className="h-4 w-4 mr-2" /> Approve & Sync to DB
-              </Button>
+                <CheckCircle2 className="h-4 w-4 mr-2" />{t("approve_sync_to_db", "Approve & Sync to DB")}</Button>
             </div>
           </div>
 
@@ -70,15 +74,13 @@ export function OCRReviewScreen() {
             {/* PDF Viewer Side */}
             <Card className="h-full flex flex-col shadow-sm border-border">
               <CardHeader className="py-3 px-4 border-b">
-                <CardTitle className="text-sm font-medium">Original Document</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("original_document", "Original Document")}</CardTitle>
               </CardHeader>
               <CardContent className="flex-1 p-0 relative bg-slate-200/50">
                 {/* Mock PDF Viewer */}
                 <div className="absolute inset-4 bg-background shadow rounded flex items-center justify-center border border-border text-muted-foreground/70 flex-col gap-4">
-                  <div className="w-48 h-64 border-2 border-dashed border-border flex items-center justify-center text-xs">
-                    PDF Page 1
-                  </div>
-                  <p>Document Preview</p>
+                  <div className="w-48 h-64 border-2 border-dashed border-border flex items-center justify-center text-xs">{t("pdf_page_1", "PDF Page 1")}</div>
+                  <p>{t("document_preview", "Document Preview")}</p>
                 </div>
               </CardContent>
             </Card>
@@ -87,18 +89,17 @@ export function OCRReviewScreen() {
             <Card className="h-full flex flex-col shadow-sm border-border">
               <CardHeader className="py-3 px-4 border-b bg-muted/50">
                 <CardTitle className="text-sm font-medium flex justify-between items-center">
-                  <span>Extracted Data</span>
-                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">
-                    AI Confidence: 90%
-                  </Badge>
+                  <span>{t("extracted_data", "Extracted Data")}</span>
+                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">{t("ai_confidence_90", "AI Confidence: 90%")}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-1 overflow-y-auto p-6 space-y-6">
                 
                 <div className="bg-blue-50 text-blue-800 p-3 rounded-md text-sm flex gap-2">
-                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-                  Please review the fields below. Fields with lower confidence (yellow) may require manual correction. Editing a field marks it as 100% verified.
-                </div>
+                  <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />{t(
+                  "please_review_the_fields_below",
+                  "Please review the fields below. Fields with lower confidence (yellow) may require manual correction. Editing a field marks it as 100% verified."
+                )}</div>
 
                 <div className="space-y-4">
                   {fields.map((field) => (
@@ -113,8 +114,7 @@ export function OCRReviewScreen() {
                             'bg-[#f6465d]/15 text-comet-down border-[#f6465d]/30'
                           }
                         >
-                          {(field.confidence * 100).toFixed(0)}% Match
-                        </Badge>
+                          {(field.confidence * 100).toFixed(0)}{t("match", "% Match")}</Badge>
                       </div>
                       <Input 
                         id={field.id}
@@ -133,5 +133,5 @@ export function OCRReviewScreen() {
         </div>
       </Main>
     </>
-  )
+  );
 }

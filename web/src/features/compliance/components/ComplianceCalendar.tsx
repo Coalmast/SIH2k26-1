@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,20 +23,27 @@ interface Props {
 }
 
 export function ComplianceCalendar({ mineId }: Props) {
+  const {
+    t
+  } = useTranslation();
+
   const navigate = useNavigate();
   const [filter, setFilter] = useState('All');
   const [month, setMonth] = useState('2026-09');
-  
+
   const { data: instances, isLoading } = useComplianceInstances(mineId, month);
-  
+
   const filteredTasks = (instances || []).filter((task: any) => filter === 'All' || task.requirement?.category === filter);
 
   return (
     <div className="flex h-full flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Compliance Calendar</h1>
-          <p className="text-muted-foreground">Manage and track compliance submissions</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("compliance_calendar", "Compliance Calendar")}</h1>
+          <p className="text-muted-foreground">{t(
+            "manage_and_track_compliance_su",
+            "Manage and track compliance submissions"
+          )}</p>
         </div>
         
         <div className="flex items-center gap-4">
@@ -44,9 +52,9 @@ export function ComplianceCalendar({ mineId }: Props) {
               <SelectValue placeholder="Select Mine" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Mines</SelectItem>
-              <SelectItem value="mine-1">Rajmahal OCP</SelectItem>
-              <SelectItem value="mine-2">Sonepur Bazari</SelectItem>
+              <SelectItem value="all">{t("all_mines", "All Mines")}</SelectItem>
+              <SelectItem value="mine-1">{t("rajmahal_ocp", "Rajmahal OCP")}</SelectItem>
+              <SelectItem value="mine-2">{t("sonepur_bazari", "Sonepur Bazari")}</SelectItem>
             </SelectContent>
           </Select>
           
@@ -55,9 +63,9 @@ export function ComplianceCalendar({ mineId }: Props) {
               <SelectValue placeholder="Select Month" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="2027-01">Jan 2027</SelectItem>
-              <SelectItem value="2027-02">Feb 2027</SelectItem>
-              <SelectItem value="2027-03">Mar 2027</SelectItem>
+              <SelectItem value="2027-01">{t("jan_2027", "Jan 2027")}</SelectItem>
+              <SelectItem value="2027-02">{t("feb_2027", "Feb 2027")}</SelectItem>
+              <SelectItem value="2027-03">{t("mar_2027", "Mar 2027")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -108,11 +116,11 @@ export function ComplianceCalendar({ mineId }: Props) {
                       <CardContent className="flex flex-col gap-3 p-4 pt-0 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Clock className="h-3 w-3" />
-                          <span>Due: {new Date(task.due_date).toLocaleDateString()}</span>
+                          <span>{t("due", "Due:")}{new Date(task.due_date).toLocaleDateString()}</span>
                         </div>
                         {task.assigned_to && (
                           <div className="text-muted-foreground">
-                            <span className="font-medium text-foreground">Assigned:</span> {task.assigned_to}
+                            <span className="font-medium text-foreground">{t("assigned", "Assigned:")}</span> {task.assigned_to}
                           </div>
                         )}
                         
@@ -123,9 +131,7 @@ export function ComplianceCalendar({ mineId }: Props) {
                             className="flex-1"
                           >
                             <Button size="sm" className="w-full gap-2 bg-[#FCD535] text-black hover:bg-[#FCD535]/90">
-                              <Upload className="h-3 w-3" />
-                              View
-                            </Button>
+                              <Upload className="h-3 w-3" />{t("view", "View")}</Button>
                           </Link>
                           <Button size="sm" variant="outline" className="px-2">
                             <History className="h-4 w-4" />

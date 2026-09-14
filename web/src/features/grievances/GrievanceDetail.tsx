@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -27,9 +28,13 @@ const MOCK_GRIEVANCE = {
 }
 
 export function GrievanceDetail() {
+  const {
+    t
+  } = useTranslation();
+
   const { id } = Route.useParams()
   const router = useRouter()
-  const [grievance, setGrievance] = useState(MOCK_GRIEVANCE)
+  const [grievance, setGrievance] = useState<Omit<typeof MOCK_GRIEVANCE, 'status'> & { status: 'in_progress' | 'closed' }>(MOCK_GRIEVANCE)
   const [reply, setReply] = useState("")
   const [thread, setThread] = useState([
     { sender: "System", message: "Grievance automatically assigned to Safety Officer (Rajesh K.)", time: "12/09/2026 08:45 AM" }
@@ -66,7 +71,7 @@ export function GrievanceDetail() {
                   </Badge>
                 </div>
                 <p className="text-muted-foreground flex items-center gap-2 text-sm">
-                  <FileText className="h-4 w-4" /> {id} | <Calendar className="h-4 w-4 ml-2" /> Filed on {grievance.dateFiled}
+                  <FileText className="h-4 w-4" /> {id} | <Calendar className="h-4 w-4 ml-2" />{t("filed_on", "Filed on")}{grievance.dateFiled}
                 </p>
               </div>
             </div>
@@ -74,9 +79,7 @@ export function GrievanceDetail() {
             <div className="flex gap-3">
               {grievance.status !== 'closed' && (
                 <Button onClick={handleResolve} className="bg-emerald-600 hover:bg-emerald-700">
-                  <CheckCircle className="mr-2 h-4 w-4" />
-                  Mark as Resolved
-                </Button>
+                  <CheckCircle className="mr-2 h-4 w-4" />{t("mark_as_resolved", "Mark as Resolved")}</Button>
               )}
             </div>
           </div>
@@ -88,27 +91,22 @@ export function GrievanceDetail() {
               
               <Card className="shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg flex justify-between items-center">
-                    Grievance Details
-                    <Badge variant="outline" className="bg-[#f6465d]/10 text-comet-down border-[#f6465d]/30">
-                      <AlertTriangle className="h-3 w-3 mr-1" />
-                      AI Priority: {grievance.priority}
+                  <CardTitle className="text-lg flex justify-between items-center">{t("grievance_details", "Grievance Details")}<Badge variant="outline" className="bg-[#f6465d]/10 text-comet-down border-[#f6465d]/30">
+                      <AlertTriangle className="h-3 w-3 mr-1" />{t("ai_priority", "AI Priority:")}{grievance.priority}
                     </Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">Category</h4>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{t("category", "Category")}</h4>
                     <p className="text-foreground/80">{grievance.category}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">Description</h4>
-                    <p className="text-foreground/80 p-4 bg-muted/50 rounded-lg border border-border/50 italic">
-                      "{grievance.description}"
-                    </p>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{t("description", "Description")}</h4>
+                    <p className="text-foreground/80 p-4 bg-muted/50 rounded-lg border border-border/50 italic">{t("text", "\"")}{grievance.description}{t("text", "\"")}</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-foreground mb-1">AI Sentiment Analysis</h4>
+                    <h4 className="text-sm font-semibold text-foreground mb-1">{t("ai_sentiment_analysis", "AI Sentiment Analysis")}</h4>
                     <p className="text-foreground/80">{grievance.aiSentiment}</p>
                   </div>
                 </CardContent>
@@ -116,7 +114,7 @@ export function GrievanceDetail() {
 
               <Card className="shadow-sm">
                 <CardHeader>
-                  <CardTitle className="text-lg">Resolution Thread</CardTitle>
+                  <CardTitle className="text-lg">{t("resolution_thread", "Resolution Thread")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
@@ -127,7 +125,7 @@ export function GrievanceDetail() {
                         }`}>
                           <p className="text-sm">{msg.message}</p>
                         </div>
-                        <span className="text-xs text-muted-foreground/70 mt-1">{msg.sender} • {msg.time}</span>
+                        <span className="text-xs text-muted-foreground/70 mt-1">{msg.sender}{t("text", "•")}{msg.time}</span>
                       </div>
                     ))}
                   </div>
@@ -156,12 +154,13 @@ export function GrievanceDetail() {
               <Card className="shadow-sm bg-blue-50/50 border-blue-100">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-md flex items-center gap-2 text-blue-900">
-                    <MessageSquare className="h-4 w-4" />
-                    Similar Past Grievances
-                  </CardTitle>
+                    <MessageSquare className="h-4 w-4" />{t("similar_past_grievances", "Similar Past Grievances")}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-xs text-blue-700 mb-4">AI found {grievance.similarGrievances.length} related issues that were previously resolved.</p>
+                  <p className="text-xs text-blue-700 mb-4">{t("ai_found", "AI found")}{grievance.similarGrievances.length}{t(
+                    "related_issues_that_were_previ",
+                    "related issues that were previously resolved."
+                  )}</p>
                   <div className="space-y-3">
                     {grievance.similarGrievances.map(sim => (
                       <div key={sim.id} className="bg-background p-3 rounded shadow-sm border border-blue-100/50 hover:border-blue-300 transition-colors cursor-pointer">
@@ -171,7 +170,7 @@ export function GrievanceDetail() {
                             {sim.status}
                           </Badge>
                         </div>
-                        <div className="text-xs text-muted-foreground">ID: {sim.id} • {sim.date}</div>
+                        <div className="text-xs text-muted-foreground">{t("id", "ID:")}{sim.id}{t("text", "•")}{sim.date}</div>
                       </div>
                     ))}
                   </div>
@@ -184,5 +183,5 @@ export function GrievanceDetail() {
         </div>
       </Main>
     </>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { useParams, Link } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,11 +9,15 @@ import { useComplianceInstances } from '@/features/compliance/hooks/useComplianc
 import { useAuthStore } from '@/stores/auth-store'
 
 export function ComplianceDetail() {
+  const {
+    t
+  } = useTranslation();
+
   const { id } = useParams({ from: '/_authenticated/compliance/$id' })
-  const { user } = useAuthStore()
-  const { data: instances, isLoading } = useComplianceInstances(user?.mine_ids?.[0])
+  const user = useAuthStore(state => state.auth.user)
+  const { data: instances, isLoading } = useComplianceInstances(user?.id)
   const [file, setFile] = useState<File | null>(null)
-  
+
   const instance = instances?.find((i: any) => i.id === id)
 
   const handleDrop = (e: React.DragEvent) => {
@@ -22,8 +27,8 @@ export function ComplianceDetail() {
     }
   }
 
-  if (isLoading) return <div className="p-12 text-center text-muted-foreground">Loading...</div>
-  if (!instance) return <div className="p-12 text-center text-muted-foreground">Compliance record not found.</div>
+  if (isLoading) return <div className="p-12 text-center text-muted-foreground">{t("loading", "Loading...")}</div>;
+  if (!instance) return <div className="p-12 text-center text-muted-foreground">{t("compliance_record_not_found", "Compliance record not found.")}</div>;
 
   const isOverdue = new Date(instance.due_date) < new Date() && instance.status !== 'approved'
 
@@ -41,7 +46,7 @@ export function ComplianceDetail() {
               {instance.requirement?.regulation?.code || 'REG-UNK'}
             </span>
             <Badge variant="outline" className="capitalize">{instance.status.replace('_', ' ')}</Badge>
-            {isOverdue && <Badge variant="destructive">Overdue</Badge>}
+            {isOverdue && <Badge variant="destructive">{t("overdue", "Overdue")}</Badge>}
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground mt-1">{instance.requirement?.title}</h1>
         </div>
@@ -52,8 +57,7 @@ export function ComplianceDetail() {
           <Card className="shadow-sm">
             <CardHeader className="pb-3 border-b bg-muted/30">
               <CardTitle className="text-base flex items-center gap-2">
-                <FileText className="h-4 w-4" /> Requirement Details
-              </CardTitle>
+                <FileText className="h-4 w-4" />{t("requirement_details", "Requirement Details")}</CardTitle>
             </CardHeader>
             <CardContent className="p-5 space-y-4">
               <p className="text-sm text-foreground/80 leading-relaxed">
@@ -62,7 +66,7 @@ export function ComplianceDetail() {
               
               <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                 <div>
-                  <div className="text-xs text-muted-foreground font-semibold uppercase mb-1">Due Date</div>
+                  <div className="text-xs text-muted-foreground font-semibold uppercase mb-1">{t("due_date", "Due Date")}</div>
                   <div className="text-sm font-medium flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-muted-foreground/70" />
                     <span className={isOverdue ? 'text-comet-down font-bold' : ''}>
@@ -71,7 +75,7 @@ export function ComplianceDetail() {
                   </div>
                 </div>
                 <div>
-                  <div className="text-xs text-muted-foreground font-semibold uppercase mb-1">Frequency</div>
+                  <div className="text-xs text-muted-foreground font-semibold uppercase mb-1">{t("frequency", "Frequency")}</div>
                   <div className="text-sm font-medium capitalize">
                     {instance.requirement?.frequency || 'One-time'}
                   </div>
@@ -83,18 +87,17 @@ export function ComplianceDetail() {
           <Card className="shadow-sm">
             <CardHeader className="pb-3 border-b bg-muted/30">
               <CardTitle className="text-base flex items-center gap-2">
-                <UploadCloud className="h-4 w-4" /> Proof of Compliance
-              </CardTitle>
+                <UploadCloud className="h-4 w-4" />{t("proof_of_compliance", "Proof of Compliance")}</CardTitle>
             </CardHeader>
             <CardContent className="p-5">
               {instance.status === 'approved' || instance.status === 'submitted' ? (
                 <div className="bg-[#0ecb81]/10 border border-emerald-100 rounded-lg p-4 flex items-center gap-4">
                   <FileType2 className="h-10 w-10 text-comet-up" />
                   <div>
-                    <h4 className="font-semibold text-comet-up">Document Submitted</h4>
-                    <p className="text-xs text-comet-up mt-0.5">Verified automatically via OCR module.</p>
+                    <h4 className="font-semibold text-comet-up">{t("document_submitted", "Document Submitted")}</h4>
+                    <p className="text-xs text-comet-up mt-0.5">{t("verified_automatically_via_ocr", "Verified automatically via OCR module.")}</p>
                   </div>
-                  <Button variant="outline" className="ml-auto bg-background">View File</Button>
+                  <Button variant="outline" className="ml-auto bg-background">{t("view_file", "View File")}</Button>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -106,8 +109,8 @@ export function ComplianceDetail() {
                       onClick={() => document.getElementById('proof-upload')?.click()}
                     >
                       <UploadCloud className="h-8 w-8 text-muted-foreground/70 mb-2" />
-                      <div className="text-sm font-semibold text-foreground/80">Upload signed document</div>
-                      <div className="text-xs text-muted-foreground mt-1">PDF, JPG up to 10MB</div>
+                      <div className="text-sm font-semibold text-foreground/80">{t("upload_signed_document", "Upload signed document")}</div>
+                      <div className="text-xs text-muted-foreground mt-1">{t("pdf_jpg_up_to_10mb", "PDF, JPG up to 10MB")}</div>
                       <input id="proof-upload" type="file" className="hidden" onChange={e => e.target.files && setFile(e.target.files[0])} accept=".pdf,image/*" />
                     </div>
                   ) : (
@@ -115,15 +118,14 @@ export function ComplianceDetail() {
                       <FileText className="h-10 w-10 text-primary" />
                       <div className="flex-1">
                         <h4 className="font-semibold text-foreground">{file.name}</h4>
-                        <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)}{t("mb", "MB")}</p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => setFile(null)}>Remove</Button>
+                      <Button variant="outline" size="sm" onClick={() => setFile(null)}>{t("remove", "Remove")}</Button>
                     </div>
                   )}
                   
                   <div className="flex justify-end">
-                    <Button disabled={!file} className="w-full md:w-auto">
-                      Submit for AI Review <CheckCircle2 className="h-4 w-4 ml-2" />
+                    <Button disabled={!file} className="w-full md:w-auto">{t("submit_for_ai_review", "Submit for AI Review")}<CheckCircle2 className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
                 </div>
@@ -136,28 +138,27 @@ export function ComplianceDetail() {
           <Card className="shadow-sm">
             <CardHeader className="pb-3 border-b bg-muted/30">
               <CardTitle className="text-base flex items-center gap-2">
-                <Clock className="h-4 w-4" /> Activity Log
-              </CardTitle>
+                <Clock className="h-4 w-4" />{t("activity_log", "Activity Log")}</CardTitle>
             </CardHeader>
             <CardContent className="p-5">
               <div className="relative border-l-2 border-border ml-3 space-y-6">
                 <div className="relative pl-6">
                   <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-primary bg-background"></div>
-                  <div className="text-sm font-semibold">Instance Created</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Automated by Scheduler</div>
+                  <div className="text-sm font-semibold">{t("instance_created", "Instance Created")}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{t("automated_by_scheduler", "Automated by Scheduler")}</div>
                 </div>
                 {instance.status === 'submitted' || instance.status === 'approved' ? (
                   <div className="relative pl-6">
                     <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-emerald-500 bg-background"></div>
-                    <div className="text-sm font-semibold">Proof Uploaded</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">By Mine Manager</div>
+                    <div className="text-sm font-semibold">{t("proof_uploaded", "Proof Uploaded")}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{t("by_mine_manager", "By Mine Manager")}</div>
                   </div>
                 ) : null}
                 {instance.status === 'approved' ? (
                   <div className="relative pl-6">
                     <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-emerald-500 bg-comet-up"></div>
-                    <div className="text-sm font-semibold">Verified & Closed</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">System auto-verified</div>
+                    <div className="text-sm font-semibold">{t("verified_closed", "Verified & Closed")}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{t("system_auto_verified", "System auto-verified")}</div>
                   </div>
                 ) : null}
               </div>
@@ -166,5 +167,5 @@ export function ComplianceDetail() {
         </div>
       </div>
     </div>
-  )
+  );
 }

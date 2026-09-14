@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import * as React from 'react'
 import { ChevronsUpDown, Plus } from 'lucide-react'
 import {
@@ -25,6 +26,10 @@ type TeamSwitcherProps = {
 }
 
 export function TeamSwitcher({ teams }: TeamSwitcherProps) {
+  const {
+    t
+  } = useTranslation();
+
   const { isMobile } = useSidebar()
   const [activeTeam, setActiveTeam] = React.useState(teams[0])
 
@@ -55,9 +60,7 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className='text-xs text-muted-foreground'>
-              Teams
-            </DropdownMenuLabel>
+            <DropdownMenuLabel className='text-xs text-muted-foreground'>{t("teams", "Teams")}</DropdownMenuLabel>
             {teams.map((team, index) => (
               <DropdownMenuItem
                 key={team.name}
@@ -68,7 +71,7 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
                   <team.logo className='size-4 shrink-0' />
                 </div>
                 {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
+                <DropdownMenuShortcut>{t("text", "⌘")}{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />
@@ -76,11 +79,11 @@ export function TeamSwitcher({ teams }: TeamSwitcherProps) {
               <div className='flex size-6 items-center justify-center rounded-md border bg-background'>
                 <Plus className='size-4' />
               </div>
-              <div className='font-medium text-muted-foreground'>Add team</div>
+              <div className='font-medium text-muted-foreground'>{t("add_team", "Add team")}</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,14 +35,21 @@ const MOCK_HISTORY = [
 ];
 
 export function ReportGenerator() {
+  const {
+    t
+  } = useTranslation();
+
   const [date, setDate] = React.useState<Date | undefined>(new Date());
 
   return (
     <div className="flex h-full flex-col gap-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Statutory Report Generator</h1>
-          <p className="text-muted-foreground">Generate, review, and digitally sign official documents</p>
+          <h1 className="text-2xl font-bold tracking-tight">{t("statutory_report_generator", "Statutory Report Generator")}</h1>
+          <p className="text-muted-foreground">{t(
+            "generate_review_and_digitally_",
+            "Generate, review, and digitally sign official documents"
+          )}</p>
         </div>
       </div>
 
@@ -50,58 +58,57 @@ export function ReportGenerator() {
         <div className="col-span-4 flex flex-col gap-6">
           <Card className="border-border/50 bg-card/50">
             <CardHeader>
-              <CardTitle>Configuration</CardTitle>
-              <CardDescription>Select report parameters</CardDescription>
+              <CardTitle>{t("configuration", "Configuration")}</CardTitle>
+              <CardDescription>{t("select_report_parameters", "Select report parameters")}</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Report Type</label>
+                <label className="text-sm font-medium">{t("report_type", "Report Type")}</label>
                 <Select defaultValue="form3">
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="form3">Annual Return (CMR Form 3)</SelectItem>
-                    <SelectItem value="form4a">Accident Notice (CMR Form 4-A)</SelectItem>
-                    <SelectItem value="safety_mins">Monthly Safety Committee Minutes</SelectItem>
-                    <SelectItem value="ec_half">Half-Yearly EC Compliance Report</SelectItem>
-                    <SelectItem value="form1">Production Return (CCO Form I)</SelectItem>
-                    <SelectItem value="form12">Contractor Register Summary (CLRA Form XII)</SelectItem>
+                    <SelectItem value="form3">{t("annual_return_cmr_form_3", "Annual Return (CMR Form 3)")}</SelectItem>
+                    <SelectItem value="form4a">{t("accident_notice_cmr_form_4_a", "Accident Notice (CMR Form 4-A)")}</SelectItem>
+                    <SelectItem value="safety_mins">{t("monthly_safety_committee_minut", "Monthly Safety Committee Minutes")}</SelectItem>
+                    <SelectItem value="ec_half">{t("half_yearly_ec_compliance_repo", "Half-Yearly EC Compliance Report")}</SelectItem>
+                    <SelectItem value="form1">{t("production_return_cco_form_i", "Production Return (CCO Form I)")}</SelectItem>
+                    <SelectItem value="form12">{t(
+                      "contractor_register_summary_cl",
+                      "Contractor Register Summary (CLRA Form XII)"
+                    )}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Mine Location</label>
+                <label className="text-sm font-medium">{t("mine_location", "Mine Location")}</label>
                 <Select defaultValue="rajmahal">
                   <SelectTrigger>
                     <SelectValue placeholder="Select mine" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="rajmahal">Rajmahal OCP</SelectItem>
-                    <SelectItem value="sonepur">Sonepur Bazari</SelectItem>
+                    <SelectItem value="rajmahal">{t("rajmahal_ocp", "Rajmahal OCP")}</SelectItem>
+                    <SelectItem value="sonepur">{t("sonepur_bazari", "Sonepur Bazari")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2 flex flex-col">
-                <label className="text-sm font-medium">Reporting Period</label>
+                <label className="text-sm font-medium">{t("reporting_period", "Reporting Period")}</label>
                 <DatePicker selected={date} onSelect={setDate} />
               </div>
 
               <Button className="w-full gap-2 mt-2" variant="default">
-                <Wand2 className="h-4 w-4" />
-                Auto-populate from System
-              </Button>
+                <Wand2 className="h-4 w-4" />{t("auto_populate_from_system", "Auto-populate from System")}</Button>
             </CardContent>
           </Card>
 
           <Card className="border-border/50 bg-card/50 flex-1 flex flex-col min-h-0">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
-                <History className="h-5 w-5 text-muted-foreground" />
-                History
-              </CardTitle>
+                <History className="h-5 w-5 text-muted-foreground" />{t("history", "History")}</CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-hidden p-0">
               <ScrollArea className="h-full px-6 pb-6">
@@ -119,9 +126,7 @@ export function ReportGenerator() {
                         <span className="font-mono">{report.hash}</span>
                       </div>
                       <Button variant="ghost" size="sm" className="w-full mt-1 h-7 text-xs gap-2">
-                        <Download className="h-3 w-3" />
-                        Download PDF
-                      </Button>
+                        <Download className="h-3 w-3" />{t("download_pdf", "Download PDF")}</Button>
                     </div>
                   ))}
                 </div>
@@ -135,18 +140,12 @@ export function ReportGenerator() {
           <Card className="border-border/50 bg-card/50 h-full flex flex-col overflow-hidden">
             <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 bg-muted/20 py-3">
               <CardTitle className="text-base flex items-center gap-2">
-                <FileText className="h-4 w-4 text-primary" />
-                Live Preview
-              </CardTitle>
+                <FileText className="h-4 w-4 text-primary" />{t("live_preview", "Live Preview")}</CardTitle>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="gap-2">
-                  <FileSignature className="h-4 w-4" />
-                  Digital Sign
-                </Button>
+                  <FileSignature className="h-4 w-4" />{t("digital_sign", "Digital Sign")}</Button>
                 <Button size="sm" className="bg-[#FCD535] text-black hover:bg-[#FCD535]/90 gap-2">
-                  <CheckCircle2 className="h-4 w-4" />
-                  Submit Report
-                </Button>
+                  <CheckCircle2 className="h-4 w-4" />{t("submit_report", "Submit Report")}</Button>
               </div>
             </CardHeader>
             <CardContent className="flex-1 p-0 bg-[#0B0E11] relative flex items-center justify-center">
@@ -154,42 +153,43 @@ export function ReportGenerator() {
               <div className="w-[80%] h-[90%] bg-background rounded shadow-2xl p-12 text-black overflow-y-auto">
                 <div className="max-w-2xl mx-auto flex flex-col gap-8">
                   <div className="text-center border-b pb-4 border-gray-200">
-                    <h2 className="text-2xl font-bold uppercase font-serif tracking-wide">Form III</h2>
-                    <p className="text-sm text-gray-500 mt-1">Annual Return under CMR 2017</p>
+                    <h2 className="text-2xl font-bold uppercase font-serif tracking-wide">{t("form_iii", "Form III")}</h2>
+                    <p className="text-sm text-gray-500 mt-1">{t("annual_return_under_cmr_2017", "Annual Return under CMR 2017")}</p>
                   </div>
                   
                   <div className="space-y-6 font-serif text-sm">
                     <div className="flex gap-4 border-b border-dashed border-gray-200 pb-2">
-                      <span className="font-semibold w-48">1. Name of the Mine:</span>
-                      <span className="bg-yellow-200/50 px-1 rounded flex-1">Rajmahal OCP</span>
+                      <span className="font-semibold w-48">{t("1_name_of_the_mine", "1. Name of the Mine:")}</span>
+                      <span className="bg-yellow-200/50 px-1 rounded flex-1">{t("rajmahal_ocp", "Rajmahal OCP")}</span>
                     </div>
                     <div className="flex gap-4 border-b border-dashed border-gray-200 pb-2">
-                      <span className="font-semibold w-48">2. Owner / Company:</span>
-                      <span className="bg-yellow-200/50 px-1 rounded flex-1">Eastern Coalfields Limited</span>
+                      <span className="font-semibold w-48">{t("2_owner_company", "2. Owner / Company:")}</span>
+                      <span className="bg-yellow-200/50 px-1 rounded flex-1">{t("eastern_coalfields_limited", "Eastern Coalfields Limited")}</span>
                     </div>
                     <div className="flex gap-4 border-b border-dashed border-gray-200 pb-2">
-                      <span className="font-semibold w-48">3. Reporting Period:</span>
-                      <span className="bg-yellow-200/50 px-1 rounded flex-1">Jan 01, 2027 - Jan 07, 2027</span>
+                      <span className="font-semibold w-48">{t("3_reporting_period", "3. Reporting Period:")}</span>
+                      <span className="bg-yellow-200/50 px-1 rounded flex-1">{t("jan_01_2027_jan_07_2027", "Jan 01, 2027 - Jan 07, 2027")}</span>
                     </div>
                     <div className="flex gap-4 border-b border-dashed border-gray-200 pb-2">
-                      <span className="font-semibold w-48">4. Total Production (MT):</span>
-                      <span className="bg-yellow-200/50 px-1 rounded flex-1">45,200 MT</span>
+                      <span className="font-semibold w-48">{t("4_total_production_mt", "4. Total Production (MT):")}</span>
+                      <span className="bg-yellow-200/50 px-1 rounded flex-1">{t("45_200_mt", "45,200 MT")}</span>
                     </div>
                     
                     <div className="pt-8">
-                      <p className="text-gray-500 italic text-center">
-                        ... Data auto-populated from production logs and compliance metrics ...
-                      </p>
+                      <p className="text-gray-500 italic text-center">{t(
+                        "data_auto_populated_from_produ",
+                        "... Data auto-populated from production logs and compliance metrics ..."
+                      )}</p>
                     </div>
 
                     <div className="pt-16 flex justify-between">
                       <div className="text-center">
                         <div className="w-32 border-b border-gray-400 mb-2"></div>
-                        <p className="text-xs">Manager Signature</p>
+                        <p className="text-xs">{t("manager_signature", "Manager Signature")}</p>
                       </div>
                       <div className="text-center">
                         <div className="w-32 border-b border-gray-400 mb-2"></div>
-                        <p className="text-xs">Date</p>
+                        <p className="text-xs">{t("date", "Date")}</p>
                       </div>
                     </div>
                   </div>

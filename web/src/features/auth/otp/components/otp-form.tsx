@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -31,6 +32,10 @@ const formSchema = z.object({
 type OtpFormProps = React.HTMLAttributes<HTMLFormElement>
 
 export function OtpForm({ className, ...props }: OtpFormProps) {
+  const {
+    t
+  } = useTranslation();
+
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -64,7 +69,7 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
           name='otp'
           render={({ field }) => (
             <FormItem>
-              <FormLabel className='sr-only'>One-Time Password</FormLabel>
+              <FormLabel className='sr-only'>{t("one_time_password", "One-Time Password")}</FormLabel>
               <FormControl>
                 <InputOTP
                   maxLength={6}
@@ -91,10 +96,8 @@ export function OtpForm({ className, ...props }: OtpFormProps) {
             </FormItem>
           )}
         />
-        <Button className='mt-2' disabled={otp.length < 6 || isLoading}>
-          Verify
-        </Button>
+        <Button className='mt-2' disabled={otp.length < 6 || isLoading}>{t("verify", "Verify")}</Button>
       </form>
     </Form>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,10 @@ const MOCK_USERS = [
 ]
 
 function AdminUsersPage() {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div className="p-4 md:p-8 bg-muted/50 min-h-screen text-foreground">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -25,18 +30,19 @@ function AdminUsersPage() {
         <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
-              <UserCog className="h-6 w-6 text-primary" />
-              User Management
-            </h1>
-            <p className="text-muted-foreground mt-1">Manage roles, mine assignments, and permissions.</p>
+              <UserCog className="h-6 w-6 text-primary" />{t("user_management", "User Management")}</h1>
+            <p className="text-muted-foreground mt-1">{t(
+              "manage_roles_mine_assignments_",
+              "Manage roles, mine assignments, and permissions."
+            )}</p>
           </div>
-          <Button className="bg-primary"><Plus className="h-4 w-4 mr-2" /> Add User</Button>
+          <Button className="bg-primary"><Plus className="h-4 w-4 mr-2" />{t("add_user", "Add User")}</Button>
         </div>
 
         <Card className="shadow-sm">
           <CardHeader className="pb-3 border-b">
             <div className="flex justify-between items-center">
-              <CardTitle className="text-lg">All Users</CardTitle>
+              <CardTitle className="text-lg">{t("all_users", "All Users")}</CardTitle>
               <div className="relative w-64">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground/70" />
                 <Input placeholder="Search users..." className="pl-9 h-9" />
@@ -48,11 +54,11 @@ function AdminUsersPage() {
               <table className="w-full text-sm text-left">
                 <thead className="text-xs text-muted-foreground uppercase bg-muted/30">
                   <tr>
-                    <th className="px-6 py-4 font-semibold">Name</th>
-                    <th className="px-6 py-4 font-semibold">Role</th>
-                    <th className="px-6 py-4 font-semibold">Assignment</th>
-                    <th className="px-6 py-4 font-semibold">Status</th>
-                    <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                    <th className="px-6 py-4 font-semibold">{t("name", "Name")}</th>
+                    <th className="px-6 py-4 font-semibold">{t("role", "Role")}</th>
+                    <th className="px-6 py-4 font-semibold">{t("assignment", "Assignment")}</th>
+                    <th className="px-6 py-4 font-semibold">{t("status", "Status")}</th>
+                    <th className="px-6 py-4 font-semibold text-right">{t("actions", "Actions")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -82,5 +88,5 @@ function AdminUsersPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

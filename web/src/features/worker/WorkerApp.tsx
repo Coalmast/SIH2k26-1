@@ -1,3 +1,4 @@
+// import { useTranslation } from "react-i18next";
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -46,11 +47,13 @@ const dict = {
 type Lang = 'en' | 'hi'
 
 export function WorkerApp() {
+  // useTranslation is not used here because it uses a local dictionary
+
   const [lang, setLang] = useState<Lang>('en')
   const [sosSliding, setSosSliding] = useState(false)
   const [sosActivated, setSosActivated] = useState(false)
 
-  const t = (key: keyof typeof dict['en']) => dict[lang][key]
+  const t = (key: string, defaultStr?: string) => (dict[lang] as any)[key] || defaultStr || key
 
   const handleSOS = () => {
     setSosSliding(true)
@@ -64,7 +67,7 @@ export function WorkerApp() {
 
   return (
     <div className="flex-1 overflow-y-auto bg-muted min-h-screen w-full flex justify-center">
-      
+
       {/* Mobile Frame Constraint (To simulate phone layout on desktop screens) */}
       <div className="w-full max-w-md bg-background min-h-screen shadow-2xl relative flex flex-col">
         
@@ -75,7 +78,7 @@ export function WorkerApp() {
               <ShieldCheck className="h-5 w-5 text-comet-up" />
             </div>
             <div>
-              <h1 className="font-bold text-lg leading-tight">{t('greeting')}, Ramesh</h1>
+              <h1 className="font-bold text-lg leading-tight">{t('greeting')}{t("ramesh", ", Ramesh")}</h1>
               <p className="text-xs text-muted-foreground/70">{t('role')}</p>
             </div>
           </div>
@@ -85,8 +88,8 @@ export function WorkerApp() {
                 <SelectValue placeholder="Lang" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="en">English</SelectItem>
-                <SelectItem value="hi">हिंदी</SelectItem>
+                <SelectItem value="en">{t("english", "English")}</SelectItem>
+                <SelectItem value="hi">{t("text", "हिंदी")}</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground/50">
@@ -104,7 +107,7 @@ export function WorkerApp() {
               <div className="font-bold flex items-center gap-2">
                 <Clock className="h-4 w-4" /> {t('shift')}
               </div>
-              <Badge className="bg-comet-up hover:bg-comet-up text-foreground border-0 shadow-none">Live</Badge>
+              <Badge className="bg-comet-up hover:bg-comet-up text-foreground border-0 shadow-none">{t("live", "Live")}</Badge>
             </div>
             <CardContent className="p-4 bg-[#0ecb81]/10/50">
               <div className="text-xl font-black text-foreground mb-1">{t('shiftTime')}</div>
@@ -138,8 +141,7 @@ export function WorkerApp() {
               <div className="flex-1">
                 <h3 className="font-bold text-foreground text-lg">{t('safetyScore')}</h3>
                 <div className="flex items-center gap-1 text-amber-500 font-semibold mt-1 text-sm">
-                  <Trophy className="h-4 w-4" /> {t('rank')}: #4 / 150
-                </div>
+                  <Trophy className="h-4 w-4" /> {t('rank')}{t("4_150", ": #4 / 150")}</div>
               </div>
             </CardContent>
           </Card>
@@ -177,7 +179,7 @@ export function WorkerApp() {
         <div className="p-4 bg-background border-t border-border sticky bottom-0 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)]">
           {sosActivated ? (
             <div className="bg-red-600 rounded-full h-16 w-full flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.6)]">
-              <span className="text-foreground font-black text-xl uppercase tracking-widest">SOS TRANSMITTED</span>
+              <span className="text-foreground font-black text-xl uppercase tracking-widest">{t("sos_transmitted", "SOS TRANSMITTED")}</span>
             </div>
           ) : (
             <div className="relative bg-muted rounded-full h-16 w-full flex items-center overflow-hidden border border-[#f6465d]/30 shadow-inner group">
@@ -203,5 +205,5 @@ export function WorkerApp() {
 
       </div>
     </div>
-  )
+  );
 }

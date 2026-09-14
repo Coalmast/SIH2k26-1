@@ -1,4 +1,5 @@
-'use client'
+'use client';
+import { useTranslation } from "react-i18next";
 
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -64,7 +65,7 @@ const formSchema = z
   .refine(
     ({ isEdit, password }) => {
       if (isEdit && !password) return true
-      return /[a-z]/.test(password)
+      return /[a-z]/.test(password);
     },
     {
       message: 'Password must contain at least one lowercase letter.',
@@ -74,7 +75,7 @@ const formSchema = z
   .refine(
     ({ isEdit, password }) => {
       if (isEdit && !password) return true
-      return /\d/.test(password)
+      return /\d/.test(password);
     },
     {
       message: 'Password must contain at least one number.',
@@ -104,12 +105,21 @@ export function UsersActionDialog({
   open,
   onOpenChange,
 }: UserActionDialogProps) {
+  const {
+    t
+  } = useTranslation();
+
   const isEdit = !!currentRow
   const form = useForm<UserForm>({
     resolver: zodResolver(formSchema),
     defaultValues: isEdit
       ? {
-          ...currentRow,
+          firstName: currentRow.full_name?.split(' ')[0] || '',
+          lastName: currentRow.full_name?.split(' ').slice(1).join(' ') || '',
+          username: currentRow.email || '',
+          phoneNumber: '',
+          email: currentRow.email || '',
+          role: currentRow.roles?.[0] || '',
           password: '',
           confirmPassword: '',
           isEdit,
@@ -147,9 +157,7 @@ export function UsersActionDialog({
         <DialogHeader className='text-start'>
           <DialogTitle>{isEdit ? 'Edit User' : 'Add New User'}</DialogTitle>
           <DialogDescription>
-            {isEdit ? 'Update the user here. ' : 'Create new user here. '}
-            Click save when you&apos;re done.
-          </DialogDescription>
+            {isEdit ? 'Update the user here. ' : 'Create new user here. '}{t("click_save_when_you_re_done", "Click save when you're done.")}</DialogDescription>
         </DialogHeader>
         <div className='h-105 w-[calc(100%+0.75rem)] overflow-y-auto py-1 pe-3'>
           <Form {...form}>
@@ -163,9 +171,7 @@ export function UsersActionDialog({
                 name='firstName'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      First Name
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("first_name", "First Name")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='John'
@@ -183,9 +189,7 @@ export function UsersActionDialog({
                 name='lastName'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Last Name
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("last_name", "Last Name")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='Doe'
@@ -203,9 +207,7 @@ export function UsersActionDialog({
                 name='username'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Username
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("username", "Username")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='john_doe'
@@ -222,7 +224,7 @@ export function UsersActionDialog({
                 name='email'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>Email</FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("email", "Email")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='john.doe@gmail.com'
@@ -239,9 +241,7 @@ export function UsersActionDialog({
                 name='phoneNumber'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Phone Number
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("phone_number", "Phone Number")}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder='+123456789'
@@ -258,7 +258,7 @@ export function UsersActionDialog({
                 name='role'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>Role</FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("role", "Role")}</FormLabel>
                     <SelectDropdown
                       defaultValue={field.value}
                       onValueChange={field.onChange}
@@ -278,9 +278,7 @@ export function UsersActionDialog({
                 name='password'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Password
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("password", "Password")}</FormLabel>
                     <FormControl>
                       <PasswordInput
                         placeholder='e.g., S3cur3P@ssw0rd'
@@ -297,9 +295,7 @@ export function UsersActionDialog({
                 name='confirmPassword'
                 render={({ field }) => (
                   <FormItem className='grid grid-cols-6 items-center space-y-0 gap-x-4 gap-y-1'>
-                    <FormLabel className='col-span-2 text-end'>
-                      Confirm Password
-                    </FormLabel>
+                    <FormLabel className='col-span-2 text-end'>{t("confirm_password", "Confirm Password")}</FormLabel>
                     <FormControl>
                       <PasswordInput
                         disabled={!isPasswordTouched}
@@ -316,11 +312,9 @@ export function UsersActionDialog({
           </Form>
         </div>
         <DialogFooter>
-          <Button type='submit' form='user-form'>
-            Save changes
-          </Button>
+          <Button type='submit' form='user-form'>{t("save_changes", "Save changes")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

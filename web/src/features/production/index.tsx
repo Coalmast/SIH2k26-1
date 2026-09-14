@@ -1,9 +1,10 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts'
-import { Pickaxe, Truck, ArchiveBox, TrendingUp, AlertCircle, RefreshCw } from 'lucide-react'
+import { Pickaxe, Truck, ArchiveX, TrendingUp, AlertCircle, RefreshCw } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 
 const mockProductionData = [
@@ -16,76 +17,76 @@ const mockProductionData = [
 ]
 
 export function ProductionModule() {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1400px] mx-auto w-full space-y-6">
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-            <Pickaxe className="h-8 w-8 text-primary" />
-            Production & Dispatch
-          </h1>
-          <p className="text-muted-foreground mt-1">Real-time coal production, dispatch metrics, and OIT tracking.</p>
+            <Pickaxe className="h-8 w-8 text-primary" />{t("production_dispatch", "Production & Dispatch")}</h1>
+          <p className="text-muted-foreground mt-1">{t(
+            "real_time_coal_production_disp",
+            "Real-time coal production, dispatch metrics, and OIT tracking."
+          )}</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline"><RefreshCw className="h-4 w-4 mr-2" /> Sync ERP</Button>
-          <Button>Generate Daily Report</Button>
+          <Button variant="outline"><RefreshCw className="h-4 w-4 mr-2" />{t("sync_erp", "Sync ERP")}</Button>
+          <Button>{t("generate_daily_report", "Generate Daily Report")}</Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="shadow-sm border-blue-100 bg-blue-50/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-blue-800 flex justify-between">
-              Today's Production
-              <Badge variant="outline" className="bg-blue-100 text-blue-700 hover:bg-blue-100">On Track</Badge>
+            <CardTitle className="text-sm text-blue-800 flex justify-between">{t("today_s_production", "Today's Production")}<Badge variant="outline" className="bg-blue-100 text-blue-700 hover:bg-blue-100">{t("on_track", "On Track")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-blue-600">4,250 T</div>
-            <div className="text-xs text-blue-600/70 mt-1">Target: 12,000 T</div>
+            <div className="text-3xl font-black text-blue-600">{t("4_250_t", "4,250 T")}</div>
+            <div className="text-xs text-blue-600/70 mt-1">{t("target_12_000_t", "Target: 12,000 T")}</div>
           </CardContent>
         </Card>
         
         <Card className="shadow-sm border-emerald-100 bg-[#0ecb81]/10/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-comet-up flex justify-between">
-              Total Dispatched
-            </CardTitle>
+            <CardTitle className="text-sm text-comet-up flex justify-between">{t("total_dispatched", "Total Dispatched")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-comet-up">3,800 T</div>
-            <div className="text-xs text-comet-up/70 mt-1">142 Trucks Cleared</div>
+            <div className="text-3xl font-black text-comet-up">{t("3_800_t", "3,800 T")}</div>
+            <div className="text-xs text-comet-up/70 mt-1">{t("142_trucks_cleared", "142 Trucks Cleared")}</div>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm border-amber-100 bg-amber-50/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-amber-800 flex justify-between">
-              Pithead Stock
-            </CardTitle>
+            <CardTitle className="text-sm text-amber-800 flex justify-between">{t("pithead_stock", "Pithead Stock")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-amber-600">24,500 T</div>
-            <div className="text-xs text-amber-600/70 mt-1">Capacity: 50,000 T</div>
+            <div className="text-3xl font-black text-amber-600">{t("24_500_t", "24,500 T")}</div>
+            <div className="text-xs text-amber-600/70 mt-1">{t("capacity_50_000_t", "Capacity: 50,000 T")}</div>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm border-purple-100 bg-purple-50/30">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-purple-800 flex justify-between">
-              Active Machinery
-            </CardTitle>
+            <CardTitle className="text-sm text-purple-800 flex justify-between">{t("active_machinery", "Active Machinery")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-purple-600">42 / 45</div>
-            <div className="text-xs text-purple-600/70 mt-1">3 Under Maintenance</div>
+            <div className="text-3xl font-black text-purple-600">{t("42_45", "42 / 45")}</div>
+            <div className="text-xs text-purple-600/70 mt-1">{t("3_under_maintenance", "3 Under Maintenance")}</div>
           </CardContent>
         </Card>
       </div>
 
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-2 border-b">
-          <CardTitle className="text-lg">Production vs Dispatch Trend (Last 7 Days)</CardTitle>
+          <CardTitle className="text-lg">{t(
+            "production_vs_dispatch_trend_l",
+            "Production vs Dispatch Trend (Last 7 Days)"
+          )}</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
           <div className="h-[300px] w-full">
@@ -107,13 +108,11 @@ export function ProductionModule() {
           </div>
         </CardContent>
       </Card>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="shadow-sm">
           <CardHeader className="pb-2 border-b">
-            <CardTitle className="text-lg flex justify-between items-center">
-              Active Truck Dispatches (OIT)
-              <Badge variant="outline" className="bg-muted">Live</Badge>
+            <CardTitle className="text-lg flex justify-between items-center">{t("active_truck_dispatches_oit", "Active Truck Dispatches (OIT)")}<Badge variant="outline" className="bg-muted">{t("live", "Live")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -124,13 +123,13 @@ export function ProductionModule() {
                     <Truck className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <div className="font-bold font-mono text-sm">MH-40-AK-8922</div>
-                    <div className="text-xs text-muted-foreground">RFID: 9942 • G9 Grade</div>
+                    <div className="font-bold font-mono text-sm">{t("mh_40_ak_8922", "MH-40-AK-8922")}</div>
+                    <div className="text-xs text-muted-foreground">{t("rfid_9942_g9_grade", "RFID: 9942 • G9 Grade")}</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge className="bg-comet-up mb-1">Cleared Weighbridge</Badge>
-                  <div className="text-xs text-muted-foreground font-semibold">Net: 32.4 T</div>
+                  <Badge className="bg-comet-up mb-1">{t("cleared_weighbridge", "Cleared Weighbridge")}</Badge>
+                  <div className="text-xs text-muted-foreground font-semibold">{t("net_32_4_t", "Net: 32.4 T")}</div>
                 </div>
               </div>
               <div className="p-4 flex justify-between items-center hover:bg-muted/50 transition-colors">
@@ -139,13 +138,13 @@ export function ProductionModule() {
                     <Truck className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <div className="font-bold font-mono text-sm">CG-10-BM-1104</div>
-                    <div className="text-xs text-muted-foreground">RFID: 7715 • G11 Grade</div>
+                    <div className="font-bold font-mono text-sm">{t("cg_10_bm_1104", "CG-10-BM-1104")}</div>
+                    <div className="text-xs text-muted-foreground">{t("rfid_7715_g11_grade", "RFID: 7715 • G11 Grade")}</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 mb-1">At Loading Point</Badge>
-                  <div className="text-xs text-muted-foreground font-semibold">Est: 28.0 T</div>
+                  <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 mb-1">{t("at_loading_point", "At Loading Point")}</Badge>
+                  <div className="text-xs text-muted-foreground font-semibold">{t("est_28_0_t", "Est: 28.0 T")}</div>
                 </div>
               </div>
             </div>
@@ -154,13 +153,13 @@ export function ProductionModule() {
 
         <Card className="shadow-sm">
           <CardHeader className="pb-2 border-b">
-            <CardTitle className="text-lg">Inventory Breakdown</CardTitle>
+            <CardTitle className="text-lg">{t("inventory_breakdown", "Inventory Breakdown")}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 space-y-4">
             <div>
               <div className="flex justify-between text-sm font-semibold mb-1">
-                <span>G8 Grade Coal</span>
-                <span>8,400 T</span>
+                <span>{t("g8_grade_coal", "G8 Grade Coal")}</span>
+                <span>{t("8_400_t", "8,400 T")}</span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-muted" style={{width: '35%'}}></div>
@@ -168,8 +167,8 @@ export function ProductionModule() {
             </div>
             <div>
               <div className="flex justify-between text-sm font-semibold mb-1">
-                <span>G9 Grade Coal</span>
-                <span>12,200 T</span>
+                <span>{t("g9_grade_coal", "G9 Grade Coal")}</span>
+                <span>{t("12_200_t", "12,200 T")}</span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-slate-600" style={{width: '50%'}}></div>
@@ -177,8 +176,8 @@ export function ProductionModule() {
             </div>
             <div>
               <div className="flex justify-between text-sm font-semibold mb-1">
-                <span>G11 Grade Coal</span>
-                <span>3,900 T</span>
+                <span>{t("g11_grade_coal", "G11 Grade Coal")}</span>
+                <span>{t("3_900_t", "3,900 T")}</span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
                 <div className="h-full bg-slate-400" style={{width: '15%'}}></div>
@@ -188,5 +187,5 @@ export function ProductionModule() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

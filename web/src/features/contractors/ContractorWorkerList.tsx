@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,30 +14,34 @@ const mockWorkers = [
 ]
 
 export function ContractorWorkerList({ id }: { id: string }) {
+  const {
+    t
+  } = useTranslation();
+
   const [search, setSearch] = useState('')
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/50 min-h-screen text-foreground w-full space-y-6">
-      
+
       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-        <Link to="/contractors" className="hover:text-foreground">Contractors</Link>
+        <Link to="/contractors" className="hover:text-foreground">{t("contractors", "Contractors")}</Link>
         <span>/</span>
-        <Link to={`/contractors/${id}`} className="hover:text-foreground">{id}</Link>
+        <Link to="/contractors/$id" params={{ id }} className="hover:text-foreground">{id}</Link>
         <span>/</span>
-        <span className="text-foreground font-medium">Workers Registry</span>
+        <span className="text-foreground font-medium">{t("workers_registry", "Workers Registry")}</span>
       </div>
 
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-            <HardHat className="h-8 w-8 text-foreground/80" />
-            Contract Workers Registry
-          </h1>
-          <p className="text-muted-foreground mt-1">Manage active workforce, ESI details, and vocational training validities.</p>
+            <HardHat className="h-8 w-8 text-foreground/80" />{t("contract_workers_registry", "Contract Workers Registry")}</h1>
+          <p className="text-muted-foreground mt-1">{t(
+            "manage_active_workforce_esi_de",
+            "Manage active workforce, ESI details, and vocational training validities."
+          )}</p>
         </div>
         <Button className="bg-emerald-600 hover:bg-comet-up">
-          <UserPlus className="h-4 w-4 mr-2" /> Add Worker
-        </Button>
+          <UserPlus className="h-4 w-4 mr-2" />{t("add_worker", "Add Worker")}</Button>
       </div>
 
       <div className="flex gap-4 items-center bg-background p-3 rounded-lg shadow-sm border border-border">
@@ -49,7 +54,7 @@ export function ContractorWorkerList({ id }: { id: string }) {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Button variant="outline"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
+        <Button variant="outline"><Filter className="h-4 w-4 mr-2" />{t("filter", "Filter")}</Button>
       </div>
 
       <Card className="shadow-sm border-border overflow-hidden">
@@ -57,12 +62,12 @@ export function ContractorWorkerList({ id }: { id: string }) {
           <table className="w-full text-sm text-left">
             <thead className="bg-muted/50 text-muted-foreground border-b">
               <tr>
-                <th className="px-6 py-4 font-semibold">Worker Details</th>
-                <th className="px-6 py-4 font-semibold">Role</th>
-                <th className="px-6 py-4 font-semibold">ESI / EPF No.</th>
-                <th className="px-6 py-4 font-semibold">Training Status</th>
-                <th className="px-6 py-4 font-semibold">Attendance (30D)</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th className="px-6 py-4 font-semibold">{t("worker_details", "Worker Details")}</th>
+                <th className="px-6 py-4 font-semibold">{t("role", "Role")}</th>
+                <th className="px-6 py-4 font-semibold">{t("esi_epf_no", "ESI / EPF No.")}</th>
+                <th className="px-6 py-4 font-semibold">{t("training_status", "Training Status")}</th>
+                <th className="px-6 py-4 font-semibold">{t("attendance_30d", "Attendance (30D)")}</th>
+                <th className="px-6 py-4 text-right">{t("actions", "Actions")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 bg-background">
@@ -70,7 +75,7 @@ export function ContractorWorkerList({ id }: { id: string }) {
                 <tr key={worker.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="font-semibold text-foreground">{worker.name}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">ID: {worker.id}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{t("id", "ID:")}{worker.id}</div>
                   </td>
                   <td className="px-6 py-4">
                     <Badge variant="secondary" className="font-normal">{worker.role}</Badge>
@@ -79,12 +84,10 @@ export function ContractorWorkerList({ id }: { id: string }) {
                   <td className="px-6 py-4">
                     {worker.training === 'valid' ? (
                       <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">
-                        <ShieldCheck className="h-3 w-3 mr-1" /> Valid
-                      </Badge>
+                        <ShieldCheck className="h-3 w-3 mr-1" />{t("valid", "Valid")}</Badge>
                     ) : (
                       <Badge variant="destructive" className="bg-[#f6465d]/10 text-comet-down border-[#f6465d]/30">
-                        <AlertTriangle className="h-3 w-3 mr-1" /> Expired
-                      </Badge>
+                        <AlertTriangle className="h-3 w-3 mr-1" />{t("expired", "Expired")}</Badge>
                     )}
                   </td>
                   <td className="px-6 py-4">
@@ -92,11 +95,11 @@ export function ContractorWorkerList({ id }: { id: string }) {
                       <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
                         <div className="h-full bg-comet-up" style={{ width: `${worker.attendance}%` }}></div>
                       </div>
-                      <span className="font-semibold">{worker.attendance}%</span>
+                      <span className="font-semibold">{worker.attendance}{t("text", "%")}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">Edit</Button>
+                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">{t("edit", "Edit")}</Button>
                   </td>
                 </tr>
               ))}
@@ -105,5 +108,5 @@ export function ContractorWorkerList({ id }: { id: string }) {
         </div>
       </Card>
     </div>
-  )
+  );
 }

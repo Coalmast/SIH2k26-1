@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect, useCallback } from 'react'
 import Map from 'react-map-gl/maplibre'
@@ -39,6 +40,10 @@ function KpiCard({
   label: string; value: string | number; sub?: string
   trend?: 'up' | 'down' | 'neutral'; icon: React.ElementType; accentClass?: string
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const trendColorClass = trend === 'up' ? 'text-comet-up' : trend === 'down' ? 'text-comet-down' : 'text-muted-foreground'
   return (
     <Card className="shadow-sm flex flex-col justify-between min-h-[110px]">
@@ -69,6 +74,10 @@ function KpiCard({
 }
 
 function SectionHeader({ title, badge, icon: Icon }: { title: string; badge?: string | number, icon?: React.ElementType }) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div className="flex items-center justify-between mb-5">
       <div className="flex items-center gap-3">
@@ -86,6 +95,10 @@ function SectionHeader({ title, badge, icon: Icon }: { title: string; badge?: st
 
 // ── Skeleton ──────────────────────────────────────────────────────────────────
 function Skel({ h = 20, className = '' }: { h?: number; className?: string }) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div className={`animate-pulse bg-slate-200 rounded ${className}`} style={{ height: h }} />
   )
@@ -93,6 +106,10 @@ function Skel({ h = 20, className = '' }: { h?: number; className?: string }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 function CorporateDashboard() {
+  const {
+    t
+  } = useTranslation();
+
   const { auth } = useAuthStore()
   const token = auth.session?.access_token ?? ''
 
@@ -181,10 +198,9 @@ function CorporateDashboard() {
         <div>
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-comet-up shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <h1 className="text-3xl font-bold text-foreground tracking-tight">Corporate Dashboard</h1>
+            <h1 className="text-3xl font-bold text-foreground tracking-tight">{t("corporate_dashboard", "Corporate Dashboard")}</h1>
           </div>
-          <p className="text-sm text-muted-foreground mt-1 font-medium">
-            National Overview · Updated {lastRefresh.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+          <p className="text-sm text-muted-foreground mt-1 font-medium">{t("national_overview_updated", "National Overview · Updated")}{lastRefresh.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -194,14 +210,10 @@ function CorporateDashboard() {
             disabled={loading}
             className="flex items-center gap-2"
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-            Refresh
-          </Button>
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />{t("refresh", "Refresh")}</Button>
           <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
             <Link to="/mine-map">
-              <MapIcon size={16} className="mr-2" />
-              Risk Map
-            </Link>
+              <MapIcon size={16} className="mr-2" />{t("risk_map", "Risk Map")}</Link>
           </Button>
         </div>
       </div>
@@ -223,17 +235,17 @@ function CorporateDashboard() {
           {/* MapTiler live map */}
           <Card className="shadow-sm overflow-hidden flex flex-col h-[400px]">
             <CardHeader className="px-6 py-4 border-b bg-background z-10 flex flex-row items-center justify-between">
-              <CardTitle className="text-base font-semibold text-foreground">Live Mine Locations</CardTitle>
+              <CardTitle className="text-base font-semibold text-foreground">{t("live_mine_locations", "Live Mine Locations")}</CardTitle>
             </CardHeader>
             <div className="flex-1 relative bg-muted">
               <DeckGL
                 initialViewState={INITIAL_VIEW}
                 controller={true}
                 layers={deckLayers}
-                style={{ position: 'absolute', inset: 0 }}
+                style={{ position: 'absolute', inset: '0' }}
               >
                 <Map
-                  mapStyle={`https://api.maptiler.com/maps/basic-v2/style.json?key=${MAPTILER_KEY}`}
+                  mapStyle={`https://api.maptiler.com/maps/satellite/style.json?key=${MAPTILER_KEY}`}
                   attributionControl={false}
                   style={{ width: '100%', height: '100%' }}
                 />
@@ -251,11 +263,11 @@ function CorporateDashboard() {
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b bg-muted/30">
-                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">Mine Name</th>
-                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Safety</th>
-                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Environment</th>
-                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-center">Equipment</th>
-                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-right">Trend</th>
+                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider whitespace-nowrap">{t("mine_name", "Mine Name")}</th>
+                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-center">{t("safety", "Safety")}</th>
+                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-center">{t("environment", "Environment")}</th>
+                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-center">{t("equipment", "Equipment")}</th>
+                      <th className="px-6 py-3 text-[12px] font-semibold text-muted-foreground uppercase tracking-wider text-right">{t("trend", "Trend")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-background">
@@ -273,15 +285,15 @@ function CorporateDashboard() {
                           </span>
                         </td>
                         <td className="px-6 py-4 text-center">
-                          <span className="inline-block w-8 h-8 rounded text-[12px] font-bold leading-8 bg-[#0ecb81]/10 text-comet-up border border-[#0ecb81]/30">0</span>
+                          <span className="inline-block w-8 h-8 rounded text-[12px] font-bold leading-8 bg-[#0ecb81]/10 text-comet-up border border-[#0ecb81]/30">{t("0", "0")}</span>
                         </td>
                         <td className="px-6 py-4 text-right">
                           {m.status === 'critical' ? (
-                            <span className="text-comet-down flex items-center justify-end gap-1 text-[13px] font-medium"><ArrowDownRight size={14}/> Worsening</span>
+                            <span className="text-comet-down flex items-center justify-end gap-1 text-[13px] font-medium"><ArrowDownRight size={14}/>{t("worsening", "Worsening")}</span>
                           ) : m.status === 'monitor' ? (
-                            <span className="text-amber-500 flex items-center justify-end gap-1 text-[13px] font-medium">Stable</span>
+                            <span className="text-amber-500 flex items-center justify-end gap-1 text-[13px] font-medium">{t("stable", "Stable")}</span>
                           ) : (
-                            <span className="text-comet-up flex items-center justify-end gap-1 text-[13px] font-medium"><ArrowUpRight size={14}/> Improving</span>
+                            <span className="text-comet-up flex items-center justify-end gap-1 text-[13px] font-medium"><ArrowUpRight size={14}/>{t("improving", "Improving")}</span>
                           )}
                         </td>
                       </tr>
@@ -305,22 +317,30 @@ function CorporateDashboard() {
               <div className="bg-muted/50 border border-border/50 p-4 rounded-lg mb-4 shadow-sm">
                 <div className="flex gap-2 items-start mb-2">
                   <Sparkles className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <p className="text-[14px] text-foreground font-medium leading-snug">Hindustan Lalpeth Colliery showing 34% increase in dust anomalies.</p>
+                  <p className="text-[14px] text-foreground font-medium leading-snug">{t(
+                    "hindustan_lalpeth_colliery_sho",
+                    "Hindustan Lalpeth Colliery showing 34% increase in dust anomalies."
+                  )}</p>
                 </div>
-                <p className="text-[13px] text-muted-foreground pl-6">Correlates with recent non-functional mist cannons in Pit B. Recommended action: Dispatch maintenance crew immediately to prevent EC notice.</p>
+                <p className="text-[13px] text-muted-foreground pl-6">{t(
+                  "correlates_with_recent_non_fun",
+                  "Correlates with recent non-functional mist cannons in Pit B. Recommended action: Dispatch maintenance crew immediately to prevent EC notice."
+                )}</p>
               </div>
               
               <div className="bg-muted/50 border border-border/50 p-4 rounded-lg shadow-sm">
                 <div className="flex gap-2 items-start mb-2">
                   <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                  <p className="text-[14px] text-foreground font-medium leading-snug">Contractor Compliance Risk</p>
+                  <p className="text-[14px] text-foreground font-medium leading-snug">{t("contractor_compliance_risk", "Contractor Compliance Risk")}</p>
                 </div>
-                <p className="text-[13px] text-muted-foreground pl-6">3 contractors (Apex Haulage, Balaji Mining) have worker medical certificates expiring in next 7 days.</p>
+                <p className="text-[13px] text-muted-foreground pl-6">{t(
+                  "3_contractors_apex_haulage_bal",
+                  "3 contractors (Apex Haulage, Balaji Mining) have worker medical certificates expiring in next 7 days."
+                )}</p>
               </div>
               
               <Button asChild variant="outline" className="w-full mt-4 flex items-center justify-center gap-2 text-[13px] font-medium border-border">
-                <Link to="/ai-analytics">
-                  Open AI Command Center <ChevronRight size={14} />
+                <Link to="/ai-analytics">{t("open_ai_command_center", "Open AI Command Center")}<ChevronRight size={14} />
                 </Link>
               </Button>
             </CardContent>
@@ -333,18 +353,18 @@ function CorporateDashboard() {
               <div className="flex flex-col gap-3">
                 <Link to="/mine-map">
                   <Button variant="outline" className="w-full flex items-center justify-between text-foreground/80 bg-background hover:bg-muted/50 group px-4 h-12">
-                    <span className="text-[14px] font-semibold">View Full Risk Map</span>
+                    <span className="text-[14px] font-semibold">{t("view_full_risk_map", "View Full Risk Map")}</span>
                     <MapIcon size={16} className="text-muted-foreground/70 group-hover:text-primary transition-colors" />
                   </Button>
                 </Link>
                 <Link to="/inspection">
                   <Button variant="outline" className="w-full flex items-center justify-between text-foreground/80 bg-background hover:bg-muted/50 group px-4 h-12">
-                    <span className="text-[14px] font-semibold">Inspections Tracker</span>
+                    <span className="text-[14px] font-semibold">{t("inspections_tracker", "Inspections Tracker")}</span>
                     <Activity size={16} className="text-muted-foreground/70 group-hover:text-primary transition-colors" />
                   </Button>
                 </Link>
                 <Button variant="outline" className="w-full flex items-center justify-between text-comet-down border-[#f6465d]/30 bg-[#f6465d]/10 hover:bg-[#f6465d]/15 hover:text-comet-down group px-4 h-12 mt-2">
-                  <span className="text-[14px] font-semibold">Emergency Broadcast</span>
+                  <span className="text-[14px] font-semibold">{t("emergency_broadcast", "Emergency Broadcast")}</span>
                   <AlertTriangle size={16} />
                 </Button>
               </div>
@@ -382,5 +402,5 @@ function CorporateDashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

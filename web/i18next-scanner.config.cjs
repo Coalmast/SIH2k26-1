@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   input: ['src/**/*.{ts,tsx}'],
   output: './',
   options: {

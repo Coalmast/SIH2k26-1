@@ -38,7 +38,7 @@ export function useReportJob(jobId: string | null) {
       return response.json();
     },
     enabled: !!jobId,
-    refetchInterval: (data) => (data?.status === 'completed' ? false : 2000),
+    refetchInterval: (query: any) => (query.state?.data?.status === 'completed' ? false : 2000),
   });
 }
 

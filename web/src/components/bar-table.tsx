@@ -1,4 +1,5 @@
-"use client"
+"use client";
+import { useTranslation } from "react-i18next";
 
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
@@ -37,11 +38,15 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ChartBarDefault() {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Bar Chart</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{t("bar_chart", "Bar Chart")}</CardTitle>
+        <CardDescription>{t("january_june_2024", "January - June 2024")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -63,13 +68,13 @@ export function ChartBarDefault() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+        <div className="flex gap-2 leading-none font-medium">{t("trending_up_by_5_2_this_month", "Trending up by 5.2% this month")}<TrendingUp className="h-4 w-4" />
         </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
+        <div className="leading-none text-muted-foreground">{t(
+          "showing_total_visitors_for_the",
+          "Showing total visitors for the last 6 months"
+        )}</div>
       </CardFooter>
     </Card>
-  )
+  );
 }

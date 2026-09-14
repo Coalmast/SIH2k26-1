@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useRef, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,10 @@ const clusterData = [
 ]
 
 export function AIAnalyticsModule() {
+  const {
+    t
+  } = useTranslation();
+
   const [messages, setMessages] = useState<{role: 'user'|'ai', content: string}[]>([])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -64,8 +69,11 @@ export function AIAnalyticsModule() {
             <BrainCircuit className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">AI Analytics Command Center</h1>
-            <p className="text-muted-foreground mt-1">Predictive risk modeling and automated insights.</p>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">{t("ai_analytics_command_center", "AI Analytics Command Center")}</h1>
+            <p className="text-muted-foreground mt-1">{t(
+              "predictive_risk_modeling_and_a",
+              "Predictive risk modeling and automated insights."
+            )}</p>
           </div>
         </div>
 
@@ -77,9 +85,7 @@ export function AIAnalyticsModule() {
             
             <Card className="shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold flex justify-between items-center">
-                  Compliance Radar
-                  <Activity className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-semibold flex justify-between items-center">{t("compliance_radar", "Compliance Radar")}<Activity className="h-4 w-4 text-muted-foreground" />
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[250px] p-0">
@@ -96,7 +102,7 @@ export function AIAnalyticsModule() {
 
             <Card className="shadow-sm">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-semibold">Recurring Violation Clusters</CardTitle>
+                <CardTitle className="text-sm font-semibold">{t("recurring_violation_clusters", "Recurring Violation Clusters")}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -104,7 +110,7 @@ export function AIAnalyticsModule() {
                     <div key={cluster.name} className="flex justify-between items-center">
                       <div>
                         <p className="text-sm font-medium text-foreground">{cluster.name}</p>
-                        <p className="text-xs text-muted-foreground">{cluster.count} occurrences</p>
+                        <p className="text-xs text-muted-foreground">{cluster.count}{t("occurrences", "occurrences")}</p>
                       </div>
                       <Badge variant="outline" className={
                         cluster.risk === 'High' ? 'bg-[#f6465d]/10 text-comet-down border-[#f6465d]/30' :
@@ -125,15 +131,18 @@ export function AIAnalyticsModule() {
             <Card className="flex-1 flex flex-col shadow-lg overflow-hidden border-border bg-background">
               <div className="bg-[#0a192f] p-4 text-foreground flex items-center gap-2 shrink-0">
                 <Sparkles className="h-5 w-5 text-primary" />
-                <h3 className="font-semibold">MineGPT Compliance Assistant</h3>
+                <h3 className="font-semibold">{t("minegpt_compliance_assistant", "MineGPT Compliance Assistant")}</h3>
               </div>
               <CardContent className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-muted/50/30">
                 {messages.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center space-y-8 animate-in fade-in duration-700">
                     <div className="space-y-2">
                       <Bot className="h-16 w-16 text-muted-foreground/50 mx-auto" />
-                      <h2 className="text-xl font-bold text-foreground/80">How can I help you analyze today?</h2>
-                      <p className="text-sm text-muted-foreground max-w-[400px]">I have access to real-time sensor data, incident logs, EC conditions, and production metrics.</p>
+                      <h2 className="text-xl font-bold text-foreground/80">{t("how_can_i_help_you_analyze_tod", "How can I help you analyze today?")}</h2>
+                      <p className="text-sm text-muted-foreground max-w-[400px]">{t(
+                        "i_have_access_to_real_time_sen",
+                        "I have access to real-time sensor data, incident logs, EC conditions, and production metrics."
+                      )}</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-[800px]">
                       {SUGGESTIONS.map((suggestion, i) => (
@@ -171,7 +180,7 @@ export function AIAnalyticsModule() {
                         </div>
                         <div className="bg-background border shadow-sm rounded-2xl rounded-tl-sm px-5 py-4 flex items-center gap-2">
                           <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                          <span className="text-sm text-muted-foreground font-medium">Analyzing multidimensional data...</span>
+                          <span className="text-sm text-muted-foreground font-medium">{t("analyzing_multidimensional_dat", "Analyzing multidimensional data...")}</span>
                         </div>
                       </div>
                     )}
@@ -194,7 +203,10 @@ export function AIAnalyticsModule() {
                   </Button>
                 </form>
                 <div className="text-center mt-2">
-                  <span className="text-[10px] text-muted-foreground/70">MineGPT can make mistakes. Consider verifying critical compliance information.</span>
+                  <span className="text-[10px] text-muted-foreground/70">{t(
+                    "minegpt_can_make_mistakes_cons",
+                    "MineGPT can make mistakes. Consider verifying critical compliance information."
+                  )}</span>
                 </div>
               </div>
             </Card>
@@ -203,5 +215,5 @@ export function AIAnalyticsModule() {
         </div>
       </div>
     </div>
-  )
+  );
 }

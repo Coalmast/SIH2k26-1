@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -7,22 +8,26 @@ import { Download, Lock, Loader2 } from 'lucide-react';
 import { useReportHistory } from '../hooks/useReports';
 
 export function ReportHistory({ mineId }: { mineId: string }) {
+  const {
+    t
+  } = useTranslation();
+
   const { data: history, isLoading } = useReportHistory(mineId);
 
   return (
     <Card className="w-full bg-card/50 backdrop-blur border-border/50">
       <CardHeader>
-        <CardTitle>Report History</CardTitle>
+        <CardTitle>{t("report_history", "Report History")}</CardTitle>
       </CardHeader>
       <CardContent className="p-0">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Type</TableHead>
-              <TableHead>Period</TableHead>
-              <TableHead>Generated At</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{t("type", "Type")}</TableHead>
+              <TableHead>{t("period", "Period")}</TableHead>
+              <TableHead>{t("generated_at", "Generated At")}</TableHead>
+              <TableHead>{t("status", "Status")}</TableHead>
+              <TableHead className="text-right">{t("actions", "Actions")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -32,7 +37,7 @@ export function ReportHistory({ mineId }: { mineId: string }) {
               </TableRow>
             ) : history?.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">No reports generated yet</TableCell>
+                <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">{t("no_reports_generated_yet", "No reports generated yet")}</TableCell>
               </TableRow>
             ) : (
               history?.map((report: any) => (
@@ -52,8 +57,7 @@ export function ReportHistory({ mineId }: { mineId: string }) {
                       <Lock className="h-4 w-4 text-muted-foreground" />
                     </Button>
                     <Button variant="outline" size="sm" className="gap-2">
-                      <Download className="h-4 w-4" /> PDF
-                    </Button>
+                      <Download className="h-4 w-4" />{t("pdf", "PDF")}</Button>
                   </TableCell>
                 </TableRow>
               ))

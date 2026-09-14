@@ -4,6 +4,7 @@ import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { MineSelector } from '@/components/shared/MineSelector'
 import { ThemeSwitch } from '@/components/theme-switch'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -74,9 +75,7 @@ export function Header({ className, fixed, children, ...props }: HeaderProps) {
              <span className="absolute top-1 right-2 h-2 w-2 bg-comet-down rounded-full border border-background"></span>
            </Button>
            
-           <Button variant="ghost" size="sm" className="font-semibold text-xs text-muted-foreground hover:text-foreground">
-             EN
-           </Button>
+           <LanguageSwitcher />
            
            <ThemeSwitch />
            <ProfileDropdown />

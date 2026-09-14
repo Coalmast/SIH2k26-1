@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -6,6 +7,10 @@ import { supabase } from '@/lib/supabase'
 import { useAlertStore } from '@/stores/alert-store'
 
 export function AlertsPage() {
+  const {
+    t
+  } = useTranslation();
+
   const { alerts, setAlerts, markRead, markAllRead } = useAlertStore()
   const [filter, setFilter] = useState('all')
 
@@ -69,14 +74,14 @@ export function AlertsPage() {
       <div className="flex justify-between items-end mb-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-            <BellRing className="h-8 w-8 text-primary" />
-            Alerts Center
-          </h1>
-          <p className="text-muted-foreground mt-1">Manage realtime notifications and system alerts.</p>
+            <BellRing className="h-8 w-8 text-primary" />{t("alerts_center", "Alerts Center")}</h1>
+          <p className="text-muted-foreground mt-1">{t(
+            "manage_realtime_notifications_",
+            "Manage realtime notifications and system alerts."
+          )}</p>
         </div>
         <Button variant="outline" onClick={markAllRead}>
-          <Check className="h-4 w-4 mr-2" /> Mark all as read
-        </Button>
+          <Check className="h-4 w-4 mr-2" />{t("mark_all_as_read", "Mark all as read")}</Button>
       </div>
 
       <div className="flex gap-2 mb-6">
@@ -95,9 +100,7 @@ export function AlertsPage() {
 
       <div className="space-y-4">
         {filteredAlerts.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            No alerts found.
-          </div>
+          <div className="text-center py-12 text-muted-foreground">{t("no_alerts_found", "No alerts found.")}</div>
         ) : (
           filteredAlerts.map(alert => (
             <Card key={alert.id} className={`shadow-sm transition-all ${!alert.read ? 'bg-background border-l-4 border-primary' : 'bg-muted/50 opacity-70'}`}>
@@ -120,19 +123,15 @@ export function AlertsPage() {
                   <div className="flex flex-wrap gap-2">
                     {!alert.read && (
                       <Button variant="outline" size="sm" className="h-8 text-xs font-medium" onClick={() => markRead(alert.id)}>
-                        <Check className="h-3 w-3 mr-1" /> Acknowledge
-                      </Button>
+                        <Check className="h-3 w-3 mr-1" />{t("acknowledge", "Acknowledge")}</Button>
                     )}
                     {['critical', 'high'].includes(alert.priority) && (
                       <Button variant="outline" size="sm" className="h-8 text-xs font-medium text-amber-600 border-amber-200 hover:bg-amber-50">
-                        <ShieldAlert className="h-3 w-3 mr-1" /> Escalate
-                      </Button>
+                        <ShieldAlert className="h-3 w-3 mr-1" />{t("escalate", "Escalate")}</Button>
                     )}
                     <Button variant="outline" size="sm" className="h-8 text-xs font-medium text-primary border-primary/20 hover:bg-primary/5">
-                      <FileWarning className="h-3 w-3 mr-1" /> Create CAPA
-                    </Button>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs px-2 text-muted-foreground hover:text-foreground/80 ml-auto">
-                      View Source <ExternalLink className="h-3 w-3 ml-1" />
+                      <FileWarning className="h-3 w-3 mr-1" />{t("create_capa", "Create CAPA")}</Button>
+                    <Button variant="ghost" size="sm" className="h-8 text-xs px-2 text-muted-foreground hover:text-foreground/80 ml-auto">{t("view_source", "View Source")}<ExternalLink className="h-3 w-3 ml-1" />
                     </Button>
                   </div>
                 </div>
@@ -142,5 +141,5 @@ export function AlertsPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

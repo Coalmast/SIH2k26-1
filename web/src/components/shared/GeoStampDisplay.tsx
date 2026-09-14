@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { MapPin, AlertTriangle, Crosshair } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -17,6 +18,10 @@ export function GeoStampDisplay({
   locationMismatch = false,
   className
 }: GeoStampDisplayProps) {
+  const {
+    t
+  } = useTranslation();
+
   const isLowConfidence = accuracy > 50
 
   return (
@@ -25,30 +30,28 @@ export function GeoStampDisplay({
         <div className="flex items-center gap-2 font-mono text-muted-foreground">
           <MapPin className="size-4 text-primary" />
           <span>
-            {latitude.toFixed(6)}, {longitude.toFixed(6)}
+            {latitude.toFixed(6)}{t("text", ",")}{longitude.toFixed(6)}
           </span>
         </div>
         
         {locationMismatch && (
-          <Badge variant="destructive" className="h-5 rounded-sm px-1.5 text-[10px] uppercase tracking-wider">
-            Mismatch
-          </Badge>
+          <Badge variant="destructive" className="h-5 rounded-sm px-1.5 text-[10px] uppercase tracking-wider">{t("mismatch", "Mismatch")}</Badge>
         )}
       </div>
 
       <div className="flex items-center gap-2 text-xs">
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <Crosshair className="size-3" />
-          <span>±{accuracy.toFixed(1)}m</span>
+          <span>{t("text", "±")}{accuracy.toFixed(1)}{t("m", "m")}</span>
         </div>
         
         {isLowConfidence && (
           <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-500">
             <AlertTriangle className="size-3" />
-            <span>Low Confidence</span>
+            <span>{t("low_confidence", "Low Confidence")}</span>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

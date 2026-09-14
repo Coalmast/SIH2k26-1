@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,10 @@ const mockTrendData = [
 ]
 
 export function EnvironmentModule() {
+  const {
+    t
+  } = useTranslation();
+
   const [selectedStation, setSelectedStation] = useState('all')
 
   return (
@@ -25,82 +30,82 @@ export function EnvironmentModule() {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-            <Wind className="h-8 w-8 text-primary" />
-            Environment & Emissions
-          </h1>
-          <p className="text-muted-foreground mt-1">Real-time CAAQMS telemetry and Environmental Clearance tracking.</p>
+            <Wind className="h-8 w-8 text-primary" />{t("environment_emissions", "Environment & Emissions")}</h1>
+          <p className="text-muted-foreground mt-1">{t(
+            "real_time_caaqms_telemetry_and",
+            "Real-time CAAQMS telemetry and Environmental Clearance tracking."
+          )}</p>
         </div>
         <div className="flex gap-3">
-          <Button variant="outline"><MapPin className="h-4 w-4 mr-2" /> View Sensor Map</Button>
-          <Button><Plus className="h-4 w-4 mr-2" /> Manual Reading</Button>
+          <Button variant="outline"><MapPin className="h-4 w-4 mr-2" />{t("view_sensor_map", "View Sensor Map")}</Button>
+          <Button><Plus className="h-4 w-4 mr-2" />{t("manual_reading", "Manual Reading")}</Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex justify-between">
-              AQI Level
-              <Badge variant="outline" className="bg-amber-100 text-amber-700 hover:bg-amber-100">Moderate</Badge>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("aqi_level", "AQI Level")}<Badge variant="outline" className="bg-amber-100 text-amber-700 hover:bg-amber-100">{t("moderate", "Moderate")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-amber-600">112</div>
-            <div className="text-xs text-muted-foreground mt-1">Target &lt; 100</div>
+            <div className="text-3xl font-black text-amber-600">{t("112", "112")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("target_100", "Target < 100")}</div>
           </CardContent>
         </Card>
         
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex justify-between">
-              PM10 Avg (24h)
-              <Badge variant="outline" className="bg-[#f6465d]/15 text-comet-down hover:bg-[#f6465d]/15">Exceeding</Badge>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("pm10_avg_24h", "PM10 Avg (24h)")}<Badge variant="outline" className="bg-[#f6465d]/15 text-comet-down hover:bg-[#f6465d]/15">{t("exceeding", "Exceeding")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-comet-down">105 µg/m³</div>
-            <div className="text-xs text-muted-foreground mt-1">Limit: 100 µg/m³</div>
+            <div className="text-3xl font-black text-comet-down">{t("105_g_m", "105 µg/m³")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("limit_100_g_m", "Limit: 100 µg/m³")}</div>
           </CardContent>
         </Card>
 
         <Card className="shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-muted-foreground flex justify-between">
-              Noise Level
-              <Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up hover:bg-[#0ecb81]/15">Normal</Badge>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("noise_level", "Noise Level")}<Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up hover:bg-[#0ecb81]/15">{t("normal", "Normal")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-comet-up">68 dB(A)</div>
-            <div className="text-xs text-muted-foreground mt-1">Limit: 75 dB(A) (Day)</div>
+            <div className="text-3xl font-black text-comet-up">{t("68_db_a", "68 dB(A)")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("limit_75_db_a_day", "Limit: 75 dB(A) (Day)")}</div>
           </CardContent>
         </Card>
 
         <Card className="bg-primary text-primary-foreground shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-primary-foreground/80 flex items-center gap-2">
-              <Activity className="h-4 w-4" /> AI Forecast
-            </CardTitle>
+              <Activity className="h-4 w-4" />{t("ai_forecast", "AI Forecast")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm font-medium">PM10 expected to peak at 125 µg/m³ between 14:00-16:00.</div>
-            <div className="text-xs text-primary-foreground/70 mt-2">Recommendation: Increase water sprinkling on Haul Road B.</div>
+            <div className="text-sm font-medium">{t(
+              "pm10_expected_to_peak_at_125_g",
+              "PM10 expected to peak at 125 µg/m³ between 14:00-16:00."
+            )}</div>
+            <div className="text-xs text-primary-foreground/70 mt-2">{t(
+              "recommendation_increase_water_",
+              "Recommendation: Increase water sprinkling on Haul Road B."
+            )}</div>
           </CardContent>
         </Card>
       </div>
 
       <Card className="shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-2 border-b">
-          <CardTitle className="text-lg">Sensor Telemetry Trend</CardTitle>
+          <CardTitle className="text-lg">{t("sensor_telemetry_trend", "Sensor Telemetry Trend")}</CardTitle>
           <Select value={selectedStation} onValueChange={setSelectedStation}>
             <SelectTrigger className="w-[180px] h-8">
               <SelectValue placeholder="Station" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Stations Avg</SelectItem>
-              <SelectItem value="s1">Station 1 (Pit)</SelectItem>
-              <SelectItem value="s2">Station 2 (Crusher)</SelectItem>
-              <SelectItem value="s3">Station 3 (Boundary)</SelectItem>
+              <SelectItem value="all">{t("all_stations_avg", "All Stations Avg")}</SelectItem>
+              <SelectItem value="s1">{t("station_1_pit", "Station 1 (Pit)")}</SelectItem>
+              <SelectItem value="s2">{t("station_2_crusher", "Station 2 (Crusher)")}</SelectItem>
+              <SelectItem value="s3">{t("station_3_boundary", "Station 3 (Boundary)")}</SelectItem>
             </SelectContent>
           </Select>
         </CardHeader>
@@ -123,32 +128,32 @@ export function EnvironmentModule() {
           </div>
         </CardContent>
       </Card>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="shadow-sm">
           <CardHeader className="pb-2 border-b">
-            <CardTitle className="text-lg">Recent Threshold Breaches</CardTitle>
+            <CardTitle className="text-lg">{t("recent_threshold_breaches", "Recent Threshold Breaches")}</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y">
               <div className="p-4 flex justify-between items-center bg-[#f6465d]/10/30">
                 <div>
-                  <div className="font-semibold text-sm">PM10 Exceedance</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Station 2 (Crusher) • Today, 14:22</div>
+                  <div className="font-semibold text-sm">{t("pm10_exceedance", "PM10 Exceedance")}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{t("station_2_crusher_today_14_22", "Station 2 (Crusher) • Today, 14:22")}</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-comet-down">118 µg/m³</div>
-                  <div className="text-[10px] text-muted-foreground uppercase">Limit: 100</div>
+                  <div className="font-bold text-comet-down">{t("118_g_m", "118 µg/m³")}</div>
+                  <div className="text-[10px] text-muted-foreground uppercase">{t("limit_100", "Limit: 100")}</div>
                 </div>
               </div>
               <div className="p-4 flex justify-between items-center">
                 <div>
-                  <div className="font-semibold text-sm">Noise Level</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Station 1 (Pit) • Yesterday, 22:15</div>
+                  <div className="font-semibold text-sm">{t("noise_level", "Noise Level")}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{t("station_1_pit_yesterday_22_15", "Station 1 (Pit) • Yesterday, 22:15")}</div>
                 </div>
                 <div className="text-right">
-                  <div className="font-bold text-comet-down">76 dB(A)</div>
-                  <div className="text-[10px] text-muted-foreground uppercase">Limit: 70 (Night)</div>
+                  <div className="font-bold text-comet-down">{t("76_db_a", "76 dB(A)")}</div>
+                  <div className="text-[10px] text-muted-foreground uppercase">{t("limit_70_night", "Limit: 70 (Night)")}</div>
                 </div>
               </div>
             </div>
@@ -157,9 +162,7 @@ export function EnvironmentModule() {
 
         <Card className="shadow-sm">
           <CardHeader className="pb-2 border-b">
-            <CardTitle className="text-lg flex justify-between items-center">
-              EC Conditions Tracking
-              <Button variant="link" size="sm" className="h-6 text-primary">View All</Button>
+            <CardTitle className="text-lg flex justify-between items-center">{t("ec_conditions_tracking", "EC Conditions Tracking")}<Button variant="link" size="sm" className="h-6 text-primary">{t("view_all", "View All")}</Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -167,17 +170,23 @@ export function EnvironmentModule() {
               <div className="p-4 flex items-start gap-4">
                 <Droplets className="h-5 w-5 text-blue-500 shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-semibold text-sm">Zero Liquid Discharge Maintained</div>
-                  <div className="text-xs text-muted-foreground mt-1 mb-2">EC Condition ix(a): No effluent shall be discharged outside the mine premises.</div>
-                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">Compliant</Badge>
+                  <div className="font-semibold text-sm">{t("zero_liquid_discharge_maintain", "Zero Liquid Discharge Maintained")}</div>
+                  <div className="text-xs text-muted-foreground mt-1 mb-2">{t(
+                    "ec_condition_ix_a_no_effluent_",
+                    "EC Condition ix(a): No effluent shall be discharged outside the mine premises."
+                  )}</div>
+                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30">{t("compliant", "Compliant")}</Badge>
                 </div>
               </div>
               <div className="p-4 flex items-start gap-4">
                 <Wind className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
                 <div>
-                  <div className="font-semibold text-sm">Green Belt Development</div>
-                  <div className="text-xs text-muted-foreground mt-1 mb-2">EC Condition v(c): 33% area to be covered by green belt.</div>
-                  <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-200">At Risk (28%)</Badge>
+                  <div className="font-semibold text-sm">{t("green_belt_development", "Green Belt Development")}</div>
+                  <div className="text-xs text-muted-foreground mt-1 mb-2">{t(
+                    "ec_condition_v_c_33_area_to_be",
+                    "EC Condition v(c): 33% area to be covered by green belt."
+                  )}</div>
+                  <Badge variant="outline" className="bg-amber-50 text-amber-600 border-amber-200">{t("at_risk_28", "At Risk (28%)")}</Badge>
                 </div>
               </div>
             </div>
@@ -186,5 +195,5 @@ export function EnvironmentModule() {
       </div>
 
     </div>
-  )
+  );
 }

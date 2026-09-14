@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react'
 import {
   type SortingState,
@@ -34,6 +35,10 @@ type DataTableProps = {
 }
 
 export function UsersTable({ data, search, navigate }: DataTableProps) {
+  const {
+    t
+  } = useTranslation();
+
   // Local UI-only states
   const [rowSelection, setRowSelection] = useState({})
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -179,9 +184,7 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
                 <TableCell
                   colSpan={columns.length}
                   className='h-24 text-center'
-                >
-                  No results.
-                </TableCell>
+                >{t("no_results", "No results.")}</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -190,5 +193,5 @@ export function UsersTable({ data, search, navigate }: DataTableProps) {
       <DataTablePagination table={table} className='mt-auto' />
       <DataTableBulkActions table={table} />
     </div>
-  )
+  );
 }

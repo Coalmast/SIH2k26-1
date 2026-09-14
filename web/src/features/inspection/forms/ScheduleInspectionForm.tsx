@@ -1,6 +1,7 @@
+import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { type z } from "zod";
 import { InspectionCreateSchema } from "../schemas";
 import { useScheduleInspection } from "../hooks/useInspections";
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }) {
+  const {
+    t
+  } = useTranslation();
+
   const scheduleMutation = useScheduleInspection();
-  
+
   const form = useForm<z.infer<typeof InspectionCreateSchema>>({
     resolver: zodResolver(InspectionCreateSchema),
     defaultValues: {
@@ -40,7 +45,7 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
           name="inspection_type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Inspection Type</FormLabel>
+              <FormLabel>{t("inspection_type", "Inspection Type")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -48,10 +53,10 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="dgms_annual_general">DGMS Annual General</SelectItem>
-                  <SelectItem value="internal_safety_committee">Internal Safety Committee</SelectItem>
-                  <SelectItem value="environmental_pcb">Environmental PCB</SelectItem>
-                  <SelectItem value="electrical">Electrical</SelectItem>
+                  <SelectItem value="dgms_annual_general">{t("dgms_annual_general", "DGMS Annual General")}</SelectItem>
+                  <SelectItem value="internal_safety_committee">{t("internal_safety_committee", "Internal Safety Committee")}</SelectItem>
+                  <SelectItem value="environmental_pcb">{t("environmental_pcb", "Environmental PCB")}</SelectItem>
+                  <SelectItem value="electrical">{t("electrical", "Electrical")}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -65,7 +70,7 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
           name="mine_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mine</FormLabel>
+              <FormLabel>{t("mine", "Mine")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -73,7 +78,7 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="00000000-0000-0000-0000-000000000004">Umrer OCP</SelectItem>
+                  <SelectItem value="00000000-0000-0000-0000-000000000004">{t("umrer_ocp", "Umrer OCP")}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -86,7 +91,7 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
           name="checklist_template_id"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Template</FormLabel>
+              <FormLabel>{t("template", "Template")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -94,8 +99,8 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="00000000-0000-0000-0000-000000000020">Environmental Gas & Air Quality</SelectItem>
-                  <SelectItem value="00000000-0000-0000-0000-000000000021">DGMS Annual General Safety</SelectItem>
+                  <SelectItem value="00000000-0000-0000-0000-000000000020">{t("environmental_gas_air_quality", "Environmental Gas & Air Quality")}</SelectItem>
+                  <SelectItem value="00000000-0000-0000-0000-000000000021">{t("dgms_annual_general_safety", "DGMS Annual General Safety")}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -108,7 +113,7 @@ export function ScheduleInspectionForm({ onSuccess }: { onSuccess?: () => void }
           name="scheduled_date"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Scheduled Date</FormLabel>
+              <FormLabel>{t("scheduled_date", "Scheduled Date")}</FormLabel>
               <FormControl>
                 <Input type="date" {...field} />
               </FormControl>

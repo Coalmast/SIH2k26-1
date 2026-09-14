@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Session } from '@supabase/supabase-js'
+import { type Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
 export type AppRole =
@@ -9,11 +9,15 @@ export type AppRole =
   | 'field_inspector'
   | 'safety_official'
   | 'contractor'
+  | 'regulator'
+  | 'subsidiary_admin'
 
 interface AuthUser {
   id: string
   email: string
   role: AppRole | 'authenticated'
+  mineIds?: string[]
+  full_name?: string
 }
 
 interface AuthState {

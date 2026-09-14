@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Header } from '@/components/layout/header'
@@ -14,30 +15,31 @@ export const Route = createFileRoute('/_authenticated/admin/mines/')({
 })
 
 function AdminMinesPage() {
+  const {
+    t
+  } = useTranslation();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
-    <RoleGuard roles={['subsidiary_admin']} fallback={<div>Access Denied</div>}>
+    <RoleGuard roles={['super_admin', 'corporate_executive', 'subsidiary_admin']} fallback={<div>{t("access_denied", "Access Denied")}</div>}>
       <Header fixed />
-      
+
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
           <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Mine Management</h2>
-            <p className='text-muted-foreground'>
-              Onboard and manage mining operations.
-            </p>
+            <h2 className='text-2xl font-bold tracking-tight'>{t("mine_management", "Mine Management")}</h2>
+            <p className='text-muted-foreground'>{t("onboard_and_manage_mining_oper", "Onboard and manage mining operations.")}</p>
           </div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
-                <Plus className="mr-2 h-4 w-4" /> Onboard Mine
-              </Button>
+                <Plus className="mr-2 h-4 w-4" />{t("onboard_mine", "Onboard Mine")}</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Onboard New Mine</DialogTitle>
+                <DialogTitle>{t("onboard_new_mine", "Onboard New Mine")}</DialogTitle>
               </DialogHeader>
               <MineOnboardingForm onSuccess={() => setIsDialogOpen(false)} />
             </DialogContent>
@@ -47,5 +49,5 @@ function AdminMinesPage() {
         <MinesTable />
       </Main>
     </RoleGuard>
-  )
+  );
 }

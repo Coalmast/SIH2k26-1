@@ -1,12 +1,17 @@
+import { useTranslation } from "react-i18next";
 import { useEffect } from 'react'
 import { AlertTriangle, CheckCircle, Info, Bell } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase'
 import { AnimatedList } from '@/components/ui/animated-list'
-import { useAlertStore, AlertPriority } from '@/stores/alert-store'
+import { useAlertStore, type AlertPriority } from '@/stores/alert-store'
 import { useRealtimeAlerts } from '@/hooks/useRealtimeAlerts'
 
 export function LiveAlertFeed({ mineId = 'mock-mine-1' }: { mineId?: string }) {
+  const {
+    t
+  } = useTranslation();
+
   const { alerts, setAlerts, addAlert, unreadCount } = useAlertStore()
 
   useRealtimeAlerts({
@@ -79,13 +84,10 @@ export function LiveAlertFeed({ mineId = 'mock-mine-1' }: { mineId?: string }) {
     <Card className="flex flex-col h-[700px] shadow-sm overflow-hidden relative bg-card">
       <div className="p-4 border-b bg-muted/30 flex justify-between items-center rounded-t-lg sticky top-0 z-10">
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-          <Bell className={`h-5 w-5 text-primary ${unreadCount > 0 ? 'animate-pulse' : ''}`} />
-          Live Alert Feed
-        </h2>
+          <Bell className={`h-5 w-5 text-primary ${unreadCount > 0 ? 'animate-pulse' : ''}`} />{t("live_alert_feed", "Live Alert Feed")}</h2>
         {unreadCount > 0 && (
           <span className="text-xs font-bold bg-primary text-primary-foreground px-2 py-0.5 rounded-full animate-bounce">
-            {unreadCount} New
-          </span>
+            {unreadCount}{t("new", "New")}</span>
         )}
       </div>
       <div className="p-4 flex flex-col gap-3 overflow-y-auto h-full overflow-x-hidden">
@@ -107,5 +109,5 @@ export function LiveAlertFeed({ mineId = 'mock-mine-1' }: { mineId?: string }) {
         </AnimatedList>
       </div>
     </Card>
-  )
+  );
 }
