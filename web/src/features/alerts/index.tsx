@@ -1,52 +1,56 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { AlertTriangle, CheckCircle, Info, BellRing, Check, ExternalLink } from 'lucide-react'
+import { AlertTriangle, CheckCircle, Info, BellRing, Check, ExternalLink, ShieldAlert, FileWarning } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { useAlertStore } from '@/stores/alert-store'
 
 export function AlertsPage() {
-  const [alerts, setAlerts] = useState<any[]>([])
+  const { alerts, setAlerts, markRead, markAllRead } = useAlertStore()
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
     async function fetchAlerts() {
       const { data } = await supabase.from('alerts').select('*').order('created_at', { ascending: false })
       
-      // Fallback mocks if table empty or doesn't exist
       if (!data || data.length === 0) {
         setAlerts([
-          { id: '1', title: '[RED] PM10 Breach', severity: 'critical', message: 'Sensor A2 reading 150µg/m³.', is_read: false, created_at: new Date().toISOString() },
-          { id: '2', title: '[YEL] CLRA Expiring', severity: 'high', message: 'Contractor License expires in 7 days.', is_read: false, created_at: new Date(Date.now() - 3600000).toISOString() },
-          { id: '3', title: '[GRN] CAPA Closed', severity: 'low', message: 'Corrective action verified.', is_read: true, created_at: new Date(Date.now() - 86400000).toISOString() },
+          { id: '1', title: '[RED] PM10 Breach', priority: 'critical', message: 'Sensor A2 reading 150µg/m³.', read: false, timestamp: new Date().toISOString() },
+          { id: '2', title: '[YEL] CLRA Expiring', priority: 'high', message: 'Contractor License expires in 7 days.', read: false, timestamp: new Date(Date.now() - 3600000).toISOString() },
+          { id: '3', title: '[GRN] CAPA Closed', priority: 'low', message: 'Corrective action verified.', read: true, timestamp: new Date(Date.now() - 86400000).toISOString() },
         ])
       } else {
-        setAlerts(data)
+        // Map backend alerts to store format
+        const mapped = data.map(d => ({
+          id: d.id,
+          title: d.title,
+          message: d.message,
+          priority: d.severity,
+          read: d.is_read,
+          timestamp: d.created_at
+        }))
+        setAlerts(mapped)
       }
     }
     fetchAlerts()
 
     const channel = supabase.channel('alerts-page')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' }, payload => {
-        setAlerts(current => [payload.new, ...current])
+        const newAlert = payload.new
+        useAlertStore.getState().addAlert({
+          title: newAlert.title,
+          message: newAlert.message,
+          priority: newAlert.severity
+        })
       })
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
-  }, [])
-
-  const markAllRead = () => {
-    setAlerts(alerts.map(a => ({ ...a, is_read: true })))
-    // TODO: supabase.from('alerts').update({ is_read: true }).neq('id', '0')
-  }
-
-  const markRead = (id: string) => {
-    setAlerts(alerts.map(a => a.id === id ? { ...a, is_read: true } : a))
-    // TODO: supabase.from('alerts').update({ is_read: true }).eq('id', id)
-  }
+  }, [setAlerts])
 
   const filteredAlerts = alerts.filter(a => {
-    if (filter === 'unread') return !a.is_read
-    if (filter !== 'all') return a.severity === filter
+    if (filter === 'unread') return !a.read
+    if (filter !== 'all') return a.priority === filter
     return true
   })
 
@@ -54,6 +58,7 @@ export function AlertsPage() {
     switch(severity) {
       case 'critical': return <AlertTriangle className="text-red-500 h-6 w-6" />
       case 'high': return <AlertTriangle className="text-orange-500 h-6 w-6" />
+      case 'medium': return <AlertTriangle className="text-amber-500 h-6 w-6" />
       case 'low': return <CheckCircle className="text-emerald-500 h-6 w-6" />
       default: return <Info className="text-blue-500 h-6 w-6" />
     }
@@ -95,30 +100,39 @@ export function AlertsPage() {
           </div>
         ) : (
           filteredAlerts.map(alert => (
-            <Card key={alert.id} className={`shadow-sm transition-all ${!alert.is_read ? 'bg-white border-l-4 border-primary' : 'bg-slate-50 opacity-70'}`}>
-              <CardContent className="p-4 flex gap-4 items-start">
-                <div className="mt-1">
-                  {getAlertIcon(alert.severity)}
+            <Card key={alert.id} className={`shadow-sm transition-all ${!alert.read ? 'bg-white border-l-4 border-primary' : 'bg-slate-50 opacity-70'}`}>
+              <CardContent className="p-4 flex flex-col md:flex-row md:items-start gap-4">
+                <div className="mt-1 hidden md:block">
+                  {getAlertIcon(alert.priority)}
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-1">
-                    <h3 className={`font-semibold text-base ${!alert.is_read ? 'text-slate-900' : 'text-slate-600'}`}>
+                    <h3 className={`font-semibold text-base flex items-center gap-2 ${!alert.read ? 'text-slate-900' : 'text-slate-600'}`}>
+                      <span className="md:hidden">{getAlertIcon(alert.priority)}</span>
                       {alert.title}
                     </h3>
-                    <span className="text-xs font-medium text-slate-400">
-                      {new Date(alert.created_at).toLocaleString()}
+                    <span className="text-xs font-medium text-slate-400 whitespace-nowrap ml-4">
+                      {new Date(alert.timestamp).toLocaleString()}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-600 mb-3">{alert.message}</p>
+                  <p className="text-sm text-slate-600 mb-4">{alert.message}</p>
                   
-                  <div className="flex gap-3">
-                    {!alert.is_read && (
-                      <Button variant="ghost" size="sm" className="h-7 text-xs px-2" onClick={() => markRead(alert.id)}>
-                        Mark as read
+                  <div className="flex flex-wrap gap-2">
+                    {!alert.read && (
+                      <Button variant="outline" size="sm" className="h-8 text-xs font-medium" onClick={() => markRead(alert.id)}>
+                        <Check className="h-3 w-3 mr-1" /> Acknowledge
                       </Button>
                     )}
-                    <Button variant="ghost" size="sm" className="h-7 text-xs px-2 text-primary">
-                      View details <ExternalLink className="h-3 w-3 ml-1" />
+                    {['critical', 'high'].includes(alert.priority) && (
+                      <Button variant="outline" size="sm" className="h-8 text-xs font-medium text-amber-600 border-amber-200 hover:bg-amber-50">
+                        <ShieldAlert className="h-3 w-3 mr-1" /> Escalate
+                      </Button>
+                    )}
+                    <Button variant="outline" size="sm" className="h-8 text-xs font-medium text-primary border-primary/20 hover:bg-primary/5">
+                      <FileWarning className="h-3 w-3 mr-1" /> Create CAPA
+                    </Button>
+                    <Button variant="ghost" size="sm" className="h-8 text-xs px-2 text-slate-500 hover:text-slate-700 ml-auto">
+                      View Source <ExternalLink className="h-3 w-3 ml-1" />
                     </Button>
                   </div>
                 </div>

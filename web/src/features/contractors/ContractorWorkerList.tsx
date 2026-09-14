@@ -1,0 +1,109 @@
+import { useState } from 'react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { Search, Plus, Filter, AlertTriangle, ShieldCheck, UserPlus, HardHat } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
+
+const mockWorkers = [
+  { id: 'W-001', name: 'Ramesh Kumar', esi: 'ESI-889012', role: 'HEMM Operator', training: 'valid', attendance: 92 },
+  { id: 'W-002', name: 'Suresh Singh', esi: 'ESI-112345', role: 'Blaster', training: 'expired', attendance: 78 },
+  { id: 'W-003', name: 'Amit Patel', esi: 'ESI-445678', role: 'General Labor', training: 'valid', attendance: 98 },
+]
+
+export function ContractorWorkerList({ id }: { id: string }) {
+  const [search, setSearch] = useState('')
+
+  return (
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50 min-h-screen text-slate-900 w-full space-y-6">
+      
+      <div className="flex items-center gap-4 text-sm text-slate-500 mb-2">
+        <Link to="/contractors" className="hover:text-slate-900">Contractors</Link>
+        <span>/</span>
+        <Link to={`/contractors/${id}`} className="hover:text-slate-900">{id}</Link>
+        <span>/</span>
+        <span className="text-slate-900 font-medium">Workers Registry</span>
+      </div>
+
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+            <HardHat className="h-8 w-8 text-slate-700" />
+            Contract Workers Registry
+          </h1>
+          <p className="text-slate-500 mt-1">Manage active workforce, ESI details, and vocational training validities.</p>
+        </div>
+        <Button className="bg-emerald-600 hover:bg-emerald-500">
+          <UserPlus className="h-4 w-4 mr-2" /> Add Worker
+        </Button>
+      </div>
+
+      <div className="flex gap-4 items-center bg-white p-3 rounded-lg shadow-sm border border-slate-200">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Input 
+            placeholder="Search workers by name or ESI..." 
+            className="pl-9 bg-slate-50 border-transparent"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <Button variant="outline"><Filter className="h-4 w-4 mr-2" /> Filter</Button>
+      </div>
+
+      <Card className="shadow-sm border-slate-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-slate-50 text-slate-600 border-b">
+              <tr>
+                <th className="px-6 py-4 font-semibold">Worker Details</th>
+                <th className="px-6 py-4 font-semibold">Role</th>
+                <th className="px-6 py-4 font-semibold">ESI / EPF No.</th>
+                <th className="px-6 py-4 font-semibold">Training Status</th>
+                <th className="px-6 py-4 font-semibold">Attendance (30D)</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {mockWorkers.map((worker) => (
+                <tr key={worker.id} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="font-semibold text-slate-900">{worker.name}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5">ID: {worker.id}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <Badge variant="secondary" className="font-normal">{worker.role}</Badge>
+                  </td>
+                  <td className="px-6 py-4 font-mono text-xs text-slate-600">{worker.esi}</td>
+                  <td className="px-6 py-4">
+                    {worker.training === 'valid' ? (
+                      <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                        <ShieldCheck className="h-3 w-3 mr-1" /> Valid
+                      </Badge>
+                    ) : (
+                      <Badge variant="destructive" className="bg-red-50 text-red-700 border-red-200">
+                        <AlertTriangle className="h-3 w-3 mr-1" /> Expired
+                      </Badge>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-500" style={{ width: `${worker.attendance}%` }}></div>
+                      </div>
+                      <span className="font-semibold">{worker.attendance}%</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">Edit</Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  )
+}

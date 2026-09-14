@@ -10,7 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWorkerRouteImport } from './routes/_authenticated/worker'
+import { Route as AuthenticatedSecurityRouteImport } from './routes/_authenticated/security'
+import { Route as AuthenticatedRegulatorRouteImport } from './routes/_authenticated/regulator'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
 import { Route as AuthenticatedOcrRouteImport } from './routes/_authenticated/ocr'
 import { Route as AuthenticatedMobileInspectionRouteImport } from './routes/_authenticated/mobile-inspection'
@@ -33,35 +36,73 @@ import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as authOtpRouteImport } from './routes/(auth)/otp'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
+import { Route as AuthenticatedWorkerIndexRouteImport } from './routes/_authenticated/worker/index'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedSecurityIndexRouteImport } from './routes/_authenticated/security/index'
 import { Route as AuthenticatedReportsIndexRouteImport } from './routes/_authenticated/reports/index'
+import { Route as AuthenticatedRegulatorIndexRouteImport } from './routes/_authenticated/regulator/index'
+import { Route as AuthenticatedOcrIndexRouteImport } from './routes/_authenticated/ocr/index'
 import { Route as AuthenticatedInspectionIndexRouteImport } from './routes/_authenticated/inspection/index'
 import { Route as AuthenticatedIncidentsIndexRouteImport } from './routes/_authenticated/incidents/index'
+import { Route as AuthenticatedGrievancesIndexRouteImport } from './routes/_authenticated/grievances/index'
+import { Route as AuthenticatedContractorsIndexRouteImport } from './routes/_authenticated/contractors/index'
 import { Route as AuthenticatedComplianceIndexRouteImport } from './routes/_authenticated/compliance/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedViolationsIdRouteImport } from './routes/_authenticated/violations/$id'
 import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
 import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
 import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
 import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
+import { Route as AuthenticatedSecurityOverridesRouteImport } from './routes/_authenticated/security/overrides'
+import { Route as AuthenticatedSecurityLogsRouteImport } from './routes/_authenticated/security/logs'
+import { Route as AuthenticatedRegulatorReportsRouteImport } from './routes/_authenticated/regulator/reports'
+import { Route as AuthenticatedRegulatorInspectionsRouteImport } from './routes/_authenticated/regulator/inspections'
+import { Route as AuthenticatedRegulatorIncidentsRouteImport } from './routes/_authenticated/regulator/incidents'
+import { Route as AuthenticatedRegulatorEnvironmentRouteImport } from './routes/_authenticated/regulator/environment'
 import { Route as AuthenticatedInspectionIdRouteImport } from './routes/_authenticated/inspection/$id'
 import { Route as AuthenticatedIncidentsIdRouteImport } from './routes/_authenticated/incidents/$id'
+import { Route as AuthenticatedGrievancesIdRouteImport } from './routes/_authenticated/grievances/$id'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 import { Route as AuthenticatedCorrectiveActionsIdRouteImport } from './routes/_authenticated/corrective-actions/$id'
+import { Route as AuthenticatedContractorsIdRouteImport } from './routes/_authenticated/contractors/$id'
 import { Route as AuthenticatedComplianceInstanceIdRouteImport } from './routes/_authenticated/compliance/$instanceId'
 import { Route as AuthenticatedComplianceIdRouteImport } from './routes/_authenticated/compliance/$id'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
+import { Route as AuthenticatedAdminRegulationsRouteImport } from './routes/_authenticated/admin/regulations'
+import { Route as AuthenticatedAdminEnvStationsRouteImport } from './routes/_authenticated/admin/env-stations'
+import { Route as AuthenticatedAdminChecklistBuilderRouteImport } from './routes/_authenticated/admin/checklist-builder'
+import { Route as AuthenticatedAdminAuditLogRouteImport } from './routes/_authenticated/admin/audit-log'
+import { Route as AuthenticatedContractorsIdIndexRouteImport } from './routes/_authenticated/contractors/$id/index'
 import { Route as AuthenticatedComplianceMineIdIndexRouteImport } from './routes/_authenticated/compliance/$mineId/index'
 import { Route as AuthenticatedAdminMinesIndexRouteImport } from './routes/_authenticated/admin/mines/index'
+import { Route as AuthenticatedOcrReviewItemIdRouteImport } from './routes/_authenticated/ocr/review.$itemId'
+import { Route as AuthenticatedContractorsIdWorkersRouteImport } from './routes/_authenticated/contractors/$id/workers'
 import { Route as AuthenticatedComplianceMineIdInstanceIdRouteImport } from './routes/_authenticated/compliance/$mineId/$instanceId'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedWorkerRoute = AuthenticatedWorkerRouteImport.update({
+  id: '/worker',
+  path: '/worker',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSecurityRoute = AuthenticatedSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRegulatorRoute = AuthenticatedRegulatorRouteImport.update({
+  id: '/regulator',
+  path: '/regulator',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedProductionRoute = AuthenticatedProductionRouteImport.update({
@@ -181,6 +222,12 @@ const AuthenticatedSettingsRouteRoute =
     path: '/settings',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedWorkerIndexRoute =
+  AuthenticatedWorkerIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedWorkerRoute,
+  } as any)
 const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -192,12 +239,29 @@ const AuthenticatedSettingsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedSecurityIndexRoute =
+  AuthenticatedSecurityIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
 const AuthenticatedReportsIndexRoute =
   AuthenticatedReportsIndexRouteImport.update({
     id: '/reports/',
     path: '/reports/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedRegulatorIndexRoute =
+  AuthenticatedRegulatorIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedRegulatorRoute,
+  } as any)
+const AuthenticatedOcrIndexRoute = AuthenticatedOcrIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedOcrRoute,
+} as any)
 const AuthenticatedInspectionIndexRoute =
   AuthenticatedInspectionIndexRouteImport.update({
     id: '/inspection/',
@@ -210,6 +274,18 @@ const AuthenticatedIncidentsIndexRoute =
     path: '/incidents/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedGrievancesIndexRoute =
+  AuthenticatedGrievancesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedGrievancesRoute,
+  } as any)
+const AuthenticatedContractorsIndexRoute =
+  AuthenticatedContractorsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedContractorsRoute,
+  } as any)
 const AuthenticatedComplianceIndexRoute =
   AuthenticatedComplianceIndexRouteImport.update({
     id: '/compliance/',
@@ -219,6 +295,11 @@ const AuthenticatedComplianceIndexRoute =
 const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
   id: '/apps/',
   path: '/apps/',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedViolationsIdRoute =
@@ -251,6 +332,42 @@ const AuthenticatedSettingsAccountRoute =
     path: '/account',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedSecurityOverridesRoute =
+  AuthenticatedSecurityOverridesRouteImport.update({
+    id: '/overrides',
+    path: '/overrides',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedSecurityLogsRoute =
+  AuthenticatedSecurityLogsRouteImport.update({
+    id: '/logs',
+    path: '/logs',
+    getParentRoute: () => AuthenticatedSecurityRoute,
+  } as any)
+const AuthenticatedRegulatorReportsRoute =
+  AuthenticatedRegulatorReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedRegulatorRoute,
+  } as any)
+const AuthenticatedRegulatorInspectionsRoute =
+  AuthenticatedRegulatorInspectionsRouteImport.update({
+    id: '/inspections',
+    path: '/inspections',
+    getParentRoute: () => AuthenticatedRegulatorRoute,
+  } as any)
+const AuthenticatedRegulatorIncidentsRoute =
+  AuthenticatedRegulatorIncidentsRouteImport.update({
+    id: '/incidents',
+    path: '/incidents',
+    getParentRoute: () => AuthenticatedRegulatorRoute,
+  } as any)
+const AuthenticatedRegulatorEnvironmentRoute =
+  AuthenticatedRegulatorEnvironmentRouteImport.update({
+    id: '/environment',
+    path: '/environment',
+    getParentRoute: () => AuthenticatedRegulatorRoute,
+  } as any)
 const AuthenticatedInspectionIdRoute =
   AuthenticatedInspectionIdRouteImport.update({
     id: '/inspection/$id',
@@ -262,6 +379,12 @@ const AuthenticatedIncidentsIdRoute =
     id: '/incidents/$id',
     path: '/incidents/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedGrievancesIdRoute =
+  AuthenticatedGrievancesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedGrievancesRoute,
   } as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
@@ -275,6 +398,12 @@ const AuthenticatedCorrectiveActionsIdRoute =
     path: '/corrective-actions/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedContractorsIdRoute =
+  AuthenticatedContractorsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedContractorsRoute,
+  } as any)
 const AuthenticatedComplianceInstanceIdRoute =
   AuthenticatedComplianceInstanceIdRouteImport.update({
     id: '/compliance/$instanceId',
@@ -286,6 +415,41 @@ const AuthenticatedComplianceIdRoute =
     id: '/compliance/$id',
     path: '/compliance/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRegulationsRoute =
+  AuthenticatedAdminRegulationsRouteImport.update({
+    id: '/admin/regulations',
+    path: '/admin/regulations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminEnvStationsRoute =
+  AuthenticatedAdminEnvStationsRouteImport.update({
+    id: '/admin/env-stations',
+    path: '/admin/env-stations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminChecklistBuilderRoute =
+  AuthenticatedAdminChecklistBuilderRouteImport.update({
+    id: '/admin/checklist-builder',
+    path: '/admin/checklist-builder',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAdminAuditLogRoute =
+  AuthenticatedAdminAuditLogRouteImport.update({
+    id: '/admin/audit-log',
+    path: '/admin/audit-log',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedContractorsIdIndexRoute =
+  AuthenticatedContractorsIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedContractorsIdRoute,
   } as any)
 const AuthenticatedComplianceMineIdIndexRoute =
   AuthenticatedComplianceMineIdIndexRouteImport.update({
@@ -299,6 +463,18 @@ const AuthenticatedAdminMinesIndexRoute =
     path: '/admin/mines/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedOcrReviewItemIdRoute =
+  AuthenticatedOcrReviewItemIdRouteImport.update({
+    id: '/review/$itemId',
+    path: '/review/$itemId',
+    getParentRoute: () => AuthenticatedOcrRoute,
+  } as any)
+const AuthenticatedContractorsIdWorkersRoute =
+  AuthenticatedContractorsIdWorkersRouteImport.update({
+    id: '/workers',
+    path: '/workers',
+    getParentRoute: () => AuthenticatedContractorsIdRoute,
+  } as any)
 const AuthenticatedComplianceMineIdInstanceIdRoute =
   AuthenticatedComplianceMineIdInstanceIdRouteImport.update({
     id: '/compliance/$mineId/$instanceId',
@@ -307,7 +483,7 @@ const AuthenticatedComplianceMineIdInstanceIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedIndexRoute
+  '/': typeof IndexRoute
   '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -321,38 +497,65 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/ai-analytics': typeof AuthenticatedAiAnalyticsRoute
   '/alerts': typeof AuthenticatedAlertsRoute
-  '/contractors': typeof AuthenticatedContractorsRoute
+  '/contractors': typeof AuthenticatedContractorsRouteWithChildren
   '/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/environment': typeof AuthenticatedEnvironmentRoute
-  '/grievances': typeof AuthenticatedGrievancesRoute
+  '/grievances': typeof AuthenticatedGrievancesRouteWithChildren
   '/mine-manager': typeof AuthenticatedMineManagerRoute
   '/mine-map': typeof AuthenticatedMineMapRoute
   '/mobile-inspection': typeof AuthenticatedMobileInspectionRoute
-  '/ocr': typeof AuthenticatedOcrRoute
+  '/ocr': typeof AuthenticatedOcrRouteWithChildren
   '/production': typeof AuthenticatedProductionRoute
+  '/regulator': typeof AuthenticatedRegulatorRouteWithChildren
+  '/security': typeof AuthenticatedSecurityRouteWithChildren
+  '/worker': typeof AuthenticatedWorkerRouteWithChildren
+  '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
+  '/admin/checklist-builder': typeof AuthenticatedAdminChecklistBuilderRoute
+  '/admin/env-stations': typeof AuthenticatedAdminEnvStationsRoute
+  '/admin/regulations': typeof AuthenticatedAdminRegulationsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/compliance/$id': typeof AuthenticatedComplianceIdRoute
   '/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
+  '/contractors/$id': typeof AuthenticatedContractorsIdRouteWithChildren
   '/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/grievances/$id': typeof AuthenticatedGrievancesIdRoute
   '/incidents/$id': typeof AuthenticatedIncidentsIdRoute
   '/inspection/$id': typeof AuthenticatedInspectionIdRoute
+  '/regulator/environment': typeof AuthenticatedRegulatorEnvironmentRoute
+  '/regulator/incidents': typeof AuthenticatedRegulatorIncidentsRoute
+  '/regulator/inspections': typeof AuthenticatedRegulatorInspectionsRoute
+  '/regulator/reports': typeof AuthenticatedRegulatorReportsRoute
+  '/security/logs': typeof AuthenticatedSecurityLogsRoute
+  '/security/overrides': typeof AuthenticatedSecurityOverridesRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/violations/$id': typeof AuthenticatedViolationsIdRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/apps/': typeof AuthenticatedAppsIndexRoute
   '/compliance/': typeof AuthenticatedComplianceIndexRoute
+  '/contractors/': typeof AuthenticatedContractorsIndexRoute
+  '/grievances/': typeof AuthenticatedGrievancesIndexRoute
   '/incidents/': typeof AuthenticatedIncidentsIndexRoute
   '/inspection/': typeof AuthenticatedInspectionIndexRoute
+  '/ocr/': typeof AuthenticatedOcrIndexRoute
+  '/regulator/': typeof AuthenticatedRegulatorIndexRoute
   '/reports/': typeof AuthenticatedReportsIndexRoute
+  '/security/': typeof AuthenticatedSecurityIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/users/': typeof AuthenticatedUsersIndexRoute
+  '/worker/': typeof AuthenticatedWorkerIndexRoute
   '/compliance/$mineId/$instanceId': typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  '/contractors/$id/workers': typeof AuthenticatedContractorsIdWorkersRoute
+  '/ocr/review/$itemId': typeof AuthenticatedOcrReviewItemIdRoute
   '/admin/mines/': typeof AuthenticatedAdminMinesIndexRoute
   '/compliance/$mineId/': typeof AuthenticatedComplianceMineIdIndexRoute
+  '/contractors/$id/': typeof AuthenticatedContractorsIdIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
   '/sign-in': typeof authSignInRoute
@@ -365,40 +568,59 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/ai-analytics': typeof AuthenticatedAiAnalyticsRoute
   '/alerts': typeof AuthenticatedAlertsRoute
-  '/contractors': typeof AuthenticatedContractorsRoute
   '/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/environment': typeof AuthenticatedEnvironmentRoute
-  '/grievances': typeof AuthenticatedGrievancesRoute
   '/mine-manager': typeof AuthenticatedMineManagerRoute
   '/mine-map': typeof AuthenticatedMineMapRoute
   '/mobile-inspection': typeof AuthenticatedMobileInspectionRoute
-  '/ocr': typeof AuthenticatedOcrRoute
   '/production': typeof AuthenticatedProductionRoute
-  '/': typeof AuthenticatedIndexRoute
+  '/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
+  '/admin/checklist-builder': typeof AuthenticatedAdminChecklistBuilderRoute
+  '/admin/env-stations': typeof AuthenticatedAdminEnvStationsRoute
+  '/admin/regulations': typeof AuthenticatedAdminRegulationsRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/compliance/$id': typeof AuthenticatedComplianceIdRoute
   '/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
   '/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/grievances/$id': typeof AuthenticatedGrievancesIdRoute
   '/incidents/$id': typeof AuthenticatedIncidentsIdRoute
   '/inspection/$id': typeof AuthenticatedInspectionIdRoute
+  '/regulator/environment': typeof AuthenticatedRegulatorEnvironmentRoute
+  '/regulator/incidents': typeof AuthenticatedRegulatorIncidentsRoute
+  '/regulator/inspections': typeof AuthenticatedRegulatorInspectionsRoute
+  '/regulator/reports': typeof AuthenticatedRegulatorReportsRoute
+  '/security/logs': typeof AuthenticatedSecurityLogsRoute
+  '/security/overrides': typeof AuthenticatedSecurityOverridesRoute
   '/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/violations/$id': typeof AuthenticatedViolationsIdRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/compliance': typeof AuthenticatedComplianceIndexRoute
+  '/contractors': typeof AuthenticatedContractorsIndexRoute
+  '/grievances': typeof AuthenticatedGrievancesIndexRoute
   '/incidents': typeof AuthenticatedIncidentsIndexRoute
   '/inspection': typeof AuthenticatedInspectionIndexRoute
+  '/ocr': typeof AuthenticatedOcrIndexRoute
+  '/regulator': typeof AuthenticatedRegulatorIndexRoute
   '/reports': typeof AuthenticatedReportsIndexRoute
+  '/security': typeof AuthenticatedSecurityIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
+  '/worker': typeof AuthenticatedWorkerIndexRoute
   '/compliance/$mineId/$instanceId': typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  '/contractors/$id/workers': typeof AuthenticatedContractorsIdWorkersRoute
+  '/ocr/review/$itemId': typeof AuthenticatedOcrReviewItemIdRoute
   '/admin/mines': typeof AuthenticatedAdminMinesIndexRoute
   '/compliance/$mineId': typeof AuthenticatedComplianceMineIdIndexRoute
+  '/contractors/$id': typeof AuthenticatedContractorsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
@@ -413,37 +635,62 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/ai-analytics': typeof AuthenticatedAiAnalyticsRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
-  '/_authenticated/contractors': typeof AuthenticatedContractorsRoute
+  '/_authenticated/contractors': typeof AuthenticatedContractorsRouteWithChildren
   '/_authenticated/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/_authenticated/environment': typeof AuthenticatedEnvironmentRoute
-  '/_authenticated/grievances': typeof AuthenticatedGrievancesRoute
+  '/_authenticated/grievances': typeof AuthenticatedGrievancesRouteWithChildren
   '/_authenticated/mine-manager': typeof AuthenticatedMineManagerRoute
   '/_authenticated/mine-map': typeof AuthenticatedMineMapRoute
   '/_authenticated/mobile-inspection': typeof AuthenticatedMobileInspectionRoute
-  '/_authenticated/ocr': typeof AuthenticatedOcrRoute
+  '/_authenticated/ocr': typeof AuthenticatedOcrRouteWithChildren
   '/_authenticated/production': typeof AuthenticatedProductionRoute
-  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/regulator': typeof AuthenticatedRegulatorRouteWithChildren
+  '/_authenticated/security': typeof AuthenticatedSecurityRouteWithChildren
+  '/_authenticated/worker': typeof AuthenticatedWorkerRouteWithChildren
+  '/_authenticated/admin/audit-log': typeof AuthenticatedAdminAuditLogRoute
+  '/_authenticated/admin/checklist-builder': typeof AuthenticatedAdminChecklistBuilderRoute
+  '/_authenticated/admin/env-stations': typeof AuthenticatedAdminEnvStationsRoute
+  '/_authenticated/admin/regulations': typeof AuthenticatedAdminRegulationsRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/compliance/$id': typeof AuthenticatedComplianceIdRoute
   '/_authenticated/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
+  '/_authenticated/contractors/$id': typeof AuthenticatedContractorsIdRouteWithChildren
   '/_authenticated/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/_authenticated/grievances/$id': typeof AuthenticatedGrievancesIdRoute
   '/_authenticated/incidents/$id': typeof AuthenticatedIncidentsIdRoute
   '/_authenticated/inspection/$id': typeof AuthenticatedInspectionIdRoute
+  '/_authenticated/regulator/environment': typeof AuthenticatedRegulatorEnvironmentRoute
+  '/_authenticated/regulator/incidents': typeof AuthenticatedRegulatorIncidentsRoute
+  '/_authenticated/regulator/inspections': typeof AuthenticatedRegulatorInspectionsRoute
+  '/_authenticated/regulator/reports': typeof AuthenticatedRegulatorReportsRoute
+  '/_authenticated/security/logs': typeof AuthenticatedSecurityLogsRoute
+  '/_authenticated/security/overrides': typeof AuthenticatedSecurityOverridesRoute
   '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
   '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
   '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
   '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/violations/$id': typeof AuthenticatedViolationsIdRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/compliance/': typeof AuthenticatedComplianceIndexRoute
+  '/_authenticated/contractors/': typeof AuthenticatedContractorsIndexRoute
+  '/_authenticated/grievances/': typeof AuthenticatedGrievancesIndexRoute
   '/_authenticated/incidents/': typeof AuthenticatedIncidentsIndexRoute
   '/_authenticated/inspection/': typeof AuthenticatedInspectionIndexRoute
+  '/_authenticated/ocr/': typeof AuthenticatedOcrIndexRoute
+  '/_authenticated/regulator/': typeof AuthenticatedRegulatorIndexRoute
   '/_authenticated/reports/': typeof AuthenticatedReportsIndexRoute
+  '/_authenticated/security/': typeof AuthenticatedSecurityIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
+  '/_authenticated/worker/': typeof AuthenticatedWorkerIndexRoute
   '/_authenticated/compliance/$mineId/$instanceId': typeof AuthenticatedComplianceMineIdInstanceIdRoute
+  '/_authenticated/contractors/$id/workers': typeof AuthenticatedContractorsIdWorkersRoute
+  '/_authenticated/ocr/review/$itemId': typeof AuthenticatedOcrReviewItemIdRoute
   '/_authenticated/admin/mines/': typeof AuthenticatedAdminMinesIndexRoute
   '/_authenticated/compliance/$mineId/': typeof AuthenticatedComplianceMineIdIndexRoute
+  '/_authenticated/contractors/$id/': typeof AuthenticatedContractorsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -471,29 +718,56 @@ export interface FileRouteTypes {
     | '/mobile-inspection'
     | '/ocr'
     | '/production'
+    | '/regulator'
+    | '/security'
+    | '/worker'
+    | '/admin/audit-log'
+    | '/admin/checklist-builder'
+    | '/admin/env-stations'
+    | '/admin/regulations'
+    | '/admin/users'
     | '/compliance/$id'
     | '/compliance/$instanceId'
+    | '/contractors/$id'
     | '/corrective-actions/$id'
     | '/errors/$error'
+    | '/grievances/$id'
     | '/incidents/$id'
     | '/inspection/$id'
+    | '/regulator/environment'
+    | '/regulator/incidents'
+    | '/regulator/inspections'
+    | '/regulator/reports'
+    | '/security/logs'
+    | '/security/overrides'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
     | '/violations/$id'
+    | '/admin/'
     | '/apps/'
     | '/compliance/'
+    | '/contractors/'
+    | '/grievances/'
     | '/incidents/'
     | '/inspection/'
+    | '/ocr/'
+    | '/regulator/'
     | '/reports/'
+    | '/security/'
     | '/settings/'
     | '/users/'
+    | '/worker/'
     | '/compliance/$mineId/$instanceId'
+    | '/contractors/$id/workers'
+    | '/ocr/review/$itemId'
     | '/admin/mines/'
     | '/compliance/$mineId/'
+    | '/contractors/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/forgot-password'
     | '/otp'
     | '/sign-in'
@@ -506,39 +780,58 @@ export interface FileRouteTypes {
     | '/503'
     | '/ai-analytics'
     | '/alerts'
-    | '/contractors'
     | '/corporate-dashboard'
     | '/environment'
-    | '/grievances'
     | '/mine-manager'
     | '/mine-map'
     | '/mobile-inspection'
-    | '/ocr'
     | '/production'
-    | '/'
+    | '/admin/audit-log'
+    | '/admin/checklist-builder'
+    | '/admin/env-stations'
+    | '/admin/regulations'
+    | '/admin/users'
     | '/compliance/$id'
     | '/compliance/$instanceId'
     | '/corrective-actions/$id'
     | '/errors/$error'
+    | '/grievances/$id'
     | '/incidents/$id'
     | '/inspection/$id'
+    | '/regulator/environment'
+    | '/regulator/incidents'
+    | '/regulator/inspections'
+    | '/regulator/reports'
+    | '/security/logs'
+    | '/security/overrides'
     | '/settings/account'
     | '/settings/appearance'
     | '/settings/display'
     | '/settings/notifications'
     | '/violations/$id'
+    | '/admin'
     | '/apps'
     | '/compliance'
+    | '/contractors'
+    | '/grievances'
     | '/incidents'
     | '/inspection'
+    | '/ocr'
+    | '/regulator'
     | '/reports'
+    | '/security'
     | '/settings'
     | '/users'
+    | '/worker'
     | '/compliance/$mineId/$instanceId'
+    | '/contractors/$id/workers'
+    | '/ocr/review/$itemId'
     | '/admin/mines'
     | '/compliance/$mineId'
+    | '/contractors/$id'
   id:
     | '__root__'
+    | '/'
     | '/_authenticated'
     | '/_authenticated/settings'
     | '/(auth)/forgot-password'
@@ -562,31 +855,57 @@ export interface FileRouteTypes {
     | '/_authenticated/mobile-inspection'
     | '/_authenticated/ocr'
     | '/_authenticated/production'
-    | '/_authenticated/'
+    | '/_authenticated/regulator'
+    | '/_authenticated/security'
+    | '/_authenticated/worker'
+    | '/_authenticated/admin/audit-log'
+    | '/_authenticated/admin/checklist-builder'
+    | '/_authenticated/admin/env-stations'
+    | '/_authenticated/admin/regulations'
+    | '/_authenticated/admin/users'
     | '/_authenticated/compliance/$id'
     | '/_authenticated/compliance/$instanceId'
+    | '/_authenticated/contractors/$id'
     | '/_authenticated/corrective-actions/$id'
     | '/_authenticated/errors/$error'
+    | '/_authenticated/grievances/$id'
     | '/_authenticated/incidents/$id'
     | '/_authenticated/inspection/$id'
+    | '/_authenticated/regulator/environment'
+    | '/_authenticated/regulator/incidents'
+    | '/_authenticated/regulator/inspections'
+    | '/_authenticated/regulator/reports'
+    | '/_authenticated/security/logs'
+    | '/_authenticated/security/overrides'
     | '/_authenticated/settings/account'
     | '/_authenticated/settings/appearance'
     | '/_authenticated/settings/display'
     | '/_authenticated/settings/notifications'
     | '/_authenticated/violations/$id'
+    | '/_authenticated/admin/'
     | '/_authenticated/apps/'
     | '/_authenticated/compliance/'
+    | '/_authenticated/contractors/'
+    | '/_authenticated/grievances/'
     | '/_authenticated/incidents/'
     | '/_authenticated/inspection/'
+    | '/_authenticated/ocr/'
+    | '/_authenticated/regulator/'
     | '/_authenticated/reports/'
+    | '/_authenticated/security/'
     | '/_authenticated/settings/'
     | '/_authenticated/users/'
+    | '/_authenticated/worker/'
     | '/_authenticated/compliance/$mineId/$instanceId'
+    | '/_authenticated/contractors/$id/workers'
+    | '/_authenticated/ocr/review/$itemId'
     | '/_authenticated/admin/mines/'
     | '/_authenticated/compliance/$mineId/'
+    | '/_authenticated/contractors/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   authForgotPasswordRoute: typeof authForgotPasswordRoute
   authOtpRoute: typeof authOtpRoute
@@ -609,11 +928,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/': {
-      id: '/_authenticated/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/worker': {
+      id: '/_authenticated/worker'
+      path: '/worker'
+      fullPath: '/worker'
+      preLoaderRoute: typeof AuthenticatedWorkerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/security': {
+      id: '/_authenticated/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof AuthenticatedSecurityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/regulator': {
+      id: '/_authenticated/regulator'
+      path: '/regulator'
+      fullPath: '/regulator'
+      preLoaderRoute: typeof AuthenticatedRegulatorRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/production': {
@@ -770,6 +1110,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/worker/': {
+      id: '/_authenticated/worker/'
+      path: '/'
+      fullPath: '/worker/'
+      preLoaderRoute: typeof AuthenticatedWorkerIndexRouteImport
+      parentRoute: typeof AuthenticatedWorkerRoute
+    }
     '/_authenticated/users/': {
       id: '/_authenticated/users/'
       path: '/users'
@@ -784,12 +1131,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/security/': {
+      id: '/_authenticated/security/'
+      path: '/'
+      fullPath: '/security/'
+      preLoaderRoute: typeof AuthenticatedSecurityIndexRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
     '/_authenticated/reports/': {
       id: '/_authenticated/reports/'
       path: '/reports'
       fullPath: '/reports/'
       preLoaderRoute: typeof AuthenticatedReportsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/regulator/': {
+      id: '/_authenticated/regulator/'
+      path: '/'
+      fullPath: '/regulator/'
+      preLoaderRoute: typeof AuthenticatedRegulatorIndexRouteImport
+      parentRoute: typeof AuthenticatedRegulatorRoute
+    }
+    '/_authenticated/ocr/': {
+      id: '/_authenticated/ocr/'
+      path: '/'
+      fullPath: '/ocr/'
+      preLoaderRoute: typeof AuthenticatedOcrIndexRouteImport
+      parentRoute: typeof AuthenticatedOcrRoute
     }
     '/_authenticated/inspection/': {
       id: '/_authenticated/inspection/'
@@ -805,6 +1173,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIncidentsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/grievances/': {
+      id: '/_authenticated/grievances/'
+      path: '/'
+      fullPath: '/grievances/'
+      preLoaderRoute: typeof AuthenticatedGrievancesIndexRouteImport
+      parentRoute: typeof AuthenticatedGrievancesRoute
+    }
+    '/_authenticated/contractors/': {
+      id: '/_authenticated/contractors/'
+      path: '/'
+      fullPath: '/contractors/'
+      preLoaderRoute: typeof AuthenticatedContractorsIndexRouteImport
+      parentRoute: typeof AuthenticatedContractorsRoute
+    }
     '/_authenticated/compliance/': {
       id: '/_authenticated/compliance/'
       path: '/compliance'
@@ -817,6 +1199,13 @@ declare module '@tanstack/react-router' {
       path: '/apps'
       fullPath: '/apps/'
       preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/violations/$id': {
@@ -854,6 +1243,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/security/overrides': {
+      id: '/_authenticated/security/overrides'
+      path: '/overrides'
+      fullPath: '/security/overrides'
+      preLoaderRoute: typeof AuthenticatedSecurityOverridesRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/security/logs': {
+      id: '/_authenticated/security/logs'
+      path: '/logs'
+      fullPath: '/security/logs'
+      preLoaderRoute: typeof AuthenticatedSecurityLogsRouteImport
+      parentRoute: typeof AuthenticatedSecurityRoute
+    }
+    '/_authenticated/regulator/reports': {
+      id: '/_authenticated/regulator/reports'
+      path: '/reports'
+      fullPath: '/regulator/reports'
+      preLoaderRoute: typeof AuthenticatedRegulatorReportsRouteImport
+      parentRoute: typeof AuthenticatedRegulatorRoute
+    }
+    '/_authenticated/regulator/inspections': {
+      id: '/_authenticated/regulator/inspections'
+      path: '/inspections'
+      fullPath: '/regulator/inspections'
+      preLoaderRoute: typeof AuthenticatedRegulatorInspectionsRouteImport
+      parentRoute: typeof AuthenticatedRegulatorRoute
+    }
+    '/_authenticated/regulator/incidents': {
+      id: '/_authenticated/regulator/incidents'
+      path: '/incidents'
+      fullPath: '/regulator/incidents'
+      preLoaderRoute: typeof AuthenticatedRegulatorIncidentsRouteImport
+      parentRoute: typeof AuthenticatedRegulatorRoute
+    }
+    '/_authenticated/regulator/environment': {
+      id: '/_authenticated/regulator/environment'
+      path: '/environment'
+      fullPath: '/regulator/environment'
+      preLoaderRoute: typeof AuthenticatedRegulatorEnvironmentRouteImport
+      parentRoute: typeof AuthenticatedRegulatorRoute
+    }
     '/_authenticated/inspection/$id': {
       id: '/_authenticated/inspection/$id'
       path: '/inspection/$id'
@@ -867,6 +1298,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/incidents/$id'
       preLoaderRoute: typeof AuthenticatedIncidentsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/grievances/$id': {
+      id: '/_authenticated/grievances/$id'
+      path: '/$id'
+      fullPath: '/grievances/$id'
+      preLoaderRoute: typeof AuthenticatedGrievancesIdRouteImport
+      parentRoute: typeof AuthenticatedGrievancesRoute
     }
     '/_authenticated/errors/$error': {
       id: '/_authenticated/errors/$error'
@@ -882,6 +1320,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCorrectiveActionsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/contractors/$id': {
+      id: '/_authenticated/contractors/$id'
+      path: '/$id'
+      fullPath: '/contractors/$id'
+      preLoaderRoute: typeof AuthenticatedContractorsIdRouteImport
+      parentRoute: typeof AuthenticatedContractorsRoute
+    }
     '/_authenticated/compliance/$instanceId': {
       id: '/_authenticated/compliance/$instanceId'
       path: '/compliance/$instanceId'
@@ -896,6 +1341,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedComplianceIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/regulations': {
+      id: '/_authenticated/admin/regulations'
+      path: '/admin/regulations'
+      fullPath: '/admin/regulations'
+      preLoaderRoute: typeof AuthenticatedAdminRegulationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/env-stations': {
+      id: '/_authenticated/admin/env-stations'
+      path: '/admin/env-stations'
+      fullPath: '/admin/env-stations'
+      preLoaderRoute: typeof AuthenticatedAdminEnvStationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/checklist-builder': {
+      id: '/_authenticated/admin/checklist-builder'
+      path: '/admin/checklist-builder'
+      fullPath: '/admin/checklist-builder'
+      preLoaderRoute: typeof AuthenticatedAdminChecklistBuilderRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/audit-log': {
+      id: '/_authenticated/admin/audit-log'
+      path: '/admin/audit-log'
+      fullPath: '/admin/audit-log'
+      preLoaderRoute: typeof AuthenticatedAdminAuditLogRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/contractors/$id/': {
+      id: '/_authenticated/contractors/$id/'
+      path: '/'
+      fullPath: '/contractors/$id/'
+      preLoaderRoute: typeof AuthenticatedContractorsIdIndexRouteImport
+      parentRoute: typeof AuthenticatedContractorsIdRoute
+    }
     '/_authenticated/compliance/$mineId/': {
       id: '/_authenticated/compliance/$mineId/'
       path: '/compliance/$mineId'
@@ -909,6 +1396,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/mines/'
       preLoaderRoute: typeof AuthenticatedAdminMinesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ocr/review/$itemId': {
+      id: '/_authenticated/ocr/review/$itemId'
+      path: '/review/$itemId'
+      fullPath: '/ocr/review/$itemId'
+      preLoaderRoute: typeof AuthenticatedOcrReviewItemIdRouteImport
+      parentRoute: typeof AuthenticatedOcrRoute
+    }
+    '/_authenticated/contractors/$id/workers': {
+      id: '/_authenticated/contractors/$id/workers'
+      path: '/workers'
+      fullPath: '/contractors/$id/workers'
+      preLoaderRoute: typeof AuthenticatedContractorsIdWorkersRouteImport
+      parentRoute: typeof AuthenticatedContractorsIdRoute
     }
     '/_authenticated/compliance/$mineId/$instanceId': {
       id: '/_authenticated/compliance/$mineId/$instanceId'
@@ -943,20 +1444,142 @@ const AuthenticatedSettingsRouteRouteWithChildren =
     AuthenticatedSettingsRouteRouteChildren,
   )
 
+interface AuthenticatedContractorsIdRouteChildren {
+  AuthenticatedContractorsIdWorkersRoute: typeof AuthenticatedContractorsIdWorkersRoute
+  AuthenticatedContractorsIdIndexRoute: typeof AuthenticatedContractorsIdIndexRoute
+}
+
+const AuthenticatedContractorsIdRouteChildren: AuthenticatedContractorsIdRouteChildren =
+  {
+    AuthenticatedContractorsIdWorkersRoute:
+      AuthenticatedContractorsIdWorkersRoute,
+    AuthenticatedContractorsIdIndexRoute: AuthenticatedContractorsIdIndexRoute,
+  }
+
+const AuthenticatedContractorsIdRouteWithChildren =
+  AuthenticatedContractorsIdRoute._addFileChildren(
+    AuthenticatedContractorsIdRouteChildren,
+  )
+
+interface AuthenticatedContractorsRouteChildren {
+  AuthenticatedContractorsIdRoute: typeof AuthenticatedContractorsIdRouteWithChildren
+  AuthenticatedContractorsIndexRoute: typeof AuthenticatedContractorsIndexRoute
+}
+
+const AuthenticatedContractorsRouteChildren: AuthenticatedContractorsRouteChildren =
+  {
+    AuthenticatedContractorsIdRoute:
+      AuthenticatedContractorsIdRouteWithChildren,
+    AuthenticatedContractorsIndexRoute: AuthenticatedContractorsIndexRoute,
+  }
+
+const AuthenticatedContractorsRouteWithChildren =
+  AuthenticatedContractorsRoute._addFileChildren(
+    AuthenticatedContractorsRouteChildren,
+  )
+
+interface AuthenticatedGrievancesRouteChildren {
+  AuthenticatedGrievancesIdRoute: typeof AuthenticatedGrievancesIdRoute
+  AuthenticatedGrievancesIndexRoute: typeof AuthenticatedGrievancesIndexRoute
+}
+
+const AuthenticatedGrievancesRouteChildren: AuthenticatedGrievancesRouteChildren =
+  {
+    AuthenticatedGrievancesIdRoute: AuthenticatedGrievancesIdRoute,
+    AuthenticatedGrievancesIndexRoute: AuthenticatedGrievancesIndexRoute,
+  }
+
+const AuthenticatedGrievancesRouteWithChildren =
+  AuthenticatedGrievancesRoute._addFileChildren(
+    AuthenticatedGrievancesRouteChildren,
+  )
+
+interface AuthenticatedOcrRouteChildren {
+  AuthenticatedOcrIndexRoute: typeof AuthenticatedOcrIndexRoute
+  AuthenticatedOcrReviewItemIdRoute: typeof AuthenticatedOcrReviewItemIdRoute
+}
+
+const AuthenticatedOcrRouteChildren: AuthenticatedOcrRouteChildren = {
+  AuthenticatedOcrIndexRoute: AuthenticatedOcrIndexRoute,
+  AuthenticatedOcrReviewItemIdRoute: AuthenticatedOcrReviewItemIdRoute,
+}
+
+const AuthenticatedOcrRouteWithChildren =
+  AuthenticatedOcrRoute._addFileChildren(AuthenticatedOcrRouteChildren)
+
+interface AuthenticatedRegulatorRouteChildren {
+  AuthenticatedRegulatorEnvironmentRoute: typeof AuthenticatedRegulatorEnvironmentRoute
+  AuthenticatedRegulatorIncidentsRoute: typeof AuthenticatedRegulatorIncidentsRoute
+  AuthenticatedRegulatorInspectionsRoute: typeof AuthenticatedRegulatorInspectionsRoute
+  AuthenticatedRegulatorReportsRoute: typeof AuthenticatedRegulatorReportsRoute
+  AuthenticatedRegulatorIndexRoute: typeof AuthenticatedRegulatorIndexRoute
+}
+
+const AuthenticatedRegulatorRouteChildren: AuthenticatedRegulatorRouteChildren =
+  {
+    AuthenticatedRegulatorEnvironmentRoute:
+      AuthenticatedRegulatorEnvironmentRoute,
+    AuthenticatedRegulatorIncidentsRoute: AuthenticatedRegulatorIncidentsRoute,
+    AuthenticatedRegulatorInspectionsRoute:
+      AuthenticatedRegulatorInspectionsRoute,
+    AuthenticatedRegulatorReportsRoute: AuthenticatedRegulatorReportsRoute,
+    AuthenticatedRegulatorIndexRoute: AuthenticatedRegulatorIndexRoute,
+  }
+
+const AuthenticatedRegulatorRouteWithChildren =
+  AuthenticatedRegulatorRoute._addFileChildren(
+    AuthenticatedRegulatorRouteChildren,
+  )
+
+interface AuthenticatedSecurityRouteChildren {
+  AuthenticatedSecurityLogsRoute: typeof AuthenticatedSecurityLogsRoute
+  AuthenticatedSecurityOverridesRoute: typeof AuthenticatedSecurityOverridesRoute
+  AuthenticatedSecurityIndexRoute: typeof AuthenticatedSecurityIndexRoute
+}
+
+const AuthenticatedSecurityRouteChildren: AuthenticatedSecurityRouteChildren = {
+  AuthenticatedSecurityLogsRoute: AuthenticatedSecurityLogsRoute,
+  AuthenticatedSecurityOverridesRoute: AuthenticatedSecurityOverridesRoute,
+  AuthenticatedSecurityIndexRoute: AuthenticatedSecurityIndexRoute,
+}
+
+const AuthenticatedSecurityRouteWithChildren =
+  AuthenticatedSecurityRoute._addFileChildren(
+    AuthenticatedSecurityRouteChildren,
+  )
+
+interface AuthenticatedWorkerRouteChildren {
+  AuthenticatedWorkerIndexRoute: typeof AuthenticatedWorkerIndexRoute
+}
+
+const AuthenticatedWorkerRouteChildren: AuthenticatedWorkerRouteChildren = {
+  AuthenticatedWorkerIndexRoute: AuthenticatedWorkerIndexRoute,
+}
+
+const AuthenticatedWorkerRouteWithChildren =
+  AuthenticatedWorkerRoute._addFileChildren(AuthenticatedWorkerRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedAiAnalyticsRoute: typeof AuthenticatedAiAnalyticsRoute
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
-  AuthenticatedContractorsRoute: typeof AuthenticatedContractorsRoute
+  AuthenticatedContractorsRoute: typeof AuthenticatedContractorsRouteWithChildren
   AuthenticatedCorporateDashboardRoute: typeof AuthenticatedCorporateDashboardRoute
   AuthenticatedEnvironmentRoute: typeof AuthenticatedEnvironmentRoute
-  AuthenticatedGrievancesRoute: typeof AuthenticatedGrievancesRoute
+  AuthenticatedGrievancesRoute: typeof AuthenticatedGrievancesRouteWithChildren
   AuthenticatedMineManagerRoute: typeof AuthenticatedMineManagerRoute
   AuthenticatedMineMapRoute: typeof AuthenticatedMineMapRoute
   AuthenticatedMobileInspectionRoute: typeof AuthenticatedMobileInspectionRoute
-  AuthenticatedOcrRoute: typeof AuthenticatedOcrRoute
+  AuthenticatedOcrRoute: typeof AuthenticatedOcrRouteWithChildren
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedRegulatorRoute: typeof AuthenticatedRegulatorRouteWithChildren
+  AuthenticatedSecurityRoute: typeof AuthenticatedSecurityRouteWithChildren
+  AuthenticatedWorkerRoute: typeof AuthenticatedWorkerRouteWithChildren
+  AuthenticatedAdminAuditLogRoute: typeof AuthenticatedAdminAuditLogRoute
+  AuthenticatedAdminChecklistBuilderRoute: typeof AuthenticatedAdminChecklistBuilderRoute
+  AuthenticatedAdminEnvStationsRoute: typeof AuthenticatedAdminEnvStationsRoute
+  AuthenticatedAdminRegulationsRoute: typeof AuthenticatedAdminRegulationsRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedComplianceIdRoute: typeof AuthenticatedComplianceIdRoute
   AuthenticatedComplianceInstanceIdRoute: typeof AuthenticatedComplianceInstanceIdRoute
   AuthenticatedCorrectiveActionsIdRoute: typeof AuthenticatedCorrectiveActionsIdRoute
@@ -964,6 +1587,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedIncidentsIdRoute: typeof AuthenticatedIncidentsIdRoute
   AuthenticatedInspectionIdRoute: typeof AuthenticatedInspectionIdRoute
   AuthenticatedViolationsIdRoute: typeof AuthenticatedViolationsIdRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedComplianceIndexRoute: typeof AuthenticatedComplianceIndexRoute
   AuthenticatedIncidentsIndexRoute: typeof AuthenticatedIncidentsIndexRoute
@@ -979,16 +1603,24 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedAiAnalyticsRoute: AuthenticatedAiAnalyticsRoute,
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
-  AuthenticatedContractorsRoute: AuthenticatedContractorsRoute,
+  AuthenticatedContractorsRoute: AuthenticatedContractorsRouteWithChildren,
   AuthenticatedCorporateDashboardRoute: AuthenticatedCorporateDashboardRoute,
   AuthenticatedEnvironmentRoute: AuthenticatedEnvironmentRoute,
-  AuthenticatedGrievancesRoute: AuthenticatedGrievancesRoute,
+  AuthenticatedGrievancesRoute: AuthenticatedGrievancesRouteWithChildren,
   AuthenticatedMineManagerRoute: AuthenticatedMineManagerRoute,
   AuthenticatedMineMapRoute: AuthenticatedMineMapRoute,
   AuthenticatedMobileInspectionRoute: AuthenticatedMobileInspectionRoute,
-  AuthenticatedOcrRoute: AuthenticatedOcrRoute,
+  AuthenticatedOcrRoute: AuthenticatedOcrRouteWithChildren,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
-  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedRegulatorRoute: AuthenticatedRegulatorRouteWithChildren,
+  AuthenticatedSecurityRoute: AuthenticatedSecurityRouteWithChildren,
+  AuthenticatedWorkerRoute: AuthenticatedWorkerRouteWithChildren,
+  AuthenticatedAdminAuditLogRoute: AuthenticatedAdminAuditLogRoute,
+  AuthenticatedAdminChecklistBuilderRoute:
+    AuthenticatedAdminChecklistBuilderRoute,
+  AuthenticatedAdminEnvStationsRoute: AuthenticatedAdminEnvStationsRoute,
+  AuthenticatedAdminRegulationsRoute: AuthenticatedAdminRegulationsRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedComplianceIdRoute: AuthenticatedComplianceIdRoute,
   AuthenticatedComplianceInstanceIdRoute:
     AuthenticatedComplianceInstanceIdRoute,
@@ -997,6 +1629,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIncidentsIdRoute: AuthenticatedIncidentsIdRoute,
   AuthenticatedInspectionIdRoute: AuthenticatedInspectionIdRoute,
   AuthenticatedViolationsIdRoute: AuthenticatedViolationsIdRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedComplianceIndexRoute: AuthenticatedComplianceIndexRoute,
   AuthenticatedIncidentsIndexRoute: AuthenticatedIncidentsIndexRoute,
@@ -1014,6 +1647,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   authForgotPasswordRoute: authForgotPasswordRoute,
   authOtpRoute: authOtpRoute,

@@ -211,20 +211,24 @@ def seed():
         ]
         contractor_ids = []
         for cname, creg, cpan, cgst in CONTRACTOR_DEFS:
-            cid   = uid()
             trust = ufloat(55, 92)
             risk  = "low" if trust>80 else ("medium" if trust>65 else "high")
-            cur.execute(
-                "INSERT INTO contractors"
-                " (id,name,registration_number,pan,gst_number,contact_person,"
-                "  contact_email,address,status,risk_rating,trust_score,onboarded_at)"
-                " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'active',%s,%s,%s)"
-                " ON CONFLICT (registration_number) DO NOTHING",
-                (cid, cname, creg, cpan, cgst,
-                 pick(["Rakesh Jain","Suresh Agarwal","Mukesh Patel","Dinesh Shah"]),
-                 f"info@{creg.lower().replace('-','')}.com",
-                 pick(["Nagpur","Korba","Raipur","Chandrapur"])+", India",
-                 risk, trust, ts_ago(rint(180,540))))
+            cur.execute("SELECT id FROM contractors WHERE registration_number = %s", (creg,))
+            existing = cur.fetchone()
+            if existing:
+                cid = existing["id"]
+            else:
+                cid = uid()
+                cur.execute(
+                    "INSERT INTO contractors"
+                    " (id,name,registration_number,pan,gst_number,contact_person,"
+                    "  contact_email,address,status,risk_rating,trust_score,onboarded_at)"
+                    " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'active',%s,%s,%s)",
+                    (cid, cname, creg, cpan, cgst,
+                     pick(["Rakesh Jain","Suresh Agarwal","Mukesh Patel","Dinesh Shah"]),
+                     f"info@{creg.lower().replace('-','')}.com",
+                     pick(["Nagpur","Korba","Raipur","Chandrapur"])+", India",
+                     risk, trust, ts_ago(rint(180,540))))
             contractor_ids.append(cid)
         wo = 1
         for mine in MINES:

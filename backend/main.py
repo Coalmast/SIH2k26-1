@@ -56,12 +56,23 @@ app.add_middleware(
 )
 
 from routers import compliance, reports, inspection, mine, users, ai
+from routers import contractors, environment, production, incidents, grievances, ocr, sync, attendance, webhook
+
 app.include_router(compliance.router)
 app.include_router(reports.router)
 app.include_router(inspection.router)
 app.include_router(mine.router)
 app.include_router(users.router)
 app.include_router(ai.router)
+app.include_router(contractors.router)
+app.include_router(environment.router)
+app.include_router(production.router)
+app.include_router(incidents.router)
+app.include_router(grievances.router)
+app.include_router(ocr.router)
+app.include_router(sync.router)
+app.include_router(attendance.router)
+app.include_router(webhook.router)
 
 class HealthCheckResponse(BaseModel):
     status: str
