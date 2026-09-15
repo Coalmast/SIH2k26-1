@@ -1,4 +1,3 @@
-
 # COMET — All-in-One System & Workflow Diagram
 
 **Platform:** Coal Operations Monitoring, Enforcement & Transparency (COMET)

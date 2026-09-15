@@ -1,7 +1,14 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 from celery import Celery
+
+# Load backend/.env before reading configuration or importing routers.
+load_dotenv(Path(__file__).resolve().parent / ".env")
+load_dotenv()
 
 # --- Celery Configuration ---
 # Use the local Redis container we set up as both the broker and result backend
