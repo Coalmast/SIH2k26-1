@@ -94,6 +94,7 @@ class User(Base):
     subsidiary_id = Column(UUID(as_uuid=True), ForeignKey("subsidiaries.id", ondelete="SET NULL"))
     preferred_language = Column(String, default="en")
     is_active = Column(Boolean, default=True)
+    expo_push_token = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

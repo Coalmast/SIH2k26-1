@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications';
-import notifee, { AndroidImportance, AndroidCategory } from '@notifee/react-native';
+import notifee, { AndroidImportance, AndroidCategory, EventType } from '@notifee/react-native';
 import Constants from 'expo-constants';
 import * as TaskManager from 'expo-task-manager';
 
@@ -16,6 +16,27 @@ Notifications.setNotificationHandler({
       shouldSetBadge: true,
     };
   },
+});
+
+// Listen for foreground notifications so they trigger even when app is open
+Notifications.addNotificationReceivedListener(async (notification) => {
+  const payload = notification.request.content.data;
+  if (payload?.comet_alarm === 'true') {
+    await notifee.displayNotification({
+      title: `🚨 ${payload.title || notification.request.content.title || 'CRITICAL ALARM'}`,
+      body: payload.body || notification.request.content.body || 'Evacuate immediately.',
+      android: {
+        channelId: 'comet_critical_alarm',
+        importance: AndroidImportance.HIGH,
+        category: AndroidCategory.ALARM,
+        fullScreenAction: { id: 'default' },
+        ongoing: true,
+        autoCancel: false,
+        actions: [{ title: '✅ Acknowledge & Evacuating', pressAction: { id: 'acknowledge' } }],
+      },
+      ios: { critical: true, criticalVolume: 1.0, sound: 'comet_alarm.wav', interruptionLevel: 'critical' },
+    });
+  }
 });
 
 // Setup channels for Notifee
@@ -39,22 +60,42 @@ export async function bootstrapNotifications() {
   });
 }
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+notifee.onForegroundEvent(async ({ type, detail }) => {
+  if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'acknowledge') {
+    const alertId = detail.notification?.data?.alert_id;
+    if (detail.notification?.id) {
+      await notifee.cancelNotification(detail.notification.id);
+    }
+    if (alertId) {
+      const apiUrl = await AsyncStorage.getItem('DEV_API_URL')
+        .catch(() => process.env.EXPO_PUBLIC_API_URL);
+      fetch(`${apiUrl}/api/v1/alerts/${alertId}/acknowledge`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+      }).catch(() => {});
+    }
+  }
+});
+
 // Register device token with backend after login
 export async function registerAndSyncPushToken(apiBase: string, accessToken: string) {
-  const { data: token } = await Notifications.getExpoPushTokenAsync({
-    projectId: Constants.expoConfig?.extra?.eas?.projectId,
-  });
-  
-  if (!apiBase || !accessToken) return;
-
+  // NOTE: Expo Push Token sync via FCM is disabled in dev builds because
+  // getExpoPushTokenAsync requires valid FCM server credentials to be uploaded
+  // to Expo EAS (not just google-services.json). Alarm delivery in this build
+  // uses Supabase Realtime instead, which works without FCM.
+  // To re-enable: upload FCM credentials to EAS and remove this early return.
   try {
-    await fetch(`${apiBase}/api/v1/users/me/push-token`, {
-      method: 'PATCH',
-      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ expo_push_token: token }),
-    });
+    // Request permissions only (for Notifee channels to work)
+    await notifee.requestPermission();
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    if (existingStatus !== 'granted') {
+      await Notifications.requestPermissionsAsync();
+    }
+    console.log('[COMET] Notification permissions requested. Alarm delivery via Realtime is active.');
   } catch (error) {
-    console.error('Failed to sync push token:', error);
+    console.error('FATAL ERROR in registerAndSyncPushToken:', error);
   }
 }
 

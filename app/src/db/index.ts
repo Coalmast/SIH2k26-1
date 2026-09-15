@@ -11,7 +11,8 @@ import {
   ChecklistTemplate,
   SafetyObservation,
   ContractWorker,
-  MediaAttachment
+  MediaAttachment,
+  Notification
 } from './models';
 
 const adapter = new SQLiteAdapter({
@@ -34,6 +35,7 @@ export const database = new Database({
     ChecklistTemplate,
     SafetyObservation,
     ContractWorker,
-    MediaAttachment
+    MediaAttachment,
+    Notification
   ],
 });

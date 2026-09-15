@@ -27,8 +27,8 @@ export default function InspectionFormScreen() {
 
   const handleFinish = () => {
     // Check if all items that require measurement have observations
-    const requiredItems = checklistItems.filter((item: any) => item.measurement_required !== false);
-    const completedItemsCount = observations.filter((obs: any) => requiredItems.some((req: any) => req.id === obs.checklistItemId)).length;
+    const requiredItems = checklistItems.filter((item: any) => item.is_mandatory !== false && item.measurement_required !== false);
+    const completedItemsCount = observations.filter((obs: any) => requiredItems.some((req: any) => (req.item_id || req.id) === (obs.checklistItemId || obs.checklist_item_id))).length;
 
     if (completedItemsCount < requiredItems.length) {
       Alert.alert(
@@ -75,12 +75,23 @@ export default function InspectionFormScreen() {
       <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
         <Text className="text-binance-muted mb-4 font-medium">Record measurements for the following parameters. Values exceeding thresholds will automatically be flagged.</Text>
         
-        {checklistItems.map((item: any) => {
-          const savedObs = observations.find((o: any) => o.checklistItemId === item.id);
+        {checklistItems.map((item: any, index: number) => {
+          const itemId = item.item_id || item.id || `fallback-${index}`;
+          const savedObs = observations.find((o: any) => o.checklistItemId === itemId || o.checklist_item_id === itemId);
+          
+          // Normalize item for GasObservationItem
+          const normalizedItem = {
+            ...item,
+            id: itemId,
+            text: item.checkpoint_text || item.text || 'No description provided',
+            regulation: item.regulation || '',
+            unit: item.unit || '',
+          };
+
           return (
             <GasObservationItem
-              key={item.id}
-              item={item}
+              key={itemId}
+              item={normalizedItem}
               localInspectionId={inspection.id}
               remoteInspectionId={inspection.remoteId}
               zone={inspection.zone}

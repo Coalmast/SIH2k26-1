@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb';
 
 export const schema = appSchema({
-  version: 3,
+  version: 4,
   tables: [
     tableSchema({
       name: 'inspections',
@@ -178,6 +178,25 @@ export const schema = appSchema({
         { name: 'remote_id', type: 'string', isOptional: true },
         { name: 'captured_by', type: 'string' },
         { name: 'created_at', type: 'number' },
+      ],
+    }),
+    // -- v4 New Tables --
+    tableSchema({
+      name: 'notifications',
+      columns: [
+        { name: 'remote_id', type: 'string' },
+        { name: 'type', type: 'string' },
+        { name: 'priority', type: 'string' },
+        { name: 'title', type: 'string' },
+        { name: 'message', type: 'string' },
+        { name: 'target_user_id', type: 'string', isOptional: true },
+        { name: 'mine_id', type: 'string', isOptional: true },
+        { name: 'entity_type', type: 'string', isOptional: true },
+        { name: 'entity_id', type: 'string', isOptional: true },
+        { name: 'status', type: 'string' }, // unread | read
+        { name: 'read_at', type: 'number', isOptional: true },
+        { name: 'created_at', type: 'number' },
+        { name: 'sync_status', type: 'string' }, // synced | pending_ack
       ],
     }),
   ],

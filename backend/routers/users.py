@@ -25,6 +25,20 @@ async def get_me(
         raise HTTPException(status_code=404, detail="User profile not found in database")
     return user
 
+from pydantic import BaseModel
+class PushTokenUpdate(BaseModel):
+    expo_push_token: str
+
+@router.patch("/me/push-token")
+async def update_push_token(
+    body: PushTokenUpdate,
+    db: AsyncSession = Depends(get_db),
+    user_ctx: UserContext = Depends(get_current_user),
+):
+    """Store the Expo push token for the authenticated user."""
+    await MineService.update_expo_push_token(db, user_ctx.user_id, body.expo_push_token)
+    return {"status": "ok"}
+
 @router.get("", response_model=List[UserRead])
 async def list_users(
     mine_id: Optional[str] = None, 

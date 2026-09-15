@@ -17,3 +17,11 @@ app/src/main/java/inline/
 
 # Bundle artifacts
 *.jsbundle
+
+# Kotlin Cache
+.kotlin/
+
+# APKs / AABs
+*.apk
+*.ap_
+*.aab

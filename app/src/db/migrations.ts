@@ -3,6 +3,29 @@ import { addColumns, createTable, schemaMigrations } from '@nozbe/watermelondb/S
 export const migrations = schemaMigrations({
   migrations: [
     {
+      toVersion: 4,
+      steps: [
+        createTable({
+          name: 'notifications',
+          columns: [
+            { name: 'remote_id', type: 'string' },
+            { name: 'type', type: 'string' },
+            { name: 'priority', type: 'string' },
+            { name: 'title', type: 'string' },
+            { name: 'message', type: 'string' },
+            { name: 'target_user_id', type: 'string', isOptional: true },
+            { name: 'mine_id', type: 'string', isOptional: true },
+            { name: 'entity_type', type: 'string', isOptional: true },
+            { name: 'entity_id', type: 'string', isOptional: true },
+            { name: 'status', type: 'string' },
+            { name: 'read_at', type: 'number', isOptional: true },
+            { name: 'created_at', type: 'number' },
+            { name: 'sync_status', type: 'string' },
+          ],
+        }),
+      ],
+    },
+    {
       toVersion: 3,
       steps: [
         addColumns({

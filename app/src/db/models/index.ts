@@ -182,3 +182,5 @@ export class MediaAttachment extends Model {
   @field('captured_by') capturedBy!: string;
   @readonly @date('created_at') createdAt!: number;
 }
+
+export * from './Notification';

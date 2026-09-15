@@ -106,6 +106,14 @@ class MineService:
         await db.commit()
         await db.refresh(user)
         return user
+        
+    @staticmethod
+    async def update_expo_push_token(db: AsyncSession, user_id: str, token: str) -> None:
+        from sqlalchemy import update
+        await db.execute(
+            update(User).where(User.keycloak_subject == user_id).values(expo_push_token=token)
+        )
+        await db.commit()
 
     @staticmethod
     async def assign_role(db: AsyncSession, user_id: uuid.UUID, role_id: uuid.UUID):
