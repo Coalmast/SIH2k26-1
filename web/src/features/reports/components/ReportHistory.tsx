@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Download, Lock, Loader2 } from 'lucide-react';
 import { useReportHistory } from '../hooks/useReports';
+import { BlockchainVerifyBadge } from './BlockchainVerifyBadge';
 
 export function ReportHistory({ mineId }: { mineId: string }) {
   const {
@@ -42,22 +43,25 @@ export function ReportHistory({ mineId }: { mineId: string }) {
             ) : (
               history?.map((report: any) => (
                 <TableRow key={report.id}>
-                  <TableCell className="font-medium">{report.type}</TableCell>
-                  <TableCell>{report.period}</TableCell>
-                  <TableCell>{new Date(report.generated_at).toLocaleString()}</TableCell>
+                  <TableCell className="font-medium">{report.report_type}</TableCell>
+                  <TableCell>{new Date(report.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(report.created_at).toLocaleString()}</TableCell>
                   <TableCell>
                     <Badge className={
-                      report.status === 'SUBMITTED' ? 'bg-green-500/10 text-green-500 hover:bg-green-500/20' : 'bg-yellow-500/10 text-yellow-500'
+                      report.status === 'signed' || report.status === 'submitted' ? 'bg-green-500/10 text-green-500 hover:bg-green-500/20' : 'bg-yellow-500/10 text-yellow-500'
                     }>
-                      {report.status}
+                      {report.status.toUpperCase()}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right space-x-2">
-                    <Button variant="ghost" size="icon" title="View Hash">
-                      <Lock className="h-4 w-4 text-muted-foreground" />
-                    </Button>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Download className="h-4 w-4" />{t("pdf", "PDF")}</Button>
+                  <TableCell className="text-right space-y-2">
+                    <div className="flex flex-col items-end justify-center gap-2">
+                      {report.status === 'submitted' && report.hash && (
+                        <BlockchainVerifyBadge reportId={report.id} hash={report.hash} />
+                      )}
+                      <Button variant="outline" size="sm" className="gap-2" onClick={() => window.open(report.file_url, '_blank')}>
+                        <Download className="h-4 w-4" />{t("pdf", "PDF")}
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
