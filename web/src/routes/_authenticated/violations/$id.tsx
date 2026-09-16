@@ -4,7 +4,7 @@ import { Main } from '@/components/layout/main'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { AlertCircle, CheckCircle2, ChevronLeft, Clock, FileText, UploadCloud } from 'lucide-react'
+import { AlertCircle, CheckCircle2, ChevronLeft, Clock, FileText, UploadCloud, Users, ArrowUp } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/violations/$id')({
   component: ViolationDetailPage,
@@ -65,6 +65,14 @@ function ViolationDetailPage() {
               <CardContent className="p-5 space-y-4">
                 <div className="space-y-4">
                   <div>
+                    <label className="text-sm font-semibold mb-1 flex items-center gap-2"><Users className="h-4 w-4" /> Assign to (Safety Officer / Contractor)</label>
+                    <select className="w-full h-10 px-3 border rounded-md text-sm bg-white mb-4">
+                      <option>Select assignee...</option>
+                      <option>Rajesh K. (Safety Officer, Pit 2)</option>
+                      <option>Balaji Mining (Contractor)</option>
+                    </select>
+                  </div>
+                  <div>
                     <label className="text-sm font-semibold mb-1 block">Root Cause Analysis</label>
                     <textarea className="w-full h-24 p-3 border rounded-md text-sm bg-white" placeholder="Describe the root cause..."></textarea>
                   </div>
@@ -112,6 +120,40 @@ function ViolationDetailPage() {
                   <div className="relative pl-6 opacity-40">
                     <div className="absolute -left-[9px] top-1 h-4 w-4 rounded-full border-2 border-slate-300 bg-slate-100"></div>
                     <div className="text-sm font-semibold">Violation Closed</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-sm mt-6">
+              <CardHeader className="pb-3 border-b bg-red-50/50">
+                <CardTitle className="text-base flex items-center gap-2 text-red-700">
+                  <ArrowUp className="h-4 w-4" /> Escalation Ladder
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-5">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">L1</div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold">Mine Manager</div>
+                      <div className="text-xs text-muted-foreground">Notified immediately</div>
+                    </div>
+                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center font-bold text-red-600 text-xs">L2</div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold">Corporate HQ</div>
+                      <div className="text-xs text-red-500 font-medium">Triggers in 48 hours</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 opacity-50">
+                    <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-500 text-xs">L3</div>
+                    <div className="flex-1">
+                      <div className="text-sm font-semibold">DGMS / Regulatory</div>
+                      <div className="text-xs text-muted-foreground">Triggers in 7 days</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>

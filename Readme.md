@@ -154,3 +154,25 @@ docker compose --env-file .env.docker up --build
 ```bash
 docker compose --env-file .env.docker down
 ```
+
+
+
+COMET Database Seeding COMPLETE
+============================================================
+  Period       : Last 90 days + Sep & Oct 2026 (current + upcoming month)
+  Mines        : 3 (Umrer OCP, Sillewara UG, Gevra OCP)
+  Users        : 19
+  Env readings : 1155
+  Prod readings: 810
+  Contractors  : 6, Workers: 228
+  Compliance   : 1674 instances, 2238 evidences
+  Inspections  : 53
+  Observations : 323, Violations: 113, CAPAs: 102
+  Incidents    : 39
+  Safety obs   : 860
+  Alerts       : 169
+  Risk scores  : 135
+  Anomaly flags: 38
+  OCR results  : 45
+  Escalations  : 34
+============================================================

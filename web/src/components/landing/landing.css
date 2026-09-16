@@ -1,0 +1,8 @@
+/* Add custom specific landing page styles here if needed.
+   Most styling is handled by Tailwind utility classes in LandingPage.tsx. */
+
+.landing-container {
+  /* Dynamic gradient support is provided by Tailwind classes */
+}
+
+/* You can add custom animation keyframes or complex responsive rules here */

@@ -7,6 +7,8 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { ProfileDropdown } from '@/components/profile-dropdown'
 import { Bell } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useLocation } from '@tanstack/react-router'
 
 type HeaderProps = React.HTMLAttributes<HTMLElement> & {
   fixed?: boolean
@@ -15,6 +17,7 @@ type HeaderProps = React.HTMLAttributes<HTMLElement> & {
 
 export function Header({ className, fixed, children, ...props }: HeaderProps) {
   const [offset, setOffset] = useState(0)
+  const location = useLocation()
 
   useEffect(() => {
     const onScroll = () => {
@@ -47,8 +50,19 @@ export function Header({ className, fixed, children, ...props }: HeaderProps) {
         <Separator orientation='vertical' className='h-6' />
         
         {/* Left side (page-specific breadcrumbs etc.) */}
-        <div className="flex-1 flex items-center gap-4">
-           {children}
+        <div className="flex-1 flex items-center gap-4 overflow-hidden relative">
+           <AnimatePresence mode="popLayout">
+             <motion.div
+               key={location.pathname}
+               initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+               exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+               transition={{ duration: 0.25, ease: 'easeOut' }}
+               className="absolute inset-y-0 left-0 flex items-center"
+             >
+               {children}
+             </motion.div>
+           </AnimatePresence>
         </div>
         
         {/* Right side standardized TopBar */}
