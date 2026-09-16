@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
@@ -12,6 +13,10 @@ export function AddColumnButton({
 }: {
   onCreate: (column: KanbanColumn) => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState("");
 
@@ -53,12 +58,8 @@ export function AddColumnButton({
               setTitle("");
               setEditing(false);
             }}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" size="sm" disabled={!title.trim()}>
-            Add
-          </Button>
+          >{t("cancel", "Cancel")}</Button>
+          <Button type="submit" size="sm" disabled={!title.trim()}>{t("add", "Add")}</Button>
         </div>
       </form>
     );
@@ -72,8 +73,6 @@ export function AddColumnButton({
       className="h-fit w-80 shrink-0 justify-start py-2.5 text-muted-foreground hover:text-foreground"
       onClick={() => setEditing(true)}
     >
-      <Plus className="size-4" />
-      Add column
-    </Button>
+      <Plus className="size-4" />{t("add_column", "Add column")}</Button>
   );
 }

@@ -1,6 +1,8 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ScanFace, CheckCircle2, XCircle, AlertTriangle, Fingerprint, Clock, UserCheck } from 'lucide-react'
 
 // Mock Data
@@ -12,6 +14,10 @@ const mockRecentScans = [
 ]
 
 export function GateKioskDashboard() {
+  const {
+    t
+  } = useTranslation();
+
   const [scanState, setScanState] = useState<'waiting' | 'scanning' | 'authorized' | 'denied'>('waiting')
   const [activeWorker, setActiveWorker] = useState<any>(null)
 
@@ -55,7 +61,7 @@ export function GateKioskDashboard() {
 
   return (
     <div className="flex-1 p-4 md:p-6 bg-slate-950 min-h-screen text-slate-200 w-full flex flex-col overflow-hidden">
-      
+
       {/* Header */}
       <header className="flex justify-between items-center pb-4 border-b border-slate-800 mb-6 shrink-0">
         <div className="flex items-center gap-3">
@@ -63,16 +69,14 @@ export function GateKioskDashboard() {
             <ScanFace className="h-6 w-6 text-emerald-400" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">Main Gate Kiosk #4</h1>
-            <p className="text-slate-400 text-sm">Automated Biometric Access Control</p>
+            <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">{t("main_gate_kiosk_4", "Main Gate Kiosk #4")}</h1>
+            <p className="text-slate-400 text-sm">{t("automated_biometric_access_con", "Automated Biometric Access Control")}</p>
           </div>
         </div>
         <div className="flex items-center gap-4 text-sm font-mono text-slate-400">
-          <div className="flex items-center gap-2"><Clock className="h-4 w-4" /> 08:42:15 AM</div>
+          <div className="flex items-center gap-2"><Clock className="h-4 w-4" />{t("08_42_15_am", "08:42:15 AM")}</div>
           <div className="h-8 w-px bg-slate-800"></div>
-          <Button variant="outline" className="border-slate-700 bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800">
-            Manual Override
-          </Button>
+          <Button variant="outline" className="border-slate-700 bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800">{t("manual_override", "Manual Override")}</Button>
         </div>
       </header>
 
@@ -112,10 +116,10 @@ export function GateKioskDashboard() {
           </div>
           
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-slate-950/80 backdrop-blur px-6 py-2 rounded-full border border-slate-700 font-mono text-sm tracking-widest uppercase">
-            {scanState === 'waiting' && <span className="text-slate-400 animate-pulse">Awaiting Subject...</span>}
-            {scanState === 'scanning' && <span className="text-blue-400">Analyzing Biometrics...</span>}
-            {scanState === 'authorized' && <span className="text-emerald-400">Match Confirmed</span>}
-            {scanState === 'denied' && <span className="text-red-400">Alert: Mismatch</span>}
+            {scanState === 'waiting' && <span className="text-slate-400 animate-pulse">{t("awaiting_subject", "Awaiting Subject...")}</span>}
+            {scanState === 'scanning' && <span className="text-blue-400">{t("analyzing_biometrics", "Analyzing Biometrics...")}</span>}
+            {scanState === 'authorized' && <span className="text-emerald-400">{t("match_confirmed", "Match Confirmed")}</span>}
+            {scanState === 'denied' && <span className="text-red-400">{t("alert_mismatch", "Alert: Mismatch")}</span>}
           </div>
         </div>
 
@@ -132,7 +136,7 @@ export function GateKioskDashboard() {
               {scanState === 'waiting' || scanState === 'scanning' ? (
                 <div className="h-[180px] flex flex-col items-center justify-center text-slate-500 gap-4">
                   <UserCheck className="h-12 w-12 opacity-20" />
-                  <p className="text-lg font-medium">Ready for next scan</p>
+                  <p className="text-lg font-medium">{t("ready_for_next_scan", "Ready for next scan")}</p>
                 </div>
               ) : activeWorker ? (
                 <div className="flex gap-6 items-center">
@@ -161,7 +165,7 @@ export function GateKioskDashboard() {
           {/* Recent Scans Feed */}
           <Card className="flex-1 bg-slate-900 border-slate-800 flex flex-col overflow-hidden shadow-lg">
             <div className="p-4 border-b border-slate-800 bg-slate-900/50">
-              <h3 className="font-bold text-slate-300 uppercase tracking-wider text-sm">Recent Activity Log</h3>
+              <h3 className="font-bold text-slate-300 uppercase tracking-wider text-sm">{t("recent_activity_log", "Recent Activity Log")}</h3>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {mockRecentScans.map((scan, i) => (
@@ -170,15 +174,15 @@ export function GateKioskDashboard() {
                     <div className={`w-2 h-8 rounded-full ${scan.status === 'authorized' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
                     <div>
                       <div className="font-bold text-slate-200">{scan.name}</div>
-                      <div className="text-xs text-slate-400">{scan.id} &bull; {scan.role}</div>
+                      <div className="text-xs text-slate-400">{scan.id}{t("text", "•")}{scan.role}</div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-slate-500 mb-1">{scan.time}</div>
                     {scan.status === 'authorized' ? (
-                      <span className="text-xs font-bold text-emerald-400 uppercase">Passed</span>
+                      <span className="text-xs font-bold text-emerald-400 uppercase">{t("passed", "Passed")}</span>
                     ) : (
-                      <span className="text-xs font-bold text-red-400 uppercase">Blocked</span>
+                      <span className="text-xs font-bold text-red-400 uppercase">{t("blocked", "Blocked")}</span>
                     )}
                   </div>
                 </div>
@@ -188,7 +192,7 @@ export function GateKioskDashboard() {
           
         </div>
       </div>
-      
+
       {/* Global Styles for Custom Animations */}
       <style>{`
         @keyframes scan {
@@ -198,5 +202,5 @@ export function GateKioskDashboard() {
         }
       `}</style>
     </div>
-  )
+  );
 }

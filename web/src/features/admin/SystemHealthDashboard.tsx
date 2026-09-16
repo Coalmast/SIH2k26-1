@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -30,6 +31,10 @@ const mockLogs = [
 ]
 
 export function SystemHealthDashboard() {
+  const {
+    t
+  } = useTranslation();
+
   const [logs, setLogs] = useState<string[]>([])
 
   // Simulate incoming logs
@@ -48,42 +53,40 @@ export function SystemHealthDashboard() {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#1a1a2e] min-h-screen text-slate-200 w-full space-y-6 dark">
-      
+
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-border">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-white">
-            <Server className="h-8 w-8 text-emerald-400" />
-            System Admin & AI Ops
-          </h1>
-          <p className="text-slate-400 mt-1">Real-time infrastructure health, pipeline monitoring, and raw error logs.</p>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-foreground">
+            <Server className="h-8 w-8 text-comet-up" />{t("system_admin_ai_ops", "System Admin & AI Ops")}</h1>
+          <p className="text-muted-foreground/70 mt-1">{t(
+            "real_time_infrastructure_healt",
+            "Real-time infrastructure health, pipeline monitoring, and raw error logs."
+          )}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-emerald-900/30 text-emerald-400 border-emerald-800 px-3 py-1">
+          <Badge variant="outline" className="bg-emerald-900/30 text-comet-up border-emerald-800 px-3 py-1">
             <span className="flex h-2 w-2 relative mr-2 inline-block">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            System Operational
-          </Badge>
-          <Button variant="outline" className="border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700 hover:text-white">
-            <RefreshCw className="h-4 w-4 mr-2" /> Refresh
-          </Button>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-comet-up opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-comet-up"></span>
+            </span>{t("system_operational", "System Operational")}</Badge>
+          <Button variant="outline" className="border-border bg-muted text-slate-200 hover:bg-slate-700 hover:text-foreground">
+            <RefreshCw className="h-4 w-4 mr-2" />{t("refresh", "Refresh")}</Button>
         </div>
       </div>
 
       {/* Vital Signs (Top Row) */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
-          { title: "Server Uptime", value: 99.98, unit: "%", icon: Activity, color: "text-emerald-400" },
-          { title: "API Gateway Latency", value: 42, unit: "ms", icon: Server, color: "text-emerald-400" },
-          { title: "Blockchain Node", value: "SYNCED", unit: "", icon: Cpu, color: "text-emerald-400", noCounter: true },
+          { title: "Server Uptime", value: 99.98, unit: "%", icon: Activity, color: "text-comet-up" },
+          { title: "API Gateway Latency", value: 42, unit: "ms", icon: Server, color: "text-comet-up" },
+          { title: "Blockchain Node", value: "SYNCED", unit: "", icon: Cpu, color: "text-comet-up", noCounter: true },
           { title: "Cloud Storage Used", value: 1.2, unit: "TB", icon: HardDrive, color: "text-amber-400" },
         ].map((stat, i) => (
-          <Card key={i} className="bg-slate-900/50 border-slate-800 shadow-none">
+          <Card key={i} className="bg-background/50 border-border shadow-none">
             <CardContent className="p-5 flex items-center justify-between">
               <div>
-                <div className="text-sm font-semibold text-slate-400">{stat.title}</div>
+                <div className="text-sm font-semibold text-muted-foreground/70">{stat.title}</div>
                 <div className={`text-3xl font-black mt-1 ${stat.color}`}>
                   {stat.noCounter ? stat.value : <NumberTicker value={stat.value as number} />}
                   <span className="text-lg font-bold ml-1">{stat.unit}</span>
@@ -97,10 +100,10 @@ export function SystemHealthDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* AI & OCR Pipeline Monitor */}
-        <Card className="bg-slate-900/50 border-slate-800 shadow-none">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-800/50">
-            <CardTitle className="text-lg text-slate-200">AI Digitization Pipeline (24h)</CardTitle>
-            <Badge className="bg-fuchsia-900/30 text-fuchsia-400 border border-fuchsia-800">24 Queued</Badge>
+        <Card className="bg-background/50 border-border shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/50">
+            <CardTitle className="text-lg text-slate-200">{t("ai_digitization_pipeline_24h", "AI Digitization Pipeline (24h)")}</CardTitle>
+            <Badge className="bg-fuchsia-900/30 text-fuchsia-400 border border-fuchsia-800">{t("24_queued", "24 Queued")}</Badge>
           </CardHeader>
           <CardContent className="h-[300px] pt-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -130,9 +133,9 @@ export function SystemHealthDashboard() {
         </Card>
 
         {/* Offline Sync Traffic */}
-        <Card className="bg-slate-900/50 border-slate-800 shadow-none">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-slate-800/50">
-            <CardTitle className="text-lg text-slate-200">Mobile Sync Traffic Matrix</CardTitle>
+        <Card className="bg-background/50 border-border shadow-none">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-border/50">
+            <CardTitle className="text-lg text-slate-200">{t("mobile_sync_traffic_matrix", "Mobile Sync Traffic Matrix")}</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px] pt-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -150,14 +153,12 @@ export function SystemHealthDashboard() {
       </div>
 
       {/* System Error Logs (Terminal) */}
-      <Card className="bg-[#0f172a] border-slate-800 shadow-none">
+      <Card className="bg-[#0f172a] border-border shadow-none">
         <CardHeader className="pb-0 pt-4 px-4 flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2 text-slate-400 font-mono text-xs">
-            <TerminalIcon className="h-4 w-4" /> root@comet-production-cluster:~
-          </div>
-          <Button variant="ghost" size="sm" className="h-6 text-xs text-slate-400 hover:text-white">
-            <Download className="h-3 w-3 mr-2" /> Export
-          </Button>
+          <div className="flex items-center gap-2 text-muted-foreground/70 font-mono text-xs">
+            <TerminalIcon className="h-4 w-4" />{t("root_comet_production_cluster", "root@comet-production-cluster:~")}</div>
+          <Button variant="ghost" size="sm" className="h-6 text-xs text-muted-foreground/70 hover:text-foreground">
+            <Download className="h-3 w-3 mr-2" />{t("export", "Export")}</Button>
         </CardHeader>
         <CardContent className="p-4">
           <Terminal className="h-[250px] w-full text-xs overflow-y-auto">
@@ -167,7 +168,7 @@ export function SystemHealthDashboard() {
                 className={`text-left font-mono text-xs mb-1 ${
                   log.includes('ERROR') ? 'text-fuchsia-400' : 
                   log.includes('WARN') ? 'text-amber-400' : 
-                  'text-emerald-400'
+                  'text-comet-up'
                 }`}
                 duration={10}
               >
@@ -175,12 +176,12 @@ export function SystemHealthDashboard() {
               </TypingAnimation>
             ))}
             {logs.length === mockLogs.length && (
-              <div className="animate-pulse mt-2 text-slate-500 font-mono">_ waiting for incoming logs...</div>
+              <div className="animate-pulse mt-2 text-muted-foreground font-mono">{t("waiting_for_incoming_logs", "_ waiting for incoming logs...")}</div>
             )}
           </Terminal>
         </CardContent>
       </Card>
-      
+
     </div>
-  )
+  );
 }

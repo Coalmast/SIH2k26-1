@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +7,10 @@ import { useGenerateReport, useReportJob } from '../hooks/useReports';
 import { Loader2, FileText, Download, CheckCircle2 } from 'lucide-react';
 
 export function StatutoryReportGenerator({ mineId }: { mineId: string }) {
+  const {
+    t
+  } = useTranslation();
+
   const [type, setType] = useState('Annual Return (Form 3)');
   const [periodStart, setPeriodStart] = useState('2026-04-01');
   const [periodEnd, setPeriodEnd] = useState('2027-03-31');
@@ -31,20 +36,20 @@ export function StatutoryReportGenerator({ mineId }: { mineId: string }) {
   return (
     <Card className="w-full bg-card/50 backdrop-blur border-border/50">
       <CardHeader>
-        <CardTitle>Generate Statutory Document</CardTitle>
+        <CardTitle>{t("generate_statutory_document", "Generate Statutory Document")}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Report Type</label>
+            <label className="text-sm font-medium">{t("report_type", "Report Type")}</label>
             <Select value={type} onValueChange={setType}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="Annual Return (Form 3)">Annual Return (CMR Form 3)</SelectItem>
-                <SelectItem value="Accident Notice (Form 4-A)">Accident Notice (CMR Form 4-A)</SelectItem>
-                <SelectItem value="Monthly Safety Committee Minutes">Monthly Safety Committee Minutes</SelectItem>
-                <SelectItem value="Half-Yearly EC Compliance Report">Half-Yearly EC Compliance Report</SelectItem>
-                <SelectItem value="Production Return (Form I)">Production Return (CCO Form I)</SelectItem>
+                <SelectItem value="Annual Return (Form 3)">{t("annual_return_cmr_form_3", "Annual Return (CMR Form 3)")}</SelectItem>
+                <SelectItem value="Accident Notice (Form 4-A)">{t("accident_notice_cmr_form_4_a", "Accident Notice (CMR Form 4-A)")}</SelectItem>
+                <SelectItem value="Monthly Safety Committee Minutes">{t("monthly_safety_committee_minut", "Monthly Safety Committee Minutes")}</SelectItem>
+                <SelectItem value="Half-Yearly EC Compliance Report">{t("half_yearly_ec_compliance_repo", "Half-Yearly EC Compliance Report")}</SelectItem>
+                <SelectItem value="Production Return (Form I)">{t("production_return_cco_form_i", "Production Return (CCO Form I)")}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -62,17 +67,15 @@ export function StatutoryReportGenerator({ mineId }: { mineId: string }) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 text-green-500">
                 <CheckCircle2 className="h-5 w-5" />
-                <span className="font-medium">Generation Complete</span>
+                <span className="font-medium">{t("generation_complete", "Generation Complete")}</span>
               </div>
               <Button variant="outline" className="gap-2" onClick={() => window.open(jobData.result.file_url, '_blank')}>
-                <Download className="h-4 w-4" /> Download PDF
-              </Button>
+                <Download className="h-4 w-4" />{t("download_pdf", "Download PDF")}</Button>
             </div>
-            <div className="text-sm text-muted-foreground font-mono bg-muted p-2 rounded">
-              SHA-256: {jobData.result.hash}
+            <div className="text-sm text-muted-foreground font-mono bg-muted p-2 rounded">{t("sha_256", "SHA-256:")}{jobData.result.hash}
             </div>
             <div className="flex gap-2">
-              <Button className="flex-1 bg-primary text-primary-foreground">Review & Digital Sign</Button>
+              <Button className="flex-1 bg-primary text-primary-foreground">{t("review_digital_sign", "Review & Digital Sign")}</Button>
             </div>
           </div>
         )}

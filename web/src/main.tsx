@@ -1,3 +1,4 @@
+import '@/i18n'
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { AxiosError } from 'axios'
@@ -53,7 +54,7 @@ const queryClient = new QueryClient({
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
           toast.error('Session expired!')
-          useAuthStore.getState().auth.reset()
+          useAuthStore.getState().reset()
           const redirect = `${router.history.location.href}`
           router.navigate({ to: '/sign-in', search: { redirect } })
         }
@@ -104,4 +105,22 @@ if (!rootElement.innerHTML) {
       </QueryClientProvider>
     </StrictMode>
   )
+}
+
+// Register MapTiler caching Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/map-cache-sw.js').then(
+      (registration) => {
+        if (import.meta.env.DEV) {
+          console.log('MapTiler Cache ServiceWorker registration successful with scope: ', registration.scope)
+        }
+      },
+      (err) => {
+        if (import.meta.env.DEV) {
+          console.log('MapTiler Cache ServiceWorker registration failed: ', err)
+        }
+      }
+    )
+  })
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -23,8 +24,12 @@ const mineSchema = z.object({
 type FormValues = z.infer<typeof mineSchema>;
 
 export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
+  const {
+    t
+  } = useTranslation();
+
   const createMine = useCreateMine();
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(mineSchema),
     defaultValues: {
@@ -53,7 +58,7 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Mine Name</FormLabel>
+              <FormLabel>{t("mine_name", "Mine Name")}</FormLabel>
               <FormControl>
                 <Input placeholder="Rajmahal OCP" {...field} />
               </FormControl>
@@ -68,7 +73,7 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
             name="subsidiary_id"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Subsidiary ID (Temp)</FormLabel>
+                <FormLabel>{t("subsidiary_id_temp", "Subsidiary ID (Temp)")}</FormLabel>
                 <FormControl>
                   <Input placeholder="UUID" {...field} />
                 </FormControl>
@@ -81,7 +86,7 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
             name="mine_type"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mine Type</FormLabel>
+                <FormLabel>{t("mine_type", "Mine Type")}</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
@@ -89,9 +94,9 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="opencast">Opencast</SelectItem>
-                    <SelectItem value="underground">Underground</SelectItem>
-                    <SelectItem value="mixed">Mixed</SelectItem>
+                    <SelectItem value="opencast">{t("opencast", "Opencast")}</SelectItem>
+                    <SelectItem value="underground">{t("underground", "Underground")}</SelectItem>
+                    <SelectItem value="mixed">{t("mixed", "Mixed")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -106,7 +111,7 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
             name="district"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>District</FormLabel>
+                <FormLabel>{t("district", "District")}</FormLabel>
                 <FormControl>
                   <Input placeholder="Godda" {...field} />
                 </FormControl>
@@ -119,7 +124,7 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
             name="state"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>State</FormLabel>
+                <FormLabel>{t("state", "State")}</FormLabel>
                 <FormControl>
                   <Input placeholder="Jharkhand" {...field} />
                 </FormControl>
@@ -130,9 +135,7 @@ export function MineOnboardingForm({ onSuccess }: { onSuccess?: () => void }) {
         </div>
 
         <Button type="submit" className="w-full" disabled={createMine.isPending}>
-          {createMine.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Onboard Mine
-        </Button>
+          {createMine.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t("onboard_mine", "Onboard Mine")}</Button>
       </form>
     </Form>
   );

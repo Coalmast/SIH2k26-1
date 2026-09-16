@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,6 +21,10 @@ interface Props {
 }
 
 export function SubmitEvidenceForm({ instanceId, onSuccess }: Props) {
+  const {
+    t
+  } = useTranslation();
+
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: { files: [], notes: '' }
@@ -57,7 +62,7 @@ export function SubmitEvidenceForm({ instanceId, onSuccess }: Props) {
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium">Additional Notes (Optional)</label>
+        <label className="text-sm font-medium">{t("additional_notes_optional", "Additional Notes (Optional)")}</label>
         <Controller
           name="notes"
           control={control}

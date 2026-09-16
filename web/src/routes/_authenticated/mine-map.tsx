@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import Map from 'react-map-gl/maplibre'
@@ -190,6 +191,10 @@ const MINE_DATA = [
 
 
 function MineMap() {
+  const {
+    t
+  } = useTranslation();
+
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE)
   const [selectedMine, setSelectedMine] = useState<any>(null)
 
@@ -228,7 +233,7 @@ function MineMap() {
     <div className="flex-grow flex h-[calc(100vh-4rem)] w-full overflow-hidden relative">
       <aside className="w-80 border-r bg-card flex flex-col z-10 shrink-0 shadow-lg">
         <div className="p-4 border-b">
-          <h2 className="font-semibold text-lg mb-4">Site Explorer</h2>
+          <h2 className="font-semibold text-lg mb-4">{t("site_explorer", "Site Explorer")}</h2>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search sites..." className="pl-9" />
@@ -255,15 +260,14 @@ function MineMap() {
                   <div className="font-semibold text-sm">{site.name}</div>
                   <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                     <MapPin className="h-3 w-3" />
-                    {site.coordinates[0].toFixed(2)}, {site.coordinates[1].toFixed(2)}
+                    {site.coordinates[0].toFixed(2)}{t("text", ",")}{site.coordinates[1].toFixed(2)}
                   </div>
                 </div>
                 <div className={`text-xs font-bold px-2 py-1 rounded ${
-                  site.status === 'critical' ? 'bg-red-500/10 text-red-500' :
-                  site.status === 'healthy' ? 'bg-emerald-500/10 text-emerald-500' :
+                  site.status === 'critical' ? 'bg-comet-down/10 text-comet-down' :
+                  site.status === 'healthy' ? 'bg-comet-up/10 text-comet-up' :
                   'bg-amber-500/10 text-amber-600'
-                }`}>
-                  Risk {site.risk.toFixed(1)}
+                }`}>{t("risk", "Risk")}{site.risk.toFixed(1)}
                 </div>
               </CardContent>
             </Card>
@@ -276,11 +280,11 @@ function MineMap() {
           initialViewState={viewState}
           controller={true}
           layers={layers}
-          onViewStateChange={({ viewState }) => setViewState(viewState)}
+          onViewStateChange={({ viewState }) => setViewState(viewState as any)}
           getTooltip={({object}) => object && `${object.name}\nRisk Score: ${object.risk}`}
         >
           <Map
-            mapStyle={`https://api.maptiler.com/maps/hybrid/style.json?key=${MAPTILER_KEY}`}
+            mapStyle={`https://api.maptiler.com/maps/satellite/style.json?key=${MAPTILER_KEY}`}
             attributionControl={false}
           />
         </DeckGL>
@@ -298,43 +302,44 @@ function MineMap() {
               <div className="p-4 space-y-6">
                 <div className="flex gap-4">
                   <div className="flex-1 bg-muted/50 p-3 rounded-lg text-center">
-                    <div className="text-xs text-muted-foreground uppercase font-bold mb-1">Risk Score</div>
-                    <div className={`text-2xl font-black ${selectedMine.status === 'critical' ? 'text-red-500' : 'text-emerald-500'}`}>
+                    <div className="text-xs text-muted-foreground uppercase font-bold mb-1">{t("risk_score", "Risk Score")}</div>
+                    <div className={`text-2xl font-black ${selectedMine.status === 'critical' ? 'text-comet-down' : 'text-comet-up'}`}>
                       {selectedMine.risk}
                     </div>
                   </div>
                   <div className="flex-1 bg-muted/50 p-3 rounded-lg text-center">
-                    <div className="text-xs text-muted-foreground uppercase font-bold mb-1">Active Alerts</div>
-                    <div className={`text-2xl font-black ${selectedMine.activeAlerts > 0 ? 'text-red-500' : 'text-slate-700'}`}>
+                    <div className="text-xs text-muted-foreground uppercase font-bold mb-1">{t("active_alerts", "Active Alerts")}</div>
+                    <div className={`text-2xl font-black ${selectedMine.activeAlerts > 0 ? 'text-comet-down' : 'text-foreground/80'}`}>
                       {selectedMine.activeAlerts}
                     </div>
                   </div>
                 </div>
 
                 {selectedMine.status === 'critical' && (
-                  <div className="bg-red-50 border border-red-100 p-3 rounded-lg flex gap-3">
-                    <Activity className="h-5 w-5 text-red-500 shrink-0" />
+                  <div className="bg-[#f6465d]/10 border border-red-100 p-3 rounded-lg flex gap-3">
+                    <Activity className="h-5 w-5 text-comet-down shrink-0" />
                     <div>
-                      <h4 className="text-sm font-semibold text-red-800">Critical Alerts Detected</h4>
-                      <p className="text-xs text-red-600 mt-1">PM10 levels exceeding limits and pending DGMS notices.</p>
-                      <Button size="sm" variant="outline" className="h-7 text-xs mt-2 text-red-700 border-red-200">View Alerts</Button>
+                      <h4 className="text-sm font-semibold text-comet-down">{t("critical_alerts_detected", "Critical Alerts Detected")}</h4>
+                      <p className="text-xs text-comet-down mt-1">{t(
+                        "pm10_levels_exceeding_limits_a",
+                        "PM10 levels exceeding limits and pending DGMS notices."
+                      )}</p>
+                      <Button size="sm" variant="outline" className="h-7 text-xs mt-2 text-comet-down border-[#f6465d]/30">{t("view_alerts", "View Alerts")}</Button>
                     </div>
                   </div>
                 )}
 
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-sm border-b pb-2">Quick Actions</h4>
-                  <Link to="/environment" className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-md group">
-                    <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
-                      <Wind className="h-4 w-4 text-blue-500" /> View Environment Dashboard
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />
+                  <h4 className="font-semibold text-sm border-b pb-2">{t("quick_actions", "Quick Actions")}</h4>
+                  <Link to="/environment" className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-md group">
+                    <div className="flex items-center gap-3 text-sm font-medium text-foreground/80">
+                      <Wind className="h-4 w-4 text-blue-500" />{t("view_environment_dashboard", "View Environment Dashboard")}</div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
                   </Link>
-                  <Link to="/compliance" className="flex items-center justify-between p-2 hover:bg-slate-50 rounded-md group">
-                    <div className="flex items-center gap-3 text-sm font-medium text-slate-700">
-                      <Droplets className="h-4 w-4 text-emerald-500" /> Check EC Conditions
-                    </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-primary transition-colors" />
+                  <Link to="/compliance" className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-md group">
+                    <div className="flex items-center gap-3 text-sm font-medium text-foreground/80">
+                      <Droplets className="h-4 w-4 text-comet-up" />{t("check_ec_conditions", "Check EC Conditions")}</div>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/50 group-hover:text-primary transition-colors" />
                   </Link>
                 </div>
               </div>
@@ -343,6 +348,6 @@ function MineMap() {
         </div>
       </main>
     </div>
-  )
+  );
 }
 

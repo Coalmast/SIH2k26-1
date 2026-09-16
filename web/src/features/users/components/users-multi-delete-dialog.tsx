@@ -1,4 +1,5 @@
-'use client'
+'use client';
+import { useTranslation } from "react-i18next";
 
 import { useState } from 'react'
 import { type Table } from '@tanstack/react-table'
@@ -23,6 +24,10 @@ export function UsersMultiDeleteDialog<TData>({
   onOpenChange,
   table,
 }: UserMultiDeleteDialogProps<TData>) {
+  const {
+    t
+  } = useTranslation();
+
   const [value, setValue] = useState('')
 
   const selectedRows = table.getFilteredSelectedRowModel().rows
@@ -59,8 +64,7 @@ export function UsersMultiDeleteDialog<TData>({
           <AlertTriangle
             className='me-1 inline-block stroke-destructive'
             size={18}
-          />{' '}
-          Delete {selectedRows.length}{' '}
+          />{' '}{t("delete", "Delete")}{selectedRows.length}{' '}
           {selectedRows.length > 1 ? 'users' : 'user'}
         </span>
       }
@@ -73,13 +77,13 @@ export function UsersMultiDeleteDialog<TData>({
           }}
           className='space-y-4'
         >
-          <p className='mb-2'>
-            Are you sure you want to delete the selected users? <br />
-            This action cannot be undone.
-          </p>
+          <p className='mb-2'>{t(
+            "are_you_sure_you_want_to_delet",
+            "Are you sure you want to delete the selected users?"
+          )}<br />{t("this_action_cannot_be_undone", "This action cannot be undone.")}</p>
 
           <Label className='my-4 flex flex-col items-start gap-1.5'>
-            <span className=''>Confirm by typing "{CONFIRM_WORD}":</span>
+            <span className=''>{t("confirm_by_typing", "Confirm by typing \"")}{CONFIRM_WORD}{t("text", "\":")}</span>
             <Input
               value={value}
               onChange={(e) => setValue(e.target.value)}
@@ -89,15 +93,16 @@ export function UsersMultiDeleteDialog<TData>({
           </Label>
 
           <Alert variant='destructive'>
-            <AlertTitle>Warning!</AlertTitle>
-            <AlertDescription>
-              Please be careful, this operation can not be rolled back.
-            </AlertDescription>
+            <AlertTitle>{t("warning", "Warning!")}</AlertTitle>
+            <AlertDescription>{t(
+              "please_be_careful_this_operati",
+              "Please be careful, this operation can not be rolled back."
+            )}</AlertDescription>
           </Alert>
         </form>
       }
       confirmText='Delete'
       destructive
     />
-  )
+  );
 }

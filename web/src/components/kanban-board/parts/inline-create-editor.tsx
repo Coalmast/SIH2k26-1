@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { useState } from "react";
 import {
@@ -24,6 +25,10 @@ export function InlineCreateEditor({
   renderers: AnyKanbanCardRenderer[];
   onCreate: (item: KanbanItem) => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
 
   function startCreate(renderer: AnyKanbanCardRenderer) {
@@ -69,8 +74,7 @@ export function InlineCreateEditor({
         className="h-8 w-full justify-start text-xs text-muted-foreground hover:text-foreground"
         onClick={() => startCreate(renderers[0])}
       >
-        <Plus className="size-3.5" />
-        Add {renderers[0].label.toLowerCase()}
+        <Plus className="size-3.5" />{t("add", "Add")}{renderers[0].label.toLowerCase()}
       </Button>
     );
   }
@@ -90,9 +94,7 @@ export function InlineCreateEditor({
         data-stop-click
         onPointerDown={(e) => e.stopPropagation()}
       >
-        <Plus className="size-3.5" />
-        Add
-      </DropdownMenuTrigger>
+        <Plus className="size-3.5" />{t("add", "Add")}</DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {renderers.map((r) => (
           <DropdownMenuItem

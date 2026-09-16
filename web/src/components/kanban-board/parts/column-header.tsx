@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { ChevronsLeft, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -34,6 +35,10 @@ export function ColumnHeader({
   onEdit?: (column: KanbanColumn) => void;
   onDelete?: (columnId: string) => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const showMenu = !readOnly && (onEdit || onDelete);
   const overCap = column.maxItems !== undefined && itemCount > column.maxItems;
 
@@ -93,9 +98,7 @@ export function ColumnHeader({
             <DropdownMenuContent align="end">
               {onEdit ? (
                 <DropdownMenuItem onClick={() => onEdit(column)}>
-                  <Pencil className="size-3.5" />
-                  Rename column
-                </DropdownMenuItem>
+                  <Pencil className="size-3.5" />{t("rename_column", "Rename column")}</DropdownMenuItem>
               ) : null}
               {onEdit && onDelete ? <DropdownMenuSeparator /> : null}
               {onDelete ? (
@@ -103,9 +106,7 @@ export function ColumnHeader({
                   onClick={() => onDelete(column.id)}
                   variant="destructive"
                 >
-                  <Trash2 className="size-3.5" />
-                  Delete column
-                </DropdownMenuItem>
+                  <Trash2 className="size-3.5" />{t("delete_column", "Delete column")}</DropdownMenuItem>
               ) : null}
             </DropdownMenuContent>
           </DropdownMenu>

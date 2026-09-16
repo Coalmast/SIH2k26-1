@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -25,6 +26,10 @@ export function KanbanCardView({
   data: KanbanCardData;
   ctx: KanbanRenderContext;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -55,7 +60,7 @@ export function KanbanCardView({
         <ul className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
           {data.meta.map((m) => (
             <li key={m.key} className="flex items-center gap-1">
-              <span className="font-mono text-muted-foreground/70">{m.label}:</span>
+              <span className="font-mono text-muted-foreground/70">{m.label}{t("text", ":")}</span>
               <span className="text-foreground">{m.value}</span>
             </li>
           ))}
@@ -70,8 +75,7 @@ export function KanbanCardView({
             </Avatar>
           ))}
           {data.assignees.length > 5 ? (
-            <span className="ml-2 text-[10px] text-muted-foreground">
-              +{data.assignees.length - 5}
+            <span className="ml-2 text-[10px] text-muted-foreground">{t("text", "+")}{data.assignees.length - 5}
             </span>
           ) : null}
         </div>
@@ -89,6 +93,10 @@ function KanbanCardEditForm({
   onSave: (next: KanbanCardData) => void;
   onCancel: () => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const [title, setTitle] = useState(data.title);
   const [description, setDescription] = useState(data.description ?? "");
 
@@ -120,12 +128,8 @@ function KanbanCardEditForm({
         className="resize-none text-xs"
       />
       <div className="flex justify-end gap-1">
-        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" size="sm" disabled={!title.trim()}>
-          Save
-        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>{t("cancel", "Cancel")}</Button>
+        <Button type="submit" size="sm" disabled={!title.trim()}>{t("save", "Save")}</Button>
       </div>
     </form>
   );

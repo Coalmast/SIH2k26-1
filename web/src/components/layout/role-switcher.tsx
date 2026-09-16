@@ -1,4 +1,5 @@
-import { useAuthStore, AppRole } from '@/stores/auth-store'
+import { useTranslation } from "react-i18next";
+import { useAuthStore, type AppRole } from '@/stores/auth-store'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -12,6 +13,10 @@ const ROLES: { value: AppRole; label: string }[] = [
 ]
 
 export function RoleSwitcher() {
+  const {
+    t
+  } = useTranslation();
+
   const { role } = useAuthStore((state) => state.auth)
   const setUserMeta = useAuthStore((state) => state.setUserMeta)
   const navigate = useNavigate()
@@ -36,7 +41,7 @@ export function RoleSwitcher() {
 
   return (
     <div className="px-4 py-2 border-t border-border/50 bg-muted/20">
-      <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase">Dev Role Switcher</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase">{t("dev_role_switcher", "Dev Role Switcher")}</p>
       <Select value={role || ''} onValueChange={handleRoleChange}>
         <SelectTrigger className="h-8 text-xs">
           <SelectValue placeholder="Select a role..." />
@@ -50,5 +55,5 @@ export function RoleSwitcher() {
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

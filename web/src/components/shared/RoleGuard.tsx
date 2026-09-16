@@ -1,6 +1,7 @@
 import React from 'react';
-import { useRole } from '../../hooks/useRole';
-import { AppRole } from '../../stores/auth-store';
+
+import { Loader2 } from 'lucide-react';
+import { useAuthStore, type AppRole } from '../../stores/auth-store';
 
 interface RoleGuardProps {
   roles: AppRole[];
@@ -9,11 +10,19 @@ interface RoleGuardProps {
 }
 
 export function RoleGuard({ roles, children, fallback = null }: RoleGuardProps) {
-  const currentRole = useRole();
+  const { role: currentRole, isLoading } = useAuthStore((state) => state.auth);
+  
+  if (isLoading) {
+    return (
+      <div className="flex flex-1 items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
   
   if (!currentRole) return <>{fallback}</>;
   
-  if (currentRole === 'system_admin' || roles.includes(currentRole)) {
+  if (currentRole === 'super_admin' || roles.includes(currentRole)) {
     return <>{children}</>;
   }
 

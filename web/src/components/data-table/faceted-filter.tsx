@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import * as React from 'react'
 import { CheckIcon, PlusCircledIcon } from '@radix-ui/react-icons'
 import { type Column } from '@tanstack/react-table'
@@ -35,6 +36,10 @@ export function DataTableFacetedFilter<TData, TValue>({
   title,
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
+  const {
+    t
+  } = useTranslation();
+
   const facets = column?.getFacetedUniqueValues()
   const selectedValues = new Set(column?.getFilterValue() as string[])
 
@@ -59,8 +64,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     variant='secondary'
                     className='rounded-sm px-1 font-normal'
                   >
-                    {selectedValues.size} selected
-                  </Badge>
+                    {selectedValues.size}{t("selected", "selected")}</Badge>
                 ) : (
                   options
                     .filter((option) => selectedValues.has(option.value))
@@ -83,7 +87,7 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Command>
           <CommandInput placeholder={title} />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>{t("no_results_found", "No results found.")}</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value)
@@ -132,9 +136,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                   <CommandItem
                     onSelect={() => column?.setFilterValue(undefined)}
                     className='justify-center text-center'
-                  >
-                    Clear filters
-                  </CommandItem>
+                  >{t("clear_filters", "Clear filters")}</CommandItem>
                 </CommandGroup>
               </>
             )}
@@ -142,5 +144,5 @@ export function DataTableFacetedFilter<TData, TValue>({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/lib/supabase";
 import { apiClient } from "@/lib/apiClient";
-import { z } from "zod";
-import { CAPACreateSchema } from "../schemas";
+import { type z } from "zod";
+import { type CAPACreateSchema } from "../schemas";
 
 interface ViolationFilters {
   mineId?: string;

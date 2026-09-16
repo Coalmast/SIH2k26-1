@@ -1,4 +1,5 @@
-"use client"
+"use client";
+import { useTranslation } from "react-i18next";
 
 import { TrendingUp } from "lucide-react"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
@@ -37,11 +38,15 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ProductionTrendChart() {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <Card className="shadow-sm">
       <CardHeader>
-        <CardTitle>Production Trend</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>{t("production_trend", "Production Trend")}</CardTitle>
+        <CardDescription>{t("january_june_2024", "January - June 2024")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="w-full h-[250px]">
@@ -74,13 +79,13 @@ export function ProductionTrendChart() {
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4 text-emerald-500" />
+        <div className="flex gap-2 leading-none font-medium">{t("trending_up_by_5_2_this_month", "Trending up by 5.2% this month")}<TrendingUp className="h-4 w-4 text-comet-up" />
         </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total production for the last 6 months
-        </div>
+        <div className="leading-none text-muted-foreground">{t(
+          "showing_total_production_for_t",
+          "Showing total production for the last 6 months"
+        )}</div>
       </CardFooter>
     </Card>
-  )
+  );
 }

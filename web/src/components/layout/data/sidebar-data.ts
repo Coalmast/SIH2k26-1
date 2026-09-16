@@ -14,11 +14,10 @@ import {
   FileSignature,
   Settings,
   HardHat,
-  Briefcase,
-  LucideIcon
+  Briefcase
 } from 'lucide-react'
 import { type SidebarData, type NavGroup } from '../types'
-import { AppRole } from '@/stores/auth-store'
+import { type AppRole } from '@/stores/auth-store'
 
 // Base data
 const user = {
@@ -242,6 +241,7 @@ const godModeNav: NavGroup[] = [
 export const sidebarDataByRole: Record<AppRole | 'god_mode', SidebarData> = {
   super_admin: { user, teams, navGroups: superAdminNav },
   corporate_executive: { user, teams, navGroups: corporateExecutiveNav },
+  subsidiary_admin: { user, teams, navGroups: corporateExecutiveNav },
   mine_manager: { user, teams, navGroups: mineManagerNav },
   field_inspector: { user, teams, navGroups: fieldInspectorNav },
   safety_official: { user, teams, navGroups: safetyOfficialNav },

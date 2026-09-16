@@ -10,15 +10,11 @@ vi.mock('@/lib/show-submitted-data', () => ({ showSubmittedData: vi.fn() }))
 
 const MOCK_USER: User = {
   id: 'user-delete-test',
-  firstName: 'John',
-  lastName: 'Doe',
-  username: 'john_doe',
+  full_name: 'John Doe',
   email: 'johndoe@shadcn-admin.com',
-  phoneNumber: '+959123456789',
-  status: 'active',
-  role: 'manager',
-  createdAt: new Date('2026-01-01'),
-  updatedAt: new Date('2026-02-02'),
+  is_active: true,
+  roles: ['manager'],
+  created_at: '2026-01-01',
 }
 
 describe('UsersDeleteDialog', () => {
@@ -34,7 +30,7 @@ describe('UsersDeleteDialog', () => {
       name: /Delete User/i,
     })
     const desc = getByText(
-      new RegExp(`Are you sure you want to delete ${MOCK_USER.username}?`, 'i')
+      new RegExp(`Are you sure you want to delete ${MOCK_USER.full_name}\\?`, 'i')
     )
     const usernameInput = getByRole('textbox', { name: /Username/i })
     const cancelButton = getByRole('button', { name: /Cancel/i })
@@ -61,7 +57,7 @@ describe('UsersDeleteDialog', () => {
     await userEvent.fill(usernameInput, 'wrong-username')
     await expect.element(deleteButton).toBeDisabled()
 
-    await userEvent.fill(usernameInput, MOCK_USER.username)
+    await userEvent.fill(usernameInput, MOCK_USER.full_name)
     await expect.element(deleteButton).toBeEnabled()
   })
 
@@ -104,8 +100,8 @@ describe('UsersDeleteDialog', () => {
     const { getByRole } = await render(<Harness />)
 
     const usernameInput = getByRole('textbox', { name: /Username/i })
-    await userEvent.fill(usernameInput, MOCK_USER.username)
-    await expect.element(usernameInput).toHaveValue(MOCK_USER.username)
+    await userEvent.fill(usernameInput, MOCK_USER.full_name)
+    await expect.element(usernameInput).toHaveValue(MOCK_USER.full_name)
 
     const closeButton = getByRole('button', { name: /Cancel/i })
     await userEvent.click(closeButton)
@@ -130,7 +126,7 @@ describe('UsersDeleteDialog', () => {
 
     await expect.element(deleteButton).toBeDisabled()
 
-    await userEvent.fill(usernameInput, MOCK_USER.username)
+    await userEvent.fill(usernameInput, MOCK_USER.full_name)
 
     await expect.element(deleteButton).toBeEnabled()
 
@@ -161,7 +157,7 @@ describe('UsersDeleteDialog', () => {
 
     await expect.element(deleteButton).toBeDisabled()
 
-    await userEvent.fill(usernameInput, MOCK_USER.username)
+    await userEvent.fill(usernameInput, MOCK_USER.full_name)
     await expect.element(deleteButton).toBeEnabled()
 
     await userEvent.keyboard('{Enter}')

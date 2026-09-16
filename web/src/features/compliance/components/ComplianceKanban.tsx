@@ -1,8 +1,9 @@
+import { useTranslation } from "react-i18next";
 import React, { useMemo } from 'react';
 import { useComplianceInstances } from '../hooks/useCompliance';
 import { Loader2, Calendar } from 'lucide-react';
 import { KanbanBoard } from '@/components/kanban-board';
-import { KanbanData, KanbanCardRenderer } from '@/components/kanban-board/types';
+import { type KanbanData, type KanbanCardRenderer } from '@/components/kanban-board/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatDistanceToNow } from 'date-fns';
 import { useNavigate } from '@tanstack/react-router';
@@ -30,7 +31,7 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
           </div>
           <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-1">
             <span>Reg: {data.requirement?.regulation?.code || 'N/A'}</span>
-            <div className={`flex items-center gap-1 mt-1 ${isOverdue ? 'text-red-500 font-medium' : ''}`}>
+            <div className={`flex items-center gap-1 mt-1 ${isOverdue ? 'text-comet-down font-medium' : ''}`}>
               <Calendar className="h-3 w-3" />
               {isOverdue 
                 ? `Overdue by ${formatDistanceToNow(new Date(data.due_date))}` 
@@ -45,6 +46,10 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
 };
 
 export function ComplianceKanban({ mineId }: { mineId?: string }) {
+  const {
+    t
+  } = useTranslation();
+
   const { data: instances, isLoading } = useComplianceInstances(mineId);
   const navigate = useNavigate();
 

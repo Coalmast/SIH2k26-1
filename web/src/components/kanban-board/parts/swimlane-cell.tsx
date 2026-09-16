@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
@@ -40,6 +41,10 @@ export function SwimlaneCell({
   onItemEdit?: (item: KanbanItem) => void;
   onItemDataChange?: (item: KanbanItem) => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const cellId = makeCellId(column.id, swimlaneId);
   const { setNodeRef, isOver } = useDroppable({
     id: cellId,
@@ -78,9 +83,7 @@ export function SwimlaneCell({
           );
         })}
         {items.length === 0 ? (
-          <div className="pointer-events-none flex h-12 items-center justify-center rounded border border-dashed border-border/60 text-[10px] uppercase tracking-wide text-muted-foreground/60">
-            Empty
-          </div>
+          <div className="pointer-events-none flex h-12 items-center justify-center rounded border border-dashed border-border/60 text-[10px] uppercase tracking-wide text-muted-foreground/60">{t("empty", "Empty")}</div>
         ) : null}
       </div>
     </SortableContext>
