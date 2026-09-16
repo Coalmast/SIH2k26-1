@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native/src/private/webapis/dom/events/Event.js b/node_modules/react-native/src/private/webapis/dom/events/Event.js
+index f97ead5..05ae816 100644
+--- a/node_modules/react-native/src/private/webapis/dom/events/Event.js
++++ b/node_modules/react-native/src/private/webapis/dom/events/Event.js
+@@ -49,10 +49,8 @@ export default class Event {
+   static +AT_TARGET: 2;
+   static +BUBBLING_PHASE: 3;
+ 
+-  +NONE: 0;
+-  +CAPTURING_PHASE: 1;
+-  +AT_TARGET: 2;
+-  +BUBBLING_PHASE: 3;
++  // Removed instance properties because Babel transpiles them to `this.NONE = 0;` 
++  // which throws on Hermes due to the read-only prototype properties defined below.
+ 
+   _bubbles: boolean;
+   _cancelable: boolean;

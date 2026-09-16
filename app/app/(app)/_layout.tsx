@@ -1,11 +1,19 @@
 import React from 'react';
+import { View } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Home, ClipboardList, AlertTriangle, User } from 'lucide-react-native';
 import CriticalAlarmModal from '../../src/components/CriticalAlarmModal';
+import { InAppNotificationToast } from '../../src/components/InAppNotificationToast';
+import { useRealtimeAlerts } from '../../src/hooks/useRealtimeAlerts';
+import { useNotificationTap } from '../../src/hooks/useNotificationTap';
+import NotificationHeaderIcon from '../../src/components/NotificationHeaderIcon';
 
 export default function AppLayout() {
+  useRealtimeAlerts();
+  useNotificationTap();
+  
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           headerShown: true,
@@ -21,6 +29,7 @@ export default function AppLayout() {
           options={{
             title: 'Home',
             tabBarIcon: ({ color }) => <Home size={24} color={color} />,
+            headerRight: () => <NotificationHeaderIcon />,
           }}
         />
         <Tabs.Screen
@@ -55,7 +64,8 @@ export default function AppLayout() {
         />
       </Tabs>
       <CriticalAlarmModal />
-    </>
+      <InAppNotificationToast />
+    </View>
   );
 }
 

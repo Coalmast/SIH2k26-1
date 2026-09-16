@@ -10,6 +10,18 @@ const supabaseUrl = (global as any).DEV_SUPABASE_URL || process.env.EXPO_PUBLIC_
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 
 export async function performSync() {
+  const { useAuthStore } = require('../stores/authStore');
+
+  // Wait for Zustand hydration before syncing
+  await new Promise<void>(resolve => {
+    const unsub = useAuthStore.persist.onFinishHydration(() => {
+      unsub();
+      resolve();
+    });
+    // Immediately resolve if already hydrated
+    if (useAuthStore.persist.hasHydrated()) resolve();
+  });
+
   let setSyncing = (val: boolean) => {};
   let setLastSyncTime = (val: string) => {};
   let token = '';
@@ -20,7 +32,6 @@ export async function performSync() {
     setLastSyncTime = store.setLastSyncTime;
     
     // Get the token from authStore directly
-    const { useAuthStore } = require('../stores/authStore');
     token = useAuthStore.getState().session?.access_token || '';
   } catch (e) {
     // appStore might not be properly set up, ignore

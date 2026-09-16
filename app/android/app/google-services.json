@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "652607675609",
+    "project_id": "bitminers-e7fb5",
+    "storage_bucket": "bitminers-e7fb5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652607675609:android:5e97b3d2a1253e58ce32c8",
+        "android_client_info": {
+          "package_name": "in.gov.coalindia.comet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNuetuegspPl_nENPWApTD1DNKaMOKq5s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

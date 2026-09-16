@@ -35,10 +35,8 @@ logger = logging.getLogger(__name__)
 RESEND_API_KEY        = os.getenv("RESEND_API_KEY", "")
 RESEND_FROM_EMAIL     = os.getenv("RESEND_FROM_EMAIL", "noreply@comet.coal.gov.in")
 
-# Firebase Cloud Messaging — sent via Supabase Edge Function or direct HTTP v1 API
-FCM_SERVER_KEY        = os.getenv("FCM_SERVER_KEY", "")        # Legacy; kept for fallback
-FCM_PROJECT_ID        = os.getenv("FCM_PROJECT_ID", "")        # For HTTP v1
-FCM_SERVICE_ACCOUNT   = os.getenv("FCM_SERVICE_ACCOUNT_JSON", "")  # Path or JSON string
+# Expo Push Gateway
+EXPO_PUSH_URL         = "https://exp.host/--/api/v2/push/send"
 
 SUPABASE_URL          = os.getenv("SUPABASE_URL", "")
 SUPABASE_SERVICE_KEY  = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
@@ -125,10 +123,16 @@ async def send_alert(req: NotificationRequest, db: Optional[AsyncSession] = None
 
         if "push" in resolved or "critical_alarm" in resolved:
             is_critical = req.priority == "critical"
-            await _send_fcm_push(req, alert_id, is_critical_alarm=is_critical)
+            try:
+                await _send_expo_push(req, alert_id, is_critical=is_critical)
+            except Exception as e:
+                logger.error(f"[EXPO_PUSH] Unhandled exception sending push: {e}")
 
         if "email" in resolved and req.email_to:
-            await _send_resend_email(req, alert_id)
+            try:
+                await _send_resend_email(req, alert_id)
+            except Exception as e:
+                logger.error(f"[RESEND] Unhandled exception sending email: {e}")
 
         # 3. Mark as sent
         alert_record.status = AlertStatus.sent
@@ -185,144 +189,78 @@ def _resolve_channels(req: NotificationRequest) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
-# Channel: FCM Push (standard + critical alarm flag for Notifee)
+# Channel: Expo Push Gateway (standard + critical alarm flag for Notifee)
 # ---------------------------------------------------------------------------
 
-async def _send_fcm_push(req: NotificationRequest, alert_id: str, is_critical_alarm: bool = False) -> None:
+async def _send_expo_push(req: NotificationRequest, alert_id: str, is_critical: bool = False) -> None:
     """
-    Sends a Firebase Cloud Messaging push notification.
+    Sends a push notification via the Expo Push Gateway.
+    Expo handles FCM and APNs routing internally — no Firebase SDK needed.
 
-    For CRITICAL alerts, the payload includes the `comet_alarm` data key.
-    The mobile app's Notifee handler checks for this key and triggers a
-    full-screen alarm that bypasses DND and plays the siren sound.
-
-    For standard alerts, FCM delivers a normal background notification
-    handled by expo-notifications.
+    For critical alarms: sends a data-only payload with comet_alarm="true".
+    The mobile app's BACKGROUND_NOTIFICATION_TASK receives this and hands off to
+    Notifee, which fires the full-screen siren bypassing DND.
     """
-    if not FCM_PROJECT_ID:
-        logger.warning("[FCM] FCM_PROJECT_ID not configured — skipping push.")
+    token = await _get_expo_push_token(req.target_user_id)
+    if not token:
+        logger.warning(f"[EXPO_PUSH] No push token for user {req.target_user_id}")
         return
 
-    # Resolve FCM token for the target user from Supabase user metadata.
-    fcm_token = await _get_fcm_token(req.target_user_id)
-    if not fcm_token:
-        logger.warning(f"[FCM] No FCM token for user {req.target_user_id} — skipping push.")
-        return
-
-    # FCM HTTP v1 payload
-    payload = {
-        "message": {
-            "token": fcm_token,
-            "notification": {
-                "title": req.title,
-                "body": req.body,
-            },
-            "data": {
-                "alert_id":    alert_id,
-                "entity_type": req.entity_type or "",
-                "entity_id":   str(req.entity_id) if req.entity_id else "",
-                "mine_id":     str(req.mine_id) if req.mine_id else "",
-                "priority":    req.priority,
-                # ↓ This key is the signal to Notifee on the mobile app.
-                # When present and "true", the JS Notifee handler fires a
-                # CRITICAL channel notification that:
-                #   - bypasses DND / silent mode (Android importance=IMPORTANCE_HIGH)
-                #   - plays custom siren audio via Notifee sound config
-                #   - shows a full-screen intent on locked screen
-                "comet_alarm": "true" if is_critical_alarm else "false",
-            },
-            "android": {
-                # HIGH priority wakes up Doze mode / background restrictions
-                "priority": "HIGH",
-                # Target the correct channel so Notifee picks it up
-                "notification": {
-                    "channel_id": "comet_critical" if is_critical_alarm else "comet_standard",
-                    "default_vibrate_timings": not is_critical_alarm,
-                },
-            },
-            "apns": {
-                "headers": {
-                    # apns-priority 10 = immediate delivery (required for Notifee critical alerts)
-                    "apns-priority": "10",
-                    "apns-push-type": "alert",
-                },
-                "payload": {
-                    "aps": {
-                        # interruption-level=critical bypasses Focus / Silent on iOS
-                        "interruption-level": "critical" if is_critical_alarm else "active",
-                        "sound": {
-                            "critical": 1 if is_critical_alarm else 0,
-                            "name": "comet_alarm.wav" if is_critical_alarm else "default",
-                            "volume": 1.0,
-                        } if is_critical_alarm else "default",
-                    }
-                },
-            },
-        }
+    message = {
+        "to": token,
+        "sound": None if is_critical else "default",   # critical = data-only, Notifee handles sound
+        "priority": "high",                             # wakes Doze mode & background restrictions
+        "data": {
+            "alert_id":    alert_id,
+            "entity_type": req.entity_type or "",
+            "entity_id":   str(req.entity_id) if req.entity_id else "",
+            "mine_id":     str(req.mine_id)   if req.mine_id   else "",
+            "priority":    req.priority,
+            "title":       req.title,
+            "body":        req.body,
+            # Signal to Notifee background handler on mobile
+            "comet_alarm": "true" if is_critical else "false",
+        },
+        "channelId": "comet_critical_alarm" if is_critical else "comet_standard",
     }
+    
+    # For standard (non-critical) pushes, also show an OS banner
+    if not is_critical:
+        message["title"] = req.title
+        message["body"] = req.body
 
-    # Get OAuth2 access token for FCM HTTP v1
-    access_token = await _get_fcm_access_token()
-    if not access_token:
-        logger.error("[FCM] Could not obtain FCM access token.")
-        return
-
-    url = f"https://fcm.googleapis.com/v1/projects/{FCM_PROJECT_ID}/messages:send"
     async with httpx.AsyncClient(timeout=10.0) as client:
         resp = await client.post(
-            url,
-            json=payload,
-            headers={"Authorization": f"Bearer {access_token}"},
+            EXPO_PUSH_URL,
+            json=message,
+            headers={
+                "Accept":        "application/json",
+                "Accept-Encoding": "gzip, deflate",
+                "Content-Type":  "application/json",
+                "Expo-SDK-Version": "56",
+            },
         )
-        if resp.status_code != 200:
-            logger.error(f"[FCM] Send failed: {resp.status_code} — {resp.text}")
+        result = resp.json()
+        if isinstance(result, dict) and result.get("data", {}).get("status") == "error":
+            logger.error(f"[EXPO_PUSH] Send failed: {result}")
         else:
-            logger.info(f"[FCM] Push sent to user {req.target_user_id} | critical_alarm={is_critical_alarm}")
+            logger.info(f"[EXPO_PUSH] Push sent → user={req.target_user_id} | critical={is_critical}")
 
 
-async def _get_fcm_access_token() -> Optional[str]:
-    """
-    Gets a short-lived Google OAuth2 access token for FCM HTTP v1 API.
-    Uses the service account JSON stored in FCM_SERVICE_ACCOUNT_JSON env var.
-    """
-    try:
-        import json
-        from google.oauth2 import service_account
-        from google.auth.transport.requests import Request as GoogleAuthRequest
-
-        sa_info = json.loads(FCM_SERVICE_ACCOUNT) if FCM_SERVICE_ACCOUNT else None
-        if not sa_info:
-            logger.warning("[FCM] FCM_SERVICE_ACCOUNT_JSON not set.")
-            return None
-
-        credentials = service_account.Credentials.from_service_account_info(
-            sa_info,
-            scopes=["https://www.googleapis.com/auth/firebase.messaging"],
-        )
-        credentials.refresh(GoogleAuthRequest())
-        return credentials.token
-    except Exception as exc:
-        logger.error(f"[FCM] Access token error: {exc}")
-        return None
-
-
-async def _get_fcm_token(user_id: Optional[str]) -> Optional[str]:
-    """
-    Fetches the FCM token stored in the users table for a given user.
-    The mobile app registers its Expo push token on login via PATCH /users/me/push-token.
-    """
+async def _get_expo_push_token(user_id: Optional[str]) -> Optional[str]:
+    """Fetch the stored ExpoPushToken for a given user."""
     if not user_id:
         return None
     try:
         async with SessionLocal() as db:
-            from models.mine import User  # avoid circular imports
+            from models.mine import User
             result = await db.execute(
-                select(User.fcm_push_token).where(User.id == user_id)
+                select(User.expo_push_token).where(User.id == user_id)
             )
             row = result.first()
             return row[0] if row else None
     except Exception as exc:
-        logger.warning(f"[FCM] Could not fetch token for user {user_id}: {exc}")
+        logger.warning(f"[EXPO_PUSH] Could not fetch token for user {user_id}: {exc}")
         return None
 
 
@@ -512,12 +450,15 @@ async def alert_critical_gas(
     Must be awaited directly inside the overman-report submission endpoint
     (not in a background task) to guarantee immediate delivery.
     """
+    # Resolve mine manager so target_user_id is set (alerts.target_user_id is NOT NULL)
+    manager_id = await _resolve_role_user_id(mine_id, "mine_manager")
     return await send_alert(
         NotificationRequest(
             title="🚨 CRITICAL: High CH₄ Level Detected",
             body=f"Methane at {ch4_percent}% in {station_label}. "
                  f"{'EVACUATE IMMEDIATELY — level exceeds 1.5%.' if ch4_percent > 1.5 else 'Alert threshold exceeded. Monitor closely.'}",
             priority="critical",
+            target_user_id=manager_id,
             mine_id=mine_id,
             entity_type="gas_reading",
             channels=["realtime", "critical_alarm", "push"],

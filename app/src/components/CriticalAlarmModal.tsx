@@ -31,18 +31,17 @@ export default function CriticalAlarmModal() {
     };
   }, [criticalAlarmActive, criticalAlerts.length]);
 
-  if (!criticalAlarmActive || criticalAlerts.length === 0) return null;
-
-  const currentAlert = criticalAlerts[0];
+  const isActive = criticalAlarmActive && criticalAlerts.length > 0;
+  const currentAlert = isActive ? criticalAlerts[0] : null;
 
   const handleAcknowledge = async () => {
-    await acknowledgeAlert(currentAlert.id);
+    if (currentAlert) await acknowledgeAlert(currentAlert.id);
   };
 
   return (
     <Modal
       transparent
-      visible={criticalAlarmActive}
+      visible={isActive}
       animationType="fade"
       statusBarTranslucent
     >
@@ -53,10 +52,10 @@ export default function CriticalAlarmModal() {
           </View>
           
           <Text style={styles.title}>EMERGENCY ALARM</Text>
-          <Text style={styles.subtitle}>{currentAlert.title}</Text>
+          <Text style={styles.subtitle}>{currentAlert?.title || ''}</Text>
           
           <View style={styles.messageBox}>
-            <Text style={styles.message}>{currentAlert.message}</Text>
+            <Text style={styles.message}>{currentAlert?.message || ''}</Text>
           </View>
 
           <TouchableOpacity style={styles.ackButton} onPress={handleAcknowledge}>
