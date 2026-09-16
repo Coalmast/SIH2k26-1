@@ -112,28 +112,36 @@ TaskManager.defineTask('BACKGROUND_NOTIFICATION_TASK', async ({ data, error }) =
   const payload = notification?.notification?.request?.content?.data;
 
   if (payload?.comet_alarm === 'true') {
-    // Hand off to Notifee for critical alarm
-    await notifee.displayNotification({
-      title: `🚨 ${payload.title || 'CRITICAL ALARM'}`,
-      body: payload.body || 'Evacuate immediately.',
-      android: {
-        channelId: 'comet_critical_alarm',
-        importance: AndroidImportance.HIGH,
-        category: AndroidCategory.ALARM,
-        fullScreenAction: { id: 'default' },  // Launch fullscreen even on lock screen
-        ongoing: true,                         // Cannot be swiped away
-        autoCancel: false,
-        actions: [{
-          title: '✅ Acknowledge & Evacuating',
-          pressAction: { id: 'acknowledge' },
-        }],
-      },
-      ios: {
-        critical: true,           // Requires Apple entitlement
-        criticalVolume: 1.0,
-        sound: 'comet_alarm.wav',
-        interruptionLevel: 'critical',
-      },
-    });
+    try {
+      const notifeeModule = await import('@notifee/react-native');
+      const notifee = notifeeModule.default;
+      const { AndroidImportance, AndroidCategory } = notifeeModule;
+
+      // Hand off to Notifee for critical alarm
+      await notifee.displayNotification({
+        title: `🚨 ${payload.title || 'CRITICAL ALARM'}`,
+        body: payload.body || 'Evacuate immediately.',
+        android: {
+          channelId: 'comet_critical_alarm',
+          importance: AndroidImportance.HIGH,
+          category: AndroidCategory.ALARM,
+          fullScreenAction: { id: 'default' },  // Launch fullscreen even on lock screen
+          ongoing: true,                         // Cannot be swiped away
+          autoCancel: false,
+          actions: [{
+            title: '✅ Acknowledge & Evacuating',
+            pressAction: { id: 'acknowledge' },
+          }],
+        },
+        ios: {
+          critical: true,           // Requires Apple entitlement
+          criticalVolume: 1.0,
+          sound: 'comet_alarm.wav',
+          interruptionLevel: 'critical',
+        },
+      });
+    } catch (e) {
+      console.error('Notifee not ready in background task:', e);
+    }
   }
 });

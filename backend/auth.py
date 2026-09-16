@@ -1,5 +1,6 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer
+from fastapi import Depends, HTTPException, Request
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from typing import Optional
 from pydantic import BaseModel
 import os
 import json
@@ -17,39 +18,64 @@ class UserContext(BaseModel):
     role: str | None = None
     permissions: list[str] = []
 
-security = HTTPBearer()
+security = HTTPBearer(auto_error=False)
 
-# We need a fallback secret for development if it's not set in environment
+# The Supabase JWT secret — must match what the local/remote Supabase instance uses.
+# Local default: "super-secret-jwt-token-with-at-least-32-characters-long"
+# In production: set SUPABASE_JWT_SECRET to the value from your Supabase project settings.
 SUPABASE_JWT_SECRET = os.getenv("SUPABASE_JWT_SECRET", "super-secret-jwt-token-with-at-least-32-characters-long")
 
-async def get_current_user(token = Depends(security), db: AsyncSession = Depends(get_db)) -> UserContext:
-    """Verify Supabase JWT and extract user context."""
+# DEV BYPASS — set DEV_BYPASS_AUTH=true in your environment to skip JWT verification.
+# REMOVE or set to false before any real deployment.
+DEV_BYPASS_AUTH = os.getenv("DEV_BYPASS_AUTH", "false").lower() == "true"
+
+async def get_current_user(token: Optional[HTTPAuthorizationCredentials] = Depends(security), db: AsyncSession = Depends(get_db)) -> UserContext:
+    """Verify Supabase JWT signature and extract user context."""
+    # ─── DEV BYPASS ──────────────────────────────────────────────────────────
+    # When DEV_BYPASS_AUTH=true, skip JWT verification entirely.
+    # Returns a hardcoded mine_manager context for mine 00000000-0000-0000-0000-000000000004.
+    if DEV_BYPASS_AUTH:
+        return UserContext(
+            user_id="00000000-0000-0000-0000-000000000010",
+            mine_ids=["00000000-0000-0000-0000-000000000004"],
+            subsidiary_id=None,
+            role="mine_manager",
+            permissions=[],
+        )
+    # ─────────────────────────────────────────────────────────────────────────
+    if not token:
+        raise HTTPException(status_code=401, detail="Missing authorization token")
     try:
-        claims = jwt.get_unverified_claims(token.credentials)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Malformed token")
+        # Verify signature + expiry. Supabase sets audience to "authenticated".
+        claims = jwt.decode(
+            token.credentials,
+            SUPABASE_JWT_SECRET,
+            algorithms=["HS256"],
+            options={"verify_aud": False},  # Supabase omits standard aud in some tokens
+        )
+    except JWTError as e:
+        raise HTTPException(status_code=401, detail=f"Invalid or expired token: {e}")
 
     user_id = claims.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail="Missing user ID in token")
 
-    # Step 2: Look up user in DB by Supabase auth UUID
+    # Look up user in DB by UUID
     user_row = await db.execute(
         select(User).where(User.id == user_id)
     )
     user = user_row.scalar_one_or_none()
 
     if not user:
-        # DEV FALLBACK: if user not in DB yet, use demo mine
-        return UserContext(
-            user_id=user_id,
-            mine_ids=["00000000-0000-0000-0000-000000000004"],
-            subsidiary_id="00000000-0000-0000-0000-000000000002",
-            role="mine_manager",
-            permissions=[]
+        # User authenticated via Supabase Auth but not yet in the `users` table.
+        # This should not happen in normal flow — seed_demo.py must be run first.
+        raise HTTPException(
+            status_code=403,
+            detail=f"User {user_id} authenticated but not found in the COMET users table. "
+                   "Run `python seed_demo.py` to seed demo users."
         )
 
-    # Step 3: Look up role from user_roles -> roles
+    # Look up role from user_roles -> roles
     role_row = await db.execute(
         select(Role.name)
         .join(UserRole, UserRole.role_id == Role.id)
@@ -57,7 +83,7 @@ async def get_current_user(token = Depends(security), db: AsyncSession = Depends
         .limit(1)
     )
     role = role_row.scalar_one_or_none()
-    role_name = role.value if hasattr(role, "value") else (role if role else "mine_manager")
+    role_name = role.value if hasattr(role, "value") else (role if role else "field_officer")
 
     mine_ids = [str(user.mine_id)] if user.mine_id else []
     
@@ -68,3 +94,4 @@ async def get_current_user(token = Depends(security), db: AsyncSession = Depends
         role=role_name,
         permissions=[]
     )
+

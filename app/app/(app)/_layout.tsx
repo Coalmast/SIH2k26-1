@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 import { Tabs } from 'expo-router';
 import { Home, ClipboardList, AlertTriangle, User } from 'lucide-react-native';
 import CriticalAlarmModal from '../../src/components/CriticalAlarmModal';
@@ -12,7 +13,7 @@ export default function AppLayout() {
   useNotificationTap();
   
   return (
-    <>
+    <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           headerShown: true,
@@ -64,7 +65,7 @@ export default function AppLayout() {
       </Tabs>
       <CriticalAlarmModal />
       <InAppNotificationToast />
-    </>
+    </View>
   );
 }
 

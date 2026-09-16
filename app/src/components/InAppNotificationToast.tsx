@@ -9,35 +9,35 @@ export function InAppNotificationToast() {
   const removeAlert = useAlertStore(state => state.removeAlert);
   const router = useRouter();
 
-  if (alerts.length === 0) return null;
-
-  // Show only the most recent alert
-  const alert = alerts[0];
+  const hasAlerts = alerts.length > 0;
+  const alert = hasAlerts ? alerts[0] : null;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, !hasAlerts && { display: 'none' }]} pointerEvents={hasAlerts ? 'auto' : 'none'}>
       <TouchableOpacity 
-        style={[styles.toast, alert.type === 'CRITICAL' ? styles.toastCritical : styles.toastWarning]}
+        style={[styles.toast, alert?.type === 'CRITICAL' ? styles.toastCritical : styles.toastWarning]}
         onPress={() => {
-          removeAlert(alert.id);
-          router.push('/(app)/home/notifications');
+          if (alert) {
+            removeAlert(alert.id);
+            router.push('/(app)/home/notifications');
+          }
         }}
         activeOpacity={0.9}
       >
         <View style={styles.iconContainer}>
-          {alert.type === 'CRITICAL' ? (
+          {alert?.type === 'CRITICAL' ? (
             <AlertTriangle size={24} color="white" />
           ) : (
             <Bell size={24} color="white" />
           )}
         </View>
         <View style={styles.content}>
-          <Text style={styles.title} numberOfLines={1}>{alert.title}</Text>
-          <Text style={styles.message} numberOfLines={2}>{alert.message}</Text>
+          <Text style={styles.title} numberOfLines={1}>{alert?.title || ''}</Text>
+          <Text style={styles.message} numberOfLines={2}>{alert?.message || ''}</Text>
         </View>
         <TouchableOpacity 
           style={styles.closeButton}
-          onPress={() => removeAlert(alert.id)}
+          onPress={() => alert && removeAlert(alert.id)}
         >
           <X size={20} color="rgba(255,255,255,0.7)" />
         </TouchableOpacity>

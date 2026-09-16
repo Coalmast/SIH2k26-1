@@ -14,7 +14,7 @@ export class Notification extends Model {
   @text('entity_type') entityType?: string;
   @text('entity_id') entityId?: string;
   @text('status') status!: string; // unread | read
-  @date('read_at') readAt?: Date;
-  @readonly @date('created_at') createdAt!: Date;
+  @date('read_at') readAt?: number;
+  @readonly @date('created_at') createdAt!: number;
   @text('sync_status') syncStatus!: string; // synced | pending_ack
 }

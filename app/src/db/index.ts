@@ -18,7 +18,7 @@ import {
 const adapter = new SQLiteAdapter({
   schema,
   migrations,
-  jsi: true, // Recommended for performance
+  // jsi: true removed for New Architecture compatibility
   onSetUpError: error => {
     console.error('WatermelonDB Setup Error:', error);
   }

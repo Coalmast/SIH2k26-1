@@ -15,13 +15,11 @@ const NotificationHeaderIcon = ({ unreadCount }: { unreadCount: number }) => {
       onPress={() => router.push('/(app)/home/notifications')}
     >
       <Bell size={24} color="#fcd535" />
-      {unreadCount > 0 && (
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </Text>
-        </View>
-      )}
+      <View style={[styles.badge, { opacity: unreadCount > 0 ? 1 : 0 }]}>
+        <Text style={styles.badgeText}>
+          {unreadCount > 99 ? '99+' : unreadCount}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };

@@ -11,25 +11,36 @@ const NotificationItem = ({ notification }: { notification: Notification }) => {
   return (
     <View style={[styles.itemContainer, notification.status === 'unread' && styles.unreadItem]}>
       <View style={styles.iconContainer}>
-        {notification.priority === 'critical' ? (
+        <View style={{ display: notification.priority === 'critical' ? 'flex' : 'none' }}>
           <AlertTriangle size={24} color="#dc2626" />
-        ) : (
+        </View>
+        <View style={{ display: notification.priority === 'critical' ? 'none' : 'flex' }}>
           <Bell size={24} color="#2563eb" />
-        )}
+        </View>
       </View>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>{notification.title}</Text>
         <Text style={styles.message}>{notification.message}</Text>
         <Text style={styles.time}>{new Date(notification.createdAt).toLocaleString()}</Text>
       </View>
-      {notification.status === 'unread' && <View style={styles.unreadDot} />}
+      <View style={[styles.unreadDot, { display: notification.status === 'unread' ? 'flex' : 'none' }]} />
     </View>
   );
 };
 
-const EnhancedNotificationItem = withObservables(['notification'], ({ notification }) => ({
-  notification: notification.observe(),
-}))(NotificationItem);
+// NOTE: Do NOT wrap each FlatList item with withObservables.
+// Under React Native's New Architecture (Fabric), a per-item observable causes
+// the view node to re-insert into FlatList's recycler while it still has a parent,
+// crashing with: "The specified child already has a parent".
+// The outer `enhance` HOC already re-renders the whole list reactively via
+// WatermelonDB, so individual item observation is redundant AND crash-prone.
+
+const EmptyState = () => (
+  <View style={styles.emptyContainer}>
+    <Bell size={48} color="#4b5563" />
+    <Text style={styles.emptyText}>No notifications yet.</Text>
+  </View>
+);
 
 const NotificationsScreen = ({ notifications }: { notifications: Notification[] }) => {
   const markAllAsRead = async () => {
@@ -57,19 +68,16 @@ const NotificationsScreen = ({ notifications }: { notifications: Notification[] 
         }} 
       />
       
-      {notifications.length === 0 ? (
-        <View style={styles.emptyContainer}>
-          <Bell size={48} color="#4b5563" />
-          <Text style={styles.emptyText}>No notifications yet.</Text>
-        </View>
-      ) : (
-        <FlatList
-          data={notifications}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <EnhancedNotificationItem notification={item} />}
-          contentContainerStyle={styles.listContent}
-        />
-      )}
+      <FlatList
+        data={notifications}
+        // Fabric requires stable keys. Do NOT append status to the key, 
+        // otherwise view recycling crashes with "child already has a parent".
+        keyExtractor={item => item.id}
+        removeClippedSubviews={false}
+        renderItem={({ item }) => <NotificationItem notification={item} />}
+        contentContainerStyle={notifications.length === 0 ? styles.emptyListContent : styles.listContent}
+        ListEmptyComponent={EmptyState}
+      />
     </View>
   );
 };
@@ -80,12 +88,17 @@ const enhance = withObservables([], () => ({
 
 export default enhance(NotificationsScreen);
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#0b0e11',
   },
   listContent: {
+    padding: 16,
+  },
+  emptyListContent: {
+    flexGrow: 1,
     padding: 16,
   },
   itemContainer: {

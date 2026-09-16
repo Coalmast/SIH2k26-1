@@ -123,10 +123,16 @@ async def send_alert(req: NotificationRequest, db: Optional[AsyncSession] = None
 
         if "push" in resolved or "critical_alarm" in resolved:
             is_critical = req.priority == "critical"
-            await _send_expo_push(req, alert_id, is_critical=is_critical)
+            try:
+                await _send_expo_push(req, alert_id, is_critical=is_critical)
+            except Exception as e:
+                logger.error(f"[EXPO_PUSH] Unhandled exception sending push: {e}")
 
         if "email" in resolved and req.email_to:
-            await _send_resend_email(req, alert_id)
+            try:
+                await _send_resend_email(req, alert_id)
+            except Exception as e:
+                logger.error(f"[RESEND] Unhandled exception sending email: {e}")
 
         # 3. Mark as sent
         alert_record.status = AlertStatus.sent
@@ -444,12 +450,15 @@ async def alert_critical_gas(
     Must be awaited directly inside the overman-report submission endpoint
     (not in a background task) to guarantee immediate delivery.
     """
+    # Resolve mine manager so target_user_id is set (alerts.target_user_id is NOT NULL)
+    manager_id = await _resolve_role_user_id(mine_id, "mine_manager")
     return await send_alert(
         NotificationRequest(
             title="🚨 CRITICAL: High CH₄ Level Detected",
             body=f"Methane at {ch4_percent}% in {station_label}. "
                  f"{'EVACUATE IMMEDIATELY — level exceeds 1.5%.' if ch4_percent > 1.5 else 'Alert threshold exceeded. Monitor closely.'}",
             priority="critical",
+            target_user_id=manager_id,
             mine_id=mine_id,
             entity_type="gas_reading",
             channels=["realtime", "critical_alarm", "push"],
