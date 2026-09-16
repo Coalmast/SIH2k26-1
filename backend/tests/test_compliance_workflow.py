@@ -118,8 +118,6 @@ class TestPhase2_AutoTaskGeneration:
             print(f"✓ Found {len(instances)} pending compliance instances")
             if instances:
                 print(f"  Sample: {instances[0].get('id')}, Due: {instances[0].get('due_date')}")
-            
-            return instances
     
     def test_2_2_verify_instance_fields(self, instances=None):
         """✓ Each instance should have required fields"""
@@ -213,10 +211,8 @@ class TestPhase4_EvidenceSubmission:
             if instances:
                 instance = instances[0]
                 print(f"✓ Found instance for evidence submission: {instance['id']}")
-                return instance
             else:
                 print("⚠ No in_progress instances found. Create one manually or test with pending.")
-                return None
     
     def test_4_2_submit_evidence_pdf(self):
         """✓ Upload PDF evidence (simulated)"""
@@ -265,8 +261,6 @@ class TestPhase5_ReviewAndApproval:
             print(f"✓ Compliance Officer can see {len(submitted)} submitted instances awaiting review")
             if submitted:
                 print(f"  Sample: {submitted[0]['id']}")
-                return submitted[0]
-            return None
     
     def test_5_2_approve_instance(self):
         """✓ Compliance Officer approves an instance"""
@@ -315,8 +309,6 @@ class TestPhase6_BreachEscalation:
             if breached:
                 instance = breached[0]
                 print(f"  Sample: {instance['id']}, Due: {instance['due_date']}")
-                return instance
-            return None
     
     def test_6_2_escalation_ladder(self):
         """✓ Verify escalation timeline is set up correctly"""
