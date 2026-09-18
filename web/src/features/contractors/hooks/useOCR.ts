@@ -55,7 +55,10 @@ export function useOCR() {
       if (data.IsErroredOnProcessing) {
         throw new Error(data.ErrorMessage?.[0] || 'OCR processing failed');
       }
-      
+
+      const parsedResults = data.ParsedResults;
+      if (parsedResults && parsedResults.length > 0) {
+        const combinedText = parsedResults.map((pr: any) => pr.ParsedText).join('\n');
         const mockConfidence = 0.85 + (Math.random() * 0.1); // 85-95%
 
         setTimeout(() => {
