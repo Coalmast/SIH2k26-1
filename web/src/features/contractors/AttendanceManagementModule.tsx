@@ -769,11 +769,10 @@ export function AttendanceManagementModule() {
                     />
                   </div>
                 </CardContent>
-              </MagicCard>
-            </motion.div>
+              </Card>
           );
         })}
-      </motion.div>
+      </div>
 
       {/* ── Section 2: 7-Day Trend Chart ────────────────────── */}
       <MagicCard className="shadow-lg border-border/50">
