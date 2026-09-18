@@ -12,14 +12,14 @@ export function OfflineBanner() {
   if (isOnline && !isSyncing && pendingItems === 0) return null;
 
   return (
-    <View className="bg-binance-surface-card-dark border-b border-binance-hairline-on-dark flex-row items-center justify-between px-4 py-2">
+    <View className="bg-comet-card border-b border-comet-border flex-row items-center justify-between px-4 py-2">
       <View className="flex-row items-center space-x-2 gap-2">
         {!isOnline ? (
-          <WifiOff size={16} color="#fcd535" />
+          <WifiOff size={16} color="#f97316" />
         ) : (
-          <RefreshCw size={16} color="#707a8a" />
+          <RefreshCw size={16} color="#a8a29e" />
         )}
-        <Text className="text-binance-body text-sm font-medium">
+        <Text className="text-comet-fg text-sm font-medium">
           {!isOnline 
             ? 'Offline Mode Active' 
             : isSyncing 
@@ -30,11 +30,11 @@ export function OfflineBanner() {
       
       {isOnline && !isSyncing && pendingItems > 0 && (
         <TouchableOpacity 
-          className="bg-binance-primary/20 px-3 py-1 rounded flex-row items-center gap-1"
+          className="bg-comet-orange/20 px-3 py-1 rounded flex-row items-center gap-1"
           onPress={() => performSync()}
         >
-          <Play size={12} color="#fcd535" />
-          <Text className="text-binance-primary text-xs font-bold">Sync</Text>
+          <Play size={12} color="#f97316" />
+          <Text className="text-comet-orange text-xs font-bold">Sync</Text>
         </TouchableOpacity>
       )}
     </View>

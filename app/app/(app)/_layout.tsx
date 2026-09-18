@@ -8,20 +8,30 @@ import { useRealtimeAlerts } from '../../src/hooks/useRealtimeAlerts';
 import { useNotificationTap } from '../../src/hooks/useNotificationTap';
 import NotificationHeaderIcon from '../../src/components/NotificationHeaderIcon';
 
+import { useColorScheme } from 'nativewind';
+
 export default function AppLayout() {
   useRealtimeAlerts();
   useNotificationTap();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
+  const headerBg = isDark ? '#0f0d0c' : '#f2ede8';
+  const headerBorder = isDark ? '#2a2420' : '#d4cec5';
+  
+  const tabBarBg = isDark ? '#0a0908' : '#18181b';
+  const tabBarBorder = isDark ? '#1e1a17' : '#27272a';
   
   return (
     <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           headerShown: true,
-          headerStyle: { backgroundColor: '#0b0e11', borderBottomWidth: 1, borderBottomColor: '#2b3139' },
-          headerTintColor: '#fcd535',
-          tabBarStyle: { backgroundColor: '#1e2329', borderTopWidth: 1, borderTopColor: '#2b3139' },
-          tabBarActiveTintColor: '#fcd535',
-          tabBarInactiveTintColor: '#707a8a',
+          headerStyle: { backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: headerBorder },
+          headerTintColor: '#f97316',
+          tabBarStyle: { backgroundColor: tabBarBg, borderTopWidth: 1, borderTopColor: tabBarBorder },
+          tabBarActiveTintColor: '#f97316',
+          tabBarInactiveTintColor: isDark ? '#a8a29e' : '#78716c',
         }}
       >
         <Tabs.Screen
