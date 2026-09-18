@@ -60,30 +60,30 @@ export function GateKioskDashboard() {
   }, [])
 
   return (
-    <div className="flex-1 p-4 md:p-6 bg-slate-950 min-h-screen text-slate-200 w-full flex flex-col overflow-hidden">
+    <div className="flex-1 p-4 md:p-6 bg-background min-h-screen text-foreground w-full flex flex-col overflow-hidden">
 
       {/* Header */}
-      <header className="flex justify-between items-center pb-4 border-b border-slate-800 mb-6 shrink-0">
+      <header className="flex justify-between items-center pb-4 border-b border-border mb-6 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="bg-slate-800 p-2 rounded-lg border border-slate-700">
-            <ScanFace className="h-6 w-6 text-emerald-400" />
+          <div className="bg-muted p-2 rounded-lg border border-border">
+            <ScanFace className="h-6 w-6 text-emerald-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-white leading-tight">{t("main_gate_kiosk_4", "Main Gate Kiosk #4")}</h1>
-            <p className="text-slate-400 text-sm">{t("automated_biometric_access_con", "Automated Biometric Access Control")}</p>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground leading-tight">{t("main_gate_kiosk_4", "Main Gate Kiosk #4")}</h1>
+            <p className="text-muted-foreground text-sm">{t("automated_biometric_access_con", "Automated Biometric Access Control")}</p>
           </div>
         </div>
-        <div className="flex items-center gap-4 text-sm font-mono text-slate-400">
+        <div className="flex items-center gap-4 text-sm font-mono text-muted-foreground">
           <div className="flex items-center gap-2"><Clock className="h-4 w-4" />{t("08_42_15_am", "08:42:15 AM")}</div>
-          <div className="h-8 w-px bg-slate-800"></div>
-          <Button variant="outline" className="border-slate-700 bg-slate-900 text-slate-300 hover:text-white hover:bg-slate-800">{t("manual_override", "Manual Override")}</Button>
+          <div className="h-8 w-px bg-border"></div>
+          <Button variant="outline" className="border-border bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80">{t("manual_override", "Manual Override")}</Button>
         </div>
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 min-h-0">
         
         {/* Biometric Viewfinder (Left Side) */}
-        <div className="lg:col-span-7 flex flex-col h-full bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden relative shadow-2xl">
+        <div className="lg:col-span-7 flex flex-col h-full bg-card rounded-2xl border border-border overflow-hidden relative shadow-2xl">
           {/* Fake Camera Feed Background */}
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1541888087573-f53154226186?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-30 grayscale blur-[2px]"></div>
           
@@ -115,11 +115,11 @@ export function GateKioskDashboard() {
             </div>
           </div>
           
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-slate-950/80 backdrop-blur px-6 py-2 rounded-full border border-slate-700 font-mono text-sm tracking-widest uppercase">
-            {scanState === 'waiting' && <span className="text-slate-400 animate-pulse">{t("awaiting_subject", "Awaiting Subject...")}</span>}
-            {scanState === 'scanning' && <span className="text-blue-400">{t("analyzing_biometrics", "Analyzing Biometrics...")}</span>}
-            {scanState === 'authorized' && <span className="text-emerald-400">{t("match_confirmed", "Match Confirmed")}</span>}
-            {scanState === 'denied' && <span className="text-red-400">{t("alert_mismatch", "Alert: Mismatch")}</span>}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur px-6 py-2 rounded-full border border-border font-mono text-sm tracking-widest uppercase">
+            {scanState === 'waiting' && <span className="text-muted-foreground animate-pulse">{t("awaiting_subject", "Awaiting Subject...")}</span>}
+            {scanState === 'scanning' && <span className="text-blue-500">{t("analyzing_biometrics", "Analyzing Biometrics...")}</span>}
+            {scanState === 'authorized' && <span className="text-emerald-500">{t("match_confirmed", "Match Confirmed")}</span>}
+            {scanState === 'denied' && <span className="text-red-500">{t("alert_mismatch", "Alert: Mismatch")}</span>}
           </div>
         </div>
 
@@ -128,30 +128,30 @@ export function GateKioskDashboard() {
           
           {/* Scan Result Panel */}
           <Card className={`shrink-0 border-2 shadow-lg transition-colors duration-300
-            ${scanState === 'waiting' || scanState === 'scanning' ? 'bg-slate-900 border-slate-800' : 
-              scanState === 'authorized' ? 'bg-emerald-950 border-emerald-500/50' : 
-              'bg-red-950 border-red-500/50'}`}
+            ${scanState === 'waiting' || scanState === 'scanning' ? 'bg-card border-border' : 
+              scanState === 'authorized' ? 'bg-emerald-500/10 border-emerald-500/50' : 
+              'bg-red-500/10 border-red-500/50'}`}
           >
             <CardContent className="p-6">
               {scanState === 'waiting' || scanState === 'scanning' ? (
-                <div className="h-[180px] flex flex-col items-center justify-center text-slate-500 gap-4">
+                <div className="h-[180px] flex flex-col items-center justify-center text-muted-foreground gap-4">
                   <UserCheck className="h-12 w-12 opacity-20" />
                   <p className="text-lg font-medium">{t("ready_for_next_scan", "Ready for next scan")}</p>
                 </div>
               ) : activeWorker ? (
                 <div className="flex gap-6 items-center">
-                  <img src={activeWorker.photo} alt="Worker" className="w-32 h-32 rounded-xl border-4 border-slate-800 bg-slate-800" />
+                  <img src={activeWorker.photo} alt="Worker" className="w-32 h-32 rounded-xl border-4 border-border bg-muted" />
                   <div>
-                    <h2 className="text-3xl font-black text-white mb-1">{activeWorker.name}</h2>
-                    <div className="font-mono text-slate-400 mb-3">{activeWorker.id}</div>
+                    <h2 className="text-3xl font-black text-foreground mb-1">{activeWorker.name}</h2>
+                    <div className="font-mono text-muted-foreground mb-3">{activeWorker.id}</div>
                     
                     {scanState === 'authorized' ? (
                       <div className="space-y-1">
                         <Badge className="bg-emerald-600 hover:bg-emerald-600 text-white border-0 text-sm">{activeWorker.role}</Badge>
-                        <p className="text-sm text-emerald-400/80 mt-2 font-medium">{activeWorker.shift}</p>
+                        <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-2 font-medium">{activeWorker.shift}</p>
                       </div>
                     ) : (
-                      <div className="bg-red-900/50 border border-red-500/50 text-red-200 px-3 py-2 rounded-lg text-sm flex items-start gap-2">
+                      <div className="bg-red-500/10 border border-red-500/50 text-red-600 dark:text-red-400 px-3 py-2 rounded-lg text-sm flex items-start gap-2">
                         <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>{activeWorker.reason}</span>
                       </div>
@@ -163,26 +163,26 @@ export function GateKioskDashboard() {
           </Card>
 
           {/* Recent Scans Feed */}
-          <Card className="flex-1 bg-slate-900 border-slate-800 flex flex-col overflow-hidden shadow-lg">
-            <div className="p-4 border-b border-slate-800 bg-slate-900/50">
-              <h3 className="font-bold text-slate-300 uppercase tracking-wider text-sm">{t("recent_activity_log", "Recent Activity Log")}</h3>
+          <Card className="flex-1 bg-card border-border flex flex-col overflow-hidden shadow-lg">
+            <div className="p-4 border-b border-border bg-muted/30">
+              <h3 className="font-bold text-foreground uppercase tracking-wider text-sm">{t("recent_activity_log", "Recent Activity Log")}</h3>
             </div>
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {mockRecentScans.map((scan, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-slate-800/50 border border-slate-700/50">
+                <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-muted/50 border border-border/50">
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-8 rounded-full ${scan.status === 'authorized' ? 'bg-emerald-500' : 'bg-red-500'}`}></div>
                     <div>
-                      <div className="font-bold text-slate-200">{scan.name}</div>
-                      <div className="text-xs text-slate-400">{scan.id}{t("text", "•")}{scan.role}</div>
+                      <div className="font-bold text-foreground">{scan.name}</div>
+                      <div className="text-xs text-muted-foreground">{scan.id}{t("text", "•")}{scan.role}</div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-xs text-slate-500 mb-1">{scan.time}</div>
+                    <div className="text-xs text-muted-foreground mb-1">{scan.time}</div>
                     {scan.status === 'authorized' ? (
-                      <span className="text-xs font-bold text-emerald-400 uppercase">{t("passed", "Passed")}</span>
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase">{t("passed", "Passed")}</span>
                     ) : (
-                      <span className="text-xs font-bold text-red-400 uppercase">{t("blocked", "Blocked")}</span>
+                      <span className="text-xs font-bold text-red-600 dark:text-red-400 uppercase">{t("blocked", "Blocked")}</span>
                     )}
                   </div>
                 </div>

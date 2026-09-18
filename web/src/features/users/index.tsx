@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { getRouteApi } from '@tanstack/react-router'
-import { Header } from '@/components/layout/header'
+
 import { Main } from '@/components/layout/main'
 import { Search } from '@/components/search'
 import { UsersDialogs } from './components/users-dialogs'
@@ -23,9 +23,7 @@ export function Users() {
 
   return (
     <UsersProvider>
-      <Header fixed>
-        <Search className='me-auto' />
-      </Header>
+
 
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
@@ -36,7 +34,10 @@ export function Users() {
               "Manage your users and their roles here."
             )}</p>
           </div>
-          <UsersPrimaryButtons />
+          <div className="flex items-center gap-2">
+            <Search className='me-auto' />
+            <UsersPrimaryButtons />
+          </div>
         </div>
         {isLoading ? (
           <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>

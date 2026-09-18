@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useEffect } from 'react'
-import { AlertTriangle, CheckCircle, Info, Bell } from 'lucide-react'
+import { AlertTriangle, CheckCircle, Info, Bell, ShieldAlert } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase'
 import { AnimatedList } from '@/components/ui/animated-list'
@@ -86,11 +86,23 @@ export function LiveAlertFeed({ mineId = 'mock-mine-1' }: { mineId?: string }) {
         <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
           <Bell className={`h-5 w-5 text-primary ${unreadCount > 0 ? 'animate-pulse' : ''}`} />{t("live_alert_feed", "Live Alert Feed")}</h2>
         {unreadCount > 0 && (
-          <span className="text-xs font-bold bg-primary text-primary-foreground px-2 py-0.5 rounded-full animate-bounce">
+          <span className="text-xs font-bold bg-primary text-primary-foreground px-2 py-0.5 rounded-full">
             {unreadCount}{t("new", "New")}</span>
         )}
       </div>
       <div className="p-4 flex flex-col gap-3 overflow-y-auto h-full overflow-x-hidden">
+        
+        {/* Von Restorff Effect: Distinct AI Box */}
+        <div className="mb-1 bg-orange-500/10 border-l-4 border-orange-500 rounded-r-md p-4 shadow-sm flex-shrink-0">
+          <div className="flex justify-between items-start mb-2">
+            <h3 className="font-bold text-orange-600 dark:text-orange-500 flex items-center gap-2 text-sm">
+              <ShieldAlert className="h-4 w-4" /> {t("ai_risk_detected", "AI Risk Detected")}
+            </h3>
+            <span className="bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">Score: 61/100</span>
+          </div>
+          <p className="text-xs text-foreground/80 font-medium">{t("critical_pm10_breach_at_umrer_", "Critical PM10 breach at Umrer OCP. Evacuation recommended for Section 3 East.")}</p>
+        </div>
+
         <AnimatedList>
           {alerts.map((alert) => (
             <div key={alert.id} className={`flex gap-3 p-3 rounded-md bg-background border shadow-sm ${getAlertBorder(alert.priority)}`}>

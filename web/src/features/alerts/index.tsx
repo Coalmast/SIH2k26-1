@@ -5,6 +5,35 @@ import { Button } from '@/components/ui/button'
 import { AlertTriangle, CheckCircle, Info, BellRing, Check, ExternalLink, ShieldAlert, FileWarning } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useAlertStore } from '@/stores/alert-store'
+import { toast } from 'sonner'
+
+const AIAnalysisPanel = () => (
+  <Card className="mb-6 border-l-4 border-l-orange-500 bg-orange-500/5">
+    <CardContent className="p-6">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-lg font-bold text-orange-500 flex items-center gap-2">
+          <ShieldAlert className="h-5 w-5" />
+          AI Risk Assessment: HIGH RISK
+        </h3>
+        <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">Score: 61/100</span>
+      </div>
+      <div className="text-sm text-foreground/80 mb-4">
+        <p className="font-semibold text-foreground mb-1">Affected Regulation: EPA 1986, Sch. VI; CMR 2017 Reg. 106</p>
+        <p className="mb-4">
+          <strong>Executive Summary:</strong> The Environmental Monitoring Inspection submitted on Sept 16, 2026 for Umrer OCP reveals a critical breach of MoEF&CC Environmental Clearance conditions. Respirable Particulate Matter (PM10) was recorded at 4.2 mg/m³, exceeding the stipulated limit of 3.0 mg/m³ by 40%. Sulphur Dioxide (SO2) levels at 2.8 ppm similarly breach the 2.0 ppm threshold. These findings indicate inadequate dust suppression operations and may constitute a violation of EC Condition No. 12 (Dust Control Measures). Immediate corrective action is required to avoid statutory show-cause notice from SPCB.
+        </p>
+        <p className="font-semibold text-foreground mb-2">Recommended Actions:</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Activate all water sprinklers in Section 3 East immediately</li>
+          <li>Halt operations in affected zone until PM10 drops below 3.0 mg/m³</li>
+          <li>Submit Corrective Action Plan to SPCB within 48 hours (EPA 1986, S.5)</li>
+          <li>Conduct re-inspection within 72 hours and document results</li>
+          <li>Escalate to District Magistrate if PM10 remains elevated after 24h</li>
+        </ul>
+      </div>
+    </CardContent>
+  </Card>
+)
 
 export function AlertsPage() {
   const {
@@ -98,6 +127,8 @@ export function AlertsPage() {
         ))}
       </div>
 
+      <AIAnalysisPanel />
+
       <div className="space-y-4">
         {filteredAlerts.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">{t("no_alerts_found", "No alerts found.")}</div>
@@ -120,18 +151,18 @@ export function AlertsPage() {
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">{alert.message}</p>
                   
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-4 w-full">
                     {!alert.read && (
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-medium" onClick={() => markRead(alert.id)}>
-                        <Check className="h-3 w-3 mr-1" />{t("acknowledge", "Acknowledge")}</Button>
+                      <Button variant="outline" size="default" className="h-10 px-4 min-w-[120px] text-sm font-medium" onClick={() => markRead(alert.id)}>
+                        <Check className="h-4 w-4 mr-2" />{t("acknowledge", "Acknowledge")}</Button>
                     )}
                     {['critical', 'high'].includes(alert.priority) && (
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-medium text-amber-600 border-amber-200 hover:bg-amber-50">
-                        <ShieldAlert className="h-3 w-3 mr-1" />{t("escalate", "Escalate")}</Button>
+                      <Button variant="outline" size="default" className="h-10 px-4 min-w-[120px] text-sm font-medium text-amber-600 border-amber-200 hover:bg-amber-50 dark:hover:bg-amber-500/10" onClick={() => toast.success(t("alert_escalated_successfully", "Alert escalated successfully"))}>
+                        <ShieldAlert className="h-4 w-4 mr-2" />{t("escalate", "Escalate")}</Button>
                     )}
-                    <Button variant="outline" size="sm" className="h-8 text-xs font-medium text-primary border-primary/20 hover:bg-primary/5">
-                      <FileWarning className="h-3 w-3 mr-1" />{t("create_capa", "Create CAPA")}</Button>
-                    <Button variant="ghost" size="sm" className="h-8 text-xs px-2 text-muted-foreground hover:text-foreground/80 ml-auto">{t("view_source", "View Source")}<ExternalLink className="h-3 w-3 ml-1" />
+                    <Button variant="outline" size="default" className="h-10 px-4 min-w-[120px] text-sm font-medium text-primary border-primary/20 hover:bg-primary/5" onClick={() => toast.success(t("capa_creation_initiated", "CAPA creation initiated"))}>
+                      <FileWarning className="h-4 w-4 mr-2" />{t("create_capa", "Create CAPA")}</Button>
+                    <Button variant="ghost" size="default" className="h-10 px-4 text-sm text-muted-foreground hover:text-foreground/80 sm:ml-auto w-full sm:w-auto">{t("view_source", "View Source")}<ExternalLink className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
                 </div>

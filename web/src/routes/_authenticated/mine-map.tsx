@@ -29,6 +29,7 @@ const MINE_DATA = [
   {
     id: '1',
     name: 'Padmapur Open Cast Mine',
+    subsidiary: 'WCL',
     coordinates: [79.3142, 20.0304],
     risk: 12.4,
     status: 'healthy',
@@ -37,6 +38,7 @@ const MINE_DATA = [
   {
     id: '2',
     name: 'Hindustan Lalpeth Colliery',
+    subsidiary: 'WCL',
     coordinates: [79.3126, 19.9244],
     risk: 87.2,
     status: 'critical',
@@ -45,6 +47,7 @@ const MINE_DATA = [
   {
     id: '3',
     name: 'Durgapur Open Cast Mine',
+    subsidiary: 'WCL',
     coordinates: [79.2989, 20.0081],
     risk: 45.0,
     status: 'monitor',
@@ -53,6 +56,7 @@ const MINE_DATA = [
   {
     id: '4',
     name: 'Bhatadi Open Cast Mine',
+    subsidiary: 'WCL',
     coordinates: [79.2674, 20.0574],
     risk: 32.1,
     status: 'healthy',
@@ -61,6 +65,7 @@ const MINE_DATA = [
   {
     id: '5',
     name: 'Mana Incline',
+    subsidiary: 'WCL',
     coordinates: [79.3115, 19.9085],
     risk: 65.5,
     status: 'monitor',
@@ -69,6 +74,7 @@ const MINE_DATA = [
   {
     "id": "21",
     "name": "Neyveli Lignite Mine-I",
+    "subsidiary": "NLC",
     "coordinates": [79.4826, 11.6042],
     "risk": 24.5,
     "status": "healthy",
@@ -77,6 +83,7 @@ const MINE_DATA = [
   {
     "id": "22",
     "name": "Singrauli Open Cast Mine",
+    "subsidiary": "NCL",
     "coordinates": [82.7042, 24.1958],
     "risk": 41.2,
     "status": "monitor",
@@ -85,6 +92,7 @@ const MINE_DATA = [
   {
     "id": "23",
     "name": "Rajmahal Open Cast Project",
+    "subsidiary": "ECL",
     "coordinates": [87.4682, 25.0214],
     "risk": 58.7,
     "status": "monitor",
@@ -93,6 +101,7 @@ const MINE_DATA = [
   {
     "id": "24",
     "name": "Korba Coalfield",
+    "subsidiary": "SECL",
     "coordinates": [82.7306, 22.3583],
     "risk": 33.1,
     "status": "healthy",
@@ -197,6 +206,16 @@ function MineMap() {
 
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE)
   const [selectedMine, setSelectedMine] = useState<any>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredMines = MINE_DATA.filter(site => site.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+  const groupedMines = filteredMines.reduce((acc, mine) => {
+    const sub = mine.subsidiary || 'Other';
+    if (!acc[sub]) acc[sub] = [];
+    acc[sub].push(mine);
+    return acc;
+  }, {} as Record<string, typeof MINE_DATA>);
 
   const layers = [
     new ScatterplotLayer({
@@ -236,41 +255,46 @@ function MineMap() {
           <h2 className="font-semibold text-lg mb-4">{t("site_explorer", "Site Explorer")}</h2>
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search sites..." className="pl-9" />
+            <Input placeholder="Search sites..." className="pl-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
           </div>
         </div>
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-          {MINE_DATA.map((site, idx) => (
-            <Card 
-              key={idx} 
-              className={`cursor-pointer transition-colors ${selectedMine?.id === site.id ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}`}
-              onClick={() => {
-                setSelectedMine(site)
-                setViewState(v => ({
-                  ...v,
-                  longitude: site.coordinates[0],
-                  latitude: site.coordinates[1],
-                  zoom: 9,
-                  transitionDuration: 1000
-                }))
-              }}
-            >
-              <CardContent className="p-4 flex items-start justify-between">
-                <div>
-                  <div className="font-semibold text-sm">{site.name}</div>
-                  <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                    <MapPin className="h-3 w-3" />
-                    {site.coordinates[0].toFixed(2)}{t("text", ",")}{site.coordinates[1].toFixed(2)}
-                  </div>
-                </div>
-                <div className={`text-xs font-bold px-2 py-1 rounded ${
-                  site.status === 'critical' ? 'bg-comet-down/10 text-comet-down' :
-                  site.status === 'healthy' ? 'bg-comet-up/10 text-comet-up' :
-                  'bg-amber-500/10 text-amber-600'
-                }`}>{t("risk", "Risk")}{site.risk.toFixed(1)}
-                </div>
-              </CardContent>
-            </Card>
+        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-5">
+          {Object.entries(groupedMines).map(([subsidiary, mines]) => (
+            <div key={subsidiary} className="space-y-3">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{subsidiary} ({mines.length})</h3>
+              {mines.map((site, idx) => (
+                <Card 
+                  key={site.id} 
+                  className={`cursor-pointer transition-colors ${selectedMine?.id === site.id ? 'border-primary bg-primary/5' : 'hover:border-primary/50'}`}
+                  onClick={() => {
+                    setSelectedMine(site)
+                    setViewState(v => ({
+                      ...v,
+                      longitude: site.coordinates[0],
+                      latitude: site.coordinates[1],
+                      zoom: 9,
+                      transitionDuration: 1000
+                    }))
+                  }}
+                >
+                  <CardContent className="p-4 flex items-start justify-between">
+                    <div>
+                      <div className="font-semibold text-sm">{site.name}</div>
+                      <div className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                        <MapPin className="h-3 w-3" />
+                        {site.coordinates[0].toFixed(2)}{t("text", ",")}{site.coordinates[1].toFixed(2)}
+                      </div>
+                    </div>
+                    <div className={`text-xs font-bold px-2 py-1 rounded ${
+                      site.status === 'critical' ? 'bg-comet-down/10 text-comet-down' :
+                      site.status === 'healthy' ? 'bg-comet-up/10 text-comet-up' :
+                      'bg-amber-500/10 text-amber-600'
+                    }`}>{t("risk", "Risk")}{site.risk.toFixed(1)}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           ))}
         </div>
       </aside>
@@ -295,8 +319,9 @@ function MineMap() {
             <div className="flex flex-col max-h-[80vh] overflow-y-auto">
               <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-card z-10 rounded-t-xl">
                 <h3 className="font-bold text-lg">{selectedMine.name}</h3>
-                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSelectedMine(null)}>
-                  <X className="h-4 w-4" />
+                <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 rounded-full hover:bg-muted" onClick={() => setSelectedMine(null)}>
+                  <X className="h-5 w-5" />
+                  <span className="sr-only">{t("close", "Close")}</span>
                 </Button>
               </div>
               <div className="p-4 space-y-6">

@@ -12,16 +12,18 @@ from services.notification_service import send_alert, NotificationRequest
 
 async def main():
     if len(sys.argv) < 3:
-        print("Usage: python test_notification.py <user_id> <priority>")
+        print("Usage: python test_notification.py <user_id> <priority> [title] [body]")
         print("Example: python test_notification.py 00000000-0000-0000-0000-000000000010 critical")
         return
 
     user_id = sys.argv[1]
     priority = sys.argv[2] # "critical", "high", "medium", "low"
+    title = sys.argv[3] if len(sys.argv) > 3 else f"Test {priority.capitalize()} Alert"
+    body = sys.argv[4] if len(sys.argv) > 4 else "This is a test notification generated from the command line."
 
     req = NotificationRequest(
-        title=f"Test {priority.capitalize()} Alert",
-        body="This is a test notification generated from the command line.",
+        title=title,
+        body=body,
         priority=priority,
         target_user_id=user_id,
         entity_type="test",

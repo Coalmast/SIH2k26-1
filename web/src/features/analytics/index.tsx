@@ -54,7 +54,7 @@ export function AIAnalyticsModule() {
     setTimeout(() => {
       setMessages(prev => [...prev, { 
         role: 'ai', 
-        content: `**Analysis Result**\n\nBased on your query regarding "${text}", I have analyzed the telemetry and incident logs.\n\n- **Finding 1:** There is a 42% spike in dust-related anomalies just before shift changes.\n- **Finding 2:** Incident rate correlates heavily with these peaks.\n\n**Recommendation:** Implement automated mist cannons synchronized with shift timings.` 
+        content: `**Analysis Result: Environmental Risk Correlation**\n\nBased on your query regarding "${text}", I have analyzed the telemetry and incident logs for **Umrer OCP**.\n\n- **Finding 1 (Telemetry):** There is a sustained 40% spike in PM10 dust anomalies (averaging 4.2 mg/m³) in Section 3 East during the afternoon shift.\n- **Finding 2 (Correlation):** Incident rate correlates heavily with these peaks, specifically coinciding with hauling operations while mist cannons were logged as offline.\n- **Regulatory Impact:** This breaches MoEF&CC Environmental Clearance Condition No. 12.\n\n**Recommendation:**\n1. Dispatch maintenance crew to repair Mist Cannon Unit B in Section 3 East.\n2. Sync automated water sprinklers with heavy haulage schedules.\n3. Prepare CAPA response for District Magistrate to prevent show-cause notice.` 
       }])
       setIsTyping(false)
     }, 1500)

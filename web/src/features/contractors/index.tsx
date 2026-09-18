@@ -50,20 +50,20 @@ export function ContractorsModule() {
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/50 min-h-screen text-foreground w-full space-y-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#0a192f] p-6 rounded-xl text-foreground shadow-lg">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-br from-muted/80 to-muted/40 border border-border p-6 rounded-xl text-foreground shadow-lg">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
             <HardHat className="h-8 w-8 text-comet-up" />{t("contractor_vendor_portal", "Contractor & Vendor Portal")}</h1>
-          <p className="text-muted-foreground/50 mt-1">{t(
+          <p className="text-muted-foreground mt-1">{t(
             "manage_vendor_compliance_ai_tr",
             "Manage vendor compliance, AI trust scores, and real-time attendance."
           )}</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">{t("mine_all_active", "Mine: All Active")}<ChevronDown className="ml-2 h-4 w-4" />
+          <Button variant="outline" className="bg-background border-border text-foreground hover:bg-muted">{t("mine_all_active", "Mine: All Active")}<ChevronDown className="ml-2 h-4 w-4" />
           </Button>
           <div className="relative">
-            <Button variant="outline" size="icon" className="bg-transparent border-slate-600 text-slate-200 hover:bg-muted">
+            <Button variant="outline" size="icon" className="bg-background border-border text-foreground hover:bg-muted">
               <Bell className="h-5 w-5" />
             </Button>
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
@@ -71,7 +71,7 @@ export function ContractorsModule() {
               <span className="relative inline-flex rounded-full h-3 w-3 bg-comet-down"></span>
             </span>
           </div>
-          <Button className="bg-emerald-600 hover:bg-comet-up text-foreground border-0">
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white border-0">
             <Plus className="h-4 w-4 mr-2" />{t("onboard_vendor", "Onboard Vendor")}</Button>
         </div>
       </div>

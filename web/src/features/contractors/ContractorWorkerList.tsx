@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Search, Plus, Filter, AlertTriangle, ShieldCheck, UserPlus, HardHat } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
@@ -40,9 +41,36 @@ export function ContractorWorkerList({ id }: { id: string }) {
             "Manage active workforce, ESI details, and vocational training validities."
           )}</p>
         </div>
-        <Button className="bg-emerald-600 hover:bg-comet-up">
-          <UserPlus className="h-4 w-4 mr-2" />{t("add_worker", "Add Worker")}</Button>
-      </div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-emerald-600 hover:bg-comet-up">
+                <UserPlus className="h-4 w-4 mr-2" />{t("add_worker", "Add Worker")}</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>{t("add_worker", "Add Worker")}</DialogTitle>
+                <DialogDescription>Add a new contract worker to the registry.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Full Name</label>
+                  <Input placeholder="e.g. Ramesh Kumar" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">ESI / EPF No.</label>
+                  <Input placeholder="e.g. ESI-889012" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Role</label>
+                  <Input placeholder="e.g. HEMM Operator" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Save Worker</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
 
       <div className="flex gap-4 items-center bg-background p-3 rounded-lg shadow-sm border border-border">
         <div className="relative flex-1">

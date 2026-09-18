@@ -210,7 +210,7 @@ export function SignIn() {
       </div>
 
       {/* ── Right Form Panel ── */}
-      <div className='flex flex-1 items-center justify-center bg-background px-6 py-12'>
+      <div className='flex flex-1 items-center justify-center bg-background text-foreground px-6 py-12'>
         <div className='w-full max-w-sm'>
           {/* Mobile branding */}
           <div className='flex items-center gap-3 mb-8 lg:hidden'>

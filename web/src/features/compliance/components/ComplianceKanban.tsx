@@ -5,7 +5,7 @@ import { Loader2, Calendar } from 'lucide-react';
 import { KanbanBoard } from '@/components/kanban-board';
 import { type KanbanData, type KanbanCardRenderer } from '@/components/kanban-board/types';
 import { Card, CardContent } from '@/components/ui/card';
-import { formatDistanceToNow } from 'date-fns';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 
 const KANBAN_COLUMNS = [
@@ -30,11 +30,19 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
             </span>
           </div>
           <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-1">
-            <span>Reg: {data.requirement?.regulation?.code || 'N/A'}</span>
+            <div className="flex items-center gap-2">
+              <span>Reg: {data.requirement?.regulation?.code || 'N/A'}</span>
+              {data.requirement?.regulation?.category === 'environment' && (
+                <span className="bg-green-500/20 text-green-500 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Environment</span>
+              )}
+              {data.requirement?.regulation?.category === 'safety' && (
+                <span className="bg-red-500/20 text-red-500 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase">Safety</span>
+              )}
+            </div>
             <div className={`flex items-center gap-1 mt-1 ${isOverdue ? 'text-comet-down font-medium' : ''}`}>
               <Calendar className="h-3 w-3" />
               {isOverdue 
-                ? `Overdue by ${formatDistanceToNow(new Date(data.due_date))}` 
+                ? `Overdue by ${new Date(data.due_date).toLocaleDateString()}` 
                 : `Due: ${new Date(data.due_date).toLocaleDateString()}`
               }
             </div>
@@ -52,6 +60,7 @@ export function ComplianceKanban({ mineId }: { mineId?: string }) {
 
   const { data: instances, isLoading } = useComplianceInstances(mineId);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const boardData = useMemo<KanbanData>(() => {
     if (!instances) return { columns: [] };
@@ -80,7 +89,13 @@ export function ComplianceKanban({ mineId }: { mineId?: string }) {
       <KanbanBoard
         renderers={[complianceCardRenderer]}
         data={boardData}
-        readOnly={true} // For now, we only view and click to open details
+        readOnly={false} 
+        onItemMove={({ item, to }) => {
+          queryClient.setQueryData(['complianceInstances', mineId, undefined, undefined], (old: any) => {
+            if (!old) return old;
+            return old.map((i: any) => i.id === item.id ? { ...i, status: to.columnId } : i);
+          });
+        }}
         onItemClick={(item) => navigate({ to: `/compliance/${item.id}` })}
       />
     </div>

@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { Header } from '@/components/layout/header'
+
 import { Main } from '@/components/layout/main'
 import { MinesTable } from '@/features/mines/components/MinesTable'
 import { MineOnboardingForm } from '@/features/mines/components/MineOnboardingForm'
 import { RoleGuard } from '@/components/shared/RoleGuard'
+import { ForbiddenError } from '@/features/errors/forbidden'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Plus } from 'lucide-react'
@@ -22,8 +23,8 @@ function AdminMinesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   return (
-    <RoleGuard roles={['super_admin', 'corporate_executive', 'subsidiary_admin']} fallback={<div>{t("access_denied", "Access Denied")}</div>}>
-      <Header fixed />
+    <RoleGuard roles={['super_admin', 'corporate_executive', 'subsidiary_admin']} fallback={<ForbiddenError />}>
+
 
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
         <div className='flex flex-wrap items-end justify-between gap-2'>
