@@ -200,4 +200,71 @@
   .bg-comet-yellow  { background-color: var(--color-comet-yellow); }
   .border-comet     { border-color: var(--color-comet-yellow); }
   .font-numeric { font-family: 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace; }
+
+  /* UIverse glow pulse border for critical alerts */
+  .glow-critical {
+    box-shadow: 0 0 0 1px var(--color-destructive), 0 0 16px 2px color-mix(in srgb, var(--color-destructive) 25%, transparent);
+    animation: glow-critical-pulse 2s ease-in-out infinite;
+  }
+  @keyframes glow-critical-pulse {
+    0%, 100% { box-shadow: 0 0 0 1px var(--color-destructive), 0 0 16px 2px color-mix(in srgb, var(--color-destructive) 25%, transparent); }
+    50%       { box-shadow: 0 0 0 2px var(--color-destructive), 0 0 28px 6px color-mix(in srgb, var(--color-destructive) 40%, transparent); }
+  }
+
+  /* Neon top border accent for widget cards */
+  .card-neon-top {
+    border-top: 2px solid var(--color-comet-yellow);
+    box-shadow: 0 -2px 12px 0 color-mix(in srgb, var(--color-comet-yellow) 20%, transparent);
+  }
+
+  /* Hover lift for KPI cards */
+  .kpi-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .kpi-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px 0 color-mix(in srgb, var(--color-comet-yellow) 12%, transparent);
+  }
+
+  /* Shimmer scan for number areas and cards */
+  .shimmer-number {
+    background: linear-gradient(90deg, transparent 0%, color-mix(in srgb, var(--color-comet-yellow) 5%, transparent) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer-scan 8s ease-in-out infinite;
+  }
+  @keyframes shimmer-scan {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* FullCalendar fixes */
+  .fc .fc-toolbar-title {
+    font-size: 1.125rem !important;
+    white-space: nowrap;
+  }
+  .fc .fc-toolbar.fc-header-toolbar {
+    margin-bottom: 1rem !important;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .fc .fc-daygrid-day.fc-day:not(.fc-day-disabled) {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .fc .fc-daygrid-day.fc-day:not(.fc-day-disabled):hover {
+    background-color: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  }
+  
+  /* FullCalendar Dark Mode Fixes */
+  .fc {
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: hsl(var(--muted));
+    --fc-neutral-text-color: hsl(var(--foreground));
+    --fc-border-color: hsl(var(--border));
+    --fc-today-bg-color: hsl(var(--primary) / 0.1);
+  }
+  .fc .fc-daygrid-day-number, .fc .fc-col-header-cell-cushion {
+    color: hsl(var(--foreground));
+    text-decoration: none;
+  }
 }
