@@ -165,6 +165,7 @@ export function Card({ node }: { node: TaskNode }) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onFocus={() => ctx.dispatch({ type: "set-focus", itemId: node.item.id })}
+      style={style}
       className={cn(
         "relative rounded-2xl border border-slate-200/60 dark:border-white/10 bg-white/10 dark:bg-black/20 backdrop-blur-md p-4 text-card-foreground shadow-[0_4px_30px_rgba(0,0,0,0.1)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

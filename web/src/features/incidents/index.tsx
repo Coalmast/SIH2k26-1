@@ -47,12 +47,13 @@ export function IncidentsList() {
   } = useTranslation();
 
   const [filter, setFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return <Badge variant="destructive">{t("critical", "Critical")}</Badge>;
-      case 'high': return <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-200">{t("high", "High")}</Badge>;
-      case 'medium': return <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">{t("medium", "Medium")}</Badge>;
+      case 'critical': return <Badge variant="outline" className="bg-[#f6465d]/15 text-comet-down border-[#f6465d]/30">{t("critical", "Critical")}</Badge>;
+      case 'high': return <Badge variant="outline" className="bg-orange-500/15 text-orange-600 border-orange-500/30">{t("high", "High")}</Badge>;
+      case 'medium': return <Badge variant="outline" className="bg-amber-500/15 text-amber-600 border-amber-500/30">{t("medium", "Medium")}</Badge>;
       default: return <Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up border-[#0ecb81]/30">{t("minor", "Minor")}</Badge>;
     }
   }
@@ -82,7 +83,7 @@ export function IncidentsList() {
       <div className="flex gap-4 items-center bg-background p-4 rounded-lg shadow-sm border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search incidents..." className="pl-9" />
+          <Input placeholder="Search incidents..." className="pl-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
         </div>
         <Select defaultValue="all" onValueChange={setFilter}>
           <SelectTrigger className="w-[180px]">
@@ -100,7 +101,11 @@ export function IncidentsList() {
       </div>
 
       <div className="space-y-4">
-        {mockIncidents.filter(i => filter === 'all' || i.severity === filter).map(incident => (
+        {mockIncidents.filter(i => {
+          const matchesFilter = filter === 'all' || i.severity === filter;
+          const matchesSearch = i.type.toLowerCase().includes(searchQuery.toLowerCase()) || i.desc.toLowerCase().includes(searchQuery.toLowerCase()) || i.id.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchesFilter && matchesSearch;
+        }).map(incident => (
           <Card key={incident.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-5 flex flex-col md:flex-row gap-6 md:items-center">
               <div className="flex-1 space-y-2">

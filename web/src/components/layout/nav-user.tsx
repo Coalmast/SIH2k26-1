@@ -51,17 +51,17 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size='lg'
-                className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+                className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/60 transition-all duration-200 rounded-xl'
               >
-                <Avatar className='h-8 w-8 rounded-lg'>
+                <Avatar className='h-8 w-8 rounded-lg ring-1 ring-sidebar-primary/30'>
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className='rounded-lg'>{t("sn", "SN")}</AvatarFallback>
+                  <AvatarFallback className='rounded-lg bg-sidebar-primary/20 text-sidebar-primary text-xs font-bold'>{t("sn", "SN")}</AvatarFallback>
                 </Avatar>
-                <div className='grid flex-1 text-start text-sm leading-tight'>
-                  <span className='truncate font-semibold'>{user.name}</span>
-                  <span className='truncate text-xs'>{user.email}</span>
+                <div className='grid flex-1 text-start leading-tight'>
+                  <span className='truncate text-sm font-semibold text-sidebar-foreground'>{user.name}</span>
+                  <span className='truncate text-[10px] text-sidebar-foreground/50'>{user.email}</span>
                 </div>
-                <ChevronsUpDown className='ms-auto size-4' />
+                <ChevronsUpDown className='ms-auto size-3.5 text-sidebar-foreground/40' />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent

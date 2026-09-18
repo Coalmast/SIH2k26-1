@@ -152,10 +152,10 @@ function CorporateDashboard() {
 
   // Violation severity breakdown
   const violChartData = [
-    { name: 'critical', value: 5 },
-    { name: 'high', value: 8 },
-    { name: 'medium', value: 12 },
-    { name: 'low', value: 20 }
+    { name: 'critical', value: 2 },
+    { name: 'high', value: 3 },
+    { name: 'medium', value: 5 },
+    { name: 'low', value: 8 }
   ]
 
   const scatterData = [
@@ -164,6 +164,9 @@ function CorporateDashboard() {
     { id: '3', name: 'Durgapur Open Cast Mine', coordinates: [79.2989, 20.0081] as [number, number], risk: 45.0, status: 'monitor', activeAlerts: 1 },
     { id: '4', name: 'Bhatadi Open Cast Mine', coordinates: [79.2674, 20.0574] as [number, number], risk: 32.1, status: 'healthy', activeAlerts: 0 },
   ]
+
+  const [showAllHeatmap, setShowAllHeatmap] = useState(false);
+  const displayedMines = showAllHeatmap ? scatterData : scatterData.slice(0, 2);
 
   const deckLayers = [
     new ScatterplotLayer({
@@ -271,7 +274,7 @@ function CorporateDashboard() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 bg-background">
-                    {scatterData.map(m => (
+                    {displayedMines.map(m => (
                       <tr key={m.id} className="hover:bg-muted/30 transition-colors group">
                         <td className="px-6 py-4 font-semibold text-foreground text-[14px]">{m.name}</td>
                         <td className="px-6 py-4 text-center">
@@ -301,6 +304,13 @@ function CorporateDashboard() {
                   </tbody>
                 </table>
               </div>
+              {!showAllHeatmap && scatterData.length > 2 && (
+                <div className="p-2 border-t flex justify-center bg-muted/10">
+                  <Button variant="ghost" size="sm" onClick={() => setShowAllHeatmap(true)} className="text-xs text-muted-foreground hover:text-foreground">
+                    {t("show_more", "Show More")} ({scatterData.length - 2})
+                  </Button>
+                </div>
+              )}
             </CardContent>
           </Card>
           
@@ -374,7 +384,7 @@ function CorporateDashboard() {
           {/* Violation Severity Breakdown */}
           <Card className="shadow-sm">
             <CardContent className="p-6">
-              <SectionHeader title="Violation Severity" badge={25} />
+              <SectionHeader title="Violation Severity" badge={openViol} />
               <div className="flex flex-col gap-5 mt-4">
                 {violChartData.map(({ name, value }) => {
                   const max = 20

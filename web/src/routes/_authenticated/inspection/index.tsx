@@ -37,8 +37,9 @@ function InspectionListPage() {
           )}</p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Select value={type} onValueChange={setType}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Select value={type} onValueChange={setType}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
@@ -62,6 +63,7 @@ function InspectionListPage() {
               <SelectItem value="reviewed">{t("reviewed", "Reviewed")}</SelectItem>
             </SelectContent>
           </Select>
+          </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>

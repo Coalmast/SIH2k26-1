@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
-import { Header } from '@/components/layout/header'
+
 import { Main } from '@/components/layout/main'
 import { ViolationTimeline } from '@/components/shared/ViolationTimeline'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -55,7 +55,7 @@ function CAPADetailPage() {
 
   return (
     <>
-      <Header fixed />
+
 
       <Main className='flex flex-1 flex-col p-6 bg-muted/30 min-h-screen'>
         <div className="max-w-5xl mx-auto w-full space-y-6 animate-in fade-in duration-500">

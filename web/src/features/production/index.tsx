@@ -8,12 +8,12 @@ import { Pickaxe, Truck, ArchiveX, TrendingUp, AlertCircle, RefreshCw } from 'lu
 import { Badge } from '@/components/ui/badge'
 
 const mockProductionData = [
-  { date: '01 Sep', target: 12000, actual: 11500, dispatch: 11000 },
-  { date: '02 Sep', target: 12000, actual: 12200, dispatch: 11800 },
-  { date: '03 Sep', target: 12000, actual: 12500, dispatch: 12100 },
-  { date: '04 Sep', target: 12000, actual: 10800, dispatch: 10500 },
-  { date: '05 Sep', target: 12000, actual: 12100, dispatch: 11900 },
-  { date: '06 Sep', target: 12000, actual: 13000, dispatch: 12500 },
+  { date: '01 Sep 26', target: 12000, actual: 11500, dispatch: 11000 },
+  { date: '02 Sep 26', target: 12000, actual: 12200, dispatch: 11800 },
+  { date: '03 Sep 26', target: 12000, actual: 12500, dispatch: 12100 },
+  { date: '04 Sep 26', target: 12000, actual: 10800, dispatch: 10500 },
+  { date: '05 Sep 26', target: 12000, actual: 12100, dispatch: 11900 },
+  { date: '06 Sep 26', target: 12000, actual: 13000, dispatch: 12500 },
 ]
 
 export function ProductionModule() {
@@ -39,44 +39,44 @@ export function ProductionModule() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="shadow-sm border-blue-100 bg-blue-50/30">
+        <Card className="shadow-sm border-border bg-muted/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-blue-800 flex justify-between">{t("today_s_production", "Today's Production")}<Badge variant="outline" className="bg-blue-100 text-blue-700 hover:bg-blue-100">{t("on_track", "On Track")}</Badge>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("today_s_production", "Today's Production")}<Badge variant="outline" className="bg-muted text-foreground hover:bg-muted">{t("on_track", "On Track")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-blue-600">{t("4_250_t", "4,250 T")}</div>
-            <div className="text-xs text-blue-600/70 mt-1">{t("target_12_000_t", "Target: 12,000 T")}</div>
+            <div className="text-3xl font-black text-foreground">{t("4_250_t", "4,250 T")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("target_12_000_t", "Target: 12,000 T")}</div>
           </CardContent>
         </Card>
         
-        <Card className="shadow-sm border-emerald-100 bg-[#0ecb81]/10/30">
+        <Card className="shadow-sm border-border bg-muted/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-comet-up flex justify-between">{t("total_dispatched", "Total Dispatched")}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("total_dispatched", "Total Dispatched")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-black text-comet-up">{t("3_800_t", "3,800 T")}</div>
-            <div className="text-xs text-comet-up/70 mt-1">{t("142_trucks_cleared", "142 Trucks Cleared")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("142_trucks_cleared", "142 Trucks Cleared")}</div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border-amber-100 bg-amber-50/30">
+        <Card className="shadow-sm border-border bg-muted/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-amber-800 flex justify-between">{t("pithead_stock", "Pithead Stock")}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("pithead_stock", "Pithead Stock")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-amber-600">{t("24_500_t", "24,500 T")}</div>
-            <div className="text-xs text-amber-600/70 mt-1">{t("capacity_50_000_t", "Capacity: 50,000 T")}</div>
+            <div className="text-3xl font-black text-amber-500">{t("24_500_t", "24,500 T")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("capacity_50_000_t", "Capacity: 50,000 T")}</div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-sm border-purple-100 bg-purple-50/30">
+        <Card className="shadow-sm border-border bg-muted/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-purple-800 flex justify-between">{t("active_machinery", "Active Machinery")}</CardTitle>
+            <CardTitle className="text-sm text-muted-foreground flex justify-between">{t("active_machinery", "Active Machinery")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-black text-purple-600">{t("42_45", "42 / 45")}</div>
-            <div className="text-xs text-purple-600/70 mt-1">{t("3_under_maintenance", "3 Under Maintenance")}</div>
+            <div className="text-3xl font-black text-purple-500">{t("42_45", "42 / 45")}</div>
+            <div className="text-xs text-muted-foreground mt-1">{t("3_under_maintenance", "3 Under Maintenance")}</div>
           </CardContent>
         </Card>
       </div>
@@ -92,7 +92,7 @@ export function ProductionModule() {
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={mockProductionData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" strokeOpacity={0.1} />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
                 <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
                 <RechartsTooltip 
@@ -143,7 +143,7 @@ export function ProductionModule() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200 mb-1">{t("at_loading_point", "At Loading Point")}</Badge>
+                  <Badge variant="outline" className="bg-amber-500/15 text-amber-600 border-amber-500/30 mb-1">{t("at_loading_point", "At Loading Point")}</Badge>
                   <div className="text-xs text-muted-foreground font-semibold">{t("est_28_0_t", "Est: 28.0 T")}</div>
                 </div>
               </div>

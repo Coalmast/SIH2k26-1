@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import { createFileRoute } from '@tanstack/react-router'
+import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -23,6 +25,13 @@ function AdminAuditLogPage() {
     t
   } = useTranslation();
 
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredLogs = MOCK_LOGS.filter(log => {
+    const q = searchQuery.toLowerCase();
+    return log.user.toLowerCase().includes(q) || log.action.toLowerCase().includes(q) || log.resource.toLowerCase().includes(q) || log.id.toLowerCase().includes(q);
+  })
+
   return (
     <div className="p-4 md:p-8 bg-muted/50 min-h-screen text-foreground">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -36,7 +45,7 @@ function AdminAuditLogPage() {
               "Immutable ledger of all system actions, access, and modifications."
             )}</p>
           </div>
-          <Button variant="outline"><Download className="h-4 w-4 mr-2" />{t("export_csv", "Export CSV")}</Button>
+          <Button variant="outline" onClick={() => toast.success(t("exporting_csv", "Exporting CSV..."))}><Download className="h-4 w-4 mr-2" />{t("export_csv", "Export CSV")}</Button>
         </div>
 
         <Card className="shadow-sm">
@@ -46,7 +55,7 @@ function AdminAuditLogPage() {
               <div className="flex gap-2">
                 <div className="relative w-64">
                   <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground/70" />
-                  <Input placeholder="Search logs..." className="pl-9 h-9" />
+                  <Input placeholder="Search logs..." className="pl-9 h-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                 </div>
                 <Button variant="outline" size="sm" className="h-9"><Filter className="h-4 w-4" /></Button>
               </div>
@@ -64,8 +73,8 @@ function AdminAuditLogPage() {
                     <th className="px-6 py-3 font-semibold">{t("ip_address", "IP Address")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 bg-background">
-                  {MOCK_LOGS.map((log) => (
+                <tbody className="divide-y divide-border bg-background">
+                  {filteredLogs.map((log) => (
                     <tr key={log.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-3 text-muted-foreground">{log.timestamp}</td>
                       <td className="px-6 py-3 font-semibold text-foreground">{log.user}</td>

@@ -51,7 +51,7 @@ export function StatusBadge({
   if (!canSelect) {
     return (
       <Badge
-        variant="secondary"
+        variant={variant}
         className={cn("font-semibold bg-transparent", toneClass, className)}
         style={{ color: node.item.borderColor || "inherit" }}
         role="status"
@@ -89,7 +89,7 @@ export function StatusBadge({
         className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <Badge
-          variant="secondary"
+          variant={variant}
           className={cn("cursor-pointer gap-1 pe-1.5 font-semibold bg-transparent", toneClass, className)}
           style={{ color: node.item.borderColor || "inherit" }}
           role="status"

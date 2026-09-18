@@ -52,7 +52,7 @@ export function SystemHealthDashboard() {
   }, [])
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#1a1a2e] min-h-screen text-slate-200 w-full space-y-6 dark">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-background min-h-screen text-foreground w-full space-y-6">
 
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-border">
@@ -70,7 +70,7 @@ export function SystemHealthDashboard() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-comet-up opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-comet-up"></span>
             </span>{t("system_operational", "System Operational")}</Badge>
-          <Button variant="outline" className="border-border bg-muted text-slate-200 hover:bg-slate-700 hover:text-foreground">
+          <Button variant="outline" className="border-border bg-muted hover:bg-muted/80 hover:text-foreground">
             <RefreshCw className="h-4 w-4 mr-2" />{t("refresh", "Refresh")}</Button>
         </div>
       </div>

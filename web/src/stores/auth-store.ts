@@ -111,7 +111,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       if (role === 'mine_manager') permissions.push('compliance:approve', 'capa:verify', 'mine:write', 'reports:view');
       if (role === 'field_inspector') permissions.push('inspection:create', 'violation:create', 'incident:create');
       if (role === 'safety_official') permissions.push('inspection:create', 'violation:create', 'incident:create', 'capa:verify');
-      if (role === 'contractor') permissions.push('contractor:view', 'grievance:create');
+      if (role === 'contractor') permissions.push('contractor:view');
       
       const user = state.auth.user ? { ...state.auth.user, role } : null;
       
