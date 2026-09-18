@@ -1,637 +1,575 @@
 ---
-version: alpha
-name: Binance-design-analysis
-description: A confident financial-platform interface anchored on a deep near-black canvas, where Binance's iconic yellow (#FCD535) carries every primary CTA, brand accent, and value-claim moment. Type runs Binance's custom BinanceNova / BinancePlex stack at modest weights — the system trusts size and yellow voltage over bold weight. Marketing and product surfaces default to the dark theme; transactional surfaces (buy crypto, deposit, exchange) flip to a light theme that shares the same yellow CTAs and gray-blue hairlines. Trading green (up) and red (down) accents thread through both modes for price-direction signals.
+version: "1.0"
+name: COMET Design System
+description: >
+  COMET (Coal Mine E-Governance & Monitoring Technology) is an AI-enabled governance
+  and compliance platform for India's coal mining sector, developed under the Ministry of Coal /
+  Coal India Limited initiative. The design system operates across two premium themes:
+  "Governance Stone" (light) and "Obsidian Command" (dark). Both modes share the same
+  construction-orange accent identity, the same type system, and the same component language.
+  The permanent dark sidebar is a signature across both modes — creating a dramatic split
+  between the authoritative navigation rail and the content canvas.
+
+themes:
+  light: "Governance Stone — warm parchment canvas, dark steel sidebar, burnt-orange authority"
+  dark:  "Obsidian Command — near-black warm-tinted canvas, ember-border cards, vivid construction-orange"
 
 colors:
-  primary: "#fcd535"
-  primary-active: "#f0b90b"
-  primary-disabled: "#3a3a1f"
-  ink: "#181a20"
-  body: "#eaecef"
-  body-on-light: "#181a20"
-  muted: "#707a8a"
-  muted-strong: "#929aa5"
-  hairline-on-light: "#eaecef"
-  hairline-on-dark: "#2b3139"
-  border-strong: "#cdd1d6"
-  canvas-light: "#ffffff"
-  canvas-dark: "#0b0e11"
-  surface-card-dark: "#1e2329"
-  surface-elevated-dark: "#2b3139"
-  surface-soft-light: "#fafafa"
-  surface-strong-light: "#f5f5f5"
-  on-primary: "#181a20"
-  on-dark: "#ffffff"
-  trading-up: "#0ecb81"
-  trading-down: "#f6465d"
-  accent-turquoise: "#2dbdb6"
-  info: "#3b82f6"
-  info-ring: "#3b82f6"
+  # ── Light Mode (Governance Stone) ──────────────────────────────────────────
+  light:
+    background:            "#f2ede8"   # Warm parchment — carved granite feel, never clinical white
+    card:                  "#faf7f2"   # Barely-off-white lift above background
+    foreground:            "#1a1614"   # Deep warm charcoal — warmer than pure black
+    muted:                 "#e8e2da"   # Warm greige — secondary surfaces
+    muted-foreground:      "#78716c"   # Stone-gray mid-tone
+    border:                "#d4cec5"   # Warm hairline — visible without harshness
+    input:                 "#d4cec5"   # Same as border for form inputs
+    primary:               "#c2410c"   # Burnt-orange 700 — coal fire authority
+    primary-foreground:    "#fff7ed"   # Warm cream on burnt-orange
+    secondary:             "#e8e2da"   # Greige — secondary buttons / chips
+    secondary-foreground:  "#1a1614"   # Dark on secondary
+    accent:                "#fff7ed"   # Orange-50 — hover highlight chips
+    accent-foreground:     "#9a3412"   # Orange-800 on light accent
+    destructive:           "#dc2626"   # Red-600 — violations / breaches
+    ring:                  "#f97316"   # Orange-500 focus ring
+    radius:                "0.5rem"    # 8px — slightly softer than default
+
+  # ── Dark Mode (Obsidian Command) ────────────────────────────────────────────
+  dark:
+    background:            "#0f0d0c"   # Near-black with 1% warm amber tint — never pure black
+    card:                  "#171412"   # Warm dark surface — barely above background
+    foreground:            "#f5f0eb"   # Warm off-white — not cold #eee
+    muted:                 "#1e1a17"   # One step lighter dark for nested surfaces
+    muted-foreground:      "#a8a29e"   # Warm gray mid-tone
+    border:                "#2a2420"   # Subtle warm dark border
+    input:                 "#2a2420"   # Same as border
+    primary:               "#f97316"   # Construction orange — vivid, like PPE helmets
+    primary-foreground:    "#0f0d0c"   # Near-black text on orange
+    secondary:             "#1e1a17"   # Muted dark secondary
+    secondary-foreground:  "#f5f0eb"   # Warm white on dark secondary
+    accent:                "#1e1a17"   # Same as muted — hover state
+    accent-foreground:     "#f5f0eb"   # Warm white on accent
+    destructive:           "#ef4444"   # Red-500 — breaches / violations (slightly brighter in dark)
+    ring:                  "#f97316"   # Orange-500 focus ring
+
+  # ── Sidebar (PERMANENT DARK — signature across both modes) ──────────────────
+  sidebar:
+    light:
+      background:           "#18181b"   # Zinc-900 — deep steel
+      foreground:           "#f4f4f5"   # Zinc-100
+      primary:              "#f97316"   # Construction orange — active items
+      primary-foreground:   "#18181b"   # Dark on active orange
+      accent:               "#27272a"   # Zinc-800 — hover
+      accent-foreground:    "#fafafa"   # Near-white on hover
+      border:               "#27272a"   # Zinc-800 — subtle inner border
+      ring:                 "#f97316"   # Orange focus ring in sidebar
+    dark:
+      background:           "#0a0908"   # Slightly darker than page canvas — depth illusion
+      foreground:           "#f4f4f5"   # Zinc-100
+      primary:              "#f97316"   # Same orange — consistent identity
+      primary-foreground:   "#0a0908"   # Near-black on orange
+      accent:               "#171412"   # Card-level dark for hover
+      accent-foreground:    "#fafafa"
+      border:               "#1e1a17"   # Muted-level dark border
+      ring:                 "#f97316"
+
+  # ── Semantic / Chart Tokens (Shared across both modes) ──────────────────────
+  semantic:
+    comet-up:      "#16a34a"   # Green-600 — Compliant / Approved / Positive trend
+    comet-down:    "#dc2626"   # Red-600 — Breached / Violation / Negative trend
+    comet-pending: "#f59e0b"   # Amber-400 — Pending / In Progress / Warning
+    comet-orange:  "#f97316"   # Orange-500 — Primary brand / Construction orange
+    chart-1:       "#f97316"   # Primary series — Orange
+    chart-2:       "#16a34a"   # Compliant series — Green
+    chart-3:       "#dc2626"   # Breach series — Red
+    chart-4:       "#f59e0b"   # Pending series — Amber
+    chart-5:       "#a8a29e"   # Neutral series — Stone gray
 
 typography:
-  hero-display:
-    fontFamily: "BinanceNova, -apple-system, BlinkMacSystemFont, sans-serif"
-    fontSize: 64px
-    fontWeight: 700
-    lineHeight: 1.1
-    letterSpacing: -1px
-  display-lg:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 48px
-    fontWeight: 700
-    lineHeight: 1.1
-    letterSpacing: -0.5px
-  display-md:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 40px
-    fontWeight: 600
-    lineHeight: 1.15
-    letterSpacing: -0.3px
-  display-sm:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 32px
-    fontWeight: 600
-    lineHeight: 1.2
-    letterSpacing: 0
-  title-lg:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 24px
-    fontWeight: 600
-    lineHeight: 1.3
-    letterSpacing: 0
-  title-md:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 20px
-    fontWeight: 600
-    lineHeight: 1.35
-    letterSpacing: 0
-  title-sm:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 16px
-    fontWeight: 600
-    lineHeight: 1.4
-    letterSpacing: 0
-  number-display:
-    fontFamily: "BinancePlex, BinanceNova, sans-serif"
-    fontSize: 40px
-    fontWeight: 700
-    lineHeight: 1.1
-    letterSpacing: -0.3px
-  number-md:
-    fontFamily: "BinancePlex, BinanceNova, sans-serif"
-    fontSize: 16px
-    fontWeight: 500
-    lineHeight: 1.4
-    letterSpacing: 0
-  number-sm:
-    fontFamily: "BinancePlex, BinanceNova, sans-serif"
-    fontSize: 14px
-    fontWeight: 500
-    lineHeight: 1.4
-    letterSpacing: 0
-  body-md:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 14px
-    fontWeight: 400
-    lineHeight: 1.5
-    letterSpacing: 0
-  body-sm:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 13px
-    fontWeight: 400
-    lineHeight: 1.5
-    letterSpacing: 0
-  caption:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 12px
-    fontWeight: 500
-    lineHeight: 1.4
-    letterSpacing: 0
-  button:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 14px
-    fontWeight: 600
-    lineHeight: 1
-    letterSpacing: 0
-  nav-link:
-    fontFamily: "BinanceNova, sans-serif"
-    fontSize: 14px
-    fontWeight: 500
-    lineHeight: 1.4
-    letterSpacing: 0
+  # ── Font Stack ────────────────────────────────────────────────────────────────
+  primary:    "Geist, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+  monospace:  "Geist Mono, 'IBM Plex Mono', 'JetBrains Mono', ui-monospace, monospace"
 
-rounded:
-  xs: 2px
-  sm: 4px
-  md: 6px
-  lg: 8px
-  xl: 12px
-  pill: 9999px
-  full: 9999px
+  # Geist is Vercel's typeface — modern, geometric, highly legible at small sizes.
+  # Geist Mono provides perfectly paired tabular number rendering for IDs, codes, and data.
+  # Fallback: Inter remains strong if Geist fails to load.
+
+  # ── Type Scale ────────────────────────────────────────────────────────────────
+  roles:
+    hero:           { size: "2.5rem",  weight: 700, tracking: "-0.04em", lineHeight: 1.1 }
+    display-lg:     { size: "2rem",    weight: 700, tracking: "-0.03em", lineHeight: 1.15 }
+    display-md:     { size: "1.5rem",  weight: 600, tracking: "-0.02em", lineHeight: 1.2 }
+    title-lg:       { size: "1.25rem", weight: 600, tracking: "-0.01em", lineHeight: 1.3 }
+    title-md:       { size: "1rem",    weight: 600, tracking: "0",       lineHeight: 1.4 }
+    title-sm:       { size: "0.875rem",weight: 600, tracking: "0",       lineHeight: 1.4 }
+    body-md:        { size: "0.875rem",weight: 400, tracking: "0",       lineHeight: 1.6 }
+    body-sm:        { size: "0.8125rem",weight: 400,tracking: "0",       lineHeight: 1.6 }
+    caption:        { size: "0.75rem", weight: 500, tracking: "0.01em",  lineHeight: 1.4 }
+    label:          { size: "0.75rem", weight: 600, tracking: "0.05em",  lineHeight: 1, textTransform: "uppercase" }
+    button:         { size: "0.875rem",weight: 600, tracking: "0",       lineHeight: 1 }
+    numeric-lg:     { size: "1.5rem",  weight: 700, tracking: "-0.02em", lineHeight: 1.1, fontFamily: "monospace" }
+    numeric-md:     { size: "1rem",    weight: 600, tracking: "0",       lineHeight: 1.4, fontFamily: "monospace" }
+    numeric-sm:     { size: "0.875rem",weight: 500, tracking: "0",       lineHeight: 1.4, fontFamily: "monospace" }
+    code:           { size: "0.8125rem",weight: 400,tracking: "0",       lineHeight: 1.6, fontFamily: "monospace" }
 
 spacing:
-  xxs: 4px
-  xs: 8px
-  sm: 12px
-  md: 16px
-  lg: 24px
-  xl: 32px
-  xxl: 48px
-  section: 80px
+  unit: 4px
+  scale:
+    xxs: "0.25rem"   # 4px
+    xs:  "0.5rem"    # 8px
+    sm:  "0.75rem"   # 12px
+    md:  "1rem"      # 16px
+    lg:  "1.5rem"    # 24px
+    xl:  "2rem"      # 32px
+    xxl: "3rem"      # 48px
+    section: "5rem"  # 80px
+
+rounded:
+  xs:   "0.125rem"  # 2px
+  sm:   "0.25rem"   # 4px
+  md:   "0.5rem"    # 8px — default (matches --radius)
+  lg:   "0.75rem"   # 12px
+  xl:   "1rem"      # 16px
+  "2xl":"1.5rem"    # 24px
+  pill: "9999px"
+  full: "9999px"
+
+elevation:
+  levels:
+    flat:     { shadow: "none",                                      use: "page sections, headers, hero bands" }
+    card:     { shadow: "0 1px 2px rgb(0 0 0 / 0.04)",              use: "cards on light mode" }
+    raised:   { shadow: "0 2px 8px rgb(0 0 0 / 0.08)",              use: "modals, dropdowns, popovers" }
+    floating: { shadow: "0 8px 32px rgb(0 0 0 / 0.12)",             use: "command menu, tooltips" }
+    glow-orange: { shadow: "0 0 20px rgb(249 115 22 / 0.25)",       use: "active kanban cards, primary CTAs on dark" }
+    glow-red:    { shadow: "0 0 16px rgb(220 38 38 / 0.20)",        use: "breach alerts, critical violations" }
+
+animations:
+  # ── Durations ─────────────────────────────────────────────────────────────────
+  fast:     "150ms"   # Micro-interactions (hover states, button presses)
+  default:  "250ms"   # Standard transitions (tab changes, color shifts)
+  slow:     "400ms"   # Page transitions, panel slides
+  very-slow:"600ms"   # Count-up animations, loaders
+
+  # ── Easings ───────────────────────────────────────────────────────────────────
+  ease-spring: "cubic-bezier(0.34, 1.56, 0.64, 1)"   # Slightly overshoots — premium feel
+  ease-out:    "cubic-bezier(0.16, 1, 0.3, 1)"        # Snappy deceleration
+  ease-in-out: "cubic-bezier(0.45, 0, 0.55, 1)"       # Balanced — for color transitions
+
+  # ── Micro-Interaction Library ─────────────────────────────────────────────────
+  interactions:
+    stat-count-up:
+      description: "Dashboard stat numbers animate from 0 to their value on page mount"
+      implementation: "framer-motion useSpring + NumberTicker component"
+      duration: "600ms"
+      easing: "ease-out"
+
+    card-hover-glow:
+      description: "Cards emit a faint orange/amber border glow on hover using BorderBeam"
+      implementation: "border-beam component triggered on group-hover"
+      duration: "300ms"
+      note: "Color is severity-aware: amber=pending, red=breached, green=compliant"
+
+    sidebar-active-slide:
+      description: "Active navigation item indicator slides between items"
+      implementation: "framer-motion layoutId on the sidebar active pill"
+      duration: "200ms"
+      easing: "ease-spring"
+
+    page-transition:
+      description: "Route changes trigger a subtle blur + scale crossfade"
+      implementation: "framer-motion AnimatePresence on route outlet"
+      keyframes: "opacity 0→1, filter blur(4px)→none, scale 0.98→1"
+      duration: "250ms"
+
+    status-badge-pulse:
+      description: "Breached/critical items have a slow pulsing red ring"
+      implementation: "pulsating-button animation CSS or framer-motion"
+      period: "2000ms"
+      note: "Only applies to status=breached. Active inspections get green breathe."
+
+    skeleton-shimmer:
+      description: "Loading skeletons shimmer left-to-right before data arrives"
+      implementation: "Skeleton component with shimmer keyframe"
+      duration: "1500ms"
+      loop: true
+
+    kanban-drag-elevation:
+      description: "Dragged Kanban card gets orange glow shadow + 4° tilt"
+      implementation: "framer-motion whileDrag with rotate and boxShadow"
+      rotate: "4deg"
+      shadow: "{elevation.glow-orange}"
+
+    number-change-flash:
+      description: "Stat numbers flash amber briefly when their value changes"
+      implementation: "CSS color transition on value change via useEffect"
+      duration: "300ms"
+      color: "{colors.semantic.comet-pending}"
+
+    toast-slide-blur:
+      description: "Sonner toasts slide from right with backdrop-blur background"
+      implementation: "Sonner theme override"
+      background-light: "rgba(242, 237, 232, 0.85) + backdrop-blur-lg"
+      background-dark:  "rgba(23, 20, 18, 0.85) + backdrop-blur-lg"
+
+    command-menu-bloom:
+      description: "Cmd+K command palette blooms open with scale + backdrop blur"
+      implementation: "cmdk + framer-motion scale(0.96)→1 + blur"
+      background: "glassmorphic with 12px blur"
+
+    calendar-event-expand:
+      description: "Calendar event cards expand into a rich preview tooltip on hover"
+      implementation: "framer-motion height animation on EventCard hover"
+      duration: "200ms"
+
+    sidebar-logo-beam:
+      description: "COMET logo in sidebar has a border-beam sweep on app load"
+      implementation: "border-beam component on the logo container"
+      trigger: "once on mount"
+      duration: "1200ms"
 
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: 12px 24px
-    height: 40px
-  button-primary-active:
-    backgroundColor: "{colors.primary-active}"
-    textColor: "{colors.on-primary}"
-    rounded: "{rounded.md}"
-  button-primary-disabled:
-    backgroundColor: "{colors.primary-disabled}"
-    textColor: "{colors.muted}"
-    rounded: "{rounded.md}"
-  button-primary-pill:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.button}"
-    rounded: "{rounded.pill}"
-    padding: 14px 32px
-  button-secondary-on-dark:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: 12px 24px
-  button-secondary-on-light:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: 12px 24px
-  button-tertiary-text:
-    backgroundColor: transparent
-    textColor: "{colors.body}"
-    typography: "{typography.button}"
-  button-trading-up:
-    backgroundColor: "{colors.trading-up}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.sm}"
-    padding: 8px 20px
-  button-trading-down:
-    backgroundColor: "{colors.trading-down}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.button}"
-    rounded: "{rounded.sm}"
-    padding: 8px 20px
-  button-subscribe:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.on-primary}"
-    typography: "{typography.button}"
-    rounded: "{rounded.sm}"
-    padding: 6px 16px
-    height: 28px
-  text-link:
-    backgroundColor: transparent
-    textColor: "{colors.primary}"
-    typography: "{typography.body-md}"
-  top-nav-dark:
-    backgroundColor: "{colors.canvas-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.nav-link}"
-    height: 64px
-  top-nav-light:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.nav-link}"
-    height: 64px
-  hero-band-dark:
-    backgroundColor: "{colors.canvas-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.hero-display}"
-    padding: 80px
-  stat-callout-card:
-    backgroundColor: transparent
-    textColor: "{colors.primary}"
-    typography: "{typography.number-display}"
-  trust-badge:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.title-sm}"
-    rounded: "{rounded.lg}"
-    padding: 16px 20px
-  markets-table-card:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.xl}"
-    padding: 24px
-  markets-row:
-    backgroundColor: transparent
-    textColor: "{colors.on-dark}"
-    typography: "{typography.number-md}"
-    padding: 12px 0
-  price-up-cell:
-    backgroundColor: transparent
-    textColor: "{colors.trading-up}"
-    typography: "{typography.number-md}"
-  price-down-cell:
-    backgroundColor: transparent
-    textColor: "{colors.trading-down}"
-    typography: "{typography.number-md}"
-  search-input-on-dark:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.lg}"
-    padding: 10px 16px
-    height: 40px
-  text-input-on-light:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    padding: 10px 16px
-    height: 40px
-  funds-safu-band:
-    backgroundColor: "{colors.canvas-dark}"
-    textColor: "{colors.primary}"
-    typography: "{typography.display-lg}"
-    padding: 80px
-  feature-photo-card:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    rounded: "{rounded.xl}"
-  qr-promo-card:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  faq-row:
-    backgroundColor: transparent
-    textColor: "{colors.on-dark}"
-    typography: "{typography.title-sm}"
-    rounded: "{rounded.md}"
-    padding: 20px 0
-  cta-band-dark:
-    backgroundColor: "{colors.surface-card-dark}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.display-sm}"
-    rounded: "{rounded.xl}"
-    padding: 48px
-  arena-hero-gradient:
-    backgroundColor: "{colors.canvas-dark}"
-    textColor: "{colors.primary}"
-    typography: "{typography.display-lg}"
-    padding: 80px
-  cookie-consent-card:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-sm}"
-    rounded: "{rounded.lg}"
-    padding: 16px
-  buy-crypto-amount-card:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.number-display}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  steps-card:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-sm}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  price-chart-card:
-    backgroundColor: "{colors.canvas-light}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  conversion-cell:
-    backgroundColor: transparent
-    textColor: "{colors.body-on-light}"
-    typography: "{typography.body-md}"
-  trader-row:
-    backgroundColor: transparent
-    textColor: "{colors.on-dark}"
-    typography: "{typography.body-md}"
-    padding: 12px 0
-  footer-light:
-    backgroundColor: "{colors.surface-soft-light}"
-    textColor: "{colors.body-on-light}"
-    typography: "{typography.body-md}"
-    padding: 64px
+    light: { bg: "{colors.light.primary}", text: "{colors.light.primary-foreground}", radius: "{rounded.md}" }
+    dark:  { bg: "{colors.dark.primary}",  text: "{colors.dark.primary-foreground}",  radius: "{rounded.md}" }
+    hover: "brightness(110%)"
+    active: "brightness(90%)"
+    animation: "scale(0.98) on press — 150ms spring"
+
+  button-secondary:
+    light: { bg: "{colors.light.secondary}", text: "{colors.light.secondary-foreground}", border: "{colors.light.border}" }
+    dark:  { bg: "{colors.dark.secondary}",  text: "{colors.dark.secondary-foreground}",  border: "{colors.dark.border}" }
+
+  button-ghost:
+    light: { bg: "transparent", text: "{colors.light.foreground}" }
+    dark:  { bg: "transparent", text: "{colors.dark.foreground}" }
+    hover-light: "bg: {colors.light.accent}"
+    hover-dark:  "bg: {colors.dark.accent}"
+
+  button-destructive:
+    light: { bg: "{colors.light.destructive}", text: "#ffffff" }
+    dark:  { bg: "{colors.dark.destructive}",  text: "#ffffff" }
+
+  card:
+    light: { bg: "{colors.light.card}", border: "{colors.light.border}", shadow: "{elevation.card}", radius: "{rounded.lg}" }
+    dark:  { bg: "{colors.dark.card}",  border: "{colors.dark.border}",  shadow: "none",           radius: "{rounded.lg}" }
+    hover-animation: "border-beam sweep + translateY(-1px)"
+    dark-border-hover: "1px solid rgba(249 115 22 / 0.3)"
+
+  badge-compliant:
+    bg-light: "rgba(22 163 74 / 0.1)"
+    text-light: "#15803d"
+    bg-dark:  "rgba(22 163 74 / 0.15)"
+    text-dark: "#4ade80"
+
+  badge-breached:
+    bg-light: "rgba(220 38 38 / 0.1)"
+    text-light: "#b91c1c"
+    bg-dark:  "rgba(220 38 38 / 0.15)"
+    text-dark: "#f87171"
+    animation: "{animations.interactions.status-badge-pulse}"
+
+  badge-pending:
+    bg-light: "rgba(245 158 11 / 0.1)"
+    text-light: "#b45309"
+    bg-dark:  "rgba(245 158 11 / 0.15)"
+    text-dark: "#fbbf24"
+
+  stat-card:
+    description: "Dashboard KPI cards with animated count-up values"
+    animation: "{animations.interactions.stat-count-up}"
+    value-font: "{typography.roles.numeric-lg}"
+    label-font: "{typography.roles.label}"
+
+  kanban-card:
+    radius: "{rounded.lg}"
+    drag-animation: "{animations.interactions.kanban-drag-elevation}"
+    hover-animation: "scale(1.02) rotate(-1deg) — spring"
+
+  sidebar-nav-item:
+    active-animation: "{animations.interactions.sidebar-active-slide}"
+    hover: "bg-sidebar-accent transition-colors 150ms"
+
+  compliance-status-indicator:
+    dot-size: "8px"
+    animation: "{animations.interactions.status-badge-pulse}"
+    compliant: "{colors.semantic.comet-up}"
+    breached: "{colors.semantic.comet-down}"
+    pending: "{colors.semantic.comet-pending}"
+
+rules:
+  1: "The sidebar is ALWAYS dark (#18181b in light, #0a0908 in dark). Never flip it white. The dark sidebar is a COMET design signature."
+  2: "Orange is the ONLY brand accent. Never introduce blue, purple, or teal as primary actions."
+  3: "Never use pure white (#ffffff) as a light-mode background. The background is always warm parchment (#f2ede8). Cards may be #faf7f2."
+  4: "Never use pure black (#000000) as dark-mode background. Always use the warm-tinted near-black (#0f0d0c)."
+  5: "Semantic colors are non-negotiable: green=compliant/up, red=breached/down, amber=pending. Never repurpose them."
+  6: "Numeric values (IDs, attendance counts, compliance scores) always render in Geist Mono."
+  7: "All interactive elements must have a visible hover AND an active/pressed state. 150ms transitions minimum."
+  8: "Critical violations (breached status) must show the pulsing ring animation. Never static for critical states."
+  9: "Page transitions must always use the blur-crossfade. Route changes must never feel abrupt."
+  10: "Card hover should never rely on background-color alone. Use border-beam, translateY, or glow-shadow to signal interactivity."
+
+known-gaps:
+  - "Geist font integration requires CDN import or package install — add to main.tsx"
+  - "Border-beam animations on every card would be performance-heavy; trigger on hover only, not on mount"
+  - "Dark sidebar in light mode requires sidebar tokens to be decoupled from the page theme — already done in theme.css"
+  - "Command menu (Cmd+K) glassmorphic theme requires custom cmdk styling"
+  - "Calendar event hover-expand animation requires modification to the event-calendar component"
 ---
 
-## Overview
+# COMET Design System
 
-Binance reads like a financial trading platform that wants to feel both authoritative and energetic. The base atmosphere is **deep near-black canvas** (`{colors.canvas-dark}` — #0b0e11) holding white type and a single, ubiquitous accent: **Binance Yellow** (`{colors.primary}` — #FCD535). That yellow does almost all of the brand's heavy lifting — it carries every primary CTA, every value-claim headline ("FUNDS ARE SAFU"), every "Sign Up" pill, every featured tier indicator, and the wordmark itself. There is no secondary brand color. The system trusts the yellow voltage to do the brand work, and it carries it.
+> **"Authoritative Intelligence"** — A governance platform for India's coal mining sector.
+> This design system serves Mine Managers, Safety Inspectors, Corporate Officials, and Regulatory
+> Authorities (DGMS, Ministry of Coal). It must feel trustworthy, precise, and premium — the
+> digital equivalent of a well-run control room.
 
-Type runs Binance's custom **BinanceNova** (display + body) and **BinancePlex** (numerical / financial display) stack. BinanceNova carries display headlines, section titles, and body copy. BinancePlex appears on price tickers, large stat numbers (transaction volumes, user counts, prize pools) — anywhere a number wants to feel "tabular and reliable." Both run at modest weights — display sizes use weight 600-700 (bolder than typical marketing because trading platforms need numbers to read at a glance), body stays at 400.
+---
 
-The product is **multi-theme**: marketing surfaces (homepage, smart-money, futures arena) default to dark, while transactional surfaces (buy crypto, deposit, withdraw) flip to a light theme. The same yellow CTAs and gray-blue hairlines (`{colors.hairline-on-light}` — #eaecef) thread through both — only canvas, surface, and text tones flip. Trading **green** (`{colors.trading-up}` — #0ecb81) and **red** (`{colors.trading-down}` — #f6465d) signal price direction in tables, charts, and price tickers across both modes.
+## 🎨 Themes
 
-**Key Characteristics:**
-- Single accent color: `{colors.primary}` (#FCD535) does all brand voltage — primary CTAs, hero headlines, brand mark, badges. Used scarcely on dark for emphasis, ubiquitously on transactional dialogs.
-- Custom type stack: `BinanceNova` (display + body) and `BinancePlex` (numbers, prices, financial data). Big stat numbers always render in BinancePlex for tabular consistency.
-- Multi-theme: marketing pages default dark (`{colors.canvas-dark}`); transactional pages flip light (`{colors.canvas-light}`). Yellow CTAs and trading green/red are shared across both.
-- Light footer on dark body: the homepage uses `{colors.surface-soft-light}` (#fafafa) for the footer even when the body above it is dark — a deliberate inversion that visually closes the page.
-- Trading semantics: green up / red down (`{colors.trading-up}` / `{colors.trading-down}`) for price changes, applied as text color rather than badge background.
-- Card surfaces: `{colors.surface-card-dark}` (#1e2329) for elevated cards on dark; `{colors.canvas-light}` for cards on light. No gradient surfaces, no atmospheric backdrops — flat color blocks throughout.
-- Border radius is small to medium: `{rounded.md}` (6px) for primary buttons, `{rounded.lg}` (8px) for inputs and content cards, `{rounded.xl}` (12px) for elevated card containers, `{rounded.pill}` for prominent feature CTAs.
-- Spacing follows a 4-multiple scale; major editorial bands sit at `{spacing.section}` (80px) — slightly tighter than typical marketing-only sites because product pages need denser layouts.
+COMET ships two premium themes that share a unified component language and orange identity.
 
-## Colors
+### 🏛️ Governance Stone *(Light Mode)*
 
-### Brand & Accent
-- **Binance Yellow** (`{colors.primary}` — #FCD535): The single brand color. Used for primary CTA backgrounds, the wordmark, brand-claim headlines ("FUNDS ARE SAFU"), trust badges ("No.1 Trading Volume"), large stat numbers in `{component.stat-callout-card}`, and inline links.
-- **Binance Yellow Active** (`{colors.primary-active}` — #f0b90b): The press / hover-darker variant. Slightly more saturated yellow.
-- **Binance Yellow Disabled** (`{colors.primary-disabled}` — #3a3a1f): A desaturated dark-yellow used on disabled CTAs over dark canvas.
-- **Accent Turquoise** (`{colors.accent-turquoise}` — #2dbdb6): A small secondary accent used very sparingly on Smart Money's "Check Now" CTA over dark surfaces. Treat as a single-product accent, not a system color.
+The light theme evokes **carved granite and official documentation** — warm, authoritative, substantial. The canvas is never clinical white; it is the color of aged parchment, as if the compliance records themselves are embedded in the surface. The dark steel sidebar creates a dramatic split — you always know you're in a serious platform.
 
-### Surface
+**Core Atmosphere:**
+- Canvas: `#f2ede8` — warm parchment stone
+- Cards: `#faf7f2` — barely lifted off-white
+- Sidebar: `#18181b` — permanent deep steel (never flips light)
+- Primary Accent: `#c2410c` — burnt coal-fire orange
 
-The system has two canvas modes that map to product context:
+### ⚡ Obsidian Command *(Dark Mode)*
 
-**Dark mode (marketing default):**
-- **Canvas Dark** (`{colors.canvas-dark}` — #0b0e11): The primary page floor. Near-black with a slight warm tint — never pure black.
-- **Surface Card Dark** (`{colors.surface-card-dark}` — #1e2329): Cards, navigation dropdowns, secondary buttons over dark canvas, markets table.
-- **Surface Elevated Dark** (`{colors.surface-elevated-dark}` — #2b3139): One step lighter, used for nested cards, hovered nav items, and chart background panels.
+The dark theme evokes **a coal mine control room at night** — deep warmth, amber glow monitors, precise data readouts on dark displays. The background is not cold gray or pure black; it has a 1% warm amber tint that makes it feel alive rather than dead. Cards have subtle ember-colored borders that glow when hovered.
 
-**Light mode (transactional):**
-- **Canvas Light** (`{colors.canvas-light}` — #ffffff): The page floor on transactional pages (buy crypto, deposit forms, account dialogs).
-- **Surface Soft Light** (`{colors.surface-soft-light}` — #fafafa): Footer surface and disabled states.
-- **Surface Strong Light** (`{colors.surface-strong-light}` — #f5f5f5): Form input backgrounds in muted contexts.
+**Core Atmosphere:**
+- Canvas: `#0f0d0c` — warm-tinted near-black
+- Cards: `#171412` — barely above canvas
+- Sidebar: `#0a0908` — deeper than canvas (creates Z-depth)
+- Primary Accent: `#f97316` — vivid construction orange (PPE helmet orange)
 
-### Hairlines & Borders
-- **Hairline on Light** (`{colors.hairline-on-light}` — #eaecef): The 1px border tone on light surfaces. Dembrandt's frequency analysis confirms this as the highest-count token (1022 occurrences) — Binance uses hairlines liberally.
-- **Hairline on Dark** (`{colors.hairline-on-dark}` — #2b3139): The 1px border tone on dark surfaces. Same hex as `{colors.surface-elevated-dark}` — borders feel like surface steps, not ink lines.
-- **Border Strong** (`{colors.border-strong}` — #cdd1d6): A heavier border tone used on disabled secondary buttons.
+---
 
-### Text
-- **Ink** (`{colors.ink}` — #181a20): The strongest text on light surfaces. Display headlines on transactional pages.
-- **Body on Dark** (`{colors.body}` — #eaecef): Default running-text on dark canvas — deliberately not pure white, slightly cooler.
-- **Body on Light** (`{colors.body-on-light}` — #181a20): Same as ink — light-mode body text reuses the ink token.
-- **Muted** (`{colors.muted}` — #707a8a): Footer links, breadcrumbs, captions, table column headers. Works on both light and dark canvas.
-- **Muted Strong** (`{colors.muted-strong}` — #929aa5): A second-tier muted for emphasized labels.
-- **On Primary** (`{colors.on-primary}` — #181a20): Black text on yellow primary CTAs.
-- **On Dark** (`{colors.on-dark}` — #ffffff): Pure white for high-contrast headlines on dark canvas.
+## 🎨 Color Palette
 
-### Trading Semantics
-- **Trading Up** (`{colors.trading-up}` — #0ecb81): Price-up green, used as text color in tables, charts, and inline ticker arrows. Never as a button background.
-- **Trading Down** (`{colors.trading-down}` — #f6465d): Price-down red. Same usage rules as trading-up.
+### Light Mode (Governance Stone)
 
-### Info / Focus
-- **Info** (`{colors.info}` — #3b82f6): Inline info badges and the focus-ring base. The Tailwind `--tw-ring-color` token surfaced by dembrandt — used on input focus.
-
-## Typography
-
-### Font Family
-The system runs **BinanceNova** for display and body, and **BinancePlex** for numerical / financial data. Both are licensed Binance custom typefaces. The fallback stack walks `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`.
-
-The split is functional, not decorative:
-- BinanceNova → editorial type (headlines, paragraphs, button labels, nav)
-- BinancePlex → tabular numerical type (prices, volumes, percentages, stat counters, prize pools)
-
-Mixing them is not optional — BinanceNova on a price ticker would lose the trading-platform character; BinancePlex on a paragraph would feel monospace-cold.
-
-### Hierarchy
-
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| `{typography.hero-display}` | 64px | 700 | 1.1 | -1px | Homepage h1 ("316,258,026 USERS TRUST US") |
-| `{typography.display-lg}` | 48px | 700 | 1.1 | -0.5px | Brand-claim headlines ("FUNDS ARE SAFU"), prize-pool hero ("Futures Masters Arena") |
-| `{typography.display-md}` | 40px | 600 | 1.15 | -0.3px | Section heads on long-scroll pages |
-| `{typography.display-sm}` | 32px | 600 | 1.2 | 0 | CTA band headlines ("Secure, Low-Fee Trading on Binance") |
-| `{typography.title-lg}` | 24px | 600 | 1.3 | 0 | Sub-section titles |
-| `{typography.title-md}` | 20px | 600 | 1.35 | 0 | QR-promo cards, feature card titles |
-| `{typography.title-sm}` | 16px | 600 | 1.4 | 0 | Trust badges, FAQ rows, step labels |
-| `{typography.number-display}` | 40px | 700 | 1.1 | -0.3px | Big stat numbers (15,000 BTC, $429,423,449) — BinancePlex |
-| `{typography.number-md}` | 16px | 500 | 1.4 | 0 | Markets table prices, table cells — BinancePlex |
-| `{typography.number-sm}` | 14px | 500 | 1.4 | 0 | Inline prices, %  changes — BinancePlex |
-| `{typography.body-md}` | 14px | 400 | 1.5 | 0 | Default running-text — BinanceNova |
-| `{typography.body-sm}` | 13px | 400 | 1.5 | 0 | Cookie consent text, footer body |
-| `{typography.caption}` | 12px | 500 | 1.4 | 0 | Small meta labels |
-| `{typography.button}` | 14px | 600 | 1 | 0 | Standard CTA button labels |
-| `{typography.nav-link}` | 14px | 500 | 1.4 | 0 | Top nav menu items |
-
-### Principles
-Display sizes use weight 700 — heavier than most marketing systems. This makes sense for a trading platform: numbers need to read at a glance, headlines need to compete with chart visualizations and dense data tables. The system will not soften display weight to 400 the way Airtable or Stripe does.
-
-`{typography.number-display}` and the smaller number variants always use **BinancePlex**, even when surrounding body type uses BinanceNova. Prices, volumes, and stat counters render in BinancePlex regardless of context — it is the system's "trustworthy number" voice.
-
-### Note on Font Substitutes
-If BinanceNova and BinancePlex are unavailable, **Inter** is the closest open-source substitute for BinanceNova and **JetBrains Mono** or **IBM Plex Sans** is the closest substitute for BinancePlex (depending on whether tabular monospace fidelity matters more than humanist proportions). Adjust display headlines down by ~3% in line-height to match BinanceNova's tighter cap height.
-
-## Layout
-
-### Spacing System
-- **Base unit:** 4px.
-- **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 80px.
-- **Section padding (vertical):** `{spacing.section}` (80px) — slightly tighter than airy marketing sites (96px) because Binance pages mix marketing bands with dense product surfaces (markets tables, FAQ accordions).
-- **Card internal padding:** `{spacing.lg}` (24px) for content cards and markets tables; `{spacing.xl}` (32px) for QR-promo cards and CTA bands; `{spacing.md}` (16px) for trust badges and table rows.
-- **Gutters:** `{spacing.lg}` (24px) between cards in 3-up grids; `{spacing.md}` (16px) inside footer column gutters and dense FAQ lists.
-
-### Grid & Container
-- **Max content width:** ~1280px centered on marketing pages; ~1440px on product surfaces (markets, smart-money tables) where horizontal density matters.
-- **Editorial body:** Single 12-column grid; product pages often use 8/4 split (main panel + side rail).
-- **Markets table:** 5-column header (Pair / Last Price / 24h Change / 24h Volume / Action), with the first column carrying coin icon + symbol pair.
-- **Footer:** 6-column link list at desktop, wrapping to 2-up at tablet and 1-up on mobile.
-
-### Whitespace Philosophy
-Binance is denser than typical marketing sites — long-scroll pages mix hero bands with markets tables, FAQ accordions, and feature grids without much breathing room between them. The system trusts contrast (yellow vs. dark canvas, green vs. red price cells) to do the visual separation work, not whitespace. Where whitespace appears, it's always uniform — `{spacing.section}` between every major band.
-
-## Elevation & Depth
-
-| Level | Treatment | Use |
+| Token | Value | Usage |
 |---|---|---|
-| Flat | No shadow, no border | Body sections, top nav, hero bands, footer |
-| Soft hairline | 1px `{colors.hairline-on-dark}` or `{colors.hairline-on-light}` | Inputs, table dividers, FAQ row separators, secondary buttons |
-| Card surface | `{colors.surface-card-dark}` background on dark canvas, `{colors.canvas-light}` on light context — no shadow | All elevated cards (markets-table-card, QR-promo-card, feature-photo-card, trust-badges) |
-| Subtle drop shadow | Faint shadow visible only when a card sits over imagery | Used sparingly on the buy-crypto-amount-card on transactional pages |
-| Focus ring | `0 0 0 2px {colors.info-ring}` at 50% alpha | Input + button keyboard focus state |
+| `background` | `#f2ede8` | Page canvas — warm parchment, never white |
+| `card` | `#faf7f2` | Elevated card surfaces |
+| `foreground` | `#1a1614` | Primary text — warm deep charcoal |
+| `muted` | `#e8e2da` | Disabled states, secondary surfaces |
+| `muted-foreground` | `#78716c` | Secondary text, placeholders |
+| `border` | `#d4cec5` | Hairlines, input borders |
+| `primary` | `#c2410c` | Burnt-orange — CTAs, active states, links |
+| `primary-foreground` | `#fff7ed` | Text on primary (warm cream) |
+| `secondary` | `#e8e2da` | Secondary buttons, chips |
+| `accent` | `#fff7ed` | Orange-50 hover highlights |
+| `destructive` | `#dc2626` | Violations, breaches, errors |
+| `ring` | `#f97316` | Focus ring — orange-500 |
 
-The elevation philosophy is **flat surfaces with color-block separation**. Binance does not use heavy drop shadows or glassmorphism — depth comes from the contrast between `{colors.canvas-dark}` and `{colors.surface-card-dark}` (a 12-step lightness jump that reads as a clear elevation boundary).
+### Dark Mode (Obsidian Command)
 
-### Decorative Depth
-- **Yellow → dark vertical gradient backdrop** on the Futures Arena hero: `{colors.primary}` fading down to `{colors.canvas-dark}`. This is a single-page treatment used for product-launch / event hero surfaces, not a system-wide signature.
-- **Coin-stack illustrations** flanking large stat blocks (3D rendered crypto coins, trophy icons). These are illustrations, not tokens — treat as content rather than design system surface.
-
-## Shapes
-
-### Border Radius Scale
-
-| Token | Value | Use |
+| Token | Value | Usage |
 |---|---|---|
-| `{rounded.xs}` | 2px | Almost no use — reserved for very small badges |
-| `{rounded.sm}` | 4px | Small inline buttons (subscribe, trading-up / trading-down inline) |
-| `{rounded.md}` | 6px | Standard CTA buttons, primary buttons, primary input fields |
-| `{rounded.lg}` | 8px | Search input, content cards, trust badges, sub-cards |
-| `{rounded.xl}` | 12px | Elevated card containers (markets-table-card, QR-promo-card, CTA bands) |
-| `{rounded.pill}` | 9999px | Prominent feature CTAs ("Sign Up" pill on dark, futures-arena "Join Now") |
-| `{rounded.full}` | 9999px / 50% | Coin icons, avatars |
+| `background` | `#0f0d0c` | Page canvas — warm near-black |
+| `card` | `#171412` | Elevated card surfaces |
+| `foreground` | `#f5f0eb` | Primary text — warm off-white |
+| `muted` | `#1e1a17` | Secondary surfaces, nested panels |
+| `muted-foreground` | `#a8a29e` | Secondary text, placeholders |
+| `border` | `#2a2420` | Subtle warm dark hairlines |
+| `primary` | `#f97316` | Construction orange — vivid, energetic |
+| `primary-foreground` | `#0f0d0c` | Dark text on orange |
+| `destructive` | `#ef4444` | Violations, breaches (brighter in dark) |
+| `ring` | `#f97316` | Focus ring — orange-500 |
 
-Binance's radius hierarchy is tighter than typical marketing systems — most surfaces sit at 6-12px. The pill radius is a deliberate exception used to signal "this is a top-of-page action."
+### Sidebar (Permanent Dark — Design Signature)
 
-### Photography & Iconography
-- Coin icons render as 24×24 or 32×32 rounded glyphs (often 50% radius on circular outline + the coin's brand color inside).
-- 3D rendered coin stacks and trophy illustrations are full-color illustrations with a slight floor shadow — not flat icons.
-- Photographic content (people-using-the-app section) crops to `{rounded.xl}` (12px) corners, full-bleed on mobile.
+The sidebar is **always dark** regardless of the page theme. This is COMET's most distinctive visual trait.
 
-## Components
+| Mode | Background | Foreground | Active Item |
+|---|---|---|---|
+| Light (Governance Stone) | `#18181b` Zinc-900 | `#f4f4f5` | `#f97316` Orange |
+| Dark (Obsidian Command) | `#0a0908` Deeper dark | `#f4f4f5` | `#f97316` Orange |
 
-### Top Navigation
+### Semantic Color System
 
-**`top-nav-dark`** — The marketing top nav on dark canvas. 64px tall, `{colors.canvas-dark}` background. Carries the yellow Binance wordmark at left, primary horizontal menu (Buy Crypto, Markets, Trade, Futures, Earn, Square, Smart Money, Campaigns), right-side cluster with language selector, light/dark toggle, "Log In" text link, "Sign Up" `{component.button-primary}`. The wordmark uses `{colors.primary}` for "BINANCE" type.
+| Token | Color | Meaning | Usage |
+|---|---|---|---|
+| `comet-up` | `#16a34a` Green-600 | Compliant / Approved / Positive | Approval badges, trend-up arrows |
+| `comet-down` | `#dc2626` Red-600 | Breached / Violation / Negative | Breach alerts, violation counts |
+| `comet-pending` | `#f59e0b` Amber-400 | Pending / In Progress / Warning | Open tasks, review states |
+| `comet-orange` | `#f97316` Orange-500 | Brand / Primary CTA | Navigation accents, buttons |
 
-**`top-nav-light`** — The transactional top nav on light canvas (buy crypto, deposit pages). Same layout but `{colors.canvas-light}` background and `{colors.ink}` menu items.
+> **Rule:** These semantic colors are never repurposed. Green is not "success" for a generic form — it means "compliant" in this system.
+
+---
+
+## ✍️ Typography
+
+### Font Stack
+
+| Font | Role | Rationale |
+|---|---|---|
+| **Geist** | UI text, body, buttons, labels | Vercel's geometric typeface — modern, highly legible at small sizes, designed for dense data UIs |
+| **Geist Mono** | Numbers, IDs, codes, compliance scores | Paired monospace — tabular number rendering, gives data a "technical readout" character |
+| Fallback | Inter → system-ui | Strong fallback chain |
+
+### Type Scale
+
+| Role | Size | Weight | Use |
+|---|---|---|---|
+| `hero` | 2.5rem / 700 | Display headlines on dashboards |
+| `display-lg` | 2rem / 700 | Page-level section titles |
+| `display-md` | 1.5rem / 600 | Module headings |
+| `title-lg` | 1.25rem / 600 | Card titles, panel headers |
+| `title-md` | 1rem / 600 | Sub-section headings |
+| `title-sm` | 0.875rem / 600 | Badge labels, column headers |
+| `body-md` | 0.875rem / 400 | Default running text |
+| `body-sm` | 0.8125rem / 400 | Secondary descriptions, help text |
+| `caption` | 0.75rem / 500 | Timestamps, metadata |
+| `label` | 0.75rem / 600 UPPERCASE | Section labels, table headers |
+| `button` | 0.875rem / 600 | All button labels |
+| `numeric-lg` | 1.5rem / 700 Mono | KPI values, large stat numbers |
+| `numeric-md` | 1rem / 600 Mono | Table data values, scores |
+| `numeric-sm` | 0.875rem / 500 Mono | Inline counts, percentages |
+
+---
+
+## ✨ Animation & Micro-Interaction System
+
+Every interaction must feel **precise and intentional** — like a well-engineered instrument, not a flashy toy.
+
+### Duration Scale
+
+| Name | Duration | Use |
+|---|---|---|
+| Fast | 150ms | Hover states, button presses, color transitions |
+| Default | 250ms | Tab changes, view switches, expand/collapse |
+| Slow | 400ms | Panel slides, sidebar open/close |
+| Very Slow | 600ms | Count-up animations, complex page transitions |
+
+### Easing
+
+| Name | Curve | Use |
+|---|---|---|
+| Spring | `cubic-bezier(0.34, 1.56, 0.64, 1)` | Sidebar items, active indicators — slight overshoot |
+| Out | `cubic-bezier(0.16, 1, 0.3, 1)` | Page transitions, panel reveals — snappy deceleration |
+| In-Out | `cubic-bezier(0.45, 0, 0.55, 1)` | Color transitions, opacity changes |
+
+### Micro-Interaction Catalogue
+
+#### 1. Stat Count-Up
+Dashboard KPI numbers animate from 0 to their real value on mount using `framer-motion` springs. Compliance scores, violation counts, pending tasks — all count up. Creates an immediate sense of "live data."
+
+#### 2. Card Hover — Border Beam + Lift
+On card hover: a `BorderBeam` sweeps around the card perimeter, the card rises `1px` (translateY), and a faint orange glow appears below. Color is severity-aware — orange for normal, red for breached cards.
+
+#### 3. Sidebar Active Slide
+The active navigation indicator uses `framer-motion layoutId` to slide smoothly between items when navigating. The pill never jumps — it glides.
+
+#### 4. Page Transition — Blur Crossfade
+Every route change: the outgoing page dissolves with `opacity 0, blur(4px), scale(0.99)` and the new page blooms in. 250ms. The user always knows the system responded.
+
+#### 5. Status Badge Pulse
+`breached` status items have a slow breathing ring animation — a red pulse that contracts and expands every 2 seconds. You cannot miss a critical violation.
+
+#### 6. Kanban Card Drag Elevation
+Picked-up Kanban cards receive an orange `box-shadow` glow, scale to `1.04`, and tilt `4°`. They feel physically lifted off the board.
+
+#### 7. Number Flash on Change
+When a stat value changes (real-time update), it flashes amber (`#f59e0b`) briefly before settling to its normal color. Like a Bloomberg terminal price tick.
+
+#### 8. Toast — Glassmorphic Slide
+Notifications slide from the right with a `backdrop-blur` glass background matching the current theme. Orange left border for information, red for critical alerts.
+
+#### 9. Command Palette Bloom
+`Cmd+K` opens a command menu with `scale(0.96)→1` spring + backdrop blur bloom. Glassmorphic background — the rest of the UI dims to 40% opacity.
+
+#### 10. Calendar Event Hover Expand
+Compliance calendar events expand into a rich preview card on hover — showing title, due date, assigned officer, and status — using a `framer-motion` height animation.
+
+#### 11. COMET Logo Beam
+On app load, the COMET wordmark in the sidebar plays a `BorderBeam` sweep once. Establishes the system has loaded and is ready.
+
+#### 12. Skeleton Shimmer
+Data loading states use exact-shape shimmer skeletons — not generic spinners. The skeleton perfectly matches the card it will become.
+
+---
+
+## 🧩 Component Guidelines
+
+### Cards
+- Light: `bg-card` + `border` + subtle `box-shadow`
+- Dark: `bg-card` + `border` (no shadow — depth comes from background contrast)
+- Hover: Border beam sweep + 1px lift + faint glow
+- **Never** use rounded corners less than `rounded-lg` (12px) for content cards
 
 ### Buttons
+- Primary: Orange fill, cream text. Scale 0.98 on press (spring, 150ms)
+- Secondary: Warm gray fill, dark text. Hairline border.
+- Ghost: Transparent, text-colored. Accent background on hover.
+- Destructive: Red fill, white text. Only for permanent actions.
 
-**`button-primary`** — The signature primary CTA. Background `{colors.primary}`, text `{colors.on-primary}` (black on yellow — the system's iconic combination), type `{typography.button}`, padding 12px × 24px, height 40px, rounded `{rounded.md}` (6px). Press state: `button-primary-active` darkens to `{colors.primary-active}` (#f0b90b). Disabled state: `button-primary-disabled` desaturates to `{colors.primary-disabled}`.
+### Status Indicators
+- Always use both color AND shape (icon) — never rely on color alone
+- `✓` Compliant — Green dot + text
+- `⚠` Pending — Amber dot + pulsing ring + text
+- `✗` Breached — Red dot + breathing pulse animation + text
 
-**`button-primary-pill`** — A larger pill variant of the primary CTA used for top-of-page sign-up moments and product-launch heroes (Futures Arena "Join Now"). Same yellow + black combination, padding 14px × 32px, rounded `{rounded.pill}` (9999px). Use sparingly — the pill is a "this is THE action" signal.
+### Data Tables
+- Header: `label` typography (uppercase, 0.75rem, tracked)
+- Values: Geist Mono for numbers, Geist for text
+- Row hover: `bg-muted/50` transition — 150ms
+- Alternating rows: Never. Use borders instead.
 
-**`button-secondary-on-dark`** — Used over `{colors.canvas-dark}` for less-emphasized actions. Background `{colors.surface-card-dark}`, text `{colors.on-dark}`, rounded `{rounded.md}`.
+### Forms & Inputs
+- Height: 40px standard
+- Border: 1px `--border` by default, `--ring` on focus with 2px offset ring
+- Label: Always above the input, `caption` typography
+- Error states: Red border + icon + message below (never tooltip-only)
 
-**`button-secondary-on-light`** — Light-canvas equivalent. Background `{colors.canvas-light}` with `{colors.hairline-on-light}` 1px border, text `{colors.ink}`.
+---
 
-**`button-tertiary-text`** — Inline text button with no background. Used for "Log In" in the top nav and inline "Read More" links.
+## 📐 Layout
 
-**`button-trading-up`** — A solid green button used on price-up signals (Buy / Long actions). Background `{colors.trading-up}`, text `{colors.on-dark}`, rounded `{rounded.sm}` (4px), padding 8px × 20px. Smaller and tighter than `{component.button-primary}` because it appears in dense trading interfaces.
+### Spacing Philosophy
+Dense but breathable — this is a data-heavy governance platform, not a marketing page. Internal card padding: `1rem` (16px) for compact, `1.5rem` (24px) for standard. Page section gaps: `1.5rem`–`2rem`.
 
-**`button-trading-down`** — Symmetric red variant for Sell / Short actions. Same shape, background `{colors.trading-down}`.
-
-**`button-subscribe`** — Compact yellow CTA used in the Smart Money traders table to subscribe to a top trader. Smaller height (28px) and tighter padding than the primary CTA — fits inside dense table rows. Same yellow + black combination.
-
-**`text-link`** — Inline body links in `{colors.primary}` (yellow on dark, also yellow on light). No underline by default. Type inherits `{typography.body-md}`.
-
-### Cards & Containers
-
-**`hero-band-dark`** — Full-width dark band carrying the homepage h1 + sub-headline + dual CTA pair. Background `{colors.canvas-dark}`, padding `{spacing.section}` (80px). The h1 ("316,258,026 USERS TRUST US") uses `{typography.hero-display}` at 64px / 700 — the system's largest type role.
-
-**`stat-callout-card`** — Inline yellow stat numbers (15,000 BTC, 7,488,223, $429,423,449). Transparent background, text `{colors.primary}`, type `{typography.number-display}` in BinancePlex. Used as a flat layout block, not a card with surface — the yellow text alone carries the visual weight.
-
-**`trust-badge`** — Small dark cards holding "No.1 Customer Service" / "No.1 Trading Volume" claims. Background `{colors.surface-card-dark}`, rounded `{rounded.lg}` (8px), padding 16px × 20px. Yellow numeric or word badge ("No.1") sits next to a short label.
-
-**`markets-table-card`** — The right-side markets table on the homepage. Background `{colors.surface-card-dark}`, rounded `{rounded.xl}` (12px), padding `{spacing.lg}` (24px). Carries a tab row (Popular / New listing / Top gainers), then a 5-column row of coin pairs with last price, 24h change %, action button. Each row uses `{component.markets-row}`.
-
-**`markets-row`** — A single row inside the markets table. Transparent background, 12px vertical padding, hairline divider between rows. Coin icon (32×32) + symbol on left; last price in `{typography.number-md}` (BinancePlex); 24h change cell colored by direction (`{component.price-up-cell}` or `{component.price-down-cell}`); right-aligned chevron icon for "view detail."
-
-**`price-up-cell`** / **`price-down-cell`** — Colored text cells for price changes. Transparent background, text `{colors.trading-up}` or `{colors.trading-down}`, type `{typography.number-md}` in BinancePlex. Always paired with a small triangle arrow indicating direction.
-
-**`feature-photo-card`** — The "Trade on the go" section's photo strip — 3 lifestyle photos showing people using the Binance app. Background `{colors.surface-card-dark}`, rounded `{rounded.xl}`. Photos crop edge-to-edge, no internal padding around the image.
-
-**`qr-promo-card`** — The "Trade on the go. Anywhere, anytime." card with QR code. Background `{colors.surface-card-dark}`, rounded `{rounded.xl}`, padding `{spacing.xl}` (32px). Contains an h2 in `{typography.title-md}`, a body paragraph, app store badges (iOS / Android), and a centered QR code.
-
-**`funds-safu-band`** — The yellow-headlined "FUNDS ARE SAFU" band. Background stays `{colors.canvas-dark}`, but the headline uses `{colors.primary}` at `{typography.display-lg}`. Below the headline, three large `{component.stat-callout-card}` numbers anchor the band: total BTC reserves, users helped, funds recovered.
-
-**`faq-row`** — A single FAQ accordion row. Transparent background, padding 20px vertical, hairline divider between rows. Closed state: question in `{typography.title-sm}` + chevron icon at right. Open state: question + answer body in `{typography.body-md}`.
-
-**`cta-band-dark`** — The "Secure, Low-Fee Trading on Binance" pre-footer CTA band. Background `{colors.surface-card-dark}` (one step elevated from canvas), rounded `{rounded.xl}`, padding `{spacing.xxl}` (48px). Carries an h2 in `{typography.display-sm}` and a `{component.button-primary}` aligned right.
-
-### Light-Mode Transactional Components
-
-**`buy-crypto-amount-card`** — The right-rail card on the Buy BTC page. Background `{colors.canvas-light}`, rounded `{rounded.lg}` (8px), padding `{spacing.lg}` (24px). Carries an editable amount input in `{typography.number-display}` (BinancePlex), a currency selector, and a yellow `{component.button-primary}` for "Continue" / "Confirm Order."
-
-**`steps-card`** — The "How to Buy Crypto" 3-up cards (Enter Amount → Confirm Order → Receive Crypto). Background `{colors.canvas-light}`, rounded `{rounded.lg}`, padding `{spacing.lg}`. Each card has a small numbered icon, a `{typography.title-sm}` step name, and a body description.
-
-**`price-chart-card`** — The "Bitcoin Markets" card carrying the BTC price chart. Background `{colors.canvas-light}`, rounded `{rounded.lg}`. Top row carries pair selector ($79,065.04, +0.45%); main area is a candlestick / line chart in `{colors.trading-up}` and `{colors.trading-down}`; bottom row carries timeframe selector (24H / 1W / 1M / 3M / 1Y / ALL).
-
-**`conversion-cell`** — A single row in the BTC ↔ USD conversion table. Transparent background, text `{colors.body-on-light}`, type `{typography.body-md}`. Pair label on left (BTC, USDT, etc.); USD equivalent on right.
-
-### Inputs & Forms
-
-**`search-input-on-dark`** — The "Search currencies" input on the homepage hero. Background `{colors.surface-card-dark}`, text `{colors.on-dark}`, rounded `{rounded.lg}` (8px), padding 10px × 16px, height 40px. Carries a yellow `{component.button-primary-pill}` on the right side ("Sign Up").
-
-**`text-input-on-light`** — Standard input on transactional pages. Background `{colors.canvas-light}`, 1px `{colors.hairline-on-light}` border, rounded `{rounded.md}` (6px), padding 10px × 16px, height 40px. Focus state inherits the focus-ring shadow.
-
-**`cookie-consent-card`** — The cookie banner card visible on the homepage. Background `{colors.canvas-light}`, rounded `{rounded.lg}`, padding `{spacing.md}` (16px). Body text in `{typography.body-sm}` (13px / 400) with three stacked button options (Accept Cookies & Continue / Reject Additional Cookies / Manage Cookies).
-
-### Smart Money Sub-System
-
-**`trader-row`** — A single row in the top-traders table on /smart-money. Transparent background, padding 12px vertical, hairline divider between rows. Avatar + trader name + private/public badge on left; ROI %, AUM, mint date columns; yellow `{component.button-subscribe}` on right.
-
-### Signature Components
-
-**`arena-hero-gradient`** — The Futures Arena product-launch hero. A vertical gradient from `{colors.primary}` at top to `{colors.canvas-dark}` at bottom, with the prize-pool headline (4,000,000 USDT) in `{typography.display-lg}` centered. A `{component.button-primary-pill}` ("Join Now") sits below the headline. Used only on product-launch event surfaces — do not generalize to other heroes.
-
-### Footer
-
-**`footer-light`** — The light-gray footer that closes every page (including dark-canvas pages). Background `{colors.surface-soft-light}` (#fafafa), text `{colors.body-on-light}`. 6-column link list at desktop covering Community / About Us / Products / Business / Service / Learn columns. Vertical padding 64px. The deliberate light footer on a dark page is one of Binance's most distinctive layout choices — it visually closes the page with a "marketing reset" surface.
-
-## Do's and Don'ts
-
-### Do
-- Reserve `{colors.primary}` (Binance Yellow) for primary actions, brand-claim headlines, and the wordmark. Never use it for secondary or decorative purposes — yellow's scarcity is what makes it powerful.
-- Keep `{component.button-primary}` (yellow with black text) as the universal primary CTA across both dark and light modes. The same button appears identically on `{colors.canvas-dark}` and `{colors.canvas-light}`.
-- Use `{component.button-trading-up}` (green) and `{component.button-trading-down}` (red) only for explicit Buy/Sell or Long/Short actions. Never use them for general "confirm" or "cancel" because they carry semantic price-direction meaning.
-- Use BinancePlex for every number. Prices, volumes, percentages, stat counters — all BinancePlex. Mixing BinanceNova into a number ticker breaks the trading-platform character.
-- Choose canvas mode by surface intent: dark for marketing / product showcase / trading dashboards; light for transactional dialogs (buy / deposit / withdraw / form submission).
-- Anchor every editorial band with `{spacing.section}` (80px). Binance is denser than airy marketing sites — 80px is the right rhythm.
-
-### Don't
-- Don't introduce a second brand color. The system has exactly one accent (`{colors.primary}`) and any expansion dilutes the brand identity. The turquoise on Smart Money is a single-product experiment, not a system token.
-- Don't use yellow for body text or large surface fills. It is for focal-point CTAs and headlines only.
-- Don't use `{colors.trading-up}` / `{colors.trading-down}` as background fills on cards. They are price-direction signals, expressed as text color or small badge fill — never as a card surface.
-- Don't soften display weight. `{typography.hero-display}` and `{typography.display-lg}` are intentionally weight 700 — going to 400 reads as design-portfolio, not trading platform.
-- Don't add atmospheric gradients to the canvas (mesh, aurora, glow effects). Binance trusts color-block contrast — adding atmospheric depth muddies the trading-platform feel.
-- Don't invert `{component.button-primary}`'s text color. Black on yellow is the system's signature — white text on yellow loses contrast and brand recognition.
-
-## Responsive Behavior
+### Grid
+- **Sidebar:** 240px fixed (collapsible to 48px icon-rail)
+- **Right Sidebar (Analytics):** 320px collapsible (off by default)
+- **Content area:** Fluid fill between sidebars
+- **Max content width:** None — fluid to viewport (use `fluid` prop on `<Main>`)
 
 ### Breakpoints
-
 | Name | Width | Key Changes |
 |---|---|---|
-| Mobile | < 768px | Top nav collapses to hamburger; hero h1 drops from 64px to ~36px; markets table converts to a horizontally-scrollable card list; demo grids drop to 1-up; footer 6 columns wrap to 2 |
-| Tablet | 768–1024px | Top nav stays horizontal but tightens, secondary menu items hide behind a "More" dropdown; markets table 2-up; pricing/feature grids 2-up |
-| Desktop | 1024–1440px | Full top-nav with all primary menu items; 5-column markets table; trading dashboards in 8/4 split (chart + side rail) |
-| Wide | > 1440px | Same as desktop with more outer breathing room; max content width caps at 1280-1440px depending on surface |
+| Mobile | < 768px | Sidebar collapses to bottom nav; single column |
+| Tablet | 768–1024px | Sidebar icon-rail; 2-column grid |
+| Desktop | 1024–1440px | Full sidebar; multi-column layouts |
+| Wide | > 1440px | Same as desktop with more content breathing room |
 
-### Touch Targets
-- Primary CTAs render at minimum 40 × 40px (`{component.button-primary}` height + padding) — meets WCAG AAA's 44 × 44 with surrounding spacing.
-- Subscribe / inline action buttons are 28 × 28 — denser than ideal but matches industry trading platform norms.
-- Coin icons in markets tables are 32 × 32px, with the entire row tappable for 44px+ effective target.
+---
 
-### Collapsing Strategy
-- Top nav collapses to hamburger at < 768px; the menu opens as a full-screen sheet with the same yellow accent CTAs anchored to the bottom of the sheet.
-- Markets table reflows to a horizontally-scrollable single card per coin pair on mobile.
-- The hero stat numbers ("316M USERS") shrink proportionally rather than wrapping — Binance's biggest claim must always read as a single block.
-- Trading dashboards switch from chart + side-rail to chart-only with a separate "Trade" tab on mobile.
-- The light footer stays full-bleed at every breakpoint — it does not collapse to a separate dark variant.
+## ✅ Do's & Don'ts
 
-### Image Behavior
-- Coin icons stay at fixed 24/32px sizes regardless of breakpoint.
-- Lifestyle photos in the "Trade on the go" section crop responsively — wider at desktop, taller (vertical) at mobile.
-- 3D coin-stack illustrations are fixed-aspect-ratio assets that scale uniformly without cropping.
+### Do
+- Use orange for every primary action, active state, and brand moment
+- Keep the sidebar permanently dark — it is a COMET signature
+- Animate every meaningful data change (count-up, flash, pulse)
+- Use warm-tinted backgrounds — never pure white or pure black
+- Show skeleton loaders that match the card shape exactly
+- Use `Geist Mono` for all numerical compliance data
 
-## Iteration Guide
-
-1. Focus on ONE component at a time. Reference its YAML key directly (`{component.button-primary}`, `{component.markets-row}`).
-2. When adding a new component, decide first whether it lives in dark mode (marketing / product) or light mode (transactional). The same component appears in both with surface tone flipped.
-3. Variants of an existing component (`-active`, `-disabled`) live as separate entries in `components:` — never as nested state objects.
-4. Use `{token.refs}` everywhere prose mentions a color, a radius, a typography role, or a spacing value.
-5. Never document hover. The system documents Default and Active/Pressed states only.
-6. Numbers always use BinancePlex; copy always uses BinanceNova. Mixing them is a system violation.
-7. Trading green / red are semantic price tokens — never repurpose them for "success" or "error" generic states.
-
-## Known Gaps
-
-- The dembrandt frequency analyzer captured `#eaecef` (light hairline, count 1022) as the highest-frequency token. The brand-defining `{colors.primary}` (#FCD535) appears far less frequently because it's used scarcely as accent — its system role had to be confirmed from screenshots.
-- BinanceNova and BinancePlex weight-axis values are not formalized as variable-font tokens — only the static weights observed in screenshots are documented.
-- Animation and transition timings (chart redraws, price-change flashes) are not in scope.
-- Form validation states beyond `{component.text-input-on-light}` defaults are not extracted — error / success input variants would need a sign-up or order-confirmation flow to confirm.
-- The trading dashboard surfaces (Spot / Futures / Margin) were not in the analyzed URL set; their order book, candlestick chart configuration, and position-management cards are not documented here.
-- The light/dark theme toggle behavior (whether transactional pages can be forced dark by user preference) is product behavior, not extracted from the marketing surfaces.
-
-
-
+### Don't
+- Don't introduce blue, purple, or teal as primary or secondary brand colors
+- Don't use pure `#ffffff` or `#000000` for any surface
+- Don't show critical violations without the pulsing animation
+- Don't use generic spinners — always use exact-shape skeletons
+- Don't mix semantic colors — green is compliance only, red is violation only
+- Don't use color alone for status — always pair with an icon
+- Don't use rounded corners less than `rounded-lg` on content cards
+- Don't make route changes feel abrupt — always use the blur crossfade

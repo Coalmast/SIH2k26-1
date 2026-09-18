@@ -42,11 +42,11 @@ function accentStyle(
 }
 
 const SURFACE =
-  "bg-[color-mix(in_oklch,var(--cal-accent)_16%,transparent)] text-(--cal-accent) hover:bg-[color-mix(in_oklch,var(--cal-accent)_30%,transparent)]";
+  "bg-[color-mix(in_oklch,var(--cal-accent)_12%,transparent)] backdrop-blur-sm border border-[color-mix(in_oklch,var(--cal-accent)_25%,transparent)] text-(--cal-accent) hover:bg-[color-mix(in_oklch,var(--cal-accent)_25%,transparent)] hover:border-[color-mix(in_oklch,var(--cal-accent)_50%,transparent)] hover:-translate-y-0.5 shadow-[0_2px_10px_-3px_color-mix(in_oklch,var(--cal-accent)_20%,transparent)] hover:shadow-[0_4px_15px_-3px_color-mix(in_oklch,var(--cal-accent)_40%,transparent)] transition-all duration-300";
 const FOCUS =
-  "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-(--cal-accent)";
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cal-accent)";
 const SELECTED =
-  "data-[selected=true]:ring-2 data-[selected=true]:ring-(--cal-accent)";
+  "data-[selected=true]:ring-2 data-[selected=true]:ring-offset-1 data-[selected=true]:ring-(--cal-accent) data-[selected=true]:shadow-md";
 
 function compactTime(ms: number): string {
   const d = new Date(ms);
@@ -180,7 +180,7 @@ export const CalendarEventChip = forwardRef<HTMLButtonElement, ChipProps>(
         data-occ-id={occ.id}
         style={accentStyle(occ)}
         className={cn(
-          "flex w-full items-center gap-1 truncate rounded-sm border-l-2 border-(--cal-accent) px-1.5 py-0.5 text-left text-xs leading-tight",
+          "flex w-full items-center gap-1.5 truncate rounded-md border-l-4 border-l-(--cal-accent) px-2 py-1 text-left text-xs leading-tight font-medium shadow-sm hover:z-10",
           SURFACE,
           FOCUS,
           SELECTED,
@@ -226,14 +226,14 @@ export const CalendarEventBar = forwardRef<HTMLButtonElement, BarProps>(
         data-occ-id={occ.id}
         style={accentStyle(occ)}
         className={cn(
-          "flex h-5 w-full items-center truncate px-1.5 text-left text-xs font-medium leading-none",
+          "flex h-6 w-full items-center truncate px-2 text-left text-xs font-semibold leading-none shadow-sm hover:z-10",
           SURFACE,
           FOCUS,
           SELECTED,
           continuesLeft
             ? "rounded-l-none"
-            : "rounded-l-sm border-l-2 border-(--cal-accent)",
-          continuesRight ? "rounded-r-none" : "rounded-r-sm",
+            : "rounded-l-md border-l-4 border-l-(--cal-accent)",
+          continuesRight ? "rounded-r-none" : "rounded-r-md",
           occ.inactive && "opacity-50",
           className,
         )}
@@ -283,7 +283,7 @@ export const CalendarTimeBlock = forwardRef<HTMLButtonElement, TimeBlockProps>(
           width: `calc(${width * 100}% - 2px)`,
         })}
         className={cn(
-          "absolute z-10 flex flex-col overflow-hidden rounded-sm border-l-2 border-(--cal-accent) px-1.5 py-0.5 text-left text-xs leading-tight",
+          "absolute z-10 flex flex-col overflow-hidden rounded-md border-l-4 border-l-(--cal-accent) px-2 py-1.5 text-left text-xs leading-tight shadow-sm font-medium",
           SURFACE,
           FOCUS,
           "hover:z-20 focus-visible:z-20 data-[selected=true]:z-20",
