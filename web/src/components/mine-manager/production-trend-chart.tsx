@@ -1,9 +1,7 @@
 "use client";
 import { useTranslation } from "react-i18next";
-
-import { TrendingUp } from "lucide-react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
-
+import { TrendingUp, AlertTriangle } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ReferenceLine, ReferenceDot } from "recharts";
 import {
   Card,
   CardContent,
@@ -11,70 +9,97 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/components/ui/chart"
-
-export const description = "A simple area chart"
-
-const chartData = [
-  { month: "January", production: 1250000 },
-  { month: "February", production: 1305000 },
-  { month: "March", production: 1237000 },
-  { month: "April", production: 1150000 },
-  { month: "May", production: 1409000 },
-  { month: "June", production: 1414000 },
-]
+} from "@/components/ui/chart";
+import { useProductionTrend } from "@/features/mines/hooks/useProductionTrend";
+import { format } from "date-fns";
 
 const chartConfig = {
   production: {
     label: "Production (MT)",
     color: "hsl(var(--primary))",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-export function ProductionTrendChart() {
-  const {
-    t
-  } = useTranslation();
+export function ProductionTrendChart({ mineId }: { mineId?: string }) {
+  const { t } = useTranslation();
+  const { data, isLoading } = useProductionTrend(mineId);
+
+  if (isLoading || !data) {
+    return (
+      <Card className="shadow-sm h-[400px] flex items-center justify-center bg-card">
+        <div className="animate-pulse w-full px-8 flex flex-col gap-4">
+           <div className="h-6 bg-muted rounded w-1/4"></div>
+           <div className="h-48 bg-muted/50 rounded w-full"></div>
+        </div>
+      </Card>
+    );
+  }
+
+  // Format data for chart
+  const formattedData = data.productionData.map((d: any) => ({
+    date: format(new Date(d.created_at), 'MMM dd'),
+    production: d.coal_extracted,
+    originalDate: d.created_at
+  }));
+
+  // Target line calculation (mocked for now, usually would come from API)
+  const targetMT = 48000;
 
   return (
-    <Card className="shadow-sm">
+    <Card className="shadow-sm card-neon-top bg-card h-full">
       <CardHeader>
-        <CardTitle>{t("production_trend", "Production Trend")}</CardTitle>
-        <CardDescription>{t("january_june_2024", "January - June 2024")}</CardDescription>
+        <CardTitle className="flex items-center justify-between">
+           {t("production_trend", "Production Trend")}
+           {data.anomalies.length > 0 && (
+             <span className="text-xs font-semibold px-2 py-1 bg-destructive/10 text-destructive rounded-md flex items-center gap-1">
+               <AlertTriangle className="h-3 w-3" />
+               {data.anomalies.length} {t("anomalies", "Anomalies")}
+             </span>
+           )}
+        </CardTitle>
+        <CardDescription>{t("last_6_months", "Last 6 months")}</CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="w-full h-[250px]">
-          <AreaChart accessibilityLayer data={chartData} margin={{ left: -20, right: 0, top: 10, bottom: 0 }}>
+          <AreaChart accessibilityLayer data={formattedData} margin={{ left: -20, right: 0, top: 10, bottom: 0 }}>
             <defs>
               <linearGradient id="fillProduction" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="var(--color-production)" stopOpacity={0.2} />
                 <stop offset="95%" stopColor="var(--color-production)" stopOpacity={0.0} />
               </linearGradient>
             </defs>
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 3" />
             <XAxis
-              dataKey="month"
+              dataKey="date"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(val) => `${(val / 1000000).toFixed(1)}M`} />
+            <YAxis 
+              tickLine={false} 
+              axisLine={false} 
+              tickMargin={8} 
+              tickFormatter={(val) => `${(val / 1000).toFixed(0)}k`} 
+            />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <ReferenceLine y={targetMT} stroke="var(--color-destructive)" strokeDasharray="3 3" label={{ position: 'insideTopLeft', value: 'Target', fill: 'var(--color-destructive)', fontSize: 12 }} />
+            
             <Area
               dataKey="production"
-              type="natural"
+              type="monotone"
               fill="url(#fillProduction)"
               fillOpacity={1}
               stroke="var(--color-production)"
               strokeWidth={2}
             />
+            
+            {/* Draw anomalies as red dots if we had precise matching dates, simplified for demo */}
           </AreaChart>
         </ChartContainer>
       </CardContent>
@@ -83,7 +108,7 @@ export function ProductionTrendChart() {
         </div>
         <div className="leading-none text-muted-foreground">{t(
           "showing_total_production_for_t",
-          "Showing total production for the last 6 months"
+          "Showing total production for the selected period"
         )}</div>
       </CardFooter>
     </Card>
