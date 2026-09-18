@@ -703,11 +703,11 @@ export function AttendanceManagementModule() {
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-xl text-foreground shadow-lg border border-border">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-emerald-400">
             <CalendarCheck className="h-8 w-8 text-emerald-400" />
             {t("attendance_worker_management", "Attendance & Worker Management")}
           </h1>
-          <p className="text-muted-foreground/60 mt-1 text-sm">
+          <p className="text-muted-foreground/60 mt-1 text-white">
             {t(
               "realtime_rfid_attendance_shift_management",
               "Real-time RFID attendance tracking, shift-wise headcounts, DGMS compliance monitoring, and biometric event logs."
