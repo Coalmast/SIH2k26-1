@@ -23,6 +23,7 @@ import { Route as errors500RouteImport } from './routes/(errors)/500'
 import { Route as errors503RouteImport } from './routes/(errors)/503'
 import { Route as AuthenticatedAiAnalyticsRouteImport } from './routes/_authenticated/ai-analytics'
 import { Route as AuthenticatedAlertsRouteImport } from './routes/_authenticated/alerts'
+import { Route as AuthenticatedAttendanceRouteImport } from './routes/_authenticated/attendance'
 import { Route as AuthenticatedContractorsRouteImport } from './routes/_authenticated/contractors'
 import { Route as AuthenticatedCorporateDashboardRouteImport } from './routes/_authenticated/corporate-dashboard'
 import { Route as AuthenticatedEnvironmentRouteImport } from './routes/_authenticated/environment'
@@ -149,6 +150,11 @@ const AuthenticatedAiAnalyticsRoute =
 const AuthenticatedAlertsRoute = AuthenticatedAlertsRouteImport.update({
   id: '/alerts',
   path: '/alerts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAttendanceRoute = AuthenticatedAttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedContractorsRoute =
@@ -497,6 +503,7 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/ai-analytics': typeof AuthenticatedAiAnalyticsRoute
   '/alerts': typeof AuthenticatedAlertsRoute
+  '/attendance': typeof AuthenticatedAttendanceRoute
   '/contractors': typeof AuthenticatedContractorsRouteWithChildren
   '/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/environment': typeof AuthenticatedEnvironmentRoute
@@ -568,6 +575,7 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/ai-analytics': typeof AuthenticatedAiAnalyticsRoute
   '/alerts': typeof AuthenticatedAlertsRoute
+  '/attendance': typeof AuthenticatedAttendanceRoute
   '/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/environment': typeof AuthenticatedEnvironmentRoute
   '/mine-manager': typeof AuthenticatedMineManagerRoute
@@ -635,6 +643,7 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/ai-analytics': typeof AuthenticatedAiAnalyticsRoute
   '/_authenticated/alerts': typeof AuthenticatedAlertsRoute
+  '/_authenticated/attendance': typeof AuthenticatedAttendanceRoute
   '/_authenticated/contractors': typeof AuthenticatedContractorsRouteWithChildren
   '/_authenticated/corporate-dashboard': typeof AuthenticatedCorporateDashboardRoute
   '/_authenticated/environment': typeof AuthenticatedEnvironmentRoute
@@ -709,6 +718,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/ai-analytics'
     | '/alerts'
+    | '/attendance'
     | '/contractors'
     | '/corporate-dashboard'
     | '/environment'
@@ -780,6 +790,7 @@ export interface FileRouteTypes {
     | '/503'
     | '/ai-analytics'
     | '/alerts'
+    | '/attendance'
     | '/corporate-dashboard'
     | '/environment'
     | '/mine-manager'
@@ -846,6 +857,7 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/ai-analytics'
     | '/_authenticated/alerts'
+    | '/_authenticated/attendance'
     | '/_authenticated/contractors'
     | '/_authenticated/corporate-dashboard'
     | '/_authenticated/environment'
@@ -1017,6 +1029,13 @@ declare module '@tanstack/react-router' {
       path: '/alerts'
       fullPath: '/alerts'
       preLoaderRoute: typeof AuthenticatedAlertsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/attendance': {
+      id: '/_authenticated/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AuthenticatedAttendanceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/contractors': {
@@ -1563,6 +1582,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedAiAnalyticsRoute: typeof AuthenticatedAiAnalyticsRoute
   AuthenticatedAlertsRoute: typeof AuthenticatedAlertsRoute
+  AuthenticatedAttendanceRoute: typeof AuthenticatedAttendanceRoute
   AuthenticatedContractorsRoute: typeof AuthenticatedContractorsRouteWithChildren
   AuthenticatedCorporateDashboardRoute: typeof AuthenticatedCorporateDashboardRoute
   AuthenticatedEnvironmentRoute: typeof AuthenticatedEnvironmentRoute
@@ -1603,6 +1623,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedAiAnalyticsRoute: AuthenticatedAiAnalyticsRoute,
   AuthenticatedAlertsRoute: AuthenticatedAlertsRoute,
+  AuthenticatedAttendanceRoute: AuthenticatedAttendanceRoute,
   AuthenticatedContractorsRoute: AuthenticatedContractorsRouteWithChildren,
   AuthenticatedCorporateDashboardRoute: AuthenticatedCorporateDashboardRoute,
   AuthenticatedEnvironmentRoute: AuthenticatedEnvironmentRoute,

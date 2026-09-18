@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useInspections } from '@/features/inspection/hooks/useInspections'
 import { InspectionCard } from '@/features/inspection/components'
@@ -55,10 +56,10 @@ function InspectionListPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("all_status", "All Status")}</SelectItem>
-              <SelectItem value="scheduled">{t("scheduled", "Scheduled")}</SelectItem>
+              <SelectItem value="draft">{t("draft", "Draft")}</SelectItem>
               <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
               <SelectItem value="submitted">{t("submitted", "Submitted")}</SelectItem>
-              <SelectItem value="approved">{t("approved", "Approved")}</SelectItem>
+              <SelectItem value="reviewed">{t("reviewed", "Reviewed")}</SelectItem>
             </SelectContent>
           </Select>
 
@@ -95,9 +96,17 @@ function InspectionListPage() {
           <Button variant="outline" onClick={() => { setType('all'); setStatus('all'); }}>{t("clear_filters", "Clear Filters")}</Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {inspections?.map((inspection: any) => (
-            <InspectionCard key={inspection.id} inspection={inspection} />
+            <motion.div
+              key={inspection.id}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <InspectionCard inspection={inspection} />
+            </motion.div>
           ))}
         </div>
       )}

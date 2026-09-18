@@ -14,7 +14,8 @@ import {
   FileSignature,
   Settings,
   HardHat,
-  Briefcase
+  Briefcase,
+  CalendarCheck
 } from 'lucide-react'
 import { type SidebarData, type NavGroup } from '../types'
 import { type AppRole } from '@/stores/auth-store'
@@ -65,6 +66,7 @@ const mineManagerNav: NavGroup[] = [
     title: '🤝 CONTRACTORS',
     items: [
       { title: 'Contractor Management', url: '/contractors', icon: Users },
+      { title: 'Attendance Management', url: '/attendance', icon: CalendarCheck },
     ],
   },
   {
@@ -190,6 +192,7 @@ const contractorNav: NavGroup[] = [
     title: '🏢 MY COMPANY',
     items: [
       { title: 'Contractor Profile', url: '/contractors', icon: Briefcase },
+      { title: 'Attendance & Workers', url: '/attendance', icon: CalendarCheck },
     ],
   },
   {
@@ -222,6 +225,7 @@ const godModeNav: NavGroup[] = [
       { title: 'Compliance', url: '/compliance', icon: ShieldAlert },
       { title: 'Inspections', url: '/inspection', icon: Search },
       { title: 'Contractors', url: '/contractors', icon: Users },
+      { title: 'Attendance Management', url: '/attendance', icon: CalendarCheck },
       { title: 'Environment', url: '/environment', icon: Leaf },
       { title: 'Production', url: '/production', icon: Activity },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },

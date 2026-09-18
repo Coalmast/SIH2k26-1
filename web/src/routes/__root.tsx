@@ -9,6 +9,7 @@ import { GeneralError } from '@/features/errors/general-error'
 import { NotFoundError } from '@/features/errors/not-found-error'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/auth-store'
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -34,7 +35,7 @@ export const Route = createRootRouteWithContext<{
     }, [setSession, setIsLoading])
 
     return (
-      <>
+      <TooltipProvider>
         <NavigationProgress />
         <Outlet />
         <Toaster duration={5000} />
@@ -44,7 +45,7 @@ export const Route = createRootRouteWithContext<{
             <TanStackRouterDevtools position='bottom-right' />
           </>
         )}
-      </>
+      </TooltipProvider>
     )
   },
   notFoundComponent: NotFoundError,
