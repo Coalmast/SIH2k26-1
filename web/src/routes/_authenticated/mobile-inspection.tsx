@@ -15,7 +15,7 @@ function MobileInspectionPage() {
 
   return (
     <>
-      <Header fixed />
+
 
       <Main className='flex flex-1 flex-col'>
         <div className="mb-4">

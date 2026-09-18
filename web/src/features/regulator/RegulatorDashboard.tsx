@@ -20,10 +20,10 @@ const heatmapData = subsidiaries.reduce((acc, sub) => {
 }, {} as Record<string, number[]>)
 
 const violationsData = [
-  { name: 'Environmental', value: 124, color: '#4f46e5' }, // Indigo 600
-  { name: 'Machinery/Safety', value: 310, color: '#312e81' }, // Indigo 900
-  { name: 'Labour', value: 85, color: '#6366f1' }, // Indigo 500
-  { name: 'Production', value: 42, color: '#a5b4fc' }, // Indigo 300
+  { name: 'Environmental', value: 124, color: '#10b981' }, // Emerald
+  { name: 'Machinery/Safety', value: 310, color: '#ef4444' }, // Red
+  { name: 'Labour', value: 85, color: '#f59e0b' }, // Amber
+  { name: 'Production', value: 42, color: '#3b82f6' }, // Blue
 ]
 
 const blockchainLedger = [
@@ -46,11 +46,11 @@ export function RegulatorDashboard() {
   }
 
   const getHeatmapColor = (score: number) => {
-    if (score < 20) return 'bg-indigo-50'
-    if (score < 40) return 'bg-indigo-200'
-    if (score < 60) return 'bg-indigo-400'
-    if (score < 80) return 'bg-indigo-600'
-    return 'bg-indigo-900' // Critical risk
+    if (score < 20) return 'bg-emerald-500/20 text-emerald-700'
+    if (score < 40) return 'bg-yellow-400/20 text-yellow-700'
+    if (score < 60) return 'bg-orange-400/20 text-orange-700'
+    if (score < 80) return 'bg-red-500/20 text-red-700'
+    return 'bg-red-600 text-white font-bold' // Critical risk
   }
 
   return (
@@ -59,8 +59,8 @@ export function RegulatorDashboard() {
       {/* Header & Filter Ribbon */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-indigo-950">
-            <ShieldAlert className="h-8 w-8 text-indigo-600" />{t("dgms_regulatory_forensic_dashb", "DGMS Regulatory Forensic Dashboard")}</h1>
+          <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-foreground">
+            <ShieldAlert className="h-8 w-8 text-primary" />{t("dgms_regulatory_forensic_dashb", "DGMS Regulatory Forensic Dashboard")}</h1>
           <p className="text-muted-foreground mt-1">{t(
             "stark_monochrome_view_for_regu",
             "Stark monochrome view for regulatory oversight, AI risk prediction, and compliance verification."
@@ -87,7 +87,7 @@ export function RegulatorDashboard() {
               <SelectItem value="minesact">{t("mines_act_1952", "Mines Act 1952")}</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="bg-indigo-900 hover:bg-indigo-800 text-foreground rounded-none border border-indigo-950 shadow-sm">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-none shadow-sm">
             <FileSignature className="h-4 w-4 mr-2" />{t("generate_notice", "Generate Notice")}</Button>
         </div>
       </div>

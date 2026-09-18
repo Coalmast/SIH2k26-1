@@ -22,17 +22,17 @@ import {
 export const description = "A simple area chart"
 
 const chartData = [
-  { month: "January", production: 186 },
-  { month: "February", production: 305 },
-  { month: "March", production: 237 },
-  { month: "April", production: 73 },
-  { month: "May", production: 209 },
-  { month: "June", production: 214 },
+  { month: "January", production: 1250000 },
+  { month: "February", production: 1305000 },
+  { month: "March", production: 1237000 },
+  { month: "April", production: 1150000 },
+  { month: "May", production: 1409000 },
+  { month: "June", production: 1414000 },
 ]
 
 const chartConfig = {
   production: {
-    label: "Production (Tons)",
+    label: "Production (MT)",
     color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig
@@ -65,7 +65,7 @@ export function ProductionTrendChart() {
               tickMargin={8}
               tickFormatter={(value) => value.slice(0, 3)}
             />
-            <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+            <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(val) => `${(val / 1000000).toFixed(1)}M`} />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
             <Area
               dataKey="production"

@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
-import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -52,7 +51,7 @@ export function GrievanceDetail() {
 
   return (
     <>
-      <Header fixed />
+
       <Main className="flex flex-1 flex-col p-6 bg-muted/30 min-h-screen">
         <div className="w-full max-w-6xl mx-auto space-y-6 animate-in fade-in duration-300">
           

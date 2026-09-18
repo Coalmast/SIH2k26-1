@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { Header } from '@/components/layout/header'
+
 import { Main } from '@/components/layout/main'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -20,11 +20,11 @@ function ViolationDetailPage() {
 
   return (
     <>
-      <Header fixed />
+
 
       <Main className='flex flex-1 flex-col p-4 md:p-8 bg-muted/30 max-w-[1000px] mx-auto w-full space-y-6'>
         <div className="flex items-center gap-4">
-          <Link to="/">
+          <Link to="/corrective-actions">
             <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
               <ChevronLeft className="h-5 w-5" />
             </Button>

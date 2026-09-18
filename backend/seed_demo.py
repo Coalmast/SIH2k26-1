@@ -26,8 +26,10 @@ MINE_ID = "00000000-0000-0000-0000-000000000004"
 ADMIN_USER_ID = "6b339687-5103-4463-9eae-e6bceba9eb1f"
 MANAGER_USER_ID = "00000000-0000-0000-0000-000000000010"
 OFFICER_USER_ID = "00000000-0000-0000-0000-000000000011"
+SAFETY_MANAGER_USER_ID = "00000000-0000-0000-0000-000000000012"
 TEMPLATE_GAS_ID = "00000000-0000-0000-0000-000000000020"
 TEMPLATE_DGMS_ID = "00000000-0000-0000-0000-000000000021"
+SAFETY_INSTANCE_ID = "00000000-0000-0000-0000-000000000030"
 
 def seed_demo():
     print("Connecting to DB...")
@@ -76,6 +78,7 @@ def seed_demo():
             (ADMIN_USER_ID, "Admin User", "krunal6214@gmail.com", MINE_ID, SUB_ID, "System Admin", "system_admin"),
             (MANAGER_USER_ID, "Rajesh Kumar", "rajesh.k@umrer.wcl.in", MINE_ID, SUB_ID, "Mine Manager", "mine_manager"),
             (OFFICER_USER_ID, "Sunil Patil", "sunil.p@umrer.wcl.in", MINE_ID, SUB_ID, "Field Officer", "field_officer"),
+            (SAFETY_MANAGER_USER_ID, "Priya Sharma", "priya.s@umrer.wcl.in", MINE_ID, SUB_ID, "Safety Manager", "mine_manager"),
         ]
 
         for u in users:
@@ -141,10 +144,10 @@ def seed_demo():
 
         print("Seeding Compliance Requirements and Instances...")
         reqs = [
-            ("Monthly Gas & Air Quality Inspection", "CMR-2017-REG5", "monthly", "safety_officer"),
-            ("Quarterly Ventilation Survey", "CMR-2017-REG68", "quarterly", "mine_manager"),
             ("Monthly Environmental Monitoring Report", "EPA-1986-SCH6", "monthly", "environmental_officer"),
-            ("Annual General DGMS Inspection", "CMR-2017-REG100", "annual", "mine_manager")
+            ("Gas & Air Quality Inspection (PM10/SPM)", "CMR-2017-REG5", "monthly", "safety_officer"),
+            ("Quarterly Dust Suppression Compliance", "CMR-2017-REG106", "quarterly", "mine_manager"),
+            ("Mine Water Discharge Quality Check", "EPA-1986-SCH6", "monthly", "environmental_officer")
         ]
         
         req_ids = []
@@ -157,25 +160,25 @@ def seed_demo():
             )
             
         # Add instances for Sept 2026
-        # Monthly Gas & Air Quality Inspection
-        cur.execute(
-            "INSERT INTO compliance_instances (id, requirement_id, mine_id, due_date, status, period_start, period_end) VALUES (%s, %s, %s, %s, %s::instance_status, %s, %s)",
-            (uid(), req_ids[0], MINE_ID, datetime.date(2026, 9, 15), "pending", datetime.date(2026, 9, 1), datetime.date(2026, 9, 30))
-        )
-        # Quarterly Ventilation Survey
-        cur.execute(
-            "INSERT INTO compliance_instances (id, requirement_id, mine_id, due_date, status, period_start, period_end) VALUES (%s, %s, %s, %s, %s::instance_status, %s, %s)",
-            (uid(), req_ids[1], MINE_ID, datetime.date(2026, 9, 30), "in_progress", datetime.date(2026, 7, 1), datetime.date(2026, 9, 30))
-        )
         # Monthly Environmental Monitoring
         cur.execute(
             "INSERT INTO compliance_instances (id, requirement_id, mine_id, due_date, status, period_start, period_end) VALUES (%s, %s, %s, %s, %s::instance_status, %s, %s)",
-            (uid(), req_ids[2], MINE_ID, datetime.date(2026, 9, 20), "pending", datetime.date(2026, 9, 1), datetime.date(2026, 9, 30))
+            (SAFETY_INSTANCE_ID, req_ids[0], MINE_ID, datetime.date(2026, 9, 20), "pending", datetime.date(2026, 9, 1), datetime.date(2026, 9, 30))
         )
-        # Annual General
+        # Gas & Air Quality
         cur.execute(
             "INSERT INTO compliance_instances (id, requirement_id, mine_id, due_date, status, period_start, period_end) VALUES (%s, %s, %s, %s, %s::instance_status, %s, %s)",
-            (uid(), req_ids[3], MINE_ID, datetime.date(2026, 10, 15), "in_progress", datetime.date(2026, 1, 1), datetime.date(2026, 12, 31))
+            (uid(), req_ids[1], MINE_ID, datetime.date(2026, 9, 15), "pending", datetime.date(2026, 9, 1), datetime.date(2026, 9, 30))
+        )
+        # Quarterly Dust Suppression
+        cur.execute(
+            "INSERT INTO compliance_instances (id, requirement_id, mine_id, due_date, status, period_start, period_end) VALUES (%s, %s, %s, %s, %s::instance_status, %s, %s)",
+            (uid(), req_ids[2], MINE_ID, datetime.date(2026, 9, 30), "pending", datetime.date(2026, 7, 1), datetime.date(2026, 9, 30))
+        )
+        # Mine Water Discharge
+        cur.execute(
+            "INSERT INTO compliance_instances (id, requirement_id, mine_id, due_date, status, period_start, period_end) VALUES (%s, %s, %s, %s, %s::instance_status, %s, %s)",
+            (uid(), req_ids[3], MINE_ID, datetime.date(2026, 9, 25), "pending", datetime.date(2026, 9, 1), datetime.date(2026, 9, 30))
         )
 
         conn.commit()

@@ -69,7 +69,9 @@ export function WorkerApp() {
     <div className="flex-1 overflow-y-auto bg-muted min-h-screen w-full flex justify-center">
 
       {/* Mobile Frame Constraint (To simulate phone layout on desktop screens) */}
-      <div className="w-full max-w-md bg-background min-h-screen shadow-2xl relative flex flex-col">
+      <div className="w-full max-w-[400px] bg-background border-[8px] border-slate-900 rounded-[3rem] shadow-2xl overflow-hidden aspect-[9/19] flex flex-col relative my-8">
+        {/* Notch */}
+        <div className="absolute top-0 inset-x-0 h-7 bg-slate-900 rounded-b-3xl w-1/2 mx-auto z-50"></div>
         
         {/* App Header */}
         <header className="bg-background text-foreground p-4 flex justify-between items-center sticky top-0 z-10 shadow-md">

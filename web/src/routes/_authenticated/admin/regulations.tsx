@@ -1,9 +1,11 @@
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import { createFileRoute } from '@tanstack/react-router'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 import { Search, Plus, BookOpen, Edit2, Trash2 } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/admin/regulations')({
@@ -22,6 +24,13 @@ function AdminRegulationsPage() {
     t
   } = useTranslation();
 
+  const [searchQuery, setSearchQuery] = useState('')
+
+  const filteredRegs = MOCK_REGS.filter(reg => {
+    const q = searchQuery.toLowerCase();
+    return reg.act.toLowerCase().includes(q) || reg.section.toLowerCase().includes(q) || reg.title.toLowerCase().includes(q);
+  })
+
   return (
     <div className="p-4 md:p-8 bg-muted/50 min-h-screen text-foreground">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -35,7 +44,38 @@ function AdminRegulationsPage() {
               "Manage acts, statutes, and associated violation penalties."
             )}</p>
           </div>
-          <Button className="bg-primary"><Plus className="h-4 w-4 mr-2" />{t("add_regulation", "Add Regulation")}</Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-primary"><Plus className="h-4 w-4 mr-2" />{t("add_regulation", "Add Regulation")}</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>{t("add_regulation", "Add Regulation")}</DialogTitle>
+                <DialogDescription>Add a new act or regulation to the library.</DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Act / Statute</label>
+                  <Input placeholder="e.g. Mines Act, 1952" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Section / Regulation No.</label>
+                  <Input placeholder="e.g. Section 22" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Title</label>
+                  <Input placeholder="e.g. Power to prohibit employment" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Penalty</label>
+                  <Input placeholder="e.g. Up to ₹5,00,000" />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Save Regulation</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <Card className="shadow-sm">
@@ -44,13 +84,13 @@ function AdminRegulationsPage() {
               <CardTitle className="text-lg">{t("acts_regulations", "Acts & Regulations")}</CardTitle>
               <div className="relative w-72">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground/70" />
-                <Input placeholder="Search by act, section or title..." className="pl-9 h-9" />
+                <Input placeholder="Search by act, section or title..." className="pl-9 h-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-slate-100">
-              {MOCK_REGS.map((reg) => (
+            <div className="divide-y divide-border">
+              {filteredRegs.map((reg) => (
                 <div key={reg.id} className="p-6 hover:bg-muted/30 transition-colors flex justify-between items-start gap-4">
                   <div>
                     <div className="flex items-center gap-3 mb-2">

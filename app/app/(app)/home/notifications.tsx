@@ -43,6 +43,33 @@ const EmptyState = () => (
 );
 
 const NotificationsScreen = ({ notifications }: { notifications: Notification[] }) => {
+  React.useEffect(() => {
+    // Seed initial notification for demo if empty
+    if (notifications.length === 0) {
+      const seedNotification = async () => {
+        try {
+          await database.write(async () => {
+            const count = await database.collections.get('notifications').query().fetchCount();
+            if (count === 0) {
+              await database.get('notifications').create((n: any) => {
+                n.remoteId = 'demo-seed-1';
+                n.type = 'compliance_reminder';
+                n.priority = 'high';
+                n.title = 'Compliance Task Assigned';
+                n.message = 'Monthly Environmental Monitoring Report is due on Sept 20. Please complete the air quality inspection at Umrer OCP.';
+                n.status = 'unread';
+                n.syncStatus = 'synced';
+              });
+            }
+          });
+        } catch (e) {
+          console.error('Failed to seed notification', e);
+        }
+      };
+      seedNotification();
+    }
+  }, [notifications.length]);
+
   const markAllAsRead = async () => {
     await database.write(async () => {
       const unread = await database.collections.get('notifications').query(Q.where('status', 'unread')).fetch();

@@ -25,22 +25,18 @@ function MineManagerDashboard() {
 
       {/* Main Body Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-        {/* Left 2/3: Complex Data */}
+        {/* Left 2/3: Core Operations & Compliance */}
         <div className="lg:col-span-2 flex flex-col gap-6">
+          <ProductionTrendChart />
           <ComplianceCalendar />
           <OpenViolationsTable />
         </div>
 
-        {/* Right 1/3: Live Alert Feed */}
-        <div className="lg:col-span-1">
+        {/* Right 1/3: Real-time Risk & Environment */}
+        <div className="lg:col-span-1 flex flex-col gap-6">
           <LiveAlertFeed />
+          <EnvironmentalStatus />
         </div>
-      </div>
-
-      {/* Footer Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
-        <EnvironmentalStatus />
-        <ProductionTrendChart />
       </div>
     </div>
   )

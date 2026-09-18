@@ -41,7 +41,7 @@ export function RoleSwitcher() {
 
   return (
     <div className="px-4 py-2 border-t border-border/50 bg-muted/20">
-      <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase">{t("dev_role_switcher", "Dev Role Switcher")}</p>
+      <p className="text-xs font-semibold text-muted-foreground mb-2 uppercase">{t("dev_role_switcher", "Quick Login")}</p>
       <Select value={role || ''} onValueChange={handleRoleChange}>
         <SelectTrigger className="h-8 text-xs">
           <SelectValue placeholder="Select a role..." />

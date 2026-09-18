@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Header } from '@/components/layout/header'
+
 import { Main } from '@/components/layout/main'
 import { ComplianceInstanceDetail } from '@/features/compliance/components/ComplianceInstanceDetail'
 
@@ -15,7 +15,7 @@ function ComplianceInstancePage() {
 
   return (
     <>
-      <Header fixed />
+
       
       <Main className='flex flex-1 flex-col'>
         <ComplianceInstanceDetail instanceId={instanceId} mineId={auth.mineIds?.[0] ?? ''} />

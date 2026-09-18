@@ -76,9 +76,9 @@ export function EnvironmentModule() {
           </CardContent>
         </Card>
 
-        <Card className="bg-primary text-primary-foreground shadow-sm">
+        <Card className="bg-primary/10 border border-primary/30 shadow-sm text-foreground">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-primary-foreground/80 flex items-center gap-2">
+            <CardTitle className="text-sm text-primary flex items-center gap-2">
               <Activity className="h-4 w-4" />{t("ai_forecast", "AI Forecast")}</CardTitle>
           </CardHeader>
           <CardContent>
@@ -86,7 +86,7 @@ export function EnvironmentModule() {
               "pm10_expected_to_peak_at_125_g",
               "PM10 expected to peak at 125 µg/m³ between 14:00-16:00."
             )}</div>
-            <div className="text-xs text-primary-foreground/70 mt-2">{t(
+            <div className="text-xs text-muted-foreground mt-2">{t(
               "recommendation_increase_water_",
               "Recommendation: Increase water sprinkling on Haul Road B."
             )}</div>
@@ -113,7 +113,7 @@ export function EnvironmentModule() {
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={mockTrendData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" strokeOpacity={0.1} />
                 <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
                 <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
                 <RechartsTooltip 

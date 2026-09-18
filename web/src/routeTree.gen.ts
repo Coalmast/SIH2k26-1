@@ -41,13 +41,13 @@ import { Route as AuthenticatedAdminAuditLogRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminChecklistBuilderRouteImport } from './routes/_authenticated/admin/checklist-builder'
 import { Route as AuthenticatedAdminEnvStationsRouteImport } from './routes/_authenticated/admin/env-stations'
 import { Route as AuthenticatedAdminRegulationsRouteImport } from './routes/_authenticated/admin/regulations'
-import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin/users'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
 import { Route as AuthenticatedComplianceIndexRouteImport } from './routes/_authenticated/compliance/index'
 import { Route as AuthenticatedComplianceIdRouteImport } from './routes/_authenticated/compliance/$id'
 import { Route as AuthenticatedComplianceInstanceIdRouteImport } from './routes/_authenticated/compliance/$instanceId'
 import { Route as AuthenticatedContractorsIndexRouteImport } from './routes/_authenticated/contractors/index'
 import { Route as AuthenticatedContractorsIdRouteImport } from './routes/_authenticated/contractors/$id'
+import { Route as AuthenticatedCorrectiveActionsIndexRouteImport } from './routes/_authenticated/corrective-actions/index'
 import { Route as AuthenticatedCorrectiveActionsIdRouteImport } from './routes/_authenticated/corrective-actions/$id'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 import { Route as AuthenticatedGrievancesIndexRouteImport } from './routes/_authenticated/grievances/index'
@@ -251,11 +251,6 @@ const AuthenticatedAdminRegulationsRoute =
     path: '/admin/regulations',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
-  id: '/admin/users',
-  path: '/admin/users',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
   id: '/apps/',
   path: '/apps/',
@@ -290,6 +285,12 @@ const AuthenticatedContractorsIdRoute =
     id: '/$id',
     path: '/$id',
     getParentRoute: () => AuthenticatedContractorsRoute,
+  } as any)
+const AuthenticatedCorrectiveActionsIndexRoute =
+  AuthenticatedCorrectiveActionsIndexRouteImport.update({
+    id: '/corrective-actions/',
+    path: '/corrective-actions/',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedCorrectiveActionsIdRoute =
   AuthenticatedCorrectiveActionsIdRouteImport.update({
@@ -513,7 +514,6 @@ export interface FileRoutesByFullPath {
   '/admin/checklist-builder': typeof AuthenticatedAdminChecklistBuilderRoute
   '/admin/env-stations': typeof AuthenticatedAdminEnvStationsRoute
   '/admin/regulations': typeof AuthenticatedAdminRegulationsRoute
-  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/compliance/$id': typeof AuthenticatedComplianceIdRoute
   '/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
   '/contractors/$id': typeof AuthenticatedContractorsIdRouteWithChildren
@@ -537,6 +537,7 @@ export interface FileRoutesByFullPath {
   '/apps/': typeof AuthenticatedAppsIndexRoute
   '/compliance/': typeof AuthenticatedComplianceIndexRoute
   '/contractors/': typeof AuthenticatedContractorsIndexRoute
+  '/corrective-actions/': typeof AuthenticatedCorrectiveActionsIndexRoute
   '/grievances/': typeof AuthenticatedGrievancesIndexRoute
   '/incidents/': typeof AuthenticatedIncidentsIndexRoute
   '/inspection/': typeof AuthenticatedInspectionIndexRoute
@@ -578,7 +579,6 @@ export interface FileRoutesByTo {
   '/admin/checklist-builder': typeof AuthenticatedAdminChecklistBuilderRoute
   '/admin/env-stations': typeof AuthenticatedAdminEnvStationsRoute
   '/admin/regulations': typeof AuthenticatedAdminRegulationsRoute
-  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/compliance/$id': typeof AuthenticatedComplianceIdRoute
   '/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
   '/corrective-actions/$id': typeof AuthenticatedCorrectiveActionsIdRoute
@@ -601,6 +601,7 @@ export interface FileRoutesByTo {
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/compliance': typeof AuthenticatedComplianceIndexRoute
   '/contractors': typeof AuthenticatedContractorsIndexRoute
+  '/corrective-actions': typeof AuthenticatedCorrectiveActionsIndexRoute
   '/grievances': typeof AuthenticatedGrievancesIndexRoute
   '/incidents': typeof AuthenticatedIncidentsIndexRoute
   '/inspection': typeof AuthenticatedInspectionIndexRoute
@@ -651,7 +652,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/checklist-builder': typeof AuthenticatedAdminChecklistBuilderRoute
   '/_authenticated/admin/env-stations': typeof AuthenticatedAdminEnvStationsRoute
   '/_authenticated/admin/regulations': typeof AuthenticatedAdminRegulationsRoute
-  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/compliance/$id': typeof AuthenticatedComplianceIdRoute
   '/_authenticated/compliance/$instanceId': typeof AuthenticatedComplianceInstanceIdRoute
   '/_authenticated/contractors/$id': typeof AuthenticatedContractorsIdRouteWithChildren
@@ -675,6 +675,7 @@ export interface FileRoutesById {
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/compliance/': typeof AuthenticatedComplianceIndexRoute
   '/_authenticated/contractors/': typeof AuthenticatedContractorsIndexRoute
+  '/_authenticated/corrective-actions/': typeof AuthenticatedCorrectiveActionsIndexRoute
   '/_authenticated/grievances/': typeof AuthenticatedGrievancesIndexRoute
   '/_authenticated/incidents/': typeof AuthenticatedIncidentsIndexRoute
   '/_authenticated/inspection/': typeof AuthenticatedInspectionIndexRoute
@@ -725,7 +726,6 @@ export interface FileRouteTypes {
     | '/admin/checklist-builder'
     | '/admin/env-stations'
     | '/admin/regulations'
-    | '/admin/users'
     | '/compliance/$id'
     | '/compliance/$instanceId'
     | '/contractors/$id'
@@ -749,6 +749,7 @@ export interface FileRouteTypes {
     | '/apps/'
     | '/compliance/'
     | '/contractors/'
+    | '/corrective-actions/'
     | '/grievances/'
     | '/incidents/'
     | '/inspection/'
@@ -790,7 +791,6 @@ export interface FileRouteTypes {
     | '/admin/checklist-builder'
     | '/admin/env-stations'
     | '/admin/regulations'
-    | '/admin/users'
     | '/compliance/$id'
     | '/compliance/$instanceId'
     | '/corrective-actions/$id'
@@ -813,6 +813,7 @@ export interface FileRouteTypes {
     | '/apps'
     | '/compliance'
     | '/contractors'
+    | '/corrective-actions'
     | '/grievances'
     | '/incidents'
     | '/inspection'
@@ -862,7 +863,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/checklist-builder'
     | '/_authenticated/admin/env-stations'
     | '/_authenticated/admin/regulations'
-    | '/_authenticated/admin/users'
     | '/_authenticated/compliance/$id'
     | '/_authenticated/compliance/$instanceId'
     | '/_authenticated/contractors/$id'
@@ -886,6 +886,7 @@ export interface FileRouteTypes {
     | '/_authenticated/apps/'
     | '/_authenticated/compliance/'
     | '/_authenticated/contractors/'
+    | '/_authenticated/corrective-actions/'
     | '/_authenticated/grievances/'
     | '/_authenticated/incidents/'
     | '/_authenticated/inspection/'
@@ -1145,13 +1146,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRegulationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/admin/users': {
-      id: '/_authenticated/admin/users'
-      path: '/admin/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/apps/': {
       id: '/_authenticated/apps/'
       path: '/apps'
@@ -1193,6 +1187,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/contractors/$id'
       preLoaderRoute: typeof AuthenticatedContractorsIdRouteImport
       parentRoute: typeof AuthenticatedContractorsRoute
+    }
+    '/_authenticated/corrective-actions/': {
+      id: '/_authenticated/corrective-actions/'
+      path: '/corrective-actions'
+      fullPath: '/corrective-actions/'
+      preLoaderRoute: typeof AuthenticatedCorrectiveActionsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/corrective-actions/$id': {
       id: '/_authenticated/corrective-actions/$id'
@@ -1579,7 +1580,6 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminChecklistBuilderRoute: typeof AuthenticatedAdminChecklistBuilderRoute
   AuthenticatedAdminEnvStationsRoute: typeof AuthenticatedAdminEnvStationsRoute
   AuthenticatedAdminRegulationsRoute: typeof AuthenticatedAdminRegulationsRoute
-  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedComplianceIdRoute: typeof AuthenticatedComplianceIdRoute
   AuthenticatedComplianceInstanceIdRoute: typeof AuthenticatedComplianceInstanceIdRoute
   AuthenticatedCorrectiveActionsIdRoute: typeof AuthenticatedCorrectiveActionsIdRoute
@@ -1590,6 +1590,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedComplianceIndexRoute: typeof AuthenticatedComplianceIndexRoute
+  AuthenticatedCorrectiveActionsIndexRoute: typeof AuthenticatedCorrectiveActionsIndexRoute
   AuthenticatedIncidentsIndexRoute: typeof AuthenticatedIncidentsIndexRoute
   AuthenticatedInspectionIndexRoute: typeof AuthenticatedInspectionIndexRoute
   AuthenticatedReportsIndexRoute: typeof AuthenticatedReportsIndexRoute
@@ -1620,7 +1621,6 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedAdminChecklistBuilderRoute,
   AuthenticatedAdminEnvStationsRoute: AuthenticatedAdminEnvStationsRoute,
   AuthenticatedAdminRegulationsRoute: AuthenticatedAdminRegulationsRoute,
-  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedComplianceIdRoute: AuthenticatedComplianceIdRoute,
   AuthenticatedComplianceInstanceIdRoute:
     AuthenticatedComplianceInstanceIdRoute,
@@ -1632,6 +1632,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedComplianceIndexRoute: AuthenticatedComplianceIndexRoute,
+  AuthenticatedCorrectiveActionsIndexRoute:
+    AuthenticatedCorrectiveActionsIndexRoute,
   AuthenticatedIncidentsIndexRoute: AuthenticatedIncidentsIndexRoute,
   AuthenticatedInspectionIndexRoute: AuthenticatedInspectionIndexRoute,
   AuthenticatedReportsIndexRoute: AuthenticatedReportsIndexRoute,

@@ -40,7 +40,7 @@ function AdminEnvStationsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <Card className="shadow-sm">
             <CardContent className="p-5 flex justify-between items-center">
               <div>

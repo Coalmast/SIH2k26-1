@@ -11,12 +11,31 @@ import { useReportSignatureStore } from '@/stores/report-store';
 
 // Mock data builder for demonstration
 const buildMockData = (type: ReportType, mineId: string) => {
+  if (type === 'ec') {
+    return {
+      mineName: mineId === 'rajmahal' ? 'Rajmahal OCP' : 'Sonepur Bazari',
+      ownerCompany: mineId === 'rajmahal' ? 'Eastern Coalfields Limited (ECL)' : 'Western Coalfields Limited (WCL)',
+      reportingPeriod: { start: 'Apr 01, 2026', end: 'Sep 30, 2026' },
+      reportDate: 'Sep 16, 2026',
+      environmentalClearanceNo: 'J-11011/14/2018-IA.II(M)',
+      complianceStatus: [
+        { condition: 'Dust suppression by water sprinklers on haul roads', status: '⚠ Partially Complied', remarks: 'PM10 recorded 4.2 mg/m³ (limit 3.0). Sprinkler frequency increased.' },
+        { condition: 'Plantation of 300 trees in green belt area', status: '✓ Complied', remarks: '312 trees planted as of June 2026.' },
+        { condition: 'Mine drainage water discharge pH (6.0–8.5)', status: '✓ Complied', remarks: 'pH 7.2 — within limits.' },
+        { condition: 'SPM limit at mine boundary (600 μg/m³)', status: '⚠ Partially Complied', remarks: 'SPM 720 μg/m³ recorded on Sept 14. Corrective action initiated.' },
+        { condition: 'Submission of half-yearly EC compliance report', status: '✓ Complied', remarks: 'Submitted as per schedule.' },
+        { condition: 'SO2 emission within permissible limits (2 ppm)', status: '✗ Not Complied', remarks: 'SO2 at 2.8 ppm on Sept 16 inspection. Show-cause response pending.' },
+      ],
+      managerName: 'Rajesh Kumar',
+    };
+  }
+
   return {
     mineName: mineId === 'rajmahal' ? 'Rajmahal OCP' : 'Sonepur Bazari',
-    ownerCompany: 'Eastern Coalfields Limited',
-    reportingPeriod: { start: 'Jan 01, 2027', end: 'Jan 07, 2027' },
-    reportDate: 'Jan 07, 2027',
-    meetingDate: 'Jan 05, 2027',
+    ownerCompany: mineId === 'rajmahal' ? 'Eastern Coalfields Limited' : 'Western Coalfields Limited',
+    reportingPeriod: { start: 'Jan 01, 2026', end: 'Jan 07, 2026' },
+    reportDate: 'Jan 07, 2026',
+    meetingDate: 'Jan 05, 2026',
     meetingTime: '10:00 AM',
     location: 'Conference Room A',
     totalProductionMT: 45200,
@@ -37,15 +56,15 @@ const buildMockData = (type: ReportType, mineId: string) => {
       { condition: 'Dust suppression', status: 'Complied', remarks: 'Sprinklers active' }
     ],
     contractorName: 'ABC Mining Services',
-    principalEmployer: 'Eastern Coalfields Limited',
+    principalEmployer: mineId === 'rajmahal' ? 'Eastern Coalfields Limited' : 'Western Coalfields Limited',
     totalContractWorkers: 450,
     wagesPaid: 1500000,
     managerName: 'Suresh Patel',
-    accidentDate: 'Jan 06, 2027',
+    accidentDate: 'Jan 06, 2026',
     accidentTime: '14:30',
     locationDetails: 'Haul Road B',
     description: 'Dumper minor collision',
-    reportingYear: '2027',
+    reportingYear: '2026',
   };
 };
 

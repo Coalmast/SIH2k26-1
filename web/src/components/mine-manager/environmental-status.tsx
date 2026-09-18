@@ -27,8 +27,10 @@ export function EnvironmentalStatus() {
             <span className="text-3xl font-bold text-foreground">{t("7_2", "7.2")}</span>
             <Droplet className="h-5 w-5 text-comet-up fill-emerald-500/20" />
           </div>
-          {/* Progress representing pH value around 7 (neutral) out of 14, ~50% */}
-          <Progress value={50} className="mt-2 h-2 bg-secondary" />
+          {/* pH scale visualization (0-14, 7 is neutral) */}
+          <div className="mt-3 relative h-2 w-full rounded-full bg-gradient-to-r from-red-500 via-emerald-500 to-purple-500">
+            <div className="absolute top-1/2 -translate-y-1/2 w-1.5 h-4 bg-foreground border border-background rounded-sm shadow-sm" style={{ left: `${(7.2 / 14) * 100}%` }}></div>
+          </div>
         </div>
       </div>
     </Card>

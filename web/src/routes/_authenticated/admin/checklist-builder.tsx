@@ -64,7 +64,7 @@ function AdminChecklistBuilderPage() {
                   <div className="cursor-move pt-2 opacity-50 hover:opacity-100"><GripVertical className="h-5 w-5" /></div>
                   <div className="flex-1 space-y-3">
                     <div className="flex justify-between">
-                      <Badge variant="secondary" className="bg-blue-50 text-blue-700">{t("yes_no_na_question", "Yes/No/NA Question")}</Badge>
+                      <Badge variant="outline" className="bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30">{t("yes_no_na_question", "Yes/No/NA Question")}</Badge>
                       <Button variant="ghost" size="icon" className="h-6 w-6 text-comet-down opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
                     </div>
                     <Input defaultValue="Is the backup alarm functioning correctly?" className="font-medium" />
@@ -81,7 +81,7 @@ function AdminChecklistBuilderPage() {
                   <div className="cursor-move pt-2 opacity-50 hover:opacity-100"><GripVertical className="h-5 w-5" /></div>
                   <div className="flex-1 space-y-3">
                     <div className="flex justify-between">
-                      <Badge variant="secondary" className="bg-[#0ecb81]/10 text-comet-up">{t("photo_evidence", "Photo Evidence")}</Badge>
+                      <Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up border-[#0ecb81]/30">{t("photo_evidence", "Photo Evidence")}</Badge>
                       <Button variant="ghost" size="icon" className="h-6 w-6 text-comet-down opacity-0 group-hover:opacity-100 transition-opacity"><Trash2 className="h-4 w-4" /></Button>
                     </div>
                     <Input defaultValue="Upload photo of tire tread depth" className="font-medium" />
