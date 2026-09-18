@@ -9,7 +9,7 @@ import type {
 } from "react";
 import { createPortal } from "react-dom";
 import { format } from "date-fns";
-import { Flag } from "lucide-react";
+import { Flame, Droplet, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { CalendarOccurrence, TaskStatusOption } from "../types";
@@ -42,7 +42,7 @@ function accentStyle(
 }
 
 const SURFACE =
-  "bg-[color-mix(in_oklch,var(--cal-accent)_12%,transparent)] backdrop-blur-sm border border-[color-mix(in_oklch,var(--cal-accent)_25%,transparent)] text-(--cal-accent) hover:bg-[color-mix(in_oklch,var(--cal-accent)_25%,transparent)] hover:border-[color-mix(in_oklch,var(--cal-accent)_50%,transparent)] hover:-translate-y-0.5 shadow-[0_2px_10px_-3px_color-mix(in_oklch,var(--cal-accent)_20%,transparent)] hover:shadow-[0_4px_15px_-3px_color-mix(in_oklch,var(--cal-accent)_40%,transparent)] transition-all duration-300";
+  "bg-[color-mix(in_oklch,var(--cal-accent)_12%,transparent)] backdrop-blur-sm border border-[color-mix(in_oklch,var(--cal-accent)_25%,transparent)] text-(--cal-accent) hover:bg-[color-mix(in_oklch,var(--cal-accent)_35%,transparent)] hover:border-[color-mix(in_oklch,var(--cal-accent)_60%,transparent)] hover:-translate-y-1 shadow-[0_2px_10px_-3px_color-mix(in_oklch,var(--cal-accent)_20%,transparent)] hover:shadow-[0_8px_20px_-4px_color-mix(in_oklch,var(--cal-accent)_50%,transparent)] transition-all duration-300";
 const FOCUS =
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--cal-accent)";
 const SELECTED =
@@ -170,6 +170,8 @@ type ChipProps = {
 export const CalendarEventChip = forwardRef<HTMLButtonElement, ChipProps>(
   function CalendarEventChip({ occ, selected, className, ...rest }, ref) {
     const milestone = occ.kind === "milestone";
+    const category = occ.item.metadata?.category;
+    
     return (
       <button
         ref={ref}
@@ -180,26 +182,30 @@ export const CalendarEventChip = forwardRef<HTMLButtonElement, ChipProps>(
         data-occ-id={occ.id}
         style={accentStyle(occ)}
         className={cn(
-          "flex w-full items-center gap-1.5 truncate rounded-md border-l-4 border-l-(--cal-accent) px-2 py-1 text-left text-xs leading-tight font-medium shadow-sm hover:z-10",
+          "flex w-full items-start gap-1.5 whitespace-normal break-words rounded-md border-l-4 border-l-(--cal-accent) px-2 py-1.5 text-left text-sm leading-tight font-medium shadow-sm hover:z-10",
           SURFACE,
           FOCUS,
           SELECTED,
+          "min-h-[28px]",
           occ.inactive && "opacity-50",
           className,
         )}
       >
-        <PriorityFlag color={occ.flagColor} />
-        {milestone ? (
-          <span
-            className="size-1.5 shrink-0 rotate-45 bg-(--cal-accent)"
-            aria-hidden
-          />
-        ) : !occ.allDay ? (
-          <span className="shrink-0 tabular-nums opacity-80">
-            {compactTime(occ.startMs)}
-          </span>
-        ) : null}
-        <span className="truncate">{occ.item.name}</span>
+        <div className="flex items-center gap-1.5 mt-0.5 flex-1 min-w-0">
+          {category === 'environment' ? (
+            <Droplet className="h-3.5 w-3.5 shrink-0 text-current opacity-80" />
+          ) : category === 'safety' ? (
+            <Flame className="h-3.5 w-3.5 shrink-0 text-current opacity-80" />
+          ) : occ.item.priority === 'high' ? (
+            <ShieldAlert className="h-3.5 w-3.5 shrink-0 text-current opacity-80" />
+          ) : (
+            <div
+              className="mt-0.5 h-1.5 w-1.5 shrink-0 rounded-full"
+              style={{ backgroundColor: "var(--cal-accent)" }}
+            />
+          )}
+          <span className="line-clamp-2">{occ.item.name}</span>
+        </div>
       </button>
     );
   },
@@ -226,7 +232,7 @@ export const CalendarEventBar = forwardRef<HTMLButtonElement, BarProps>(
         data-occ-id={occ.id}
         style={accentStyle(occ)}
         className={cn(
-          "flex h-6 w-full items-center truncate px-2 text-left text-xs font-semibold leading-none shadow-sm hover:z-10",
+          "flex h-7 w-full items-center truncate px-2 text-left text-sm font-semibold leading-none shadow-sm hover:z-10",
           SURFACE,
           FOCUS,
           SELECTED,
@@ -283,7 +289,7 @@ export const CalendarTimeBlock = forwardRef<HTMLButtonElement, TimeBlockProps>(
           width: `calc(${width * 100}% - 2px)`,
         })}
         className={cn(
-          "absolute z-10 flex flex-col overflow-hidden rounded-md border-l-4 border-l-(--cal-accent) px-2 py-1.5 text-left text-xs leading-tight shadow-sm font-medium",
+          "absolute z-10 flex flex-col overflow-hidden rounded-md border-l-4 border-l-(--cal-accent) px-2 py-1.5 text-left text-sm leading-tight shadow-sm font-medium",
           SURFACE,
           FOCUS,
           "hover:z-20 focus-visible:z-20 data-[selected=true]:z-20",

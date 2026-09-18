@@ -192,12 +192,6 @@ const contractorNav: NavGroup[] = [
       { title: 'Attendance & Workers', url: '/attendance', icon: CalendarCheck },
     ],
   },
-  {
-    title: '📋 MY COMPLIANCE',
-    items: [
-      { title: 'Grievances', url: '/grievances', icon: MessageSquare },
-    ],
-  },
 ]
 
 const superAdminNav: NavGroup[] = [

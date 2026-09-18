@@ -58,22 +58,31 @@ export function MonthDayCell({
     <div
       ref={dropRef}
       role="gridcell"
-      // Editable cells are keyboard-focusable; the root's delegated handler reads
-      // `data-day-ms` so Enter on a focused empty day opens the quick-composer.
       tabIndex={creatable ? 0 : undefined}
       data-day-ms={creatable ? startOfDay(day).getTime() : undefined}
       onClick={onDayClick ? () => onDayClick(day) : undefined}
       onDoubleClick={onDayDoubleClick ? (e) => onDayDoubleClick(day, e) : undefined}
       className={cn(
-        "relative min-h-27 border-r border-border outline-none last:border-r-0",
+        "group relative min-h-27 border-r border-b border-border/50 outline-none last:border-r-0 bg-card/20 backdrop-blur-sm transition-all duration-300 hover:bg-card/80 hover:shadow-[inset_0_0_20px_rgba(0,0,0,0.05)] dark:hover:shadow-[inset_0_0_20px_rgba(255,255,255,0.02)] hover:border-primary/30 z-0 hover:z-10",
         (onDayClick || creatable) && "cursor-pointer",
         creatable &&
           "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
-        outside && "bg-muted/30",
-        isOver && "bg-primary/10 ring-1 ring-inset ring-primary/40",
+        outside && "bg-muted/10 opacity-60",
+        isOver && "bg-primary/20 ring-1 ring-inset ring-primary/40",
       )}
     >
-      <div className="flex items-center justify-end p-1">
+      <div className="flex items-center justify-between p-1">
+        <button
+          type="button"
+          className="p-1 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-primary transition-opacity hover:bg-primary/10 rounded-md"
+          title="Schedule new task here"
+          onClick={(e) => {
+            e.stopPropagation();
+            console.log("Schedule task for", day);
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v10M3 8h10"/></svg>
+        </button>
         <span
           className={cn(
             "flex size-6 items-center justify-center rounded-full text-xs tabular-nums",

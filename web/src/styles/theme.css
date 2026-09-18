@@ -33,14 +33,14 @@
   --comet-yellow:           #f59e0b;
   --comet-orange:           #f97316;
 
-  /* ── Sidebar (PERMANENT DARK — Design Signature) ─────────────────────── */
-  --sidebar:                #18181b;
-  --sidebar-foreground:     #f4f4f5;
-  --sidebar-primary:        #f97316;
-  --sidebar-primary-foreground: #18181b;
-  --sidebar-accent:         #27272a;
-  --sidebar-accent-foreground: #fafafa;
-  --sidebar-border:         #27272a;
+  /* ── Sidebar (Light Mode) ───────────────────────────────────────────────── */
+  --sidebar:                #f2ede8;
+  --sidebar-foreground:     #1a1614;
+  --sidebar-primary:        #c2410c;
+  --sidebar-primary-foreground: #fff7ed;
+  --sidebar-accent:         #e8e2da;
+  --sidebar-accent-foreground: #1a1614;
+  --sidebar-border:         #d4cec5;
   --sidebar-ring:           #f97316;
 }
 
