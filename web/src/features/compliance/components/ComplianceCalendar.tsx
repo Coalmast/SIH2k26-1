@@ -1,151 +1,112 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { ShieldAlert, Clock, History, Upload, Loader2 } from 'lucide-react';
-import { Link, useNavigate } from '@tanstack/react-router';
+import React, { useMemo, useState } from 'react';
+import { EventCalendar } from '@/components/event-calendar';
+import type { TaskItem, TaskStatusOption } from '@/components/event-calendar/types';
 import { useComplianceInstances } from '../hooks/useCompliance';
-import { ComplianceHealthScore } from './ComplianceHealthScore';
-
-const COLUMNS = [
-  { id: 'pending', label: 'PENDING', color: 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20' },
-  { id: 'in_progress', label: 'IN PROGRESS', color: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20' },
-  { id: 'submitted', label: 'SUBMITTED', color: 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' },
-  { id: 'approved', label: 'APPROVED', color: 'bg-green-500/10 text-green-500 hover:bg-green-500/20' },
-  { id: 'breached', label: 'BREACHED', color: 'bg-comet-down/10 text-comet-down hover:bg-comet-down/20' }
-];
+import { Loader2, ShieldAlert, TrendingDown } from 'lucide-react';
+import { useNavigate } from '@tanstack/react-router';
+import { motion } from 'framer-motion';
 
 interface Props {
   mineId?: string;
 }
 
+const STATUS_OPTIONS: TaskStatusOption[] = [
+  { value: 'pending', label: 'Pending', tone: 'active' },
+  { value: 'in_progress', label: 'In Progress', tone: 'active' },
+  { value: 'submitted', label: 'Submitted', tone: 'active' },
+  { value: 'approved', label: 'Approved', tone: 'done' },
+  { value: 'breached', label: 'Breached', tone: 'blocked' },
+]
+
+const STATUS_COLORS: Record<string, string> = {
+  pending: '#f59e0b',
+  in_progress: '#3b82f6',
+  submitted: '#8b5cf6',
+  approved: '#10b981',
+  breached: '#ef4444',
+}
+
 export function ComplianceCalendar({ mineId }: Props) {
-  const {
-    t
-  } = useTranslation();
-
   const navigate = useNavigate();
-  const [filter, setFilter] = useState('All');
-  const [month, setMonth] = useState('2026-09');
+  const { data: instances, isLoading } = useComplianceInstances(mineId, undefined);
 
-  const { data: instances, isLoading } = useComplianceInstances(mineId, month);
+  const calendarData = useMemo<TaskItem[]>(() => {
+    if (!instances) return [];
+    return instances.map((instance: any) => ({
+      id: instance.id,
+      name: instance.requirement?.title || 'Compliance Task',
+      description: instance.requirement?.description || `Regulation: ${instance.requirement?.regulation?.code || 'N/A'}`,
+      status: instance.status || 'pending',
+      active: instance.status !== 'approved',
+      setAt: instance.due_date,
+      expireAt: instance.due_date,
+      priority: instance.status === 'breached' ? 'high' : instance.status === 'pending' ? 'medium' : 'low',
+    }));
+  }, [instances]);
 
-  const filteredTasks = (instances || []).filter((task: any) => filter === 'All' || task.requirement?.category === filter);
+  if (isLoading) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <div className="h-12 w-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+            <ShieldAlert className="absolute inset-0 m-auto h-5 w-5 text-primary" />
+          </div>
+          <p className="text-sm text-muted-foreground animate-pulse">Loading compliance data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const breachedCount = (instances || []).filter((i: any) => i.status === 'breached').length;
+  const pendingCount = (instances || []).filter((i: any) => i.status === 'pending').length;
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{t("compliance_calendar", "Compliance Calendar")}</h1>
-          <p className="text-muted-foreground">{t(
-            "manage_and_track_compliance_su",
-            "Manage and track compliance submissions"
-          )}</p>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <Select value={mineId || "all"} onValueChange={(val) => navigate({ to: `/compliance/${val}` })}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Mine" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("all_mines", "All Mines")}</SelectItem>
-              <SelectItem value="mine-1">{t("rajmahal_ocp", "Rajmahal OCP")}</SelectItem>
-              <SelectItem value="mine-2">{t("sonepur_bazari", "Sonepur Bazari")}</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Select value={month} onValueChange={setMonth}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Month" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="2027-01">{t("jan_2027", "Jan 2027")}</SelectItem>
-              <SelectItem value="2027-02">{t("feb_2027", "Feb 2027")}</SelectItem>
-              <SelectItem value="2027-03">{t("mar_2027", "Mar 2027")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      {mineId && mineId !== 'all' && (
-        <div className="w-full xl:w-1/2">
-          <ComplianceHealthScore mineId={mineId} />
-        </div>
+    <div className="flex flex-1 min-h-0 flex-col gap-3 w-full">
+      {/* Urgency banner if there are breaches */}
+      {breachedCount > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -8, height: 0 }}
+          animate={{ opacity: 1, y: 0, height: 'auto' }}
+          className="flex items-center gap-3 rounded-xl border border-red-500/30 bg-gradient-to-r from-red-500/15 via-red-500/8 to-transparent px-4 py-2.5 backdrop-blur-sm"
+        >
+          <TrendingDown className="h-4 w-4 text-red-400 shrink-0 animate-pulse" />
+          <span className="text-sm font-medium text-red-300">
+            <span className="font-bold text-red-400">{breachedCount} compliance deadline{breachedCount > 1 ? 's have' : ' has'} been breached.</span>
+            {' '}Immediate action required.
+          </span>
+          <span className="ml-auto text-xs text-red-400/70">{pendingCount} still pending</span>
+        </motion.div>
       )}
 
-      <div className="flex gap-2">
-        {['All', 'Safety', 'Environment', 'Production', 'Labour'].map((f) => (
-          <Button 
-            key={f} 
-            variant={filter === f ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilter(f)}
-          >
-            {f}
-          </Button>
-        ))}
-      </div>
+      {/* Calendar container with glassmorphism */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="relative flex flex-1 min-h-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-card/60 shadow-2xl backdrop-blur-xl ring-1 ring-white/5"
+      >
+        {/* Top gradient accent */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
 
-      <div className="grid h-full grid-cols-5 gap-6">
-        {COLUMNS.map((col) => (
-          <div key={col.id} className="flex flex-col gap-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">{col.label}</h3>
-              <Badge variant="secondary" className={col.color}>
-                {filteredTasks.filter((t: any) => t.status === col.id).length}
-              </Badge>
-            </div>
-            
-            <ScrollArea className="h-[calc(100vh-280px)] pr-4">
-              <div className="flex flex-col gap-4">
-                {isLoading ? (
-                  <div className="flex justify-center p-4 text-muted-foreground"><Loader2 className="w-4 h-4 animate-spin" /></div>
-                ) : (
-                  filteredTasks.filter((t: any) => t.status === col.id).map((task: any) => (
-                    <Card key={task.id} className="border-border/50 bg-card/50 backdrop-blur transition-colors hover:bg-card/80">
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex items-start gap-2">
-                          <ShieldAlert className="mt-1 h-4 w-4 shrink-0 text-primary" />
-                          <CardTitle className="text-sm font-semibold leading-tight">{task.requirement?.title || 'Unknown Requirement'}</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="flex flex-col gap-3 p-4 pt-0 text-sm">
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock className="h-3 w-3" />
-                          <span>{t("due", "Due:")}{new Date(task.due_date).toLocaleDateString()}</span>
-                        </div>
-                        {task.assigned_to && (
-                          <div className="text-muted-foreground">
-                            <span className="font-medium text-foreground">{t("assigned", "Assigned:")}</span> {task.assigned_to}
-                          </div>
-                        )}
-                        
-                        <div className="mt-2 flex items-center gap-2">
-                          <Link 
-                            to="/compliance/$mineId/$instanceId" 
-                            params={{ mineId: mineId || 'default', instanceId: task.id }}
-                            className="flex-1"
-                          >
-                            <Button size="sm" className="w-full gap-2 bg-[#FCD535] text-black hover:bg-[#FCD535]/90">
-                              <Upload className="h-3 w-3" />{t("view", "View")}</Button>
-                          </Link>
-                          <Button size="sm" variant="outline" className="px-2">
-                            <History className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-        ))}
-      </div>
+        <EventCalendar
+          data={calendarData}
+          defaultView="month"
+          statusOptions={STATUS_OPTIONS}
+          statusColors={STATUS_COLORS}
+          showMiniNav={false}
+          onTaskClick={(item) => {
+            navigate({
+              to: '/compliance/$mineId/$instanceId',
+              params: { mineId: mineId || 'default', instanceId: item.id }
+            });
+          }}
+        />
+
+        {/* Bottom gradient fade */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+      </motion.div>
     </div>
   );
 }

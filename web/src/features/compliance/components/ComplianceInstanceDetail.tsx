@@ -1,9 +1,9 @@
 import { useTranslation } from "react-i18next";
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ShieldCheck, Download, Lock, CheckCircle2, AlertTriangle, FileText, Send, MapPin, Loader2 } from 'lucide-react';
+import { ShieldCheck, Download, Lock, CheckCircle2, FileText, Loader2, AlertTriangle, Scale, ListChecks, Info, Eye } from 'lucide-react';
 import { useComplianceInstance, useApproveInstance } from '../hooks/useCompliance';
 import { SubmitEvidenceForm } from '../forms/SubmitEvidenceForm';
 
@@ -13,9 +13,7 @@ interface Props {
 }
 
 export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
-  const {
-    t
-  } = useTranslation();
+  const { t } = useTranslation();
 
   const { data: instance, isLoading } = useComplianceInstance(instanceId);
   const approveMutation = useApproveInstance();
@@ -33,7 +31,8 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
   };
 
   return (
-    <div className="flex h-full flex-col gap-6 p-6">
+    <div className="flex h-full flex-col gap-6 p-6 overflow-y-auto">
+      {/* Header section */}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -46,24 +45,150 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
             }>{instance.status?.toUpperCase()}</Badge>
           </div>
           <div className="flex gap-4 text-sm text-muted-foreground">
-            {instance.requirement?.regulation && <span>{t("regulation", "Regulation:")}{instance.requirement.regulation.code}</span>}
-            {instance.requirement?.regulation && <span>{t("text", "•")}</span>}
-            {instance.requirement?.regulation && <span>{t("authority", "Authority:")}{instance.requirement.regulation.authority}</span>}
-            {instance.requirement?.regulation && <span>{t("text", "•")}</span>}
-            <span className={instance.status === 'breached' ? "text-comet-down" : "text-yellow-500"}>{t("due", "Due:")}{new Date(instance.due_date).toLocaleDateString()}</span>
+            <span className={instance.status === 'breached' ? "text-comet-down" : "text-yellow-500"}>
+              {t("due", "Due:")} {new Date(instance.due_date).toLocaleDateString()}
+            </span>
           </div>
         </div>
         {instance.status === 'in_progress' && (
           <div className="flex gap-2">
             <Button variant="outline" className="border-red-500/50 text-comet-down hover:bg-comet-down/10">{t("reject", "Reject")}</Button>
             <Button onClick={handleApprove} disabled={approveMutation.isPending} className="bg-[#FCD535] text-black hover:bg-[#FCD535]/90 gap-2">
-              {approveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}{t("approve_complete", "Approve & Complete")}</Button>
+              {approveMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
+              {t("approve_complete", "Approve & Complete")}
+            </Button>
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-3 gap-6 h-full">
-        <div className="col-span-2 flex flex-col gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        
+        {/* Left Column: Context and details (New Sections) */}
+        <div className="xl:col-span-2 flex flex-col gap-6">
+          
+          <Card className="border-border/50 bg-card/50">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Info className="h-5 w-5 text-primary" /> What is it about?
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {instance.requirement?.description || 
+                  "This compliance task requires standard verification of mine site operations to ensure adherence to safety and environmental guidelines."}
+              </p>
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="border-border/50 bg-card/50">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <ListChecks className="h-5 w-5 text-emerald-500" /> What it includes?
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
+                  <li>Form 10A Submission</li>
+                  <li>Monthly Environmental clear-out metrics</li>
+                  <li>Photographic evidence of Site #3 safety barriers</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border/50 bg-card/50">
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Scale className="h-5 w-5 text-indigo-400" /> Rules & Regulations
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 text-sm">
+                  <div className="flex flex-col gap-1">
+                    <span className="font-semibold text-foreground">
+                      {instance.requirement?.regulation?.code || "EPA-1986, Sec 3"}
+                    </span>
+                    <span className="text-muted-foreground">
+                      Governing Body: {instance.requirement?.regulation?.authority || "Ministry of Environment, Forest and Climate Change"}
+                    </span>
+                  </div>
+                  <Badge variant="outline" className="bg-indigo-500/10 text-indigo-400 border-indigo-500/20">
+                    Mandatory Regulatory Requirement
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="border-border/50 bg-card/50">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Eye className="h-5 w-5 text-blue-400" /> Observations Data Collected
+              </CardTitle>
+              <CardDescription>Field sensor readings and manual observer notes attached to this instance.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border border-border/50 overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead className="bg-muted/50 text-muted-foreground">
+                    <tr>
+                      <th className="px-4 py-2 text-left font-medium">Metric / Observation</th>
+                      <th className="px-4 py-2 text-left font-medium">Value recorded</th>
+                      <th className="px-4 py-2 text-left font-medium">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/50">
+                    <tr>
+                      <td className="px-4 py-3">PM10 Dust Concentration</td>
+                      <td className="px-4 py-3">85 µg/m³</td>
+                      <td className="px-4 py-3"><Badge className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20">Normal</Badge></td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3">Safety Inspector Notes</td>
+                      <td className="px-4 py-3 max-w-[200px] truncate" title="Barriers near sector 4 are slightly damaged. Requires CAPA.">Barriers near sector 4 are slightly damaged. Requires CAPA.</td>
+                      <td className="px-4 py-3"><Badge className="bg-amber-500/10 text-amber-500 hover:bg-amber-500/20">Warning</Badge></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-red-500/20 bg-card/50">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg text-comet-down">
+                <AlertTriangle className="h-5 w-5" /> Violations & CAPAs
+              </CardTitle>
+              <CardDescription>Associated infractions and Corrective/Preventive Actions.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="p-4 rounded-lg border border-red-500/20 bg-red-500/5">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h4 className="font-semibold text-comet-down">VIO-2026-089: Damaged Safety Barriers</h4>
+                      <p className="text-xs text-muted-foreground mt-1">Logged on: {new Date(Date.now() - 86400000).toLocaleDateString()}</p>
+                    </div>
+                    <Badge variant="destructive">Open Violation</Badge>
+                  </div>
+                  <p className="text-sm text-foreground/80 mb-3">
+                    Inspector found damaged barriers in Sector 4 which poses a fall risk.
+                  </p>
+                  <div className="bg-background rounded p-3 border border-border/50">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-sm">CAPA Plan:</span>
+                      <Badge variant="outline" className="text-amber-500 border-amber-500/30 bg-amber-500/10">In Progress</Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Replace 50 meters of barrier fencing. Contractor notified. Expected completion in 3 days.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Existing Evidence Verification Component */}
           <Card className="border-border/50 bg-card/50">
             <CardHeader>
               <CardTitle>{t("evidence_verification", "Evidence Verification")}</CardTitle>
@@ -72,7 +197,7 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
               {instance.status === 'pending' ? (
                  <SubmitEvidenceForm instanceId={instanceId} />
               ) : (
-                <div className="mt-2 flex items-center justify-between rounded-lg border border-border/50 p-4 bg-background">
+                <div className="flex items-center justify-between rounded-lg border border-border/50 p-4 bg-background">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-primary/10 rounded">
                       <FileText className="h-5 w-5 text-primary" />
@@ -89,36 +214,9 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
             </CardContent>
           </Card>
 
-          {instance.status !== 'pending' && (
-            <Card className="border-border/50 bg-card/50 flex-1">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle>{t("ocr_review_side_by_side", "OCR Review (Side-by-Side)")}</CardTitle>
-                <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20 gap-1">
-                  <CheckCircle2 className="h-3 w-3" />{t("confidence_92", "Confidence 92%")}</Badge>
-              </CardHeader>
-              <CardContent className="grid grid-cols-2 gap-6 pt-4 h-full">
-                <div className="rounded-lg bg-muted/30 border border-border/50 p-4 flex items-center justify-center min-h-[300px]">
-                  <p className="text-muted-foreground text-sm flex flex-col items-center gap-2">
-                    <FileText className="h-8 w-8 opacity-50" />{t("document_scan_view", "Document Scan View")}</p>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">{t("extracted_date", "Extracted Date")}</label>
-                    <div className="p-2 text-sm rounded bg-background border border-border">{new Date().toLocaleDateString()}</div>
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground">{t("mine_name", "Mine Name")}</label>
-                    <div className="p-2 text-sm rounded bg-background border border-border text-foreground">{t("rajmahal_ocp", "Rajmahal OCP")}</div>
-                  </div>
-                  <div className="mt-auto flex gap-2">
-                    <Button variant="outline" className="flex-1" disabled>{t("fields_verified", "Fields Verified")}</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
 
+        {/* Right Column: Timelines and Audit */}
         <div className="flex flex-col gap-6">
           <Card className="border-border/50 bg-card/50">
             <CardHeader>

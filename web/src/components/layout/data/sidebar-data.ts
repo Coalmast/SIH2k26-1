@@ -50,7 +50,6 @@ const mineManagerNav: NavGroup[] = [
     items: [
       { title: 'Compliance Tasks', url: '/compliance', icon: ShieldAlert },
       { title: 'Inspections', url: '/inspection', icon: Search },
-      { title: 'Violations & CAPAs', url: '/corrective-actions', icon: AlertTriangle },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
     ],
   },
@@ -143,7 +142,6 @@ const safetyOfficialNav: NavGroup[] = [
     items: [
       { title: 'Alerts', url: '/alerts', icon: Bell, badge: 'unread' },
       { title: 'Inspections', url: '/inspection', icon: Search },
-      { title: 'Violations & CAPAs', url: '/corrective-actions', icon: AlertTriangle },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
     ],
   },
@@ -180,7 +178,6 @@ const regulatorNav: NavGroup[] = [
     title: '🔍 INSPECT',
     items: [
       { title: 'Mine Map', url: '/mine-map', icon: Map },
-      { title: 'Violations', url: '/corrective-actions', icon: AlertTriangle },
     ],
   },
 ]
@@ -189,13 +186,7 @@ const contractorNav: NavGroup[] = [
   {
     title: '🏢 MY COMPANY',
     items: [
-      { title: 'Contractor Profile', url: '/contractors', icon: Briefcase },
-    ],
-  },
-  {
-    title: '📋 MY COMPLIANCE',
-    items: [
-      { title: 'Grievances', url: '/grievances', icon: MessageSquare },
+      { title: 'Contractor Dashboard', url: '/contractors', icon: Briefcase },
     ],
   },
 ]
@@ -225,7 +216,6 @@ const godModeNav: NavGroup[] = [
       { title: 'Environment', url: '/environment', icon: Leaf },
       { title: 'Production', url: '/production', icon: Activity },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
-      { title: 'Corrective Actions', url: '/corrective-actions', icon: AlertTriangle },
       { title: 'OCR', url: '/ocr', icon: FileScan },
       { title: 'GIS Map', url: '/mine-map', icon: Map },
       { title: 'Alerts', url: '/alerts', icon: Bell, badge: 'unread' },

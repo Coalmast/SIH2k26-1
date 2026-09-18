@@ -13,8 +13,8 @@ import { useReportSignatureStore } from '@/stores/report-store';
 const buildMockData = (type: ReportType, mineId: string) => {
   if (type === 'ec') {
     return {
-      mineName: mineId === 'rajmahal' ? 'Rajmahal OCP' : 'Sonepur Bazari',
-      ownerCompany: mineId === 'rajmahal' ? 'Eastern Coalfields Limited (ECL)' : 'Western Coalfields Limited (WCL)',
+      mineName: mineId === 'sonepur' ? 'Sonepur Bazari' : 'Umrer OCP',
+      ownerCompany: mineId === 'sonepur' ? 'Eastern Coalfields Limited (ECL)' : 'Western Coalfields Limited (WCL)',
       reportingPeriod: { start: 'Apr 01, 2026', end: 'Sep 30, 2026' },
       reportDate: 'Sep 16, 2026',
       environmentalClearanceNo: 'J-11011/14/2018-IA.II(M)',
@@ -31,8 +31,8 @@ const buildMockData = (type: ReportType, mineId: string) => {
   }
 
   return {
-    mineName: mineId === 'rajmahal' ? 'Rajmahal OCP' : 'Sonepur Bazari',
-    ownerCompany: mineId === 'rajmahal' ? 'Eastern Coalfields Limited' : 'Western Coalfields Limited',
+    mineName: mineId === 'sonepur' ? 'Sonepur Bazari' : 'Umrer OCP',
+    ownerCompany: mineId === 'sonepur' ? 'Eastern Coalfields Limited' : 'Western Coalfields Limited',
     reportingPeriod: { start: 'Jan 01, 2026', end: 'Jan 07, 2026' },
     reportDate: 'Jan 07, 2026',
     meetingDate: 'Jan 05, 2026',
@@ -56,7 +56,7 @@ const buildMockData = (type: ReportType, mineId: string) => {
       { condition: 'Dust suppression', status: 'Complied', remarks: 'Sprinklers active' }
     ],
     contractorName: 'ABC Mining Services',
-    principalEmployer: mineId === 'rajmahal' ? 'Eastern Coalfields Limited' : 'Western Coalfields Limited',
+    principalEmployer: mineId === 'sonepur' ? 'Eastern Coalfields Limited' : 'Western Coalfields Limited',
     totalContractWorkers: 450,
     wagesPaid: 1500000,
     managerName: 'Suresh Patel',
@@ -72,7 +72,7 @@ export function ReportGenerator() {
   const { t } = useTranslation();
   
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [mineId, setMineId] = useState('rajmahal');
+  const [mineId, setMineId] = useState('umrer');
   const [reportType, setReportType] = useState<ReportType>('form3');
   const [status, setStatus] = useState<ReportState>('IDLE');
   const [reportData, setReportData] = useState<any>(null);
@@ -140,7 +140,7 @@ export function ReportGenerator() {
                     <SelectValue placeholder="Select mine" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="rajmahal">{t("rajmahal_ocp", "Rajmahal OCP")}</SelectItem>
+                    <SelectItem value="umrer">{t("umrer_ocp", "Umrer OCP")}</SelectItem>
                     <SelectItem value="sonepur">{t("sonepur_bazari", "Sonepur Bazari")}</SelectItem>
                   </SelectContent>
                 </Select>

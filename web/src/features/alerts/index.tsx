@@ -49,7 +49,7 @@ export function AlertsPage() {
       
       if (!data || data.length === 0) {
         setAlerts([
-          { id: '1', title: '[RED] PM10 Breach', priority: 'critical', message: 'Sensor A2 reading 150µg/m³.', read: false, timestamp: new Date().toISOString() },
+          { id: '1', title: 'PM10 Dust Levels Exceed EC Limit — Umrer OCP', priority: 'critical', message: 'Monthly Environmental Monitoring inspection submitted by Field Inspector Sunil Patil at 14:32 IST, Sept 16. PM10 recorded at 4.2 mg/m³ (EC limit: 3.0 mg/m³), SO2 at 2.8 ppm (limit: 2.0 ppm). Regulatory action may be required under EPA 1986, Schedule VI.', read: false, timestamp: new Date().toISOString() },
           { id: '2', title: '[YEL] CLRA Expiring', priority: 'high', message: 'Contractor License expires in 7 days.', read: false, timestamp: new Date(Date.now() - 3600000).toISOString() },
           { id: '3', title: '[GRN] CAPA Closed', priority: 'low', message: 'Corrective action verified.', read: true, timestamp: new Date(Date.now() - 86400000).toISOString() },
         ])
