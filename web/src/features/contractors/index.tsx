@@ -12,8 +12,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
 import { NumberTicker } from '@/components/ui/number-ticker'
 import { useDropzone } from 'react-dropzone'
 import { Loader2 } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { MagicCard } from '@/components/ui/magic-card'
+import { useOCR } from './hooks/useOCR'
+import { OcrResultPanel } from './components/OcrResultPanel'
 
 // Mock Data
 const mockContractors = [
@@ -43,17 +45,19 @@ export function ContractorsModule() {
   const { t } = useTranslation();
 
   const [filter, setFilter] = useState('all')
-  const [extractionState, setExtractionState] = useState<'idle'|'scanning'|'verified'>('idle')
+  const { result: ocrResult, uploadAndOCR, reset: resetOCR } = useOCR()
   const [rfidScan, setRfidScan] = useState<{name: string, status: 'granted'|'denied'} | null>(null)
 
-  const onDrop = () => {
-    setExtractionState('scanning')
-    setTimeout(() => setExtractionState('verified'), 3000)
+  const onDrop = (acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      uploadAndOCR(acceptedFiles[0]);
+    }
   }
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
     onDrop,
-    accept: { 'application/pdf': ['.pdf'], 'image/*': ['.jpeg', '.png'] }
+    accept: { 'application/pdf': ['.pdf'], 'image/*': ['.jpeg', '.png', '.jpg'] },
+    maxFiles: 1
   })
 
   // Simulation for RFID
@@ -202,44 +206,40 @@ export function ContractorsModule() {
             <CardContent>
               <div 
                 {...getRootProps()} 
-                className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${
-                  isDragActive ? 'border-emerald-400 bg-emerald-900/20 scale-[1.02]' : 'border-slate-600 hover:bg-muted hover:border-slate-500'
+                className={`relative border-2 border-dashed rounded-xl p-8 text-center overflow-hidden transition-all duration-300 ${
+                  isDragActive ? 'border-emerald-400 bg-emerald-900/20 scale-[1.02]' : 
+                  ocrResult.status !== 'idle' && ocrResult.status !== 'error' ? 'border-primary/50 bg-primary/5' :
+                  'border-border hover:bg-muted hover:border-slate-500 cursor-pointer'
                 }`}
               >
                 <input {...getInputProps()} />
-                <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4 group-hover:bg-slate-700 transition-colors">
-                  <UploadCloud className="h-8 w-8 text-muted-foreground/80" />
+                
+                {/* Scan Beam Animation */}
+                <AnimatePresence>
+                  {['uploading', 'scanning', 'parsing'].includes(ocrResult.status) && (
+                    <motion.div
+                      initial={{ top: '-10%' }}
+                      animate={{ top: '110%' }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                      className="absolute left-0 right-0 h-16 bg-gradient-to-b from-transparent via-primary/30 to-primary shadow-[0_4px_12px_rgba(255,255,255,0.2)] z-10 opacity-70 pointer-events-none"
+                    />
+                  )}
+                </AnimatePresence>
+
+                <div className="relative z-20">
+                  <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mx-auto mb-4 group-hover:bg-slate-700 transition-colors">
+                    <UploadCloud className="h-8 w-8 text-muted-foreground/80" />
+                  </div>
+                  <p className="font-medium">{t("drag_drop_files_here", "Drag & drop files here")}</p>
+                  <p className="text-xs text-muted-foreground mt-2">{t("supports_pdf_jpeg_png_max_10mb", "Supports PDF, JPEG, PNG (Max 1MB)")}</p>
                 </div>
-                <p className="font-medium">{t("drag_drop_files_here", "Drag & drop files here")}</p>
-                <p className="text-xs text-muted-foreground mt-2">{t("supports_pdf_jpeg_png_max_10mb", "Supports PDF, JPEG, PNG (Max 10MB)")}</p>
               </div>
               
-              <div className="mt-6">
-                <h4 className="text-xs font-semibold text-muted-foreground/70 uppercase tracking-wider mb-3">{t("recent_uploads", "Recent Uploads")}</h4>
-                <div className="space-y-3">
-                  {extractionState === 'verified' && (
-                    <div className="flex flex-col gap-2 bg-emerald-950/30 p-3 rounded-lg border border-emerald-900/50 animate-in fade-in slide-in-from-bottom-2">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400"/>CLRA_Worker_005.pdf</span>
-                        <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Verified</Badge>
-                      </div>
-                      <div className="text-xs text-emerald-200/70 ml-6">
-                        <p>Extracted: Name: Amit Patel, Valid Till: 2027-10</p>
-                      </div>
-                    </div>
-                  )}
-                  {extractionState === 'scanning' && (
-                    <div className="flex items-center justify-between text-sm bg-card/60 p-3 rounded-lg border border-border/50 animate-in fade-in">
-                      <span className="flex items-center gap-2"><Loader2 className="h-4 w-4 text-amber-400 animate-spin"/>CLRA_Worker_005.pdf</span>
-                      <span className="text-amber-400 text-xs font-medium animate-pulse">Scanning...</span>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between text-sm bg-card/40 p-3 rounded-lg border border-border/50">
-                    <span className="flex items-center gap-2"><CheckCircle2 className="h-4 w-4 text-emerald-400"/>{t("medical_roster_pdf", "Medical_Roster.pdf")}</span>
-                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">{t("verified", "Verified")}</Badge>
-                  </div>
-                </div>
-              </div>
+              <OcrResultPanel 
+                result={ocrResult} 
+                fileName={acceptedFiles[0]?.name || "Scanned Document"} 
+                onReset={resetOCR} 
+              />
             </CardContent>
           </MagicCard>
         </motion.div>
