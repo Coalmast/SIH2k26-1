@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(153, 27, 27, 0.95)', // Darker red for blinking effect
   },
   card: {
-    backgroundColor: '#0b0e11',
+    backgroundColor: '#0f0d0c',
     width: '100%',
     borderRadius: 16,
     padding: 24,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   messageBox: {
-    backgroundColor: '#1e2329',
+    backgroundColor: '#1e1a17',
     padding: 16,
     borderRadius: 8,
     width: '100%',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     borderLeftColor: '#ef4444',
   },
   message: {
-    color: '#eaecef',
+    color: '#f5f0eb',
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'center',

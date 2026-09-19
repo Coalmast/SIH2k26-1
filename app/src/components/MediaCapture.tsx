@@ -72,9 +72,9 @@ export function MediaCapture({ uris, onChange, maxPhotos = 5 }: MediaCaptureProp
           <View className="flex-row">
             {uris.map((uri, index) => (
               <View key={index} className="mr-2 relative">
-                <Image source={{ uri }} className="w-20 h-20 rounded-md bg-binance-surface-card-dark" />
+                <Image source={{ uri }} className="w-20 h-20 rounded-md bg-comet-card" />
                 <TouchableOpacity 
-                  className="absolute -top-2 -right-2 bg-binance-trading-down rounded-full w-6 h-6 items-center justify-center border-2 border-binance-ink"
+                  className="absolute -top-2 -right-2 bg-comet-down rounded-full w-6 h-6 items-center justify-center border-2 border-comet-sidebar-bg"
                   onPress={() => removePhoto(index)}
                 >
                   <Text className="text-white text-xs font-bold">✕</Text>
@@ -87,11 +87,11 @@ export function MediaCapture({ uris, onChange, maxPhotos = 5 }: MediaCaptureProp
 
       {uris.length < maxPhotos && (
         <TouchableOpacity 
-          className="bg-binance-surface-card-dark border border-binance-border-strong rounded-lg p-3 flex-row items-center justify-center border-dashed"
+          className="bg-comet-card border border-comet-border rounded-lg p-3 flex-row items-center justify-center border-dashed"
           onPress={handleTakePhoto}
         >
           <Text className="text-xl mr-2">📸</Text>
-          <Text className="text-binance-on-dark font-medium">Take Photo ({uris.length}/{maxPhotos})</Text>
+          <Text className="text-comet-fg font-medium">Take Photo ({uris.length}/{maxPhotos})</Text>
         </TouchableOpacity>
       )}
 
@@ -107,13 +107,13 @@ export function MediaCapture({ uris, onChange, maxPhotos = 5 }: MediaCaptureProp
               <Image source={{ uri: previewUri }} className="flex-1" resizeMode="contain" />
               <View className="absolute bottom-0 w-full flex-row justify-between px-8 py-8 bg-black/50">
                 <TouchableOpacity 
-                  className="bg-binance-surface-card-dark p-4 rounded-full border border-binance-border-strong"
+                  className="bg-comet-card p-4 rounded-full border border-comet-border"
                   onPress={retakePhoto}
                 >
                   <Text className="text-white font-bold text-lg">Retake</Text>
                 </TouchableOpacity>
                 <TouchableOpacity 
-                  className="bg-binance-trading-up p-4 px-8 rounded-full flex-row items-center"
+                  className="bg-comet-up p-4 px-8 rounded-full flex-row items-center"
                   onPress={confirmPhoto}
                 >
                   <Text className="text-white font-bold text-xl mr-2">✓</Text>
@@ -139,7 +139,7 @@ export function MediaCapture({ uris, onChange, maxPhotos = 5 }: MediaCaptureProp
                 
                 <View className="w-full flex-row justify-center items-center pb-12">
                   <TouchableOpacity 
-                    className="w-20 h-20 rounded-full bg-white border-4 border-binance-primary/50 items-center justify-center"
+                    className="w-20 h-20 rounded-full bg-white border-4 border-comet-orange/50 items-center justify-center"
                     onPress={captureImage}
                   />
                 </View>

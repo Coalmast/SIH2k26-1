@@ -55,7 +55,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <View className="flex-1 justify-center px-6 bg-binance-canvas-dark">
+    <View className="flex-1 justify-center px-6 bg-comet-canvas">
       <TouchableOpacity 
         className="absolute top-12 right-6 p-2 z-10"
         onPress={() => router.push('/(auth)/dev-settings')}
@@ -64,11 +64,11 @@ export default function LoginScreen() {
       </TouchableOpacity>
 
       <View className="mb-12 items-center">
-        <Text className="text-binance-primary font-bold text-5xl mb-2 tracking-tighter">COMET</Text>
-        <Text className="text-binance-muted-strong text-lg">Demo Mode</Text>
+        <Text className="text-comet-orange font-bold text-5xl mb-2 tracking-tighter">COMET</Text>
+        <Text className="text-comet-fg-muted text-lg">Demo Mode</Text>
       </View>
 
-      <Text className="text-binance-on-dark font-bold text-2xl mb-6 text-center">Select Role</Text>
+      <Text className="text-comet-fg font-bold text-2xl mb-6 text-center">Select Role</Text>
 
       <View className="gap-6">
         {/* Mine Manager Card */}
@@ -77,12 +77,12 @@ export default function LoginScreen() {
           disabled={loadingRole !== null}
         >
           <Card className={`p-6 flex-row items-center gap-4 ${loadingRole === 'mine_manager' ? 'opacity-50' : ''}`}>
-            <View className="w-12 h-12 bg-binance-primary/20 rounded-full items-center justify-center">
-              <Ionicons name="shield-checkmark" size={24} color="#fcd535" />
+            <View className="w-12 h-12 bg-comet-orange/20 rounded-full items-center justify-center">
+              <Ionicons name="shield-checkmark" size={24} color="#f97316" />
             </View>
             <View className="flex-1">
-              <Text className="text-binance-on-dark font-bold text-xl mb-1">Mine Manager</Text>
-              <Text className="text-binance-muted text-sm">{DEMO_USERS.mine_manager.name} • {DEMO_USERS.mine_manager.mineName}</Text>
+              <Text className="text-comet-fg font-bold text-xl mb-1">Mine Manager</Text>
+              <Text className="text-comet-fg-muted text-sm">{DEMO_USERS.mine_manager.name} • {DEMO_USERS.mine_manager.mineName}</Text>
             </View>
           </Card>
         </TouchableOpacity>
@@ -93,12 +93,12 @@ export default function LoginScreen() {
           disabled={loadingRole !== null}
         >
           <Card className={`p-6 flex-row items-center gap-4 ${loadingRole === 'field_officer' ? 'opacity-50' : ''}`}>
-            <View className="w-12 h-12 bg-[#2b3139] rounded-full items-center justify-center">
-              <Ionicons name="search" size={24} color="#eaecef" />
+            <View className="w-12 h-12 bg-comet-muted rounded-full items-center justify-center">
+              <Ionicons name="search" size={24} color="#a8a29e" />
             </View>
             <View className="flex-1">
-              <Text className="text-binance-on-dark font-bold text-xl mb-1">Field Officer</Text>
-              <Text className="text-binance-muted text-sm">{DEMO_USERS.field_officer.name} • {DEMO_USERS.field_officer.mineName}</Text>
+              <Text className="text-comet-fg font-bold text-xl mb-1">Field Officer</Text>
+              <Text className="text-comet-fg-muted text-sm">{DEMO_USERS.field_officer.name} • {DEMO_USERS.field_officer.mineName}</Text>
             </View>
           </Card>
         </TouchableOpacity>

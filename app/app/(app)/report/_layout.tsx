@@ -6,9 +6,9 @@ export default function ReportLayout() {
     <Stack
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#1E2329', // binance-surface
+          backgroundColor: '#0a0908', // black bar
         },
-        headerTintColor: '#EAECEF', // binance-on-dark
+        headerTintColor: '#ffffff', // white text
         headerTitleStyle: {
           fontWeight: 'bold',
         },

@@ -11,13 +11,13 @@ export function RiskChip({ severity }: RiskChipProps) {
   const getConfig = () => {
     switch (severity) {
       case 'low':
-        return { label: 'Low', bg: 'bg-binance-trading-up/20', text: 'text-binance-trading-up' };
+        return { label: 'Low', bg: 'bg-comet-up/20', text: 'text-comet-up' };
       case 'medium':
-        return { label: 'Moderate', bg: 'bg-yellow-500/20', text: 'text-yellow-500' };
+        return { label: 'Moderate', bg: 'bg-comet-pending/20', text: 'text-comet-pending' };
       case 'high':
-        return { label: 'High', bg: 'bg-orange-500/20', text: 'text-orange-500' };
+        return { label: 'High', bg: 'bg-comet-orange/20', text: 'text-comet-orange' };
       case 'critical':
-        return { label: 'CRITICAL', bg: 'bg-binance-trading-down/20', text: 'text-binance-trading-down font-bold' };
+        return { label: 'CRITICAL', bg: 'bg-comet-down/20', text: 'text-comet-down font-bold' };
       default:
         return { label: severity, bg: 'bg-gray-500/20', text: 'text-gray-500' };
     }
@@ -26,7 +26,7 @@ export function RiskChip({ severity }: RiskChipProps) {
   const config = getConfig();
 
   return (
-    <View className={`px-2 py-0.5 rounded ${config.bg}`}>
+    <View className={`px-2 py-0.5 rounded-full ${config.bg}`}>
       <Text className={`text-xs ${config.text}`}>
         {config.label}
       </Text>

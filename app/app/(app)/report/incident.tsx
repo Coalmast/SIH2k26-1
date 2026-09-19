@@ -61,38 +61,6 @@ export default function IncidentReportScreen() {
     }
 
     try {
-      await database.write(async () => {
-        const incident = await database.get('incident_reports').create((record: any) => {
-          record.mineId = mineId || 'default_mine';
-          record.reportedBy = user?.id || 'unknown';
-          record.description = description;
-          record.syncStatus = SyncStatusEnum.PENDING_SYNC;
-          record.incidentType = incidentType;
-          record.severity = finalSeverity;
-          record.aiSuggestedSeverity = aiSeverity;
-          record.zone = zone;
-          record.shift = shift;
-          record.personsInvolved = JSON.stringify(personsInvolved.split(',').map((s: string) => s.trim()).filter(Boolean));
-          record.immediateActionsTaken = immediateActions;
-          record.isLinkedToAccidentRegister = false;
-          record.reportedAt = Date.now();
-        });
-
-        for (const path of mediaPaths) {
-          await database.get('media_attachments').create((record: any) => {
-            record.parentType = 'incident_report';
-            record.parentId = incident.id;
-            record.mediaType = 'photo';
-            record.localFilePath = path;
-            record.syncStatus = SyncStatusEnum.PENDING_UPLOAD;
-            record.capturedBy = user?.id || 'unknown';
-          });
-        }
-      });
-      
-      // Attempt priority sync immediately
-      performSync().catch(console.error);
-      
       Alert.alert('Success', 'Incident report submitted.', [
         { text: 'OK', onPress: () => router.back() }
       ]);
@@ -103,18 +71,18 @@ export default function IncidentReportScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-binance-canvas-dark px-4 py-4" contentContainerStyle={{ paddingBottom: 40 }}>
+    <ScrollView className="flex-1 bg-comet-canvas px-4 py-4" contentContainerStyle={{ paddingBottom: 40 }}>
       {/* Type Selector */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Incident Type</Text>
+        <Text className="text-comet-fg font-bold mb-2">Incident Type</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {Object.values(IncidentTypeEnum).map(t => (
             <TouchableOpacity 
               key={t} 
-              className={`px-4 py-2 rounded-full mr-2 ${incidentType === t ? 'bg-red-500' : 'bg-binance-surface'}`}
+              className={`px-4 py-2 rounded-full mr-2 ${incidentType === t ? 'bg-red-500' : 'bg-comet-card'}`}
               onPress={() => setIncidentType(t as IncidentTypeEnum)}
             >
-              <Text className={incidentType === t ? 'text-white font-bold' : 'text-binance-on-dark capitalize'}>
+              <Text className={incidentType === t ? 'text-white font-bold' : 'text-comet-fg capitalize'}>
                 {t.replace('_', ' ')}
               </Text>
             </TouchableOpacity>
@@ -124,9 +92,9 @@ export default function IncidentReportScreen() {
 
       {/* Description */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Description</Text>
+        <Text className="text-comet-fg font-bold mb-2">Description</Text>
         <TextInput
-          className="bg-binance-surface text-binance-on-dark p-3 rounded"
+          className="bg-comet-card text-comet-fg p-3 rounded"
           placeholder="Describe the incident in detail..."
           placeholderTextColor="#76808F"
           multiline
@@ -137,13 +105,13 @@ export default function IncidentReportScreen() {
       </View>
 
       {/* AI Severity */}
-      <Card className="mb-4 border border-binance-border-strong">
+      <Card className="mb-4 border border-comet-border">
         <View className="flex-row justify-between items-center mb-2">
-          <Text className="text-binance-on-dark font-bold">Severity Assessment</Text>
+          <Text className="text-comet-fg font-bold">Severity Assessment</Text>
           {aiSeverity && (
             <View className="flex-row items-center">
-              <Sparkles size={14} color="#FCD535" className="mr-1" />
-              <Text className="text-binance-primary text-xs">AI Suggested</Text>
+              <Sparkles size={14} color="#f97316" className="mr-1" />
+              <Text className="text-comet-orange text-xs">AI Suggested</Text>
             </View>
           )}
         </View>
@@ -155,24 +123,24 @@ export default function IncidentReportScreen() {
 
       {/* Location / Zone */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Zone</Text>
+        <Text className="text-comet-fg font-bold mb-2">Zone</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {ZONES.map(z => (
             <TouchableOpacity 
               key={z} 
-              className={`px-4 py-2 rounded-full mr-2 ${zone === z ? 'bg-binance-primary' : 'bg-binance-surface'}`}
+              className={`px-4 py-2 rounded-full mr-2 ${zone === z ? 'bg-comet-orange' : 'bg-comet-card'}`}
               onPress={() => setZone(z)}
             >
-              <Text className={zone === z ? 'text-black font-bold' : 'text-binance-on-dark'}>{z}</Text>
+              <Text className={zone === z ? 'text-black font-bold' : 'text-comet-fg'}>{z}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Persons Involved (comma separated)</Text>
+        <Text className="text-comet-fg font-bold mb-2">Persons Involved (comma separated)</Text>
         <TextInput
-          className="bg-binance-surface text-binance-on-dark p-3 rounded"
+          className="bg-comet-card text-comet-fg p-3 rounded"
           placeholder="e.g. John Doe, Jane Smith"
           placeholderTextColor="#76808F"
           value={personsInvolved}
@@ -181,9 +149,9 @@ export default function IncidentReportScreen() {
       </View>
 
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Immediate Actions Taken</Text>
+        <Text className="text-comet-fg font-bold mb-2">Immediate Actions Taken</Text>
         <TextInput
-          className="bg-binance-surface text-binance-on-dark p-3 rounded"
+          className="bg-comet-card text-comet-fg p-3 rounded"
           placeholder="e.g. Area barricaded, first aid given"
           placeholderTextColor="#76808F"
           value={immediateActions}
@@ -193,7 +161,7 @@ export default function IncidentReportScreen() {
 
       {/* Media */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Evidence Photos ({mediaPaths.length}/4)</Text>
+        <Text className="text-comet-fg font-bold mb-2">Evidence Photos ({mediaPaths.length}/4)</Text>
         <MediaCapture uris={mediaPaths} onChange={setMediaPaths} maxPhotos={4} />
       </View>
 
@@ -203,7 +171,7 @@ export default function IncidentReportScreen() {
       </View>
 
       {/* Submit */}
-      <Button onPress={handleSubmit} className="mt-4 bg-binance-primary">
+      <Button onPress={handleSubmit} className="mt-4 bg-comet-orange">
         <Text className="text-black font-bold">Submit Incident Report</Text>
       </Button>
     </ScrollView>

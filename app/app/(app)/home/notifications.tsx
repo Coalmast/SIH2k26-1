@@ -119,7 +119,7 @@ export default enhance(NotificationsScreen);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0b0e11',
+    backgroundColor: '#f2ede8',
   },
   listContent: {
     padding: 16,
@@ -131,16 +131,16 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: 'row',
     padding: 16,
-    backgroundColor: '#1e2329',
+    backgroundColor: '#faf7f2',
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#2b3139',
+    borderColor: '#d4cec5',
     alignItems: 'center',
   },
   unreadItem: {
-    backgroundColor: '#262b32',
-    borderColor: '#4b5563',
+    backgroundColor: '#e8e2da',
+    borderColor: '#d4cec5',
   },
   iconContainer: {
     marginRight: 16,
@@ -149,18 +149,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    color: 'white',
+    color: '#1a1614',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   message: {
-    color: '#9ca3af',
+    color: '#78716c',
     fontSize: 14,
     marginBottom: 8,
   },
   time: {
-    color: '#6b7280',
+    color: '#78716c',
     fontSize: 12,
   },
   unreadDot: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    color: '#9ca3af',
+    color: '#78716c',
     marginTop: 16,
     fontSize: 16,
   },
