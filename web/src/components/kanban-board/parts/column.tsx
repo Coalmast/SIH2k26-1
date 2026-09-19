@@ -108,7 +108,7 @@ export function Column({
       style={style}
       data-dragging={isDragging || undefined}
       className={cn(
-        "flex h-full min-h-0 max-h-full w-[320px] min-w-[320px] shrink-0 flex-col rounded-xl border-l-[3px] border-y border-r border-border/80 bg-card/40 backdrop-blur-md shadow-sm transition-all duration-300",
+        "flex h-full min-h-0 max-h-full flex-1 min-w-0 flex-col rounded-xl border-l-[3px] border-y border-r border-border/80 bg-card/40 backdrop-blur-md shadow-sm transition-all duration-300",
         isDragging ? "opacity-60 ring-2 ring-primary/20" : "hover:shadow-md",
         isItemHovering && "bg-primary/5 ring-2 ring-inset ring-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.1)] scale-[1.01]"
       )}
