@@ -55,47 +55,47 @@ export default function DevSettingsScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-binance-canvas-dark px-4 pt-12">
-      <Text className="text-binance-primary font-bold text-3xl mb-6">Dev Settings</Text>
+    <ScrollView className="flex-1 bg-comet-canvas px-4 pt-12">
+      <Text className="text-comet-orange font-bold text-3xl mb-6">Dev Settings</Text>
 
       <View className="mb-6">
-        <Text className="text-binance-muted-strong font-bold mb-2">API URL (Backend)</Text>
+        <Text className="text-comet-fg-muted font-bold mb-2">API URL (Backend)</Text>
         <TextInput
           value={apiUrl}
           onChangeText={setApiUrl}
-          className="bg-binance-surface-card-dark text-binance-on-dark p-4 rounded-xl border border-binance-border-strong mb-2"
+          className="bg-comet-card text-comet-fg p-4 rounded-xl border border-comet-border mb-2"
           placeholderTextColor="#474D57"
           placeholder="e.g. https://my-backend.loca.lt"
           autoCapitalize="none"
           autoCorrect={false}
         />
-        <Text className="text-binance-muted text-xs">
+        <Text className="text-comet-fg-muted text-xs">
           Default: {process.env.EXPO_PUBLIC_API_URL}
         </Text>
       </View>
 
       <View className="mb-8">
-        <Text className="text-binance-muted-strong font-bold mb-2">Supabase URL</Text>
+        <Text className="text-comet-fg-muted font-bold mb-2">Supabase URL</Text>
         <TextInput
           value={supabaseUrl}
           onChangeText={setSupabaseUrl}
-          className="bg-binance-surface-card-dark text-binance-on-dark p-4 rounded-xl border border-binance-border-strong mb-2"
+          className="bg-comet-card text-comet-fg p-4 rounded-xl border border-comet-border mb-2"
           placeholderTextColor="#474D57"
           placeholder="e.g. https://my-supabase.loca.lt"
           autoCapitalize="none"
           autoCorrect={false}
         />
-        <Text className="text-binance-muted text-xs">
+        <Text className="text-comet-fg-muted text-xs">
           Default: {process.env.EXPO_PUBLIC_SUPABASE_URL}
         </Text>
       </View>
 
       <Button onPress={handleSave} className="mb-4">
-        <Text className="text-binance-ink font-bold text-lg">Save & Restart</Text>
+        <Text className="text-comet-sidebar-bg font-bold text-lg">Save & Restart</Text>
       </Button>
 
       <Button variant="outline" onPress={handleReset} className="mb-12">
-        <Text className="text-binance-on-dark font-bold text-lg">Reset to Defaults</Text>
+        <Text className="text-comet-fg font-bold text-lg">Reset to Defaults</Text>
       </Button>
     </ScrollView>
   );

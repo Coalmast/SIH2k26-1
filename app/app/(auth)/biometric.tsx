@@ -35,8 +35,8 @@ export default function BiometricScreen() {
   };
 
   return (
-    <View className="flex-1 justify-center items-center bg-binance-canvas-dark px-6">
-      <Text className="text-binance-primary font-bold text-3xl mb-8">Unlock COMET</Text>
+    <View className="flex-1 justify-center items-center bg-comet-canvas px-6">
+      <Text className="text-comet-orange font-bold text-3xl mb-8">Unlock COMET</Text>
       
       <Button onPress={authenticate} className="w-full mb-4" size="lg">
         Use Fingerprint / Face ID

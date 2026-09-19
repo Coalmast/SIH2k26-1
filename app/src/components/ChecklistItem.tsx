@@ -53,43 +53,43 @@ export function ChecklistItem({
 
   const getButtonClass = (btnValue: ResponseType, baseClass: string, activeClass: string) => {
     const isActive = value === btnValue;
-    return `flex-1 py-3 px-1 items-center justify-center border-r border-binance-border-strong last:border-r-0 ${
-      isActive ? activeClass : 'bg-binance-surface-card-dark'
+    return `flex-1 py-3 px-1 items-center justify-center border-r border-comet-border last:border-r-0 ${
+      isActive ? activeClass : 'bg-comet-card'
     }`;
   };
 
   const getTextClass = (btnValue: ResponseType) => {
-    return `text-xs font-semibold ${value === btnValue ? 'text-white' : 'text-binance-on-dark'}`;
+    return `text-xs font-semibold ${value === btnValue ? 'text-white' : 'text-comet-fg'}`;
   };
 
   return (
-    <View className="mb-4 bg-binance-surface-elevated-dark p-4 rounded-xl border border-binance-border-strong">
+    <View className="mb-4 bg-comet-card p-4 rounded-xl border border-comet-border">
       <View className="mb-3">
         {regulationRef && (
-          <Text className="text-binance-primary text-xs font-medium mb-1">
+          <Text className="text-comet-orange text-xs font-medium mb-1">
             {regulationRef}
           </Text>
         )}
-        <Text className="text-binance-on-dark text-base">{questionText}</Text>
+        <Text className="text-comet-fg text-base">{questionText}</Text>
       </View>
 
-      <View className="flex-row rounded-lg overflow-hidden border border-binance-border-strong">
+      <View className="flex-row rounded-lg overflow-hidden border border-comet-border">
         <TouchableOpacity
-          className={getButtonClass('ok', '', 'bg-binance-trading-up')}
+          className={getButtonClass('ok', '', 'bg-comet-up')}
           onPress={() => onChange('ok')}
         >
           <Text className={getTextClass('ok')}>✅ OK</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          className={getButtonClass('non_compliant', '', 'bg-binance-trading-down')}
+          className={getButtonClass('non_compliant', '', 'bg-comet-down')}
           onPress={() => onChange('non_compliant')}
         >
           <Text className={getTextClass('non_compliant')}>🔴 Issue</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          className={getButtonClass('observation_only', '', 'bg-yellow-500')}
+          className={getButtonClass('observation_only', '', 'bg-comet-pending')}
           onPress={() => onChange('observation_only')}
         >
           <Text className={getTextClass('observation_only')}>🟡 Obs Only</Text>
@@ -97,7 +97,7 @@ export function ChecklistItem({
 
         {showNa && (
           <TouchableOpacity
-            className={getButtonClass('na', '', 'bg-binance-muted-strong')}
+            className={getButtonClass('na', '', 'bg-comet-fg-muted')}
             onPress={() => onChange('na')}
           >
             <Text className={getTextClass('na')}>N/A</Text>
@@ -106,10 +106,10 @@ export function ChecklistItem({
       </View>
 
       {isExpanded && (
-        <View className="mt-4 pt-4 border-t border-binance-border-strong">
-          <Text className="text-binance-on-dark font-medium mb-1">Description</Text>
+        <View className="mt-4 pt-4 border-t border-comet-border">
+          <Text className="text-comet-fg font-medium mb-1">Description</Text>
           <TextInput
-            className="bg-binance-surface-card-dark text-binance-on-dark p-3 rounded-lg border border-binance-border-strong mb-3 min-h-[80px]"
+            className="bg-comet-card text-comet-fg p-3 rounded-lg border border-comet-border mb-3 min-h-[80px]"
             placeholder="Enter observation details..."
             placeholderTextColor="#707a8a"
             multiline
@@ -118,7 +118,7 @@ export function ChecklistItem({
             onChangeText={(text) => handleDetailUpdate({ description: text })}
           />
 
-          <Text className="text-binance-on-dark font-medium mb-1">Severity</Text>
+          <Text className="text-comet-fg font-medium mb-1">Severity</Text>
           <SeverityPicker
             value={detail.severity}
             onChange={(sev) => handleDetailUpdate({ severity: sev })}
@@ -134,9 +134,9 @@ export function ChecklistItem({
           )}
 
           <View className="mt-4 mb-2">
-            <Text className="text-binance-on-dark font-medium mb-1">Specific Location / Sub-zone</Text>
+            <Text className="text-comet-fg font-medium mb-1">Specific Location / Sub-zone</Text>
             <TextInput
-              className="bg-binance-surface-card-dark text-binance-on-dark p-3 rounded-lg border border-binance-border-strong"
+              className="bg-comet-card text-comet-fg p-3 rounded-lg border border-comet-border"
               placeholder="e.g. Panel 4, near junction..."
               placeholderTextColor="#707a8a"
               value={detail.subZone}

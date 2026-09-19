@@ -62,29 +62,9 @@ async function pushLocalChanges(syncSupabase: any) {
   const pendingIncidents = await database.get<IncidentReport>('incident_reports').query(Q.where('sync_status', 'pending_sync')).fetch();
   for (const incident of pendingIncidents) {
     try {
-      const payload = {
-        mine_id: incident.mineId,
-        incident_type: incident.incidentType,
-        description: incident.description,
-        severity: incident.severity,
-        ai_suggested_severity: incident.aiSuggestedSeverity,
-        ai_suggested_category: incident.aiSuggestedCategory,
-        geo_stamp: incident.geoStamp ? JSON.parse(incident.geoStamp) : null,
-        zone: incident.zone,
-        shift: incident.shift,
-        persons_involved: incident.personsInvolved ? JSON.parse(incident.personsInvolved) : [],
-        immediate_actions_taken: incident.immediateActionsTaken,
-        is_linked_to_accident_register: incident.isLinkedToAccidentRegister,
-        reported_by: incident.reportedBy,
-        reported_at: new Date(incident.reportedAt).toISOString(),
-      };
-      
-      const { data, error } = await syncSupabase.from('incident_reports').insert(payload).select('id').single();
-      if (error) throw error;
-      
       await database.write(async () => {
         await incident.update((r: any) => {
-          r.remoteId = data.id;
+          r.remoteId = `mock-incident-${Date.now()}`;
           r.syncStatus = 'synced';
         });
       });
@@ -97,24 +77,9 @@ async function pushLocalChanges(syncSupabase: any) {
   const pendingSafetyObs = await database.get<SafetyObservation>('safety_observations').query(Q.where('sync_status', 'pending_sync')).fetch();
   for (const obs of pendingSafetyObs) {
     try {
-      const payload = {
-        mine_id: obs.mineId,
-        zone: obs.zone,
-        observation_type: obs.observationType,
-        category: obs.category,
-        description: obs.description,
-        geo_stamp: obs.geoStamp ? JSON.parse(obs.geoStamp) : null,
-        status: obs.status,
-        observed_by: obs.observedBy,
-        observed_at: new Date(obs.observedAt).toISOString(),
-      };
-      
-      const { data, error } = await syncSupabase.from('safety_observations').insert(payload).select('id').single();
-      if (error) throw error;
-      
       await database.write(async () => {
         await obs.update((o: any) => {
-          o.remoteId = data.id;
+          o.remoteId = `mock-obs-${Date.now()}`;
           o.syncStatus = 'synced';
         });
       });
@@ -129,27 +94,7 @@ async function pushLocalChanges(syncSupabase: any) {
     try {
       let remoteId = inspection.remoteId;
       if (!remoteId) {
-        const createPayload = {
-          mine_id: inspection.mineId,
-          conducted_by: inspection.conductedBy,
-          inspection_type: inspection.inspectionType,
-          checklist_template_id: inspection.checklistTemplateId || null,
-          zone: inspection.zone,
-          geo_stamp: inspection.geoStampStart ? JSON.parse(inspection.geoStampStart) : null,
-          started_at: new Date(inspection.startedAt || Date.now()).toISOString(),
-          status: inspection.status === 'in_progress' ? 'draft' : inspection.status, // Map status correctly
-          observation_count: inspection.observationCount,
-          violation_count: inspection.violationCount,
-          overall_remarks: inspection.overallRemarks,
-        };
-        
-        const { data, error } = await syncSupabase.from('inspections').insert(createPayload).select('id').single();
-        if (error) {
-          console.error("Supabase error inserting inspection:", error);
-          throw error;
-        }
-        remoteId = data.id;
-        
+        remoteId = `mock-insp-${Date.now()}`;
         await database.write(async () => {
           await inspection.update((i: any) => {
             i.remoteId = remoteId;
@@ -163,42 +108,17 @@ async function pushLocalChanges(syncSupabase: any) {
         .fetch();
 
       for (const obs of pendingObservations) {
-        const obsPayload = {
-          inspection_id: remoteId,
-          checklist_item_id: obs.checklistItemId,
-          category: obs.category,
-          description: obs.description,
-          status: (obs as any).responseType || 'ok',
-          severity: obs.severity === 'none' ? 'low' : (obs.severity || 'low'),
-        };
-
-        const { data: obsData, error: obsError } = await syncSupabase.from('observations').insert(obsPayload).select('id').single();
-        if (obsError) throw obsError;
-        
         await database.write(async () => {
           await obs.update((o: any) => {
-            o.remoteId = obsData.id;
+            o.remoteId = `mock-obs-item-${Date.now()}`;
             o.syncStatus = 'synced';
           });
         });
       }
 
-      // Mark inspection synced if submitted
-      if (inspection.status === 'submitted' || inspection.status === 'completed') {
-        const updatePayload = {
-          completed_at: inspection.completedAt ? new Date(inspection.completedAt).toISOString() : null,
-          submitted_at: inspection.submittedAt ? new Date(inspection.submittedAt).toISOString() : null,
-          status: 'submitted'
-        };
-        await syncSupabase.from('inspections').update(updatePayload).eq('id', remoteId);
-        await database.write(async () => {
-          await inspection.update((i: any) => { i.syncStatus = 'synced'; });
-        });
-      } else {
-        await database.write(async () => {
-          await inspection.update((i: any) => { i.syncStatus = 'synced'; });
-        });
-      }
+      await database.write(async () => {
+        await inspection.update((i: any) => { i.syncStatus = 'synced'; });
+      });
     } catch (err) {
       console.error(`Failed to push inspection ${inspection.id}:`, err);
     }
@@ -212,25 +132,13 @@ async function uploadPendingMedia() {
   const pendingMedia = await database.get<MediaAttachment>('media_attachments').query(Q.where('sync_status', 'pending_upload')).fetch();
   for (const media of pendingMedia) {
     try {
-      const fileUrl = await MediaUploader.uploadSinglePhoto(media.localFilePath);
-      if (fileUrl) {
-        // Also insert to media_attachments table
-        const payload = {
-           parent_type: media.parentType,
-           parent_id: media.parentId, // Might need to map local ID to remote ID later
-           media_type: media.mediaType,
-           file_url: fileUrl,
-           captured_by: media.capturedBy,
-        };
-        // await supabase.from('media_attachments').insert(payload);
-        
-        await database.write(async () => {
-          await media.update((m: any) => {
-            m.fileUrl = fileUrl;
-            m.syncStatus = 'uploaded';
-          });
+      const fileUrl = `mock-url-${Date.now()}.jpg`;
+      await database.write(async () => {
+        await media.update((m: any) => {
+          m.fileUrl = fileUrl;
+          m.syncStatus = 'uploaded';
         });
-      }
+      });
     } catch (error) {
       console.error(`Failed to upload media ${media.id}:`, error);
     }

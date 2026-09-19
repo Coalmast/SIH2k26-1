@@ -53,26 +53,26 @@ export default function StartInspectionScreen() {
   };
 
   return (
-    <View className="flex-1 bg-binance-ink px-4 pt-6">
+    <View className="flex-1 bg-comet-canvas px-4 pt-6">
 
       <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
         
         {/* Mine Info */}
         <View className="mb-6">
-          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Location</Text>
-          <View className="bg-binance-surface-card-dark p-4 rounded-xl border border-binance-border-strong flex-row justify-between items-center">
-            <Text className="text-binance-on-dark font-medium text-lg">{mineName}</Text>
-            <View className="bg-binance-primary/20 px-2 py-1 rounded">
-               <Text className="text-binance-primary text-xs font-bold">VERIFIED</Text>
+          <Text className="text-comet-fg-muted font-semibold mb-2 uppercase text-xs tracking-wider">Location</Text>
+          <View className="bg-comet-card p-4 rounded-xl border border-comet-border flex-row justify-between items-center">
+            <Text className="text-comet-fg font-medium text-lg">{mineName}</Text>
+            <View className="bg-comet-orange/20 px-2 py-1 rounded">
+               <Text className="text-comet-orange text-xs font-bold">VERIFIED</Text>
             </View>
           </View>
         </View>
 
         {/* Zone */}
         <View className="mb-6">
-          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Zone / District</Text>
+          <Text className="text-comet-fg-muted font-semibold mb-2 uppercase text-xs tracking-wider">Zone / District</Text>
           <TextInput
-            className="bg-binance-surface-card-dark text-binance-on-dark p-4 rounded-xl border border-binance-border-strong text-base"
+            className="bg-comet-card text-comet-fg p-4 rounded-xl border border-comet-border text-base"
             placeholder="e.g. Panel 4, Section B"
             placeholderTextColor="#707a8a"
             value={zone}
@@ -82,10 +82,10 @@ export default function StartInspectionScreen() {
 
         {/* Type Selection */}
         <View className="mb-8">
-          <Text className="text-binance-muted-strong font-semibold mb-2 uppercase text-xs tracking-wider">Inspection Template</Text>
+          <Text className="text-comet-fg-muted font-semibold mb-2 uppercase text-xs tracking-wider">Inspection Template</Text>
           
           {templatesLoading ? (
-            <ActivityIndicator color="#fcd535" className="mt-4" />
+            <ActivityIndicator color="#f97316" className="mt-4" />
           ) : (
             <View className="gap-3">
               {templates?.map((t: any) => {
@@ -96,14 +96,14 @@ export default function StartInspectionScreen() {
                     onPress={() => setSelectedTemplateId(t.id)}
                     className={`p-4 rounded-xl border ${
                       isSelected 
-                        ? 'bg-binance-primary border-binance-primary' 
-                        : 'bg-binance-surface-card-dark border-binance-border-strong'
+                        ? 'bg-comet-orange border-comet-orange' 
+                        : 'bg-comet-card border-comet-border'
                     }`}
                   >
-                    <Text className={`font-bold text-lg mb-1 ${isSelected ? 'text-binance-ink' : 'text-binance-on-dark'}`}>
+                    <Text className={`font-bold text-lg mb-1 ${isSelected ? 'text-comet-sidebar-bg' : 'text-comet-fg'}`}>
                       {t.name}
                     </Text>
-                    <Text className={isSelected ? 'text-binance-ink/80' : 'text-binance-muted-strong'}>
+                    <Text className={isSelected ? 'text-comet-sidebar-bg/80' : 'text-comet-fg-muted'}>
                       {t.regulation_reference}
                     </Text>
                   </TouchableOpacity>
@@ -116,7 +116,7 @@ export default function StartInspectionScreen() {
       </ScrollView>
 
       {/* Bottom Action */}
-      <View className="py-4 border-t border-binance-border-strong">
+      <View className="py-4 border-t border-comet-border">
         <Button 
           variant={selectedTemplateId && zone ? 'primary' : 'secondary'} 
           size="lg"

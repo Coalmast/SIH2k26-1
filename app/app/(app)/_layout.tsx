@@ -16,8 +16,8 @@ export default function AppLayout() {
   const { colorScheme } = useColorScheme();
   const isDark = colorScheme === 'dark';
   
-  const headerBg = isDark ? '#0f0d0c' : '#f2ede8';
-  const headerBorder = isDark ? '#2a2420' : '#d4cec5';
+  const headerBg = '#0a0908';
+  const headerBorder = '#0a0908';
   
   const tabBarBg = isDark ? '#0a0908' : '#18181b';
   const tabBarBorder = isDark ? '#1e1a17' : '#27272a';
@@ -28,7 +28,7 @@ export default function AppLayout() {
         screenOptions={{
           headerShown: true,
           headerStyle: { backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: headerBorder },
-          headerTintColor: '#f97316',
+          headerTintColor: '#ffffff',
           tabBarStyle: { backgroundColor: tabBarBg, borderTopWidth: 1, borderTopColor: tabBarBorder },
           tabBarActiveTintColor: '#f97316',
           tabBarInactiveTintColor: isDark ? '#a8a29e' : '#78716c',
@@ -46,7 +46,7 @@ export default function AppLayout() {
           name="inspect"
           options={{
             title: 'Inspections',
-            headerShown: false,
+            headerRight: () => <NotificationHeaderIcon />,
             tabBarIcon: ({ color }) => <ClipboardList size={24} color={color} />,
           }}
         />
@@ -54,7 +54,7 @@ export default function AppLayout() {
           name="report"
           options={{
             title: 'Reports',
-            headerShown: false, // The stack layout handles the headers
+            headerRight: () => <NotificationHeaderIcon />,
             tabBarIcon: ({ color }) => <AlertTriangle size={24} color={color} />,
           }}
         />
@@ -62,7 +62,7 @@ export default function AppLayout() {
           name="profile"
           options={{
             title: 'Profile',
-            headerShown: false, // The stack layout handles the headers
+            headerRight: () => <NotificationHeaderIcon />,
             tabBarIcon: ({ color }) => <User size={24} color={color} />,
           }}
         />

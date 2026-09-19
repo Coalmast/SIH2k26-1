@@ -70,43 +70,43 @@ export default function ObservationScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-binance-canvas-dark px-4 py-4" contentContainerStyle={{ paddingBottom: 40 }}>
+    <ScrollView className="flex-1 bg-comet-canvas px-4 py-4" contentContainerStyle={{ paddingBottom: 40 }}>
       {/* Type Selector */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Observation Type</Text>
+        <Text className="text-comet-fg font-bold mb-2">Observation Type</Text>
         <View className="flex-row gap-2">
           <TouchableOpacity 
-            className={`flex-1 p-2 rounded items-center ${obsType === ObservationTypeEnum.UNSAFE_ACT ? 'bg-red-500' : 'bg-binance-surface'}`}
+            className={`flex-1 p-2 rounded items-center ${obsType === ObservationTypeEnum.UNSAFE_ACT ? 'bg-red-500' : 'bg-comet-card'}`}
             onPress={() => setObsType(ObservationTypeEnum.UNSAFE_ACT)}
           >
-            <Text className={obsType === ObservationTypeEnum.UNSAFE_ACT ? 'text-white font-bold' : 'text-binance-muted-strong'}>🔴 Unsafe Act</Text>
+            <Text className={obsType === ObservationTypeEnum.UNSAFE_ACT ? 'text-white font-bold' : 'text-comet-fg-muted'}>🔴 Unsafe Act</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            className={`flex-1 p-2 rounded items-center ${obsType === ObservationTypeEnum.UNSAFE_CONDITION ? 'bg-yellow-500' : 'bg-binance-surface'}`}
+            className={`flex-1 p-2 rounded items-center ${obsType === ObservationTypeEnum.UNSAFE_CONDITION ? 'bg-comet-pending' : 'bg-comet-card'}`}
             onPress={() => setObsType(ObservationTypeEnum.UNSAFE_CONDITION)}
           >
-            <Text className={obsType === ObservationTypeEnum.UNSAFE_CONDITION ? 'text-black font-bold' : 'text-binance-muted-strong'}>🟡 Unsafe Cond.</Text>
+            <Text className={obsType === ObservationTypeEnum.UNSAFE_CONDITION ? 'text-black font-bold' : 'text-comet-fg-muted'}>🟡 Unsafe Cond.</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            className={`flex-1 p-2 rounded items-center ${obsType === ObservationTypeEnum.POSITIVE ? 'bg-green-500' : 'bg-binance-surface'}`}
+            className={`flex-1 p-2 rounded items-center ${obsType === ObservationTypeEnum.POSITIVE ? 'bg-green-500' : 'bg-comet-card'}`}
             onPress={() => setObsType(ObservationTypeEnum.POSITIVE)}
           >
-            <Text className={obsType === ObservationTypeEnum.POSITIVE ? 'text-white font-bold' : 'text-binance-muted-strong'}>🟢 Positive</Text>
+            <Text className={obsType === ObservationTypeEnum.POSITIVE ? 'text-white font-bold' : 'text-comet-fg-muted'}>🟢 Positive</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Zone Selector */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Zone</Text>
+        <Text className="text-comet-fg font-bold mb-2">Zone</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {ZONES.map(z => (
             <TouchableOpacity 
               key={z} 
-              className={`px-4 py-2 rounded-full mr-2 ${zone === z ? 'bg-binance-primary' : 'bg-binance-surface'}`}
+              className={`px-4 py-2 rounded-full mr-2 ${zone === z ? 'bg-comet-orange' : 'bg-comet-card'}`}
               onPress={() => setZone(z)}
             >
-              <Text className={zone === z ? 'text-black font-bold' : 'text-binance-on-dark'}>{z}</Text>
+              <Text className={zone === z ? 'text-black font-bold' : 'text-comet-fg'}>{z}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -114,15 +114,15 @@ export default function ObservationScreen() {
 
       {/* Category Selector */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Category</Text>
+        <Text className="text-comet-fg font-bold mb-2">Category</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {CATEGORIES.map(c => (
             <TouchableOpacity 
               key={c} 
-              className={`px-4 py-2 rounded-full mr-2 ${category === c ? 'bg-binance-primary' : 'bg-binance-surface'}`}
+              className={`px-4 py-2 rounded-full mr-2 ${category === c ? 'bg-comet-orange' : 'bg-comet-card'}`}
               onPress={() => setCategory(c)}
             >
-              <Text className={category === c ? 'text-black font-bold' : 'text-binance-on-dark'}>{c}</Text>
+              <Text className={category === c ? 'text-black font-bold' : 'text-comet-fg'}>{c}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -130,9 +130,9 @@ export default function ObservationScreen() {
 
       {/* Description */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Description</Text>
+        <Text className="text-comet-fg font-bold mb-2">Description</Text>
         <TextInput
-          className="bg-binance-surface text-binance-on-dark p-3 rounded"
+          className="bg-comet-card text-comet-fg p-3 rounded"
           placeholder="Describe the observation briefly"
           placeholderTextColor="#76808F"
           multiline
@@ -144,7 +144,7 @@ export default function ObservationScreen() {
 
       {/* Photo */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Photo (Optional)</Text>
+        <Text className="text-comet-fg font-bold mb-2">Photo (Optional)</Text>
         <MediaCapture uris={mediaPaths} onChange={setMediaPaths} maxPhotos={1} />
       </View>
 
@@ -154,7 +154,7 @@ export default function ObservationScreen() {
       </View>
 
       {/* Submit */}
-      <Button onPress={handleSubmit} className="mt-4 bg-binance-primary">
+      <Button onPress={handleSubmit} className="mt-4 bg-comet-orange">
         <Text className="text-black font-bold">Submit Observation</Text>
       </Button>
     </ScrollView>

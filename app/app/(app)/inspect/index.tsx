@@ -27,7 +27,7 @@ export default function InspectionsScreen() {
     
     return (
       <TouchableOpacity 
-        className="bg-binance-surface-card-dark p-4 rounded-xl mb-3 border border-binance-border-strong"
+        className="bg-comet-card p-4 rounded-xl mb-3 border border-comet-border"
         onPress={() => {
           if (isCompleted) {
             router.push(`/inspect/${item.id}/report`);
@@ -38,10 +38,10 @@ export default function InspectionsScreen() {
       >
         <View className="flex-row justify-between items-start mb-2">
           <View>
-            <Text className="text-binance-primary font-bold text-lg">
+            <Text className="text-comet-orange font-bold text-lg">
               {(item.inspectionType || '').replace(/_/g, ' ').toUpperCase()}
             </Text>
-            <Text className="text-binance-muted-strong text-sm mt-1">
+            <Text className="text-comet-fg-muted text-sm mt-1">
               {item.zone || 'No zone specified'} • {item.startedAt ? new Date(item.startedAt).toLocaleDateString() : 'N/A'}
             </Text>
           </View>
@@ -51,17 +51,17 @@ export default function InspectionsScreen() {
         <View className="flex-row justify-between items-end mt-4">
           <View>
             {isCompleted ? (
-              <Text className="text-binance-on-dark text-sm">
-                Violations: <Text className="font-bold text-binance-trading-down">{item.violationCount || 0}</Text>
+              <Text className="text-comet-fg text-sm">
+                Violations: <Text className="font-bold text-comet-down">{item.violationCount || 0}</Text>
               </Text>
             ) : (
-              <Text className="text-binance-on-dark text-sm">
-                Progress: <Text className="font-bold text-binance-primary">{item.observationCount || 0}</Text> obs
+              <Text className="text-comet-fg text-sm">
+                Progress: <Text className="font-bold text-comet-orange">{item.observationCount || 0}</Text> obs
               </Text>
             )}
           </View>
-          <View className="bg-binance-surface-elevated-dark px-4 py-2 rounded-lg">
-            <Text className="text-binance-on-dark font-medium">
+          <View className="bg-comet-card px-4 py-2 rounded-lg">
+            <Text className="text-comet-fg font-medium">
               {isCompleted ? 'View Report →' : 'Continue →'}
             </Text>
           </View>
@@ -71,26 +71,25 @@ export default function InspectionsScreen() {
   };
 
   return (
-    <View className="flex-1 bg-binance-ink px-4 pt-6">
+    <View className="flex-1 bg-comet-canvas pt-4">
       
-      <View className="flex-row justify-between items-center mb-6">
-        <Text className="text-white text-2xl font-bold">INSPECTIONS</Text>
+      <View className="flex-row justify-end px-4 mb-4">
         <TouchableOpacity 
-          className="bg-binance-primary px-4 py-2 rounded-lg"
+          className="bg-comet-orange px-4 py-2 rounded-lg"
           onPress={() => router.push('/inspect/start')}
         >
-          <Text className="text-binance-ink font-bold">+ New</Text>
+          <Text className="text-comet-sidebar-bg font-bold">+ New</Text>
         </TouchableOpacity>
       </View>
 
-      <View className="flex-row mb-4 bg-binance-surface-card-dark p-1 rounded-lg">
+      <View className="flex-row mb-4 bg-comet-card p-1 rounded-lg mx-4">
         {['all', 'active', 'done'].map((f) => (
           <TouchableOpacity
             key={f}
-            className={`flex-1 py-2 items-center rounded-md ${filter === f ? 'bg-binance-surface-elevated-dark' : ''}`}
+            className={`flex-1 py-2 items-center rounded-md ${filter === f ? 'bg-comet-card' : ''}`}
             onPress={() => setFilter(f as FilterType)}
           >
-            <Text className={`font-semibold ${filter === f ? 'text-binance-primary' : 'text-binance-muted-strong'}`}>
+            <Text className={`font-semibold ${filter === f ? 'text-comet-orange' : 'text-comet-fg-muted'}`}>
               {f.charAt(0).toUpperCase() + f.slice(1)}
               {f === 'active' && active?.length > 0 && ` • ${active.length}`}
             </Text>
@@ -99,6 +98,7 @@ export default function InspectionsScreen() {
       </View>
 
       <FlatList
+        className="px-4"
         data={getFilteredData()}
         keyExtractor={item => item.id}
         renderItem={renderInspectionCard}
@@ -107,10 +107,10 @@ export default function InspectionsScreen() {
         ListEmptyComponent={() => (
           <View className="items-center justify-center mt-20">
             <Text className="text-6xl mb-4">📋</Text>
-            <Text className="text-binance-on-dark font-medium text-lg text-center">
+            <Text className="text-comet-fg font-medium text-lg text-center">
               No inspections found
             </Text>
-            <Text className="text-binance-muted-strong text-center mt-2">
+            <Text className="text-comet-fg-muted text-center mt-2">
               {filter === 'active' ? 'You have no active inspections.' : 'Nothing to show here.'}
             </Text>
           </View>

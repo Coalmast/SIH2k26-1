@@ -13,18 +13,18 @@ export default function InspectionReportScreen() {
 
   if (detailLoading || !inspection) {
     return (
-      <View className="flex-1 bg-binance-ink pt-12">
+      <View className="flex-1 bg-comet-canvas pt-12">
         <SkeletonLoader />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-binance-ink pt-12 pb-4">
+    <View className="flex-1 bg-comet-canvas pt-12 pb-4">
       {/* Header */}
-      <View className="px-4 pb-4 border-b border-binance-border-strong flex-row justify-between items-center">
+      <View className="px-4 pb-4 border-b border-comet-border flex-row justify-between items-center">
         <View>
-          <Text className="text-binance-muted-strong font-semibold uppercase text-xs">Final Report</Text>
+          <Text className="text-comet-fg-muted font-semibold uppercase text-xs">Final Report</Text>
           <Text className="text-white text-xl font-bold mt-1">Inspection Summary</Text>
         </View>
         <Button size="sm" variant="secondary" onPress={() => router.replace('/(app)/home')}>
@@ -36,25 +36,25 @@ export default function InspectionReportScreen() {
         
         {/* KPI Cards */}
         <View className="flex-row justify-between mb-6">
-          <View className="bg-binance-surface-card-dark p-4 rounded-xl border border-binance-border-strong flex-1 mr-2">
-            <Text className="text-binance-muted text-xs uppercase font-bold tracking-wider mb-1">Observations</Text>
+          <View className="bg-comet-card p-4 rounded-xl border border-comet-border flex-1 mr-2">
+            <Text className="text-comet-fg-muted text-xs uppercase font-bold tracking-wider mb-1">Observations</Text>
             <Text className="text-white font-bold text-3xl">{inspection.observationCount || 0}</Text>
           </View>
-          <View className="bg-binance-surface-card-dark p-4 rounded-xl border border-binance-border-strong flex-1 ml-2">
-            <Text className="text-binance-muted text-xs uppercase font-bold tracking-wider mb-1">Violations</Text>
-            <Text className="text-binance-trading-down font-bold text-3xl">{inspection.violationCount || 0}</Text>
+          <View className="bg-comet-card p-4 rounded-xl border border-comet-border flex-1 ml-2">
+            <Text className="text-comet-fg-muted text-xs uppercase font-bold tracking-wider mb-1">Violations</Text>
+            <Text className="text-comet-down font-bold text-3xl">{inspection.violationCount || 0}</Text>
           </View>
         </View>
 
         {/* Success Message Section */}
-        <View className="bg-binance-surface-elevated-dark p-6 rounded-xl border border-binance-border-strong items-center mb-8 mt-4">
-          <View className="w-16 h-16 bg-binance-trading-up/20 rounded-full items-center justify-center mb-4">
+        <View className="bg-comet-card p-6 rounded-xl border border-comet-border items-center mb-8 mt-4">
+          <View className="w-16 h-16 bg-comet-up/20 rounded-full items-center justify-center mb-4">
             <Text className="text-3xl">✅</Text>
           </View>
           <Text className="text-white font-bold text-xl mb-2 text-center">
             Inspection Submitted
           </Text>
-          <Text className="text-binance-muted-strong text-center px-4 leading-5">
+          <Text className="text-comet-fg-muted text-center px-4 leading-5">
             Your inspection has been successfully completed and safely synced to the cloud. You may now return to the home screen.
           </Text>
         </View>
