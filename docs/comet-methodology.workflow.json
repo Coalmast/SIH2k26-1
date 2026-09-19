@@ -1,0 +1,207 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "COMET Governance Methodology",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "stakeholders",
+        "label": "Every stakeholder",
+        "focus": ["admin", "field", "worker", "review", "command", "verify"],
+        "note": "System Admin, field teams, workers, contractors, officers, CIL, Ministry and regulators are all in one accountable chain."
+      },
+      {
+        "id": "reliability",
+        "label": "Reliable field truth",
+        "focus": ["field", "worker", "sync", "ledger", "alarm"],
+        "note": "Offline capture, geofence checks, RLS, audit logs, SHA-256 and local CH4 alarms protect critical evidence."
+      },
+      {
+        "id": "intelligence",
+        "label": "AI with human gate",
+        "focus": ["ledger", "adk", "review"],
+        "note": "Gemini ADK drafts, scores and forecasts; mine officials still approve CAPA, evidence and statutory closure."
+      },
+      {
+        "id": "impact",
+        "label": "Impact proof",
+        "focus": ["command", "submit", "verify"],
+        "note": "Escalations reach subsidiary/CIL/Ministry; regulators verify reports through read-only, hash-checked evidence."
+      }
+    ]
+  },
+  "lanes": [
+    { "id": "intake", "label": "Stakeholder intake" },
+    { "id": "engine", "label": "COMET evidence engine" },
+    { "id": "governance", "label": "Accountability + public trust" }
+  ],
+  "phases": [
+    { "id": "capture", "label": "Capture", "fromCol": 0, "toCol": 1 },
+    { "id": "reason", "label": "Reason + decide", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "prove", "label": "Escalate + prove", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "ps_scope", "label": "All PS 26024 workflows", "lane": "intake", "fromCol": 0, "toCol": 1, "variant": "emphasis" },
+    { "id": "trusted_core", "label": "Offline · AI · audit", "lane": "engine", "fromCol": 1, "toCol": 3, "variant": "emphasis" },
+    { "id": "human_gate", "label": "Human accountability", "lane": "governance", "fromCol": 3, "toCol": 5, "variant": "security" }
+  ],
+  "mainPath": ["field", "sync", "ledger", "adk", "review", "command", "submit", "verify"],
+  "nodes": [
+    {
+      "id": "admin",
+      "lane": "intake",
+      "col": 0,
+      "type": "security",
+      "label": "Admin Setup",
+      "sublabel": "regs · mines · roles",
+      "tag": "Mines Act · CMR",
+      "width": 124
+    },
+    {
+      "id": "field",
+      "lane": "intake",
+      "col": 0,
+      "type": "frontend",
+      "label": "Field Teams",
+      "sublabel": "inspect · produce · env",
+      "tag": "GPS · offline",
+      "yOffset": 76,
+      "width": 124
+    },
+    {
+      "id": "worker",
+      "lane": "intake",
+      "col": 1,
+      "type": "frontend",
+      "label": "Worker Access",
+      "sublabel": "QR · voice · docs",
+      "tag": "contractors · 5 lang",
+      "yOffset": 76,
+      "width": 132
+    },
+    {
+      "id": "sync",
+      "lane": "engine",
+      "col": 1,
+      "type": "backend",
+      "label": "Sync + Geofence",
+      "sublabel": "WatermelonDB push",
+      "tag": "flag, not drop",
+      "width": 132
+    },
+    {
+      "id": "ledger",
+      "lane": "engine",
+      "col": 2,
+      "type": "database",
+      "label": "Ledger + OCR",
+      "sublabel": "Supabase RLS",
+      "tag": "audit · SHA-256",
+      "brand": "supabase",
+      "width": 124
+    },
+    {
+      "id": "adk",
+      "lane": "engine",
+      "col": 3,
+      "type": "cloud",
+      "label": "Gemini ADK",
+      "sublabel": "risk · anomaly",
+      "tag": "report · chat",
+      "brand": "google-gemini",
+      "width": 124
+    },
+    {
+      "id": "alarm",
+      "lane": "engine",
+      "col": 0,
+      "type": "security",
+      "label": "CH4 Alarm",
+      "sublabel": "Notifee · FCM",
+      "tag": "offline siren",
+      "width": 124
+    },
+    {
+      "id": "review",
+      "lane": "governance",
+      "col": 3,
+      "type": "frontend",
+      "label": "Officer Gate",
+      "sublabel": "MM · Safety · CO",
+      "tag": "CAPA · evidence",
+      "width": 124
+    },
+    {
+      "id": "command",
+      "lane": "governance",
+      "col": 4,
+      "type": "messagebus",
+      "label": "CIL Command",
+      "sublabel": "Subsidiary · HQ",
+      "tag": "Ministry view",
+      "width": 124
+    },
+    {
+      "id": "submit",
+      "lane": "governance",
+      "col": 5,
+      "type": "backend",
+      "label": "Sign + Submit",
+      "sublabel": "Forms 3 · 4-A · EC",
+      "tag": "CCO · CLRA",
+      "width": 118
+    },
+    {
+      "id": "verify",
+      "lane": "governance",
+      "col": 5,
+      "type": "external",
+      "label": "Regulator Verify",
+      "sublabel": "DGMS · SPCB",
+      "tag": "Labour · MoEFCC",
+      "yOffset": 84,
+      "width": 118
+    }
+  ],
+  "edges": [
+    { "id": "admin-field", "from": "admin", "to": "field", "label": "tasks", "variant": "dashed" },
+    { "id": "field-sync", "from": "field", "to": "sync", "label": "geo evidence", "variant": "emphasis" },
+    { "id": "worker-sync", "from": "worker", "to": "sync", "label": "attendance · grievance" },
+    { "id": "sync-ledger", "from": "sync", "to": "ledger", "label": "JWT · PostGIS · RLS", "variant": "emphasis" },
+    { "id": "ledger-adk", "from": "ledger", "to": "adk", "label": "webhooks · cron", "variant": "emphasis" },
+    { "id": "adk-review", "from": "adk", "to": "review", "label": "score · draft", "variant": "emphasis" },
+    { "id": "review-command", "from": "review", "to": "command", "label": "T+7 · T+14", "variant": "security" },
+    { "id": "command-submit", "from": "command", "to": "submit", "label": "digital sign", "variant": "emphasis" },
+    { "id": "submit-verify", "from": "submit", "to": "verify", "variant": "emphasis" },
+    { "id": "gas-alarm", "from": "field", "to": "alarm", "label": "CH4 > 1.50%", "role": "error", "variant": "security" },
+    { "id": "alarm-review", "from": "alarm", "to": "review", "label": "siren + FCM", "role": "async", "variant": "dashed" }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Effectiveness + Impact",
+      "items": [
+        "Unifies all 9 PS workflows from field event to regulator proof.",
+        "Targets <24h statutory turnaround and 50% faster CAPA closure."
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Reliability",
+      "items": [
+        "Offline-first capture, local CH4 alarms, RLS, audit logs and PDF hashes.",
+        "Geofence mismatches are flagged without dropping safety records."
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Feasibility + Benefits",
+      "items": [
+        "Built from repo-backed Expo, FastAPI, Supabase, OCR and Gemini ADK pieces.",
+        "Paperless reports, multilingual voice, OCR autofill and contractor trust scoring."
+      ]
+    }
+  ]
+}
