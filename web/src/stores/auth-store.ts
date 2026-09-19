@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import { type Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
@@ -49,7 +50,9 @@ const initialState: AuthState = {
   subsidiaryId: null,
 }
 
-export const useAuthStore = create<AuthStore>()((set, get) => ({
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, get) => ({
   auth: initialState,
   setSession: (session) => {
     set((state) => {
@@ -120,4 +123,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
   setIsLoading: (isLoading) =>
     set((state) => ({ auth: { ...state.auth, isLoading } })),
   reset: () => set({ auth: { ...initialState, isLoading: false } }),
+}), {
+  name: 'auth-storage',
+  partialize: (state) => ({ auth: state.auth }),
 }))

@@ -62,6 +62,7 @@
     "date-fns": "^4.1.0",
     "deck.gl": "^9.3.11",
     "framer-motion": "^13.1.1",
+    "glimm": "^0.3.1",
     "i18next": "^26.4.2",
     "i18next-browser-languagedetector": "^8.2.1",
     "input-otp": "^1.4.2",

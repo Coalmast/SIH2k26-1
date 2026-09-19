@@ -5,6 +5,7 @@ import { Loader2, Calendar } from 'lucide-react';
 import { KanbanBoard } from '@/components/kanban-board';
 import { type KanbanData, type KanbanCardRenderer } from '@/components/kanban-board/types';
 import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
@@ -25,6 +26,10 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
     const isApproved = data.status === 'approved';
     const regCategory = data.requirement?.regulation?.category;
     
+    // Check if due within 48 hours
+    const hoursUntilDue = (new Date(data.due_date).getTime() - new Date().getTime()) / (1000 * 60 * 60);
+    const isDueSoon = !isOverdue && !isApproved && hoursUntilDue > 0 && hoursUntilDue <= 48;
+    
     return (
       <motion.div
         layout
@@ -40,6 +45,7 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
           <div className={`absolute top-0 inset-x-0 h-1 ${
             isApproved ? 'bg-gradient-to-r from-emerald-400 to-emerald-600' :
             isOverdue ? 'bg-gradient-to-r from-red-400 to-rose-600' : 
+            isDueSoon ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
             'bg-gradient-to-r from-primary/60 to-purple-500/60'
           }`} />
 
@@ -48,15 +54,23 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
 
           <CardContent className="p-4 flex flex-col gap-3 relative z-10">
             <div className="flex items-start justify-between gap-3">
-              <span className="font-bold text-sm leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors">
+              <span className="font-bold text-base leading-snug line-clamp-2 text-foreground/90 group-hover:text-foreground transition-colors">
                 {data.requirement?.title || 'Task'}
               </span>
-              {isOverdue && (
-                <span className="relative flex h-2.5 w-2.5 mt-1 shrink-0">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                </span>
-              )}
+              <div className="flex items-center gap-1.5 shrink-0 mt-1">
+                {isDueSoon && (
+                  <span className="relative flex h-3 w-3" title="Due in < 48 hours">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                  </span>
+                )}
+                {isOverdue && (
+                  <span className="relative flex h-3 w-3" title="Overdue">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                  </span>
+                )}
+              </div>
             </div>
             
             <div className="flex flex-col gap-2.5 text-xs mt-1">
@@ -101,7 +115,7 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
   }
 };
 
-export function ComplianceKanban({ mineId }: { mineId?: string }) {
+export function ComplianceKanban({ mineId, filterStatus, filterCategory }: { mineId?: string, filterStatus?: string | null, filterCategory?: string | null }) {
   const {
     t
   } = useTranslation();
@@ -113,11 +127,20 @@ export function ComplianceKanban({ mineId }: { mineId?: string }) {
   const boardData = useMemo<KanbanData>(() => {
     if (!instances) return { columns: [] };
     
+    // Apply filters
+    let filtered = instances;
+    if (filterStatus) {
+      filtered = filtered.filter((i: any) => i.status === filterStatus);
+    }
+    if (filterCategory) {
+      filtered = filtered.filter((i: any) => i.requirement?.regulation?.category === filterCategory);
+    }
+    
     return {
       columns: KANBAN_COLUMNS.map(col => ({
         id: col.id,
         title: col.title,
-        items: instances
+        items: filtered
           .filter((i: any) => i.status === col.id)
           .map((i: any) => ({
             id: i.id,
@@ -126,10 +149,28 @@ export function ComplianceKanban({ mineId }: { mineId?: string }) {
           }))
       }))
     };
-  }, [instances]);
+  }, [instances, filterStatus, filterCategory]);
 
   if (isLoading) {
-    return <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
+    return (
+      <div className="flex flex-1 gap-6 p-6 overflow-hidden">
+        {[1, 2, 3, 4].map((colIndex) => (
+          <div key={colIndex} className="flex flex-col gap-4 w-[320px] min-w-[320px] shrink-0">
+            <Skeleton className="h-12 w-full rounded-xl bg-card/40" />
+            {[1, 2, 3].map((cardIndex) => (
+              <motion.div
+                key={cardIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (colIndex * 0.1) + (cardIndex * 0.05), duration: 0.3 }}
+              >
+                <Skeleton className="h-[140px] w-full rounded-xl bg-card/60 shadow-sm" />
+              </motion.div>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
   }
 
   return (

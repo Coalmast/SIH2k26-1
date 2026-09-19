@@ -3,12 +3,15 @@ import React, { useMemo, useState } from 'react';
 import { EventCalendar } from '@/components/event-calendar';
 import type { TaskItem, TaskStatusOption } from '@/components/event-calendar/types';
 import { useComplianceInstances } from '../hooks/useCompliance';
-import { Loader2, ShieldAlert, TrendingDown } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { TrendingDown } from 'lucide-react';
 import { useNavigate } from '@tanstack/react-router';
 import { motion } from 'framer-motion';
 
 interface Props {
   mineId?: string;
+  filterStatus?: string | null;
+  filterCategory?: string | null;
 }
 
 const STATUS_OPTIONS: TaskStatusOption[] = [
@@ -25,35 +28,87 @@ const STATUS_COLORS: Record<string, string> = {
   submitted: '#8b5cf6',
   approved: '#10b981',
   breached: '#ef4444',
+  
+  // Category-specific overrides
+  env_pending: '#3b82f6', // Slate/Blue for environment
+  safety_pending: '#f59e0b', // Amber for safety
+  high_priority: '#ef4444', // Red/Crimson
 }
 
-export function ComplianceCalendar({ mineId }: Props) {
+export function ComplianceCalendar({ mineId, filterStatus, filterCategory }: Props) {
   const navigate = useNavigate();
   const { data: instances, isLoading } = useComplianceInstances(mineId, undefined);
 
   const calendarData = useMemo<TaskItem[]>(() => {
     if (!instances) return [];
-    return instances.map((instance: any) => ({
-      id: instance.id,
-      name: instance.requirement?.title || 'Compliance Task',
-      description: instance.requirement?.description || `Regulation: ${instance.requirement?.regulation?.code || 'N/A'}`,
-      status: instance.status || 'pending',
-      active: instance.status !== 'approved',
-      setAt: instance.due_date,
-      expireAt: instance.due_date,
-      priority: instance.status === 'breached' ? 'high' : instance.status === 'pending' ? 'medium' : 'low',
-    }));
-  }, [instances]);
+    
+    // Apply filters
+    let filtered = instances;
+    if (filterStatus) {
+      filtered = filtered.filter((i: any) => i.status === filterStatus);
+    }
+    if (filterCategory) {
+      filtered = filtered.filter((i: any) => i.requirement?.regulation?.category === filterCategory);
+    }
+    
+    return filtered.map((instance: any) => {
+      const isOverdue = new Date(instance.due_date) < new Date() && instance.status !== 'approved';
+      const category = instance.requirement?.regulation?.category;
+      
+      // Dynamic priority for color coding
+      let priority: TaskItem['priority'] = 'medium';
+      let statusColorRef = instance.status || 'pending';
+      
+      if (isOverdue || instance.status === 'breached') {
+        priority = 'high';
+        statusColorRef = 'high_priority';
+      } else if (category === 'environment' && instance.status === 'pending') {
+        priority = 'low';
+        statusColorRef = 'env_pending';
+      } else if (category === 'safety' && instance.status === 'pending') {
+        priority = 'medium';
+        statusColorRef = 'safety_pending';
+      } else if (instance.status === 'approved') {
+        priority = 'low';
+      }
+      
+      return {
+        id: instance.id,
+        name: instance.requirement?.title || 'Compliance Task',
+        description: instance.requirement?.description || `Regulation: ${instance.requirement?.regulation?.code || 'N/A'}`,
+        status: statusColorRef, // Trick to use custom colors defined in STATUS_COLORS
+        active: instance.status !== 'approved',
+        setAt: instance.due_date,
+        expireAt: instance.due_date,
+        priority: priority,
+        metadata: { category }
+      };
+    });
+  }, [instances, filterStatus, filterCategory]);
 
   if (isLoading) {
     return (
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="relative">
-            <div className="h-12 w-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
-            <ShieldAlert className="absolute inset-0 m-auto h-5 w-5 text-primary" />
+      <div className="flex h-full w-full flex-col p-4 bg-card/10 rounded-xl border border-border/40">
+        <div className="flex justify-between items-center mb-6 px-4">
+          <Skeleton className="h-8 w-48 rounded-md" />
+          <div className="flex gap-2">
+            <Skeleton className="h-8 w-8 rounded-md" />
+            <Skeleton className="h-8 w-8 rounded-md" />
+            <Skeleton className="h-8 w-24 rounded-md" />
           </div>
-          <p className="text-sm text-muted-foreground animate-pulse">Loading compliance data...</p>
+        </div>
+        <div className="grid grid-cols-7 gap-px bg-border/50 rounded-xl overflow-hidden flex-1 border border-border/50">
+          {Array.from({ length: 35 }).map((_, i) => (
+            <motion.div 
+              key={i} 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: (i % 7) * 0.05 + Math.floor(i / 7) * 0.05, duration: 0.3 }}
+              className="bg-card min-h-[100px] p-2 flex justify-end"
+            >
+              <Skeleton className="h-6 w-6 rounded-full opacity-50" />
+            </motion.div>
+          ))}
         </div>
       </div>
     );

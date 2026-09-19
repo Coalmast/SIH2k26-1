@@ -403,16 +403,17 @@ function WorkerHistoryDrawer({
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto bg-background border-border">
+      <SheetContent className="w-full sm:max-w-lg overflow-y-auto bg-background/80 backdrop-blur-2xl border-border/50 shadow-2xl">
         <SheetHeader className="mb-6">
           <SheetTitle className="flex items-center gap-3 text-foreground">
-            <div className="w-10 h-10 rounded-full bg-[#0a192f] flex items-center justify-center text-sm font-bold text-emerald-400">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-lg font-bold text-emerald-400 shadow-inner">
               {worker.initials}
             </div>
-            <div>
-              <div className="font-bold">{worker.name}</div>
-              <div className="text-xs text-muted-foreground font-normal">
-                {worker.id} · {worker.role}
+            <div className="text-left">
+              <div className="font-bold text-xl">{worker.name}</div>
+              <div className="text-sm text-muted-foreground font-normal flex items-center gap-2 mt-0.5">
+                <Badge variant="outline" className="px-1.5 py-0 text-[10px] font-mono">{worker.id}</Badge> 
+                <span>{worker.role}</span>
               </div>
             </div>
           </SheetTitle>
@@ -537,31 +538,31 @@ function ShiftRing({ shift }: { shift: typeof shifts[number] }) {
   ];
 
   return (
-    <Card className="border-border shadow-sm hover:shadow-md transition-shadow">
+    <MagicCard className="shadow-lg border-border/50 hover:-translate-y-1 transition-transform duration-300">
       <CardContent className="p-5">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 border-b border-border/50 pb-3">
           <div>
             <div className="font-bold text-foreground text-lg">{shift.label}</div>
-            <div className="text-xs text-muted-foreground">{shift.time}</div>
+            <div className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5"><Clock className="h-3 w-3" /> {shift.time}</div>
           </div>
           <Badge
             variant="outline"
-            className={`text-xs ${pct >= 90 ? "border-emerald-400/30 text-emerald-400" : pct >= 75 ? "border-amber-400/30 text-amber-400" : "border-red-400/30 text-red-400"}`}
+            className={`text-xs px-2 py-1 ${pct >= 90 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500" : pct >= 75 ? "bg-amber-500/10 border-amber-500/30 text-amber-500" : "bg-rose-500/10 border-rose-500/30 text-rose-500"}`}
           >
-            {pct}%
+            {pct}% Attended
           </Badge>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="relative w-20 h-20 flex-shrink-0">
+        <div className="flex items-center gap-5">
+          <div className="relative w-24 h-24 flex-shrink-0 drop-shadow-md">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={24}
-                  outerRadius={36}
+                  innerRadius={28}
+                  outerRadius={42}
                   startAngle={90}
                   endAngle={-270}
                   dataKey="value"
@@ -572,16 +573,16 @@ function ShiftRing({ shift }: { shift: typeof shifts[number] }) {
                 </Pie>
               </PieChart>
             </ResponsiveContainer>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-xs font-black text-foreground">{pct}%</span>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-sm font-black text-foreground">{pct}%</span>
             </div>
           </div>
-          <div className="flex-1 space-y-2">
-            <div className="flex justify-between text-sm">
+          <div className="flex-1 space-y-2.5">
+            <div className="flex justify-between items-center text-sm bg-muted/30 px-2 py-1.5 rounded-md">
               <span className="text-muted-foreground">{t("present", "Present")}</span>
               <span className="font-semibold text-emerald-400">{shift.present}</span>
             </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between items-center text-sm bg-muted/30 px-2 py-1.5 rounded-md">
               <span className="text-muted-foreground">{t("absent", "Absent")}</span>
               <span className="font-semibold text-red-400">{absent}</span>
             </div>
@@ -593,14 +594,14 @@ function ShiftRing({ shift }: { shift: typeof shifts[number] }) {
         </div>
 
         <Button
-          variant="outline"
+          variant="secondary"
           size="sm"
-          className="w-full mt-4 border-border text-muted-foreground hover:text-foreground"
+          className="w-full mt-4 bg-muted hover:bg-muted/80 text-foreground"
         >
           {t("mark_bulk_absent", "Bulk Mark Absent")}
         </Button>
       </CardContent>
-    </Card>
+    </MagicCard>
   );
 }
 
@@ -700,7 +701,7 @@ export function AttendanceManagementModule() {
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/50 min-h-screen text-foreground w-full space-y-6">
       {/* ── Header ─────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#0a192f] p-6 rounded-xl text-foreground shadow-lg">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-card p-6 rounded-xl text-foreground shadow-lg border border-border">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-emerald-400">
             <CalendarCheck className="h-8 w-8 text-emerald-400" />
@@ -742,39 +743,39 @@ export function AttendanceManagementModule() {
           const pct = Math.round((kpi.value / kpi.total) * 100);
           return (
             <Card key={i} className="shadow-sm hover:shadow-md transition-shadow border-border bg-background">
-              <CardContent className="p-5">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-muted-foreground">{kpi.title}</span>
-                  <div className="relative">
-                    {kpi.pulse && (
-                      <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-400" />
-                      </span>
-                    )}
-                    {kpi.icon}
+                <CardContent className="p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-semibold text-muted-foreground">{kpi.title}</span>
+                    <div className="relative">
+                      {kpi.pulse && (
+                        <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-400" />
+                        </span>
+                      )}
+                        {kpi.icon}
+                    </div>
                   </div>
-                </div>
-                <div className={`text-4xl font-black ${kpi.textColor}`}>
-                  <NumberTicker value={kpi.value} />
-                </div>
-                <div className="text-xs text-muted-foreground mt-1">
-                  of {kpi.total} total workers
-                </div>
-                <div className="w-full h-1.5 bg-muted rounded-full mt-4 overflow-hidden">
-                  <div
+                  <div className={`text-4xl font-black ${kpi.textColor}`}>
+                    <NumberTicker value={kpi.value} />
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    of {kpi.total} total workers
+                  </div>
+                  <div className="w-full h-1.5 bg-muted rounded-full mt-4 overflow-hidden">
+                    <div
                     className={`h-full ${kpi.color} transition-all duration-1000 rounded-full`}
                     style={{ width: `${pct}%` }}
-                  />
-                </div>
-              </CardContent>
-            </Card>
+                    />
+                  </div>
+                </CardContent>
+              </Card>
           );
         })}
       </div>
 
       {/* ── Section 2: 7-Day Trend Chart ────────────────────── */}
-      <Card className="shadow-sm border-border">
+      <MagicCard className="shadow-lg border-border/50">
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-lg text-foreground flex items-center gap-2">
             <CalendarDays className="h-5 w-5 text-muted-foreground" />
@@ -787,12 +788,12 @@ export function AttendanceManagementModule() {
         <CardContent className="h-[280px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={attendanceTrend7d} barGap={4}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-              <YAxis axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
+              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} />
               <RechartsTooltip
-                contentStyle={{ background: "hsl(var(--background))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
-                labelStyle={{ color: "hsl(var(--foreground))" }}
+                contentStyle={{ backgroundColor: "var(--background)", border: "1px solid var(--border)", borderRadius: 8 }}
+                labelStyle={{ color: "var(--foreground)" }}
               />
               <Legend />
               <ReferenceLine
@@ -808,10 +809,12 @@ export function AttendanceManagementModule() {
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
-      </Card>
+      </MagicCard>
 
       {/* ── Section 3: Shift Breakdown ───────────────────────── */}
-      <div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+      >
         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
           <Clock className="h-4 w-4" />
           {t("shift_wise_breakdown", "Shift-wise Headcount Breakdown")}
@@ -821,24 +824,24 @@ export function AttendanceManagementModule() {
             <ShiftRing key={shift.id} shift={shift} />
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* ── Sections 4–6: Tabbed ─────────────────────────────── */}
       <Tabs defaultValue="workers" className="w-full">
-        <TabsList className="grid grid-cols-3 w-full max-w-lg mb-4 bg-muted border border-border">
-          <TabsTrigger value="workers" className="data-[state=active]:bg-background">
+        <TabsList className="grid grid-cols-3 w-full max-w-lg mb-4 bg-card/60 backdrop-blur-sm border border-border/50 rounded-full p-1 h-12 shadow-inner">
+          <TabsTrigger value="workers" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full data-[state=active]:shadow-md transition-all">
             <Users className="h-4 w-4 mr-2" />
             {t("worker_directory", "Worker Directory")}
           </TabsTrigger>
-          <TabsTrigger value="leave" className="data-[state=active]:bg-background">
+          <TabsTrigger value="leave" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full data-[state=active]:shadow-md transition-all">
             <CalendarCheck className="h-4 w-4 mr-2" />
             {t("leave_log", "Leave Log")}
           </TabsTrigger>
-          <TabsTrigger value="anomalies" className="data-[state=active]:bg-background">
+          <TabsTrigger value="anomalies" className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full data-[state=active]:shadow-md transition-all relative">
             <AlertOctagon className="h-4 w-4 mr-2" />
             {t("rfid_anomalies_tab", "RFID Anomalies")}
             {totalAnomalies > 0 && (
-              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-orange-400/20 text-orange-400 text-xs font-bold">
+              <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 rounded-full bg-orange-500 text-white text-[10px] font-bold shadow-sm animate-bounce">
                 {totalAnomalies}
               </span>
             )}
@@ -847,7 +850,7 @@ export function AttendanceManagementModule() {
 
         {/* ── Tab 4: Worker Directory ─────────────────────────── */}
         <TabsContent value="workers">
-          <Card className="shadow-sm border-border overflow-hidden">
+          <MagicCard className="shadow-lg border-border/50 overflow-hidden">
             <CardHeader className="pb-0">
               <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
                 <div className="relative flex-1">
@@ -900,7 +903,7 @@ export function AttendanceManagementModule() {
                           {/* Worker */}
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-full bg-[#0a192f] flex items-center justify-center text-xs font-bold text-emerald-400 flex-shrink-0">
+                              <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center text-xs font-bold text-emerald-500 flex-shrink-0">
                                 {worker.initials}
                               </div>
                               <div>
@@ -989,12 +992,12 @@ export function AttendanceManagementModule() {
                 )}
               </div>
             </CardContent>
-          </Card>
+          </MagicCard>
         </TabsContent>
 
         {/* ── Tab 5: Leave & Absence Log ──────────────────────── */}
         <TabsContent value="leave">
-          <Card className="shadow-sm border-border overflow-hidden">
+          <MagicCard className="shadow-lg border-border/50 overflow-hidden">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <FileText className="h-5 w-5 text-muted-foreground" />
@@ -1067,69 +1070,75 @@ export function AttendanceManagementModule() {
                 </table>
               </div>
             </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ── Tab 6: RFID Anomalies ───────────────────────────── */}
-        <TabsContent value="anomalies">
-          <div className="space-y-3">
-            {rfidAnomalies.map((anomaly) => {
-              const isResolved = resolvedAnomalies.has(anomaly.id);
-              const atc = anomalyTypeConfig[anomaly.type];
-              return (
-                <Card
-                  key={anomaly.id}
-                  className={`border shadow-sm transition-opacity ${isResolved ? "opacity-50 border-border" : "border-orange-400/20 bg-orange-400/5"}`}
-                >
-                  <CardContent className="p-4 flex items-start gap-4">
-                    <div className={`p-2.5 rounded-lg flex-shrink-0 ${isResolved ? "bg-muted" : "bg-orange-400/15"}`}>
-                      {atc.icon}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 flex-wrap mb-1">
-                        <span className="font-bold text-foreground">{anomaly.worker}</span>
-                        <Badge variant="outline" className="text-xs font-mono">{anomaly.workerId}</Badge>
-                        <Badge
-                          variant="outline"
-                          className={`text-xs ${isResolved ? "border-border text-muted-foreground" : "border-orange-400/30 text-orange-400"}`}
+                  </MagicCard>
+                </TabsContent>
+        
+                {/* ── Tab 6: RFID Anomalies ───────────────────────────── */}
+                <TabsContent value="anomalies">
+                  <div className="space-y-3">
+                    {rfidAnomalies.map((anomaly) => {
+                      const isResolved = resolvedAnomalies.has(anomaly.id);
+                      const atc = anomalyTypeConfig[anomaly.type];
+                      return (
+                        <motion.div
+                          key={anomaly.id}
+                          initial={{ opacity: 0, scale: 0.98 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.2 }}
                         >
-                          {atc.label}
-                        </Badge>
-                        {isResolved && (
-                          <Badge variant="outline" className="text-xs border-emerald-400/30 text-emerald-400">
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Resolved
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{anomaly.description}</p>
-                      {anomaly.time !== "—" && (
-                        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" /> {anomaly.time}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <ScanLine className="h-3 w-3" /> {anomaly.gate}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    {!isResolved && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="flex-shrink-0 border-orange-400/30 text-orange-400 hover:bg-orange-400/10"
-                        onClick={() =>
-                          setResolvedAnomalies((prev) => new Set([...prev, anomaly.id]))
-                        }
-                      >
-                        {t("resolve", "Resolve")}
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
+                          <MagicCard
+                            className={`border shadow-sm transition-all duration-300 ${isResolved ? "opacity-60 border-border bg-card/40" : "border-orange-500/30 bg-orange-500/5 hover:bg-orange-500/10 hover:shadow-[0_4px_20px_-4px_rgba(249,115,22,0.15)]"}`}
+                          >
+                            <CardContent className="p-4 flex items-start gap-4">
+                              <div className={`p-3 rounded-xl flex-shrink-0 border ${isResolved ? "bg-muted border-border" : "bg-orange-500/20 border-orange-500/30"}`}>
+                                {atc.icon}
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 flex-wrap mb-1">
+                                  <span className="font-bold text-foreground text-lg">{anomaly.worker}</span>
+                                  <Badge variant="outline" className="text-xs font-mono">{anomaly.workerId}</Badge>
+                                  <Badge
+                                    variant="outline"
+                                    className={`text-xs ${isResolved ? "border-border text-muted-foreground" : "border-orange-500/40 text-orange-400 bg-orange-500/10"}`}
+                                  >
+                                    {atc.label}
+                                  </Badge>
+                                  {isResolved && (
+                                    <Badge variant="outline" className="text-xs border-emerald-500/30 text-emerald-400 bg-emerald-500/10">
+                                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                                      Resolved
+                                    </Badge>
+                                  )}
+                                </div>
+                                <p className="text-sm text-muted-foreground/90">{anomaly.description}</p>
+                                {anomaly.time !== "—" && (
+                                  <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground font-medium">
+                                    <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                                      <Clock className="h-3 w-3 text-primary" /> {anomaly.time}
+                                    </span>
+                                    <span className="flex items-center gap-1.5 bg-background/50 px-2 py-1 rounded-md border border-border/50">
+                                      <ScanLine className="h-3 w-3 text-primary" /> {anomaly.gate}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              {!isResolved && (
+                                <Button
+                                  size="sm"
+                                  className="flex-shrink-0 bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-500/20 transition-all"
+                                  onClick={() =>
+                                    setResolvedAnomalies((prev) => new Set([...prev, anomaly.id]))
+                                  }
+                                >
+                                  <CheckCircle2 className="h-4 w-4 mr-1.5" />
+                                  {t("resolve", "Resolve")}
+                                </Button>
+                              )}
+                            </CardContent>
+                          </MagicCard>
+                        </motion.div>
+                      );
+                    })}
             {rfidAnomalies.every((a) => resolvedAnomalies.has(a.id)) && (
               <div className="text-center py-16 text-muted-foreground">
                 <ShieldCheck className="h-12 w-12 mx-auto mb-3 text-emerald-400 opacity-60" />

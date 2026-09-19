@@ -7,7 +7,10 @@ import { Bot, Send, User, Sparkles, Loader2, ArrowRight, BrainCircuit, Activity 
 import { RiskScoreGauge } from '@/components/shared/RiskScoreGauge'
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts'
 import { Badge } from '@/components/ui/badge'
-
+import { LoadingState } from './components/LoadingState'
+import { StreamingText } from './components/StreamingText'
+import { ToolChips } from './components/ToolChips'
+import { PromptBar } from './components/PromptBar'
 const SUGGESTIONS = [
   "Analyze Q3 safety trends across all opencast mines.",
   "What is the correlation between PM10 levels and recent incidents?",
@@ -36,7 +39,6 @@ export function AIAnalyticsModule() {
   } = useTranslation();
 
   const [messages, setMessages] = useState<{role: 'user'|'ai', content: string}[]>([])
-  const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -44,20 +46,19 @@ export function AIAnalyticsModule() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isTyping])
 
-  const handleSend = (text: string = input) => {
+  const handleSend = (text: string) => {
     if (!text.trim()) return
     
     setMessages(prev => [...prev, { role: 'user', content: text }])
-    setInput('')
     setIsTyping(true)
     
     setTimeout(() => {
       setMessages(prev => [...prev, { 
         role: 'ai', 
-        content: `**Analysis Result: Environmental Risk Correlation**\n\nBased on your query regarding "${text}", I have analyzed the telemetry and incident logs for **Umrer OCP**.\n\n- **Finding 1 (Telemetry):** There is a sustained 40% spike in PM10 dust anomalies (averaging 4.2 mg/m³) in Section 3 East during the afternoon shift.\n- **Finding 2 (Correlation):** Incident rate correlates heavily with these peaks, specifically coinciding with hauling operations while mist cannons were logged as offline.\n- **Regulatory Impact:** This breaches MoEF&CC Environmental Clearance Condition No. 12.\n\n**Recommendation:**\n1. Dispatch maintenance crew to repair Mist Cannon Unit B in Section 3 East.\n2. Sync automated water sprinklers with heavy haulage schedules.\n3. Prepare CAPA response for District Magistrate to prevent show-cause notice.` 
+        content: '' 
       }])
       setIsTyping(false)
-    }, 1500)
+    }, 3000) // Simulate long thinking to show off the loader
   }
 
   return (
@@ -161,12 +162,17 @@ export function AIAnalyticsModule() {
                   <div className="space-y-6">
                     {messages.map((msg, i) => (
                       <div key={i} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                        <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground'}`}>
+                        <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 mt-1 ${msg.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-background text-foreground shadow-sm border'}`}>
                           {msg.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                         </div>
-                        <div className={`max-w-[80%] rounded-2xl px-5 py-4 ${msg.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm' : 'bg-background border shadow-sm rounded-tl-sm'}`}>
+                        <div className={`rounded-2xl px-5 py-4 ${msg.role === 'user' ? 'bg-primary text-primary-foreground rounded-tr-sm max-w-[80%]' : 'bg-transparent w-full'}`}>
                           {msg.role === 'ai' ? (
-                            <div className="text-sm prose prose-sm max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                            <div className="flex flex-col gap-2 w-full animate-in fade-in duration-500">
+                              <ToolChips />
+                              <div className="mt-4">
+                                <StreamingText />
+                              </div>
+                            </div>
                           ) : (
                             <div className="text-sm">{msg.content}</div>
                           )}
@@ -175,12 +181,11 @@ export function AIAnalyticsModule() {
                     ))}
                     {isTyping && (
                       <div className="flex gap-4">
-                        <div className="h-8 w-8 rounded-full bg-background text-foreground flex items-center justify-center shrink-0">
+                        <div className="h-8 w-8 rounded-full bg-background text-foreground shadow-sm border flex items-center justify-center shrink-0 mt-1">
                           <Bot className="h-4 w-4" />
                         </div>
-                        <div className="bg-background border shadow-sm rounded-2xl rounded-tl-sm px-5 py-4 flex items-center gap-2">
-                          <Loader2 className="h-4 w-4 animate-spin text-primary" />
-                          <span className="text-sm text-muted-foreground font-medium">{t("analyzing_multidimensional_dat", "Analyzing multidimensional data...")}</span>
+                        <div className="px-2 py-4">
+                          <LoadingState variant="Drive" label="Analyzing environmental metrics..." />
                         </div>
                       </div>
                     )}
@@ -188,25 +193,15 @@ export function AIAnalyticsModule() {
                   </div>
                 )}
               </CardContent>
-              <div className="p-4 bg-background border-t shrink-0">
-                <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Input 
-                      value={input} 
-                      onChange={e => setInput(e.target.value)}
-                      placeholder="Ask about compliance, incidents, or trends..." 
-                      className="pr-12 py-6 rounded-xl border-border focus-visible:ring-primary shadow-sm"
-                    />
+              <div className="p-4 bg-background border-t shrink-0 flex justify-center">
+                <div className="w-full max-w-4xl">
+                  <PromptBar tall onSend={handleSend} demo />
+                  <div className="text-center mt-3">
+                    <span className="text-[10px] text-muted-foreground/70">{t(
+                      "minegpt_can_make_mistakes_cons",
+                      "MineGPT can make mistakes. Consider verifying critical compliance information."
+                    )}</span>
                   </div>
-                  <Button type="submit" size="icon" disabled={!input.trim() || isTyping} className="h-[50px] w-[50px] rounded-xl shrink-0">
-                    <Send className="h-5 w-5" />
-                  </Button>
-                </form>
-                <div className="text-center mt-2">
-                  <span className="text-[10px] text-muted-foreground/70">{t(
-                    "minegpt_can_make_mistakes_cons",
-                    "MineGPT can make mistakes. Consider verifying critical compliance information."
-                  )}</span>
                 </div>
               </div>
             </Card>
