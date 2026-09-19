@@ -1,39 +1,34 @@
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from 'react'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import { Card } from '@/components/ui/card'
-import { supabase } from '@/lib/supabase'
-import { useAuthStore } from '@/stores/auth-store'
+import { useState, useEffect } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import { Card } from '@/components/ui/card';
+import { supabase } from '@/lib/supabase';
 
-export function ComplianceCalendar() {
-  const {
-    t
-  } = useTranslation();
-
-  const [events, setEvents] = useState<any[]>([])
-  const user = useAuthStore(state => state.auth.user)
+export function ComplianceCalendar({ mineId }: { mineId?: string }) {
+  const { t } = useTranslation();
+  const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
+    if (!mineId) return;
+
     async function loadInstances() {
-      const mineId = user?.id || '00000000-0000-0000-0000-000000000004' // Fallback
-      
       const { data, error } = await supabase
         .from('compliance_instances')
         .select(`
           id, status, due_date,
           compliance_requirements(title, regulation_reference)
         `)
-        .eq('mine_id', mineId)
+        .eq('mine_id', mineId!);
       
       if (data) {
-        const formattedEvents = data.map((item: any) => {
-          let color = 'hsl(var(--muted))' // default gray
-          if (item.status === 'pending') color = 'hsl(var(--primary))' // blue
-          if (item.status === 'approved') color = 'hsl(var(--emerald-500))' // green
-          else if (item.status === 'breached') color = 'hsl(var(--destructive))' // red
-          else if (item.status === 'in_progress') color = 'hsl(var(--amber-500))' // orange
+        let formattedEvents = data.map((item: any) => {
+          let color = 'hsl(var(--muted))'; // default gray
+          if (item.status === 'pending') color = 'hsl(var(--primary))'; // yellow
+          if (item.status === 'approved') color = 'hsl(var(--chart-2))'; // green
+          else if (item.status === 'breached') color = 'hsl(var(--destructive))'; // red
+          else if (item.status === 'in_progress') color = 'hsl(var(--chart-4))'; // turquoise
 
           const req = Array.isArray(item.compliance_requirements) ? item.compliance_requirements[0] : item.compliance_requirements;
 
@@ -47,38 +42,69 @@ export function ComplianceCalendar() {
               status: item.status,
               reg: req?.regulation_reference
             }
-          }
-        })
-        setEvents(formattedEvents)
+          };
+        });
+
+        // Mock events if empty
+        if (formattedEvents.length === 0) {
+           formattedEvents = [
+             { id: 'mock1', title: 'Environmental Audit', start: '2026-09-12', allDay: true, color: 'hsl(var(--primary))' },
+             { id: 'mock2', title: 'Safety Gear Check', start: '2026-09-05', allDay: true, color: 'hsl(var(--chart-2))' },
+             { id: 'mock3', title: 'Equipment Licensing', start: '2026-09-20', allDay: true, color: 'hsl(var(--destructive))' }
+           ];
+        }
+        setEvents(formattedEvents);
       }
     }
-    loadInstances()
-  }, [user?.mineIds])
+    loadInstances();
+
+    // Supabase Realtime for calendar
+    const channel = supabase
+      .channel(`compliance_calendar:mine_id=eq.${mineId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'compliance_instances', filter: `mine_id=eq.${mineId}` },
+        () => {
+          loadInstances(); // Reload on any change
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [mineId]);
 
   return (
-    <Card className="flex flex-col shadow-sm">
-      <div className="p-4 border-b bg-muted/30 rounded-t-lg">
-        <h2 className="text-lg font-semibold text-foreground">{t("compliance_calendar", "Compliance Calendar")}</h2>
-      </div>
-      <div className="p-4 flex-1">
-        <div className="h-[400px]">
-          <FullCalendar
-            plugins={[dayGridPlugin, timeGridPlugin]}
-            initialView="dayGridMonth"
-            initialDate="2026-09-01" // Set to seed data month for demo
-            headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth,dayGridWeek'
-            }}
-            events={events}
-            height="100%"
-            eventClick={(info) => {
-              // Optionally navigate to details
-              console.log('Clicked', info.event.id)
-            }}
-          />
+    <Card className="flex flex-col shadow-sm card-neon-top bg-card h-full">
+      <div className="p-4 border-b bg-muted/30 flex flex-col xl:flex-row justify-between xl:items-center gap-3 shrink-0">
+        <h2 className="text-lg font-semibold text-foreground whitespace-nowrap">{t("compliance_calendar", "Compliance Calendar")}</h2>
+        
+        {/* Status Legend */}
+        <div className="flex flex-wrap gap-x-3 gap-y-2 text-[10px] uppercase font-semibold text-muted-foreground">
+          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-primary"></div> PENDING</div>
+          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-chart-4"></div> IN PROGRESS</div>
+          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-chart-2"></div> APPROVED</div>
+          <div className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-destructive"></div> BREACHED</div>
         </div>
+      </div>
+      <div className="p-4">
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin]}
+          initialView="dayGridMonth"
+          initialDate="2026-09-01" // Set to seed data month for demo
+          fixedWeekCount={false}
+          headerToolbar={{
+            left: 'prev,next',
+            center: 'title',
+            right: 'today'
+          }}
+          events={events}
+          height={380}
+          eventClick={(info) => {
+            window.location.href = `/compliance/${info.event.id}`;
+          }}
+        />
       </div>
     </Card>
   );

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import { NumberTicker } from "./number-ticker"
 
 interface AnimatedCircularProgressBarProps {
   max?: number
@@ -101,7 +102,7 @@ export function AnimatedCircularProgressBar({
         data-current-value={currentPercent}
         className="animate-in fade-in absolute inset-0 m-auto size-fit delay-(--delay) duration-(--transition-length) ease-linear"
       >
-        {currentPercent}
+        <NumberTicker value={currentPercent} />%
       </span>
     </div>
   )

@@ -91,32 +91,32 @@ export default function AttendanceScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-binance-canvas-dark px-4 py-6" keyboardShouldPersistTaps="handled">
-      <Text className="text-binance-on-dark text-3xl font-bold mb-6">Attendance Scanner</Text>
+    <ScrollView className="flex-1 bg-comet-canvas px-4 py-6" keyboardShouldPersistTaps="handled">
+      <Text className="text-comet-fg text-3xl font-bold mb-6">Attendance Scanner</Text>
       
       <View className="mb-6">
-        <Text className="text-binance-on-dark font-bold mb-2">Current Shift</Text>
+        <Text className="text-comet-fg font-bold mb-2">Current Shift</Text>
         <View className="flex-row gap-2">
           {Object.values(ShiftEnum).map(s => (
             <TouchableOpacity 
               key={s} 
-              className={`flex-1 py-2 rounded items-center ${shift === s ? 'bg-binance-primary' : 'bg-binance-surface'}`}
+              className={`flex-1 py-2 rounded items-center ${shift === s ? 'bg-comet-orange' : 'bg-comet-card'}`}
               onPress={() => setShift(s as ShiftEnum)}
             >
-              <Text className={shift === s ? 'text-black font-bold capitalize' : 'text-binance-on-dark capitalize'}>{s}</Text>
+              <Text className={shift === s ? 'text-black font-bold capitalize' : 'text-comet-fg capitalize'}>{s}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
 
-      <Card className="mb-6 border border-binance-border-strong">
-        <Text className="text-binance-on-dark font-bold text-xl mb-4">Manual Entry / Scanner</Text>
-        <Text className="text-binance-muted-strong text-xs mb-4">
+      <Card className="mb-6 border border-comet-border">
+        <Text className="text-comet-fg font-bold text-xl mb-4">Manual Entry / Scanner</Text>
+        <Text className="text-comet-fg-muted text-xs mb-4">
           In a real device, this would be a headless barcode scanner loop.
         </Text>
         
         <TextInput
-          className="bg-binance-surface text-binance-on-dark p-4 rounded text-lg text-center font-bold tracking-widest"
+          className="bg-comet-card text-comet-fg p-4 rounded text-lg text-center font-bold tracking-widest"
           placeholder="Enter ID Card Number"
           placeholderTextColor="#76808F"
           value={cardNumber}
@@ -128,7 +128,7 @@ export default function AttendanceScreen() {
         <Button 
           title="Process Scan" 
           onPress={() => handleScan(cardNumber)} 
-          className="mt-4 bg-binance-primary" 
+          className="mt-4 bg-comet-orange" 
         />
       </Card>
 

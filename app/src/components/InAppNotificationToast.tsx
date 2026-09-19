@@ -66,10 +66,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   toastCritical: {
-    backgroundColor: '#dc2626',
+    backgroundColor: '#ef4444',
   },
   toastWarning: {
-    backgroundColor: '#ea580c',
+    backgroundColor: '#f59e0b',
   },
   iconContainer: {
     marginRight: 12,

@@ -14,19 +14,19 @@ export function StatusBadge({ status }: StatusBadgeProps) {
   const getStatusConfig = () => {
     switch (status) {
       case 'pending_sync':
-        return { label: 'Pending Sync', icon: '🔄', bg: 'bg-yellow-500/20', text: 'text-yellow-500' };
+        return { label: 'Pending Sync', icon: '🔄', bg: 'bg-comet-pending/20', text: 'text-comet-pending' };
       case 'synced':
-        return { label: 'Synced', icon: '✅', bg: 'bg-binance-trading-up/20', text: 'text-binance-trading-up' };
+        return { label: 'Synced', icon: '✅', bg: 'bg-comet-up/20', text: 'text-comet-up' };
       case 'error':
-        return { label: 'Error', icon: '❌', bg: 'bg-binance-trading-down/20', text: 'text-binance-trading-down' };
+        return { label: 'Error', icon: '❌', bg: 'bg-comet-down/20', text: 'text-comet-down' };
       case 'draft':
-        return { label: 'Draft', icon: '📝', bg: 'bg-binance-muted/20', text: 'text-binance-muted' };
+        return { label: 'Draft', icon: '📝', bg: 'bg-comet-muted', text: 'text-comet-fg-muted' };
       case 'in_progress':
-        return { label: 'In Progress', icon: '🔵', bg: 'bg-binance-info/20', text: 'text-binance-info' };
+        return { label: 'In Progress', icon: '🔵', bg: 'bg-comet-orange/20', text: 'text-comet-orange' };
       case 'submitted':
-        return { label: 'Submitted', icon: '📤', bg: 'bg-binance-muted-strong/20', text: 'text-binance-muted-strong' };
+        return { label: 'Submitted', icon: '📤', bg: 'bg-comet-muted', text: 'text-comet-fg-muted' };
       case 'reviewed':
-        return { label: 'Reviewed', icon: '✅', bg: 'bg-binance-trading-up/20', text: 'text-binance-trading-up' };
+        return { label: 'Reviewed', icon: '✅', bg: 'bg-comet-up/20', text: 'text-comet-up' };
       default:
         return { label: status, icon: '', bg: 'bg-gray-500/20', text: 'text-gray-500' };
     }

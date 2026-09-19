@@ -2,6 +2,7 @@
 
 import { type CSSProperties, useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
+import { useDndContext } from "@dnd-kit/core";
 import { CSS } from "@dnd-kit/utilities";
 import { cn } from "@/lib/utils";
 import { findSwatch, swatchCssColor } from "../lib/palette";
@@ -97,14 +98,19 @@ export function Column({
       }
     : undefined;
 
+  const { over } = useDndContext();
+  const isOverThisColumn = over?.id === column.id || over?.data?.current?.columnId === column.id;
+  const isItemHovering = isOverThisColumn && !isDragging; // Not dragging the column itself, but dragging an item over it
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       data-dragging={isDragging || undefined}
       className={cn(
-        "flex h-full min-h-0 max-h-full w-80 shrink-0 flex-col rounded-md border-l-4 border-y border-r border-border bg-card/40",
-        isDragging && "opacity-60",
+        "flex h-full min-h-0 max-h-full w-[320px] min-w-[320px] shrink-0 flex-col rounded-xl border-l-[3px] border-y border-r border-border/80 bg-card/40 backdrop-blur-md shadow-sm transition-all duration-300",
+        isDragging ? "opacity-60 ring-2 ring-primary/20" : "hover:shadow-md",
+        isItemHovering && "bg-primary/5 ring-2 ring-inset ring-primary/40 shadow-[0_0_15px_rgba(var(--primary),0.1)] scale-[1.01]"
       )}
     >
       <ColumnHeader

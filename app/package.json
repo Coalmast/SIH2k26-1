@@ -36,6 +36,8 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@expo-google-fonts/geist": "^0.4.2",
+    "@expo-google-fonts/geist-mono": "^0.4.3",
     "@expo/vector-icons": "^15.0.3",
     "@gorhom/bottom-sheet": "^5.2.5",
     "@notifee/react-native": "^9.1.8",

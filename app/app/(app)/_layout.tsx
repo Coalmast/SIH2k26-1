@@ -8,20 +8,30 @@ import { useRealtimeAlerts } from '../../src/hooks/useRealtimeAlerts';
 import { useNotificationTap } from '../../src/hooks/useNotificationTap';
 import NotificationHeaderIcon from '../../src/components/NotificationHeaderIcon';
 
+import { useColorScheme } from 'nativewind';
+
 export default function AppLayout() {
   useRealtimeAlerts();
   useNotificationTap();
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  
+  const headerBg = '#0a0908';
+  const headerBorder = '#0a0908';
+  
+  const tabBarBg = isDark ? '#0a0908' : '#18181b';
+  const tabBarBorder = isDark ? '#1e1a17' : '#27272a';
   
   return (
     <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
           headerShown: true,
-          headerStyle: { backgroundColor: '#0b0e11', borderBottomWidth: 1, borderBottomColor: '#2b3139' },
-          headerTintColor: '#fcd535',
-          tabBarStyle: { backgroundColor: '#1e2329', borderTopWidth: 1, borderTopColor: '#2b3139' },
-          tabBarActiveTintColor: '#fcd535',
-          tabBarInactiveTintColor: '#707a8a',
+          headerStyle: { backgroundColor: headerBg, borderBottomWidth: 1, borderBottomColor: headerBorder },
+          headerTintColor: '#ffffff',
+          tabBarStyle: { backgroundColor: tabBarBg, borderTopWidth: 1, borderTopColor: tabBarBorder },
+          tabBarActiveTintColor: '#f97316',
+          tabBarInactiveTintColor: isDark ? '#a8a29e' : '#78716c',
         }}
       >
         <Tabs.Screen
@@ -36,7 +46,7 @@ export default function AppLayout() {
           name="inspect"
           options={{
             title: 'Inspections',
-            headerShown: false,
+            headerRight: () => <NotificationHeaderIcon />,
             tabBarIcon: ({ color }) => <ClipboardList size={24} color={color} />,
           }}
         />
@@ -44,7 +54,7 @@ export default function AppLayout() {
           name="report"
           options={{
             title: 'Reports',
-            headerShown: false, // The stack layout handles the headers
+            headerRight: () => <NotificationHeaderIcon />,
             tabBarIcon: ({ color }) => <AlertTriangle size={24} color={color} />,
           }}
         />
@@ -52,7 +62,7 @@ export default function AppLayout() {
           name="profile"
           options={{
             title: 'Profile',
-            headerShown: false, // The stack layout handles the headers
+            headerRight: () => <NotificationHeaderIcon />,
             tabBarIcon: ({ color }) => <User size={24} color={color} />,
           }}
         />

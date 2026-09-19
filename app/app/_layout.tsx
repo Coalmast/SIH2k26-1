@@ -9,6 +9,10 @@ import { bootstrapNotifications } from '../src/lib/notifications';
 import { useConnectivity } from '../src/hooks/useConnectivity';
 import { performSync } from '../src/sync/syncEngine';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useColorScheme } from 'nativewind';
+import { useFonts } from 'expo-font';
+import { Geist_400Regular, Geist_600SemiBold, Geist_700Bold } from '@expo-google-fonts/geist';
+import { GeistMono_400Regular, GeistMono_500Medium, GeistMono_600SemiBold, GeistMono_700Bold } from '@expo-google-fonts/geist-mono';
 import '../global.css';
 
 const queryClient = new QueryClient();
@@ -16,6 +20,17 @@ const queryClient = new QueryClient();
 export default function RootLayout() {
   const { isOnline } = useConnectivity();
   const appState = useRef(AppState.currentState);
+  const { colorScheme } = useColorScheme();
+  
+  const [fontsLoaded] = useFonts({
+    Geist_400Regular,
+    Geist_600SemiBold,
+    Geist_700Bold,
+    GeistMono_400Regular,
+    GeistMono_500Medium,
+    GeistMono_600SemiBold,
+    GeistMono_700Bold,
+  });
   
   useEffect(() => {
     bootstrapNotifications();
@@ -45,12 +60,20 @@ export default function RootLayout() {
     };
   }, [isOnline]);
 
+  if (!fontsLoaded) {
+    return null; // Or a splash screen
+  }
+
+  // Canvas background colors from COMET Design.md
+  const isDark = colorScheme === 'dark';
+  const canvasBackgroundColor = isDark ? '#0f0d0c' : '#f2ede8';
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <StatusBar style="light" />
+        <StatusBar style={isDark ? "light" : "dark"} />
         <OfflineBanner />
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0b0e11' } }}>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: canvasBackgroundColor } }}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
         </Stack>

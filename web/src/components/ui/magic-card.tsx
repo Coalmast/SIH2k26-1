@@ -183,7 +183,7 @@ export function MagicCard(props: MagicCardProps) {
           style={{
             background: useMotionTemplate`
               radial-gradient(${gradientSize}px circle at ${mouseX}px ${mouseY}px,
-                ${gradientColor},
+                ${gradientColor === "#262626" ? (isDarkTheme ? "#262626" : "#e5e7eb") : gradientColor},
                 transparent 100%
               )
             `,
