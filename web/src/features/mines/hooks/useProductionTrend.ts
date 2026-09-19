@@ -10,7 +10,7 @@ export function useProductionTrend(mineId?: string) {
 
       const { data: productionData } = await supabase
         .from('production_readings')
-        .select('created_at, coal_extracted')
+        .select('created_at, quantity_tonnes')
         .eq('mine_id', mineId)
         .order('created_at', { ascending: true })
         .limit(180); // Roughly 6 months of daily data
@@ -33,7 +33,7 @@ export function useProductionTrend(mineId?: string) {
           const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
           finalData.push({
             created_at: d.toISOString(),
-            coal_extracted: 40000 + Math.random() * 10000
+            quantity_tonnes: 40000 + Math.random() * 10000
           });
         }
       }

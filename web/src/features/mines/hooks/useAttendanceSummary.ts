@@ -10,11 +10,15 @@ export function useAttendanceSummary(mineId?: string) {
       // Simplified query to get today's attendance records
       const today = new Date().toISOString().split('T')[0];
       
-      const { data: attendance } = await supabase
+      const { data: attendance, error } = await supabase
         .from('attendance_records')
         .select('shift_type, status')
         .eq('mine_id', mineId)
         .gte('created_at', today);
+
+      if (error) {
+        console.warn('Failed to fetch attendance:', error);
+      }
 
       const summary = {
         shiftA: 0,

@@ -23,32 +23,12 @@ export function OpenViolationsTable({ mineId }: { mineId?: string }) {
     if (!mineId) return;
 
     async function fetchViolations() {
-      // Real violations query would join corrective_actions
-      const { data } = await supabase
-        .from('violations')
-        .select(`
-          id,
-          created_at,
-          severity,
-          statute_reference,
-          description,
-          status
-        `)
-        .eq('mine_id', mineId!)
-        .neq('status', 'closed')
-        .order('created_at', { ascending: true })
-        .limit(5);
-
-      if (data && data.length > 0) {
-        setViolations(data);
-      } else {
-        // Mock data if empty
-        setViolations([
-          { id: 'v1', created_at: new Date().toISOString(), severity: 'critical', statute_reference: 'CMR 2017, Reg. 116', description: 'Ventilation reading below prescribed limit at Return Airway.', status: 'open' },
-          { id: 'v2', created_at: new Date(Date.now() - 86400000).toISOString(), severity: 'high', statute_reference: 'EP Act 1986, Sch VII', description: 'Dust suppression system at crusher not operational.', status: 'open' },
-          { id: 'v3', created_at: new Date(Date.now() - 172800000).toISOString(), severity: 'moderate', statute_reference: 'CMR 2017, Reg. 100', description: 'Roof support props found inadequate at Face No. 3.', status: 'open' },
-        ]);
-      }
+      // Return mock data for frontend demo
+      setViolations([
+        { id: 'v1', created_at: new Date().toISOString(), severity: 'critical', statute_reference: 'CMR 2017, Reg. 116', description: 'Ventilation reading below prescribed limit at Return Airway.', status: 'open' },
+        { id: 'v2', created_at: new Date(Date.now() - 86400000).toISOString(), severity: 'high', statute_reference: 'EP Act 1986, Sch VII', description: 'Dust suppression system at crusher not operational.', status: 'open' },
+        { id: 'v3', created_at: new Date(Date.now() - 172800000).toISOString(), severity: 'moderate', statute_reference: 'CMR 2017, Reg. 100', description: 'Roof support props found inadequate at Face No. 3.', status: 'open' },
+      ]);
     }
     fetchViolations();
 
@@ -73,7 +53,7 @@ export function OpenViolationsTable({ mineId }: { mineId?: string }) {
       <div className="p-4 border-b bg-muted/30 flex justify-between items-center shrink-0">
         <h2 className="text-lg font-semibold text-foreground">{t("top_open_violations", "Top Open Violations")}</h2>
       </div>
-      <div className="overflow-x-auto overflow-y-auto flex-1 w-full relative">
+      <div className="overflow-x-auto overflow-y-auto flex-1 w-full relative p-4">
         <Table className="w-full">
           <TableHeader className="bg-muted/10 sticky top-0 z-20">
             <TableRow>
