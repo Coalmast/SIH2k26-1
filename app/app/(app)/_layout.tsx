@@ -72,6 +72,12 @@ export default function AppLayout() {
             href: null, // Hidden from tabs
           }}
         />
+        <Tabs.Screen
+          name="mark-attendance"
+          options={{
+            href: null, // Hidden from tabs
+          }}
+        />
       </Tabs>
       <CriticalAlarmModal />
       <InAppNotificationToast />

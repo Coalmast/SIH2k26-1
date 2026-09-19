@@ -52,6 +52,9 @@ export default function HomeScreen() {
           <Button variant="outline" onPress={() => router.push('/(app)/inspect')} className="w-full justify-start py-4">
             <Text className="text-comet-fg font-semibold">🔍 New Inspection</Text>
           </Button>
+          <Button variant="outline" onPress={() => router.push('/(app)/mark-attendance')} className="w-full justify-start py-4">
+            <Text className="text-comet-fg font-semibold">📋 Mark Attendance</Text>
+          </Button>
         </View>
       </View>
     </ScrollView>

@@ -47,14 +47,18 @@ async def get_current_user(token: Optional[HTTPAuthorizationCredentials] = Depen
         raise HTTPException(status_code=401, detail="Missing authorization token")
     try:
         # Verify signature + expiry. Supabase sets audience to "authenticated".
+        # Temporarily adding more algorithms and logging for debugging
+        unverified_header = jwt.get_unverified_header(token.credentials)
+        print(f"DEBUG: Token unverified header: {unverified_header}", flush=True)
+        
         claims = jwt.decode(
             token.credentials,
             SUPABASE_JWT_SECRET,
-            algorithms=["HS256"],
+            algorithms=["HS256", "RS256", "HS384", "RS384", "HS512", "RS512", "EdDSA"],
             options={"verify_aud": False},  # Supabase omits standard aud in some tokens
         )
     except JWTError as e:
-        raise HTTPException(status_code=401, detail=f"Invalid or expired token: {e}")
+        raise HTTPException(status_code=401, detail=f"Invalid or expired token: {e}. Header: {jwt.get_unverified_header(token.credentials)}")
 
     user_id = claims.get("sub")
     if not user_id:

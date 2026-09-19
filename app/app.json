@@ -70,6 +70,7 @@
         "expo-build-properties",
         {
           "android": {
+            "usesCleartextTraffic": true,
             "ndkVersion": "27.1.12297006",
             "extraMavenRepos": [
               "../../node_modules/@notifee/react-native/android/libs"
