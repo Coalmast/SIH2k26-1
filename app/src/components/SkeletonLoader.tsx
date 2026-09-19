@@ -24,14 +24,14 @@ export function SkeletonLoader() {
 
   return (
     <View className="gap-4 w-full p-4">
-      <Animated.View className="h-6 bg-[#2b3139] rounded-md w-3/4" style={animatedStyle} />
-      <Animated.View className="h-4 bg-[#2b3139] rounded-md w-full" style={animatedStyle} />
-      <Animated.View className="h-4 bg-[#2b3139] rounded-md w-5/6" style={animatedStyle} />
-      <Animated.View className="h-4 bg-[#2b3139] rounded-md w-4/6" style={animatedStyle} />
+      <Animated.View className="h-6 bg-comet-muted rounded-md w-3/4" style={animatedStyle} />
+      <Animated.View className="h-4 bg-comet-muted rounded-md w-full" style={animatedStyle} />
+      <Animated.View className="h-4 bg-comet-muted rounded-md w-5/6" style={animatedStyle} />
+      <Animated.View className="h-4 bg-comet-muted rounded-md w-4/6" style={animatedStyle} />
       
       <View className="mt-6 gap-4">
-        <Animated.View className="h-6 bg-[#2b3139] rounded-md w-1/2" style={animatedStyle} />
-        <Animated.View className="h-32 bg-[#2b3139] rounded-xl w-full" style={animatedStyle} />
+        <Animated.View className="h-6 bg-comet-muted rounded-md w-1/2" style={animatedStyle} />
+        <Animated.View className="h-32 bg-comet-card rounded-lg w-full" style={animatedStyle} />
       </View>
     </View>
   );

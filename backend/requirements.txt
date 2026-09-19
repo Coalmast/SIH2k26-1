@@ -15,3 +15,6 @@ google-auth
 python-jose[cryptography]
 python-multipart
 google-genai
+google-adk
+python-dotenv
+greenlet

@@ -66,10 +66,10 @@ export class IncidentReport extends Model {
   @field('reported_by') reportedBy!: string;
   @field('description') description!: string;
   @readonly @date('created_at') createdAt!: number;
-  @field('sync_status') syncStatus!: string;
+  @field('sync_status') syncStatus?: string;
   
-  @field('incident_type') incidentType!: string;
-  @field('severity') severity!: string;
+  @field('incident_type') incidentType?: string;
+  @field('severity') severity?: string;
   @field('ai_suggested_severity') aiSuggestedSeverity?: string;
   @field('ai_suggested_category') aiSuggestedCategory?: string;
   @field('geo_stamp') geoStamp?: string;
@@ -77,9 +77,9 @@ export class IncidentReport extends Model {
   @field('shift') shift?: string;
   @field('persons_involved') personsInvolved?: string;
   @field('immediate_actions_taken') immediateActionsTaken?: string;
-  @field('is_linked_to_accident_register') isLinkedToAccidentRegister!: boolean;
+  @field('is_linked_to_accident_register') isLinkedToAccidentRegister?: boolean;
   @field('corrective_action_id') correctiveActionId?: string;
-  @date('reported_at') reportedAt!: number;
+  @date('reported_at') reportedAt?: number;
   @field('remote_id') remoteId?: string;
   @field('local_photo_ids') localPhotoIds?: string;
 }
@@ -88,17 +88,17 @@ export class AttendanceRecord extends Model {
   static table = 'attendance_records';
 
   @field('mine_id') mineId!: string;
-  @field('worker_id_card_number') workerIdCardNumber!: string;
+  @field('worker_id_card_number') workerIdCardNumber?: string;
   @field('worker_name') workerName?: string;
-  @field('worker_type') workerType!: string;
+  @field('worker_type') workerType?: string;
   @field('contractor_id') contractorId?: string;
-  @field('shift') shift!: string;
-  @date('check_in_at') checkInAt!: number;
-  @field('geo_stamp') geoStamp!: string;
-  @field('location_mismatch') locationMismatch!: boolean;
-  @field('training_expired') trainingExpired!: boolean;
-  @field('flagged_for_review') flaggedForReview!: boolean;
-  @field('sync_status') syncStatus!: string;
+  @field('shift') shift?: string;
+  @date('check_in_at') checkInAt?: number;
+  @field('geo_stamp') geoStamp?: string;
+  @field('location_mismatch') locationMismatch?: boolean;
+  @field('training_expired') trainingExpired?: boolean;
+  @field('flagged_for_review') flaggedForReview?: boolean;
+  @field('sync_status') syncStatus?: string;
   @readonly @date('created_at') createdAt!: number;
 }
 
@@ -106,21 +106,21 @@ export class ShiftReport extends Model {
   static table = 'shift_reports';
 
   @field('mine_id') mineId!: string;
-  @field('zone') zone!: string;
-  @field('shift') shift!: string;
-  @date('report_date') reportDate!: number;
-  @field('workforce_count') workforceCount!: number;
-  @field('regular_count') regularCount!: number;
-  @field('contract_count') contractCount!: number;
-  @field('gas_readings') gasReadings!: string;
+  @field('zone') zone?: string;
+  @field('shift') shift?: string;
+  @date('report_date') reportDate?: number;
+  @field('workforce_count') workforceCount?: number;
+  @field('regular_count') regularCount?: number;
+  @field('contract_count') contractCount?: number;
+  @field('gas_readings') gasReadings?: string;
   @field('shift_observations') shiftObservations?: string;
   @field('equipment_status') equipmentStatus?: string;
   @field('production_coal_tonnes') productionCoalTonnes?: number;
   @field('production_ob_cum') productionObCum?: number;
   @field('handover_notes') handoverNotes?: string;
-  @field('ch4_alert_fired') ch4AlertFired!: boolean;
-  @field('geo_stamp') geoStamp!: string;
-  @field('sync_status') syncStatus!: string;
+  @field('ch4_alert_fired') ch4AlertFired?: boolean;
+  @field('geo_stamp') geoStamp?: string;
+  @field('sync_status') syncStatus?: string;
   @field('remote_id') remoteId?: string;
   @readonly @date('created_at') createdAt!: number;
 }
@@ -182,3 +182,5 @@ export class MediaAttachment extends Model {
   @field('captured_by') capturedBy!: string;
   @readonly @date('created_at') createdAt!: number;
 }
+
+export * from './Notification';

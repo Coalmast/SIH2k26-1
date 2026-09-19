@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -24,6 +25,10 @@ export function KanbanNoteView({
   data: KanbanNoteData;
   ctx: KanbanRenderContext;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const swatch = findSwatch(DEFAULT_PALETTE, data.color ?? NOTE_FALLBACK_COLOR_ID);
   const accentColor = swatchCssColor(swatch);
   return (
@@ -55,6 +60,10 @@ function KanbanNoteEditForm({
   onSave: (next: KanbanNoteData) => void;
   onCancel: () => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const [title, setTitle] = useState(data.title);
   const [body, setBody] = useState(data.body ?? "");
   const swatch = findSwatch(DEFAULT_PALETTE, data.color ?? NOTE_FALLBACK_COLOR_ID);
@@ -89,12 +98,8 @@ function KanbanNoteEditForm({
         className="resize-none text-xs"
       />
       <div className="flex justify-end gap-1">
-        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" size="sm" disabled={!title.trim()}>
-          Save
-        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>{t("cancel", "Cancel")}</Button>
+        <Button type="submit" size="sm" disabled={!title.trim()}>{t("save", "Save")}</Button>
       </div>
     </form>
   );

@@ -19,6 +19,7 @@
   },
   "iconLibrary": "lucide",
   "registries": {
-    "@ilinxa": "https://ui.ilinxa.com/r/{name}.json"
+    "@ilinxa": "https://ui.ilinxa.com/r/{name}.json",
+    "@pdfcn": "https://pdfcn.dev/r/{name}.json"
   }
 }

@@ -100,46 +100,46 @@ export default function ShiftReportScreen() {
   };
 
   return (
-    <ScrollView className="flex-1 bg-binance-canvas-dark px-4 py-4" contentContainerStyle={{ paddingBottom: 40 }}>
+    <ScrollView className="flex-1 bg-comet-canvas px-4 py-4" contentContainerStyle={{ paddingBottom: 40 }}>
       {/* Zone & Shift */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Zone</Text>
+        <Text className="text-comet-fg font-bold mb-2">Zone</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {ZONES.map(z => (
             <TouchableOpacity 
               key={z} 
-              className={`px-4 py-2 rounded-full mr-2 ${zone === z ? 'bg-binance-primary' : 'bg-binance-surface'}`}
+              className={`px-4 py-2 rounded-full mr-2 ${zone === z ? 'bg-comet-orange' : 'bg-comet-card'}`}
               onPress={() => setZone(z)}
             >
-              <Text className={zone === z ? 'text-black font-bold' : 'text-binance-on-dark'}>{z}</Text>
+              <Text className={zone === z ? 'text-black font-bold' : 'text-comet-fg'}>{z}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Shift</Text>
+        <Text className="text-comet-fg font-bold mb-2">Shift</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row">
           {Object.values(ShiftEnum).map(s => (
             <TouchableOpacity 
               key={s} 
-              className={`px-4 py-2 rounded-full mr-2 ${shift === s ? 'bg-binance-primary' : 'bg-binance-surface'}`}
+              className={`px-4 py-2 rounded-full mr-2 ${shift === s ? 'bg-comet-orange' : 'bg-comet-card'}`}
               onPress={() => setShift(s as ShiftEnum)}
             >
-              <Text className={shift === s ? 'text-black font-bold' : 'text-binance-on-dark capitalize'}>{s}</Text>
+              <Text className={shift === s ? 'text-black font-bold' : 'text-comet-fg capitalize'}>{s}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
       {/* Headcount */}
-      <Card className="mb-4 border border-binance-border-strong p-3">
-        <Text className="text-binance-on-dark font-bold mb-3">Headcount</Text>
+      <Card className="mb-4 border border-comet-border p-3">
+        <Text className="text-comet-fg font-bold mb-3">Headcount</Text>
         <View className="flex-row gap-4">
           <View className="flex-1">
-            <Text className="text-binance-muted-strong text-xs mb-1">Regular</Text>
+            <Text className="text-comet-fg-muted text-xs mb-1">Regular</Text>
             <TextInput
-              className="bg-binance-surface text-binance-on-dark p-2 rounded"
+              className="bg-comet-card text-comet-fg p-2 rounded"
               placeholder="0"
               placeholderTextColor="#76808F"
               keyboardType="numeric"
@@ -148,9 +148,9 @@ export default function ShiftReportScreen() {
             />
           </View>
           <View className="flex-1">
-            <Text className="text-binance-muted-strong text-xs mb-1">Contract</Text>
+            <Text className="text-comet-fg-muted text-xs mb-1">Contract</Text>
             <TextInput
-              className="bg-binance-surface text-binance-on-dark p-2 rounded"
+              className="bg-comet-card text-comet-fg p-2 rounded"
               placeholder="0"
               placeholderTextColor="#76808F"
               keyboardType="numeric"
@@ -162,13 +162,13 @@ export default function ShiftReportScreen() {
       </Card>
 
       {/* Production */}
-      <Card className="mb-4 border border-binance-border-strong p-3">
-        <Text className="text-binance-on-dark font-bold mb-3">Production Estimates</Text>
+      <Card className="mb-4 border border-comet-border p-3">
+        <Text className="text-comet-fg font-bold mb-3">Production Estimates</Text>
         <View className="flex-row gap-4">
           <View className="flex-1">
-            <Text className="text-binance-muted-strong text-xs mb-1">Coal (Tonnes)</Text>
+            <Text className="text-comet-fg-muted text-xs mb-1">Coal (Tonnes)</Text>
             <TextInput
-              className="bg-binance-surface text-binance-on-dark p-2 rounded"
+              className="bg-comet-card text-comet-fg p-2 rounded"
               placeholder="0.0"
               placeholderTextColor="#76808F"
               keyboardType="decimal-pad"
@@ -177,9 +177,9 @@ export default function ShiftReportScreen() {
             />
           </View>
           <View className="flex-1">
-            <Text className="text-binance-muted-strong text-xs mb-1">OB (Cu.m)</Text>
+            <Text className="text-comet-fg-muted text-xs mb-1">OB (Cu.m)</Text>
             <TextInput
-              className="bg-binance-surface text-binance-on-dark p-2 rounded"
+              className="bg-comet-card text-comet-fg p-2 rounded"
               placeholder="0.0"
               placeholderTextColor="#76808F"
               keyboardType="decimal-pad"
@@ -191,8 +191,8 @@ export default function ShiftReportScreen() {
       </Card>
 
       {/* Gas Readings */}
-      <Card className="mb-4 border border-binance-border-strong p-3">
-        <Text className="text-binance-on-dark font-bold mb-3">Gas Readings</Text>
+      <Card className="mb-4 border border-comet-border p-3">
+        <Text className="text-comet-fg font-bold mb-3">Gas Readings</Text>
         {ch4AlertFired && (
           <View className="bg-red-500/20 p-2 rounded mb-3 flex-row items-center">
             <AlertTriangle color="#ef4444" size={16} className="mr-2" />
@@ -201,9 +201,9 @@ export default function ShiftReportScreen() {
         )}
         
         {gasReadings.map((reading, idx) => (
-          <View key={idx} className="mb-4 border-b border-binance-border-strong pb-3 last:border-0 last:pb-0">
+          <View key={idx} className="mb-4 border-b border-comet-border pb-3 last:border-0 last:pb-0">
             <TextInput
-              className="bg-binance-surface text-binance-on-dark p-2 rounded mb-2"
+              className="bg-comet-card text-comet-fg p-2 rounded mb-2"
               placeholder="Location (e.g. Face 1)"
               placeholderTextColor="#76808F"
               value={reading.location}
@@ -211,9 +211,9 @@ export default function ShiftReportScreen() {
             />
             <View className="flex-row gap-2">
               <View className="flex-1">
-                <Text className="text-binance-muted-strong text-xs mb-1">CH4 (%)</Text>
+                <Text className="text-comet-fg-muted text-xs mb-1">CH4 (%)</Text>
                 <TextInput
-                  className="bg-binance-surface text-binance-on-dark p-2 rounded"
+                  className="bg-comet-card text-comet-fg p-2 rounded"
                   placeholder="0.0"
                   placeholderTextColor="#76808F"
                   keyboardType="decimal-pad"
@@ -222,9 +222,9 @@ export default function ShiftReportScreen() {
                 />
               </View>
               <View className="flex-1">
-                <Text className="text-binance-muted-strong text-xs mb-1">CO (ppm)</Text>
+                <Text className="text-comet-fg-muted text-xs mb-1">CO (ppm)</Text>
                 <TextInput
-                  className="bg-binance-surface text-binance-on-dark p-2 rounded"
+                  className="bg-comet-card text-comet-fg p-2 rounded"
                   placeholder="0"
                   placeholderTextColor="#76808F"
                   keyboardType="decimal-pad"
@@ -233,9 +233,9 @@ export default function ShiftReportScreen() {
                 />
               </View>
               <View className="flex-1">
-                <Text className="text-binance-muted-strong text-xs mb-1">O2 (%)</Text>
+                <Text className="text-comet-fg-muted text-xs mb-1">O2 (%)</Text>
                 <TextInput
-                  className="bg-binance-surface text-binance-on-dark p-2 rounded"
+                  className="bg-comet-card text-comet-fg p-2 rounded"
                   placeholder="20.9"
                   placeholderTextColor="#76808F"
                   keyboardType="decimal-pad"
@@ -246,16 +246,16 @@ export default function ShiftReportScreen() {
             </View>
           </View>
         ))}
-        <TouchableOpacity onPress={addGasReading} className="mt-2 items-center p-2 bg-binance-surface rounded">
-          <Text className="text-binance-primary font-bold">+ Add Reading</Text>
+        <TouchableOpacity onPress={addGasReading} className="mt-2 items-center p-2 bg-comet-card rounded">
+          <Text className="text-comet-orange font-bold">+ Add Reading</Text>
         </TouchableOpacity>
       </Card>
 
       {/* Handover Notes */}
       <View className="mb-4">
-        <Text className="text-binance-on-dark font-bold mb-2">Handover Notes</Text>
+        <Text className="text-comet-fg font-bold mb-2">Handover Notes</Text>
         <TextInput
-          className="bg-binance-surface text-binance-on-dark p-3 rounded"
+          className="bg-comet-card text-comet-fg p-3 rounded"
           placeholder="Any important notes for the next shift overman..."
           placeholderTextColor="#76808F"
           multiline
@@ -273,7 +273,7 @@ export default function ShiftReportScreen() {
       {/* Submit */}
       <Button 
         onPress={handleSubmit} 
-        className="mt-4 bg-binance-primary" 
+        className="mt-4 bg-comet-orange" 
       >
         <Text className="text-black font-bold">Sign & Lock Shift Report</Text>
       </Button>

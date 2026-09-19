@@ -1,7 +1,12 @@
+import { useTranslation } from "react-i18next";
 import { type SVGProps } from 'react'
 import { cn } from '@/lib/utils'
 
 export function IconGitlab({ className, ...props }: SVGProps<SVGSVGElement>) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <svg
       role='img'
@@ -17,9 +22,9 @@ export function IconGitlab({ className, ...props }: SVGProps<SVGSVGElement>) {
       strokeLinejoin='round'
       {...props}
     >
-      <title>GitLab</title>
+      <title>{t("gitlab", "GitLab")}</title>
       <path strokeWidth='0' d='M0 0h24v24H0z' fill='none' />
       <path d='M21 14l-9 7l-9 -7l3 -11l3 7h6l3 -7z' />
     </svg>
-  )
+  );
 }

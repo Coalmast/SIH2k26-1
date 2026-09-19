@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { type CSSProperties, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
 import { useSortable } from "@dnd-kit/sortable";
@@ -37,6 +38,10 @@ export function ItemShell({
   /** Persist an in-place data edit from a self-editing renderer back to the board. */
   onItemDataChange?: (item: KanbanItem) => void;
 }) {
+  const {
+    t
+  } = useTranslation();
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
     data: { kind: "item", columnId, swimlaneId, rendererId: item.rendererId },
@@ -128,7 +133,7 @@ export function ItemShell({
           title="Drag to move"
         >
           <GripVertical className="size-3.5" />
-          <span>drag</span>
+          <span>{t("drag", "drag")}</span>
         </div>
       ) : null}
 
@@ -158,7 +163,7 @@ export function ItemShell({
             }}
             aria-label="Edit item"
           >
-            <span className="text-[10px]">Edit</span>
+            <span className="text-[10px]">{t("edit", "Edit")}</span>
           </Button>
         ) : null}
         {!readOnly && !item.locked && onDelete ? (

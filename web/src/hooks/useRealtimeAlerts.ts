@@ -109,7 +109,7 @@ function showAlertToast(alert: AlertPayload) {
 }
 
 function getToastConfig(priority: AlertPriority): {
-  fn: typeof toast
+  fn: any
   duration: number
   icon: string
 } {

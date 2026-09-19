@@ -1,7 +1,7 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb';
 
 export const schema = appSchema({
-  version: 3,
+  version: 4,
   tables: [
     tableSchema({
       name: 'inspections',
@@ -61,11 +61,11 @@ export const schema = appSchema({
         { name: 'reported_by', type: 'string' }, // maps to users table
         { name: 'description', type: 'string' },
         { name: 'created_at', type: 'number' },
-        { name: 'sync_status', type: 'string' }, // pending_sync | synced | priority
+        { name: 'sync_status', type: 'string', isOptional: true }, // pending_sync | synced | priority
         
         // Expanded v3 columns (grounded in Supabase schema)
-        { name: 'incident_type', type: 'string' }, // roof_fall, gas_event, etc.
-        { name: 'severity', type: 'string' }, // minor, moderate, high, critical
+        { name: 'incident_type', type: 'string', isOptional: true }, // roof_fall, gas_event, etc.
+        { name: 'severity', type: 'string', isOptional: true }, // minor, moderate, high, critical
         { name: 'ai_suggested_severity', type: 'string', isOptional: true },
         { name: 'ai_suggested_category', type: 'string', isOptional: true },
         { name: 'geo_stamp', type: 'string', isOptional: true }, // JSON string
@@ -73,9 +73,9 @@ export const schema = appSchema({
         { name: 'shift', type: 'string', isOptional: true },
         { name: 'persons_involved', type: 'string', isOptional: true }, // JSON array string
         { name: 'immediate_actions_taken', type: 'string', isOptional: true },
-        { name: 'is_linked_to_accident_register', type: 'boolean' },
+        { name: 'is_linked_to_accident_register', type: 'boolean', isOptional: true },
         { name: 'corrective_action_id', type: 'string', isOptional: true }, // Set by server on sync
-        { name: 'reported_at', type: 'number' },
+        { name: 'reported_at', type: 'number', isOptional: true },
         { name: 'remote_id', type: 'string', isOptional: true },
         { name: 'local_photo_ids', type: 'string', isOptional: true }, // Array of media_attachments IDs
       ],
@@ -84,17 +84,17 @@ export const schema = appSchema({
       name: 'attendance_records',
       columns: [
         { name: 'mine_id', type: 'string' },
-        { name: 'worker_id_card_number', type: 'string' }, // Replaced worker_id
+        { name: 'worker_id_card_number', type: 'string', isOptional: true }, // Replaced worker_id
         { name: 'worker_name', type: 'string', isOptional: true },
-        { name: 'worker_type', type: 'string' }, // regular, contract
+        { name: 'worker_type', type: 'string', isOptional: true }, // regular, contract
         { name: 'contractor_id', type: 'string', isOptional: true }, // Looked up from cache
-        { name: 'shift', type: 'string' },
-        { name: 'check_in_at', type: 'number' },
-        { name: 'geo_stamp', type: 'string' }, // JSON string
-        { name: 'location_mismatch', type: 'boolean' },
-        { name: 'training_expired', type: 'boolean' },
-        { name: 'flagged_for_review', type: 'boolean' },
-        { name: 'sync_status', type: 'string' },
+        { name: 'shift', type: 'string', isOptional: true },
+        { name: 'check_in_at', type: 'number', isOptional: true },
+        { name: 'geo_stamp', type: 'string', isOptional: true }, // JSON string
+        { name: 'location_mismatch', type: 'boolean', isOptional: true },
+        { name: 'training_expired', type: 'boolean', isOptional: true },
+        { name: 'flagged_for_review', type: 'boolean', isOptional: true },
+        { name: 'sync_status', type: 'string', isOptional: true },
         { name: 'created_at', type: 'number' },
       ],
     }),
@@ -102,21 +102,21 @@ export const schema = appSchema({
       name: 'shift_reports',
       columns: [
         { name: 'mine_id', type: 'string' },
-        { name: 'zone', type: 'string' },
-        { name: 'shift', type: 'string' },
-        { name: 'report_date', type: 'number' },
-        { name: 'workforce_count', type: 'number' },
-        { name: 'regular_count', type: 'number' },
-        { name: 'contract_count', type: 'number' },
-        { name: 'gas_readings', type: 'string' }, // JSON array
+        { name: 'zone', type: 'string', isOptional: true },
+        { name: 'shift', type: 'string', isOptional: true },
+        { name: 'report_date', type: 'number', isOptional: true },
+        { name: 'workforce_count', type: 'number', isOptional: true },
+        { name: 'regular_count', type: 'number', isOptional: true },
+        { name: 'contract_count', type: 'number', isOptional: true },
+        { name: 'gas_readings', type: 'string', isOptional: true }, // JSON array
         { name: 'shift_observations', type: 'string', isOptional: true }, // JSON array
         { name: 'equipment_status', type: 'string', isOptional: true }, // JSON array
         { name: 'production_coal_tonnes', type: 'number', isOptional: true },
         { name: 'production_ob_cum', type: 'number', isOptional: true },
         { name: 'handover_notes', type: 'string', isOptional: true },
-        { name: 'ch4_alert_fired', type: 'boolean' },
-        { name: 'geo_stamp', type: 'string' },
-        { name: 'sync_status', type: 'string' },
+        { name: 'ch4_alert_fired', type: 'boolean', isOptional: true },
+        { name: 'geo_stamp', type: 'string', isOptional: true },
+        { name: 'sync_status', type: 'string', isOptional: true },
         { name: 'remote_id', type: 'string', isOptional: true },
         { name: 'created_at', type: 'number' },
       ],
@@ -178,6 +178,25 @@ export const schema = appSchema({
         { name: 'remote_id', type: 'string', isOptional: true },
         { name: 'captured_by', type: 'string' },
         { name: 'created_at', type: 'number' },
+      ],
+    }),
+    // -- v4 New Tables --
+    tableSchema({
+      name: 'notifications',
+      columns: [
+        { name: 'remote_id', type: 'string' },
+        { name: 'type', type: 'string' },
+        { name: 'priority', type: 'string' },
+        { name: 'title', type: 'string' },
+        { name: 'message', type: 'string' },
+        { name: 'target_user_id', type: 'string', isOptional: true },
+        { name: 'mine_id', type: 'string', isOptional: true },
+        { name: 'entity_type', type: 'string', isOptional: true },
+        { name: 'entity_id', type: 'string', isOptional: true },
+        { name: 'status', type: 'string' }, // unread | read
+        { name: 'read_at', type: 'number', isOptional: true },
+        { name: 'created_at', type: 'number' },
+        { name: 'sync_status', type: 'string' }, // synced | pending_ack
       ],
     }),
   ],

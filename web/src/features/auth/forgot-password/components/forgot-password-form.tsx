@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -27,6 +28,10 @@ export function ForgotPasswordForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLFormElement>) {
+  const {
+    t
+  } = useTranslation();
+
   const navigate = useNavigate()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -62,7 +67,7 @@ export function ForgotPasswordForm({
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email", "Email")}</FormLabel>
               <FormControl>
                 <Input placeholder='name@example.com' {...field} />
               </FormControl>
@@ -70,11 +75,9 @@ export function ForgotPasswordForm({
             </FormItem>
           )}
         />
-        <Button className='mt-2' disabled={isLoading}>
-          Continue
-          {isLoading ? <Loader2 className='animate-spin' /> : <ArrowRight />}
+        <Button className='mt-2' disabled={isLoading}>{t("continue", "Continue")}{isLoading ? <Loader2 className='animate-spin' /> : <ArrowRight />}
         </Button>
       </form>
     </Form>
-  )
+  );
 }

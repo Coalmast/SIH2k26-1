@@ -1,4 +1,5 @@
-"use client";
+"use client";;
+import { useTranslation } from "react-i18next";
 
 import { useEffect, useMemo } from "react";
 import {
@@ -64,6 +65,10 @@ export function KanbanBoard({
   "aria-label": ariaLabel = "Kanban board",
   className,
 }: KanbanBoardProps) {
+  const {
+    t
+  } = useTranslation();
+
   const [state, dispatch] = useKanbanState({ data, defaultData, onChange });
   const rendererMap = useRendererMap(renderers);
   const palettePinned = useMemo(() => palette ?? DEFAULT_PALETTE, [palette]);
@@ -164,9 +169,10 @@ export function KanbanBoard({
           "flex h-full min-h-32 items-center justify-center rounded-md border border-destructive/40 bg-destructive/5 p-6 text-sm text-destructive",
           className,
         )}
-      >
-        kanban-board requires at least one renderer
-      </div>
+      >{t(
+          "kanban_board_requires_at_least",
+          "kanban-board requires at least one renderer"
+        )}</div>
     );
   }
 

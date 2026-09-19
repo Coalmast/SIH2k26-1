@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { Session } from '@supabase/supabase-js'
+import { persist } from 'zustand/middleware'
+import { type Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
 export type AppRole =
@@ -9,11 +10,15 @@ export type AppRole =
   | 'field_inspector'
   | 'safety_official'
   | 'contractor'
+  | 'regulator'
+  | 'subsidiary_admin'
 
 interface AuthUser {
   id: string
   email: string
   role: AppRole | 'authenticated'
+  mineIds?: string[]
+  full_name?: string
 }
 
 interface AuthState {
@@ -45,7 +50,9 @@ const initialState: AuthState = {
   subsidiaryId: null,
 }
 
-export const useAuthStore = create<AuthStore>()((set, get) => ({
+export const useAuthStore = create<AuthStore>()(
+  persist(
+    (set, get) => ({
   auth: initialState,
   setSession: (session) => {
     set((state) => {
@@ -107,7 +114,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
       if (role === 'mine_manager') permissions.push('compliance:approve', 'capa:verify', 'mine:write', 'reports:view');
       if (role === 'field_inspector') permissions.push('inspection:create', 'violation:create', 'incident:create');
       if (role === 'safety_official') permissions.push('inspection:create', 'violation:create', 'incident:create', 'capa:verify');
-      if (role === 'contractor') permissions.push('contractor:view', 'grievance:create');
+      if (role === 'contractor') permissions.push('contractor:view');
       
       const user = state.auth.user ? { ...state.auth.user, role } : null;
       
@@ -116,4 +123,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
   setIsLoading: (isLoading) =>
     set((state) => ({ auth: { ...state.auth, isLoading } })),
   reset: () => set({ auth: { ...initialState, isLoading: false } }),
+}), {
+  name: 'auth-storage',
+  partialize: (state) => ({ auth: state.auth }),
 }))

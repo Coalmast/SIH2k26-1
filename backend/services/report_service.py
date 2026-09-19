@@ -1,5 +1,5 @@
 import uuid
-from main import celery
+from celery_config import celery
 import os
 
 

@@ -1,4 +1,6 @@
+import { useTranslation } from "react-i18next";
 import { createFileRoute } from '@tanstack/react-router'
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useInspections } from '@/features/inspection/hooks/useInspections'
 import { InspectionCard } from '@/features/inspection/components'
@@ -6,13 +8,17 @@ import { ScheduleInspectionForm } from '@/features/inspection/forms/ScheduleInsp
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 
 export const Route = createFileRoute('/_authenticated/inspection/')({
   component: InspectionListPage,
 })
 
 function InspectionListPage() {
+  const {
+    t
+  } = useTranslation();
+
   const [mineId, setMineId] = useState('all')
   const [type, setType] = useState('all')
   const [status, setStatus] = useState('all')
@@ -24,20 +30,24 @@ function InspectionListPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-primary">Inspections</h1>
-          <p className="text-muted-foreground">Field inspection records & DGMS compliance</p>
+          <h1 className="text-3xl font-bold text-primary">{t("inspections", "Inspections")}</h1>
+          <p className="text-muted-foreground">{t(
+            "field_inspection_records_dgms_",
+            "Field inspection records & DGMS compliance"
+          )}</p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Select value={type} onValueChange={setType}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full md:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Select value={type} onValueChange={setType}>
             <SelectTrigger className="w-[150px]">
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="dgms_annual_general">DGMS Annual</SelectItem>
-              <SelectItem value="internal_safety_committee">Safety Committee</SelectItem>
-              <SelectItem value="environmental_pcb">Environmental PCB</SelectItem>
+              <SelectItem value="all">{t("all_types", "All Types")}</SelectItem>
+              <SelectItem value="dgms_annual_general">{t("dgms_annual", "DGMS Annual")}</SelectItem>
+              <SelectItem value="internal_safety_committee">{t("safety_committee", "Safety Committee")}</SelectItem>
+              <SelectItem value="environmental_pcb">{t("environmental_pcb", "Environmental PCB")}</SelectItem>
             </SelectContent>
           </Select>
           
@@ -46,23 +56,22 @@ function InspectionListPage() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="scheduled">Scheduled</SelectItem>
-              <SelectItem value="in_progress">In Progress</SelectItem>
-              <SelectItem value="submitted">Submitted</SelectItem>
-              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="all">{t("all_status", "All Status")}</SelectItem>
+              <SelectItem value="draft">{t("draft", "Draft")}</SelectItem>
+              <SelectItem value="in_progress">{t("in_progress", "In Progress")}</SelectItem>
+              <SelectItem value="submitted">{t("submitted", "Submitted")}</SelectItem>
+              <SelectItem value="reviewed">{t("reviewed", "Reviewed")}</SelectItem>
             </SelectContent>
           </Select>
+          </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-amber-500 hover:bg-amber-600 text-white">
-                + Schedule Inspection
-              </Button>
+              <Button className="bg-amber-500 hover:bg-amber-600 text-foreground">{t("schedule_inspection", "+ Schedule Inspection")}</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Schedule New Inspection</DialogTitle>
+                <DialogTitle>{t("schedule_new_inspection", "Schedule New Inspection")}</DialogTitle>
               </DialogHeader>
               <ScheduleInspectionForm onSuccess={() => setIsDialogOpen(false)} />
             </DialogContent>
@@ -73,25 +82,36 @@ function InspectionListPage() {
       {isLoading ? (
         <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>
       ) : error ? (
-        <div className="text-red-500 bg-red-50 p-4 rounded-md">Failed to load inspections.</div>
+        <div className="text-comet-down bg-[#f6465d]/10 p-4 rounded-md">{t("failed_to_load_inspections", "Failed to load inspections.")}</div>
       ) : inspections?.length === 0 ? (
-        <div className="text-center p-16 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50 flex flex-col items-center justify-center space-y-4 shadow-inner">
-          <div className="bg-slate-100 p-4 rounded-full">
-            <Search className="h-8 w-8 text-slate-400" />
+        <div className="text-center p-16 border-2 border-dashed border-border rounded-xl bg-muted/50 flex flex-col items-center justify-center space-y-4 shadow-inner">
+          <div className="bg-muted p-4 rounded-full">
+            <Search className="h-8 w-8 text-muted-foreground/70" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-700">No inspections found</h3>
-            <p className="text-sm text-slate-500 mt-1 max-w-[300px]">We couldn't find any inspections matching your current filter criteria. Try adjusting the filters or schedule a new inspection.</p>
+            <h3 className="text-lg font-semibold text-foreground/80">{t("no_inspections_found", "No inspections found")}</h3>
+            <p className="text-sm text-muted-foreground mt-1 max-w-[300px]">{t(
+              "we_couldn_t_find_any_inspectio",
+              "We couldn't find any inspections matching your current filter criteria. Try adjusting the filters or schedule a new inspection."
+            )}</p>
           </div>
-          <Button variant="outline" onClick={() => { setType('all'); setStatus('all'); }}>Clear Filters</Button>
+          <Button variant="outline" onClick={() => { setType('all'); setStatus('all'); }}>{t("clear_filters", "Clear Filters")}</Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {inspections?.map((inspection: any) => (
-            <InspectionCard key={inspection.id} inspection={inspection} />
+            <motion.div
+              key={inspection.id}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+              transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <InspectionCard inspection={inspection} />
+            </motion.div>
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { type SVGProps } from 'react'
 import { Root as Radio, Item } from '@radix-ui/react-radio-group'
 import { CircleCheck, RotateCcw, Settings } from 'lucide-react'
@@ -28,6 +29,10 @@ import {
 import { useSidebar } from './ui/sidebar'
 
 export function ConfigDrawer() {
+  const {
+    t
+  } = useTranslation();
+
   const { setOpen } = useSidebar()
   const { resetDir } = useDirection()
   const { resetTheme } = useTheme()
@@ -54,10 +59,11 @@ export function ConfigDrawer() {
       </SheetTrigger>
       <SheetContent className='flex flex-col'>
         <SheetHeader className='pb-0 text-start'>
-          <SheetTitle>Theme Settings</SheetTitle>
-          <SheetDescription>
-            Adjust the appearance and layout to suit your preferences.
-          </SheetDescription>
+          <SheetTitle>{t("theme_settings", "Theme Settings")}</SheetTitle>
+          <SheetDescription>{t(
+            "adjust_the_appearance_and_layo",
+            "Adjust the appearance and layout to suit your preferences."
+          )}</SheetDescription>
         </SheetHeader>
         <div className='space-y-6 overflow-y-auto px-4'>
           <ThemeConfig />
@@ -70,13 +76,11 @@ export function ConfigDrawer() {
             variant='destructive'
             onClick={handleReset}
             aria-label='Reset all settings to default values'
-          >
-            Reset
-          </Button>
+          >{t("reset", "Reset")}</Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 
 function SectionTitle({
@@ -93,6 +97,10 @@ function SectionTitle({
   resetAriaLabel?: string
   className?: string
 }) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <div
       className={cn(
@@ -128,6 +136,10 @@ function RadioGroupItem({
   }
   isTheme?: boolean
 }) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <Item
       value={item.value}
@@ -173,6 +185,10 @@ function RadioGroupItem({
 }
 
 function ThemeConfig() {
+  const {
+    t
+  } = useTranslation();
+
   const { defaultTheme, theme, setTheme } = useTheme()
   return (
     <div>
@@ -209,14 +225,19 @@ function ThemeConfig() {
           <RadioGroupItem key={item.value} item={item} isTheme />
         ))}
       </Radio>
-      <div id='theme-description' className='sr-only'>
-        Choose between system preference, light mode, or dark mode
-      </div>
+      <div id='theme-description' className='sr-only'>{t(
+        "choose_between_system_preferen",
+        "Choose between system preference, light mode, or dark mode"
+      )}</div>
     </div>
-  )
+  );
 }
 
 function SidebarConfig() {
+  const {
+    t
+  } = useTranslation();
+
   const { defaultVariant, variant, setVariant } = useLayout()
   return (
     <div className='max-md:hidden'>
@@ -253,14 +274,19 @@ function SidebarConfig() {
           <RadioGroupItem key={item.value} item={item} />
         ))}
       </Radio>
-      <div id='sidebar-description' className='sr-only'>
-        Choose between inset, floating, or standard sidebar layout
-      </div>
+      <div id='sidebar-description' className='sr-only'>{t(
+        "choose_between_inset_floating_",
+        "Choose between inset, floating, or standard sidebar layout"
+      )}</div>
     </div>
-  )
+  );
 }
 
 function LayoutConfig() {
+  const {
+    t
+  } = useTranslation();
+
   const { open, setOpen } = useSidebar()
   const { defaultCollapsible, collapsible, setCollapsible } = useLayout()
 
@@ -311,14 +337,19 @@ function LayoutConfig() {
           <RadioGroupItem key={item.value} item={item} />
         ))}
       </Radio>
-      <div id='layout-description' className='sr-only'>
-        Choose between default expanded, compact icon-only, or full layout mode
-      </div>
+      <div id='layout-description' className='sr-only'>{t(
+        "choose_between_default_expande",
+        "Choose between default expanded, compact icon-only, or full layout mode"
+      )}</div>
     </div>
-  )
+  );
 }
 
 function DirConfig() {
+  const {
+    t
+  } = useTranslation();
+
   const { defaultDir, dir, setDir } = useDirection()
   return (
     <div>
@@ -354,9 +385,10 @@ function DirConfig() {
           <RadioGroupItem key={item.value} item={item} />
         ))}
       </Radio>
-      <div id='direction-description' className='sr-only'>
-        Choose between left-to-right or right-to-left site direction
-      </div>
+      <div id='direction-description' className='sr-only'>{t(
+        "choose_between_left_to_right_o",
+        "Choose between left-to-right or right-to-left site direction"
+      )}</div>
     </div>
-  )
+  );
 }

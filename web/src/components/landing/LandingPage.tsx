@@ -2,12 +2,14 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '@/stores/auth-store'
+import { useTranslation } from 'react-i18next'
 import { HeroGraphic } from './HeroGraphic'
 import { CTAButtons } from './CTAButtons'
 import { pageVariants, containerVariants, itemVariants } from './animations'
 import './landing.css'
 
 export function LandingPage() {
+  const { t } = useTranslation()
   const { auth } = useAuthStore()
   const navigate = useNavigate()
 
@@ -52,18 +54,18 @@ export function LandingPage() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            COMET Platform 2.0
+            {t('landing.badge', 'COMET Platform 2.0')}
           </motion.div>
           
           <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
-            Smart Governance <br/>
+            {t('landing.title_start', 'Smart Governance')} <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">
-              for Coal Mining.
+              {t('landing.title_highlight', 'for Coal Mining.')}
             </span>
           </motion.h1>
           
           <motion.p variants={itemVariants} className="text-lg sm:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed">
-            Digitally unify your entire governance chain. Real-time compliance monitoring, automated workflows, and AI-powered risk detection.
+            {t('landing.description', 'Digitally unify your entire governance chain. Real-time compliance monitoring, automated workflows, and AI-powered risk detection.')}
           </motion.p>
           
           <motion.div variants={itemVariants} className="mt-4">

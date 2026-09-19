@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link } from '@tanstack/react-router'
 import {
   BadgeCheck,
@@ -35,6 +36,10 @@ type NavUserProps = {
 }
 
 export function NavUser({ user }: NavUserProps) {
+  const {
+    t
+  } = useTranslation();
+
   const { isMobile } = useSidebar()
   const [open, setOpen] = useDialogState()
 
@@ -46,17 +51,17 @@ export function NavUser({ user }: NavUserProps) {
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size='lg'
-                className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+                className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/60 transition-all duration-200 rounded-xl'
               >
-                <Avatar className='h-8 w-8 rounded-lg'>
+                <Avatar className='h-8 w-8 rounded-lg ring-1 ring-sidebar-primary/30'>
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className='rounded-lg'>SN</AvatarFallback>
+                  <AvatarFallback className='rounded-lg bg-sidebar-primary/20 text-sidebar-primary text-xs font-bold'>{t("sn", "SN")}</AvatarFallback>
                 </Avatar>
-                <div className='grid flex-1 text-start text-sm leading-tight'>
-                  <span className='truncate font-semibold'>{user.name}</span>
-                  <span className='truncate text-xs'>{user.email}</span>
+                <div className='grid flex-1 text-start leading-tight'>
+                  <span className='truncate text-sm font-semibold text-sidebar-foreground'>{user.name}</span>
+                  <span className='truncate text-[10px] text-sidebar-foreground/50'>{user.email}</span>
                 </div>
-                <ChevronsUpDown className='ms-auto size-4' />
+                <ChevronsUpDown className='ms-auto size-3.5 text-sidebar-foreground/40' />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -69,7 +74,7 @@ export function NavUser({ user }: NavUserProps) {
                 <div className='flex items-center gap-2 px-1 py-1.5 text-start text-sm'>
                   <Avatar className='h-8 w-8 rounded-lg'>
                     <AvatarImage src={user.avatar} alt={user.name} />
-                    <AvatarFallback className='rounded-lg'>SN</AvatarFallback>
+                    <AvatarFallback className='rounded-lg'>{t("sn", "SN")}</AvatarFallback>
                   </Avatar>
                   <div className='grid flex-1 text-start text-sm leading-tight'>
                     <span className='truncate font-semibold'>{user.name}</span>
@@ -80,29 +85,21 @@ export function NavUser({ user }: NavUserProps) {
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem>
-                  <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
+                  <Sparkles />{t("upgrade_to_pro", "Upgrade to Pro")}</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem asChild>
                   <Link to='/settings/account'>
-                    <BadgeCheck />
-                    Account
-                  </Link>
+                    <BadgeCheck />{t("account", "Account")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to='/settings'>
-                    <CreditCard />
-                    Billing
-                  </Link>
+                    <CreditCard />{t("billing", "Billing")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to='/settings/notifications'>
-                    <Bell />
-                    Notifications
-                  </Link>
+                    <Bell />{t("notifications", "Notifications")}</Link>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
@@ -110,9 +107,7 @@ export function NavUser({ user }: NavUserProps) {
                 variant='destructive'
                 onClick={() => setOpen(true)}
               >
-                <LogOut />
-                Sign out
-              </DropdownMenuItem>
+                <LogOut />{t("sign_out", "Sign out")}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>
@@ -120,5 +115,5 @@ export function NavUser({ user }: NavUserProps) {
 
       <SignOutDialog open={!!open} onOpenChange={setOpen} />
     </>
-  )
+  );
 }

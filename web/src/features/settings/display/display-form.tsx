@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -55,6 +56,10 @@ const defaultValues: Partial<DisplayFormValues> = {
 }
 
 export function DisplayForm() {
+  const {
+    t
+  } = useTranslation();
+
   const form = useForm<DisplayFormValues>({
     resolver: zodResolver(displayFormSchema),
     defaultValues,
@@ -72,10 +77,11 @@ export function DisplayForm() {
           render={() => (
             <FormItem>
               <div className='mb-4'>
-                <FormLabel className='text-base'>Sidebar</FormLabel>
-                <FormDescription>
-                  Select the items you want to display in the sidebar.
-                </FormDescription>
+                <FormLabel className='text-base'>{t("sidebar", "Sidebar")}</FormLabel>
+                <FormDescription>{t(
+                  "select_the_items_you_want_to_d",
+                  "Select the items you want to display in the sidebar."
+                )}</FormDescription>
               </div>
               {items.map((item) => (
                 <FormField
@@ -114,8 +120,8 @@ export function DisplayForm() {
             </FormItem>
           )}
         />
-        <Button type='submit'>Update display</Button>
+        <Button type='submit'>{t("update_display", "Update display")}</Button>
       </form>
     </Form>
-  )
+  );
 }

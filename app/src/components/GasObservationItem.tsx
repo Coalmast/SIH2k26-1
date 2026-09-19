@@ -92,19 +92,19 @@ export function GasObservationItem({ item, localInspectionId, remoteInspectionId
   };
 
   const statusColors = {
-    danger: 'bg-binance-trading-down border-binance-trading-down',
-    warning: 'bg-[#fcd535] border-[#fcd535]',
-    ok: 'bg-binance-trading-up border-binance-trading-up',
-    null: 'bg-binance-surface-card-dark border-binance-border-strong'
+    danger: 'bg-comet-down border-comet-down',
+    warning: 'bg-[#f97316] border-[#f97316]',
+    ok: 'bg-comet-up border-comet-up',
+    null: 'bg-comet-card border-comet-border'
   };
-  const textColor = status === 'warning' ? 'text-binance-ink' : (status ? 'text-white' : 'text-binance-on-dark');
+  const textColor = status === 'warning' ? 'text-comet-sidebar-bg' : (status ? 'text-white' : 'text-comet-fg');
 
   return (
-    <View className="mb-4 bg-binance-surface-elevated-dark p-4 rounded-xl border border-binance-border-strong">
+    <View className="mb-4 bg-comet-card p-4 rounded-xl border border-comet-border">
       <View className="flex-row justify-between items-start mb-2">
         <View className="flex-1 pr-4">
-          <Text className="text-binance-on-dark font-bold text-lg">{item.text}</Text>
-          <Text className="text-binance-muted-strong text-xs mt-1">{item.regulation}</Text>
+          <Text className="text-comet-fg font-bold text-lg">{item.text}</Text>
+          <Text className="text-comet-fg-muted text-xs mt-1">{item.regulation}</Text>
         </View>
         {status && (
           <View className={`px-2 py-1 rounded ${statusColors[status]}`}>
@@ -116,9 +116,9 @@ export function GasObservationItem({ item, localInspectionId, remoteInspectionId
       </View>
 
       <View className="flex-row items-center mt-3 gap-3">
-        <View className={`flex-row items-center border rounded-lg px-4 py-2 flex-1 ${status ? statusColors[status].replace('bg-', 'bg-opacity-10 bg-') : 'border-binance-border-strong bg-binance-surface-card-dark'}`}>
+        <View className={`flex-row items-center border rounded-lg px-4 py-2 flex-1 ${status ? statusColors[status].replace('bg-', 'bg-opacity-10 bg-') : 'border-comet-border bg-comet-card'}`}>
           <TextInput
-            className="flex-1 text-white font-bold text-lg"
+            className="flex-1 text-comet-fg font-bold text-lg"
             placeholder="0.00"
             placeholderTextColor="#707a8a"
             keyboardType="numeric"
@@ -126,33 +126,33 @@ export function GasObservationItem({ item, localInspectionId, remoteInspectionId
             onChangeText={setValue}
             editable={!isSaved}
           />
-          <Text className="text-binance-muted font-medium ml-2">{item.unit}</Text>
+          <Text className="text-comet-fg-muted font-medium ml-2">{item.unit}</Text>
         </View>
         
         <TouchableOpacity
           onPress={handleSave}
           disabled={isSaved || addObservation.isPending || !value}
           className={`px-4 py-3 rounded-lg flex-row items-center gap-2 ${
-            isSaved ? 'bg-binance-trading-up' : 
-            !value ? 'bg-binance-surface-card-dark' : 'bg-binance-primary'
+            isSaved ? 'bg-comet-up' : 
+            !value ? 'bg-comet-card' : 'bg-comet-orange'
           }`}
         >
           {addObservation.isPending ? (
-            <Text className="text-binance-ink font-bold">Saving...</Text>
+            <Text className="text-comet-sidebar-bg font-bold">Saving...</Text>
           ) : isSaved ? (
             <>
               <Ionicons name="checkmark-circle" size={20} color="white" />
               <Text className="text-white font-bold">Saved</Text>
             </>
           ) : (
-            <Text className={!value ? 'text-binance-muted' : 'text-binance-ink font-bold'}>Save</Text>
+            <Text className={!value ? 'text-comet-fg-muted' : 'text-comet-sidebar-bg font-bold'}>Save</Text>
           )}
         </TouchableOpacity>
       </View>
       
       {status && status !== 'ok' && (
         <View className="mt-3 bg-[#2b3139] p-3 rounded-lg">
-          <Text className="text-binance-on-dark text-sm">
+          <Text className="text-comet-fg text-sm">
             <Text className="font-bold">Regulation Breach:</Text> {rule?.reg}
           </Text>
         </View>

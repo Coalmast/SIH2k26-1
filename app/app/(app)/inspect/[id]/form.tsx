@@ -16,7 +16,7 @@ export default function InspectionFormScreen() {
 
   if (isLoading || !inspection || !templates) {
     return (
-      <View className="flex-1 bg-binance-ink pt-12">
+      <View className="flex-1 bg-comet-canvas pt-12">
         <SkeletonLoader />
       </View>
     );
@@ -27,8 +27,8 @@ export default function InspectionFormScreen() {
 
   const handleFinish = () => {
     // Check if all items that require measurement have observations
-    const requiredItems = checklistItems.filter((item: any) => item.measurement_required !== false);
-    const completedItemsCount = observations.filter((obs: any) => requiredItems.some((req: any) => req.id === obs.checklistItemId)).length;
+    const requiredItems = checklistItems.filter((item: any) => item.is_mandatory !== false && item.measurement_required !== false);
+    const completedItemsCount = observations.filter((obs: any) => requiredItems.some((req: any) => (req.item_id || req.id) === (obs.checklistItemId || obs.checklist_item_id))).length;
 
     if (completedItemsCount < requiredItems.length) {
       Alert.alert(
@@ -60,27 +60,38 @@ export default function InspectionFormScreen() {
   };
 
   return (
-    <View className="flex-1 bg-binance-ink pt-12 pb-4">
+    <View className="flex-1 bg-comet-canvas pt-12 pb-4">
       {/* Header */}
-      <View className="px-4 pb-4 border-b border-binance-border-strong flex-row justify-between items-center">
+      <View className="px-4 pb-4 border-b border-comet-border flex-row justify-between items-center">
         <View>
-          <Text className="text-binance-muted-strong font-semibold uppercase text-xs">Inspection Progress</Text>
+          <Text className="text-comet-fg-muted font-semibold uppercase text-xs">Inspection Progress</Text>
           <Text className="text-white text-xl font-bold mt-1">{template?.name}</Text>
         </View>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text className="text-binance-primary font-bold">Save & Exit</Text>
+          <Text className="text-comet-orange font-bold">Save & Exit</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView className="flex-1 px-4 pt-4" showsVerticalScrollIndicator={false}>
-        <Text className="text-binance-muted mb-4 font-medium">Record measurements for the following parameters. Values exceeding thresholds will automatically be flagged.</Text>
+        <Text className="text-comet-fg-muted mb-4 font-medium">Record measurements for the following parameters. Values exceeding thresholds will automatically be flagged.</Text>
         
-        {checklistItems.map((item: any) => {
-          const savedObs = observations.find((o: any) => o.checklistItemId === item.id);
+        {checklistItems.map((item: any, index: number) => {
+          const itemId = item.item_id || item.id || `fallback-${index}`;
+          const savedObs = observations.find((o: any) => o.checklistItemId === itemId || o.checklist_item_id === itemId);
+          
+          // Normalize item for GasObservationItem
+          const normalizedItem = {
+            ...item,
+            id: itemId,
+            text: item.checkpoint_text || item.text || 'No description provided',
+            regulation: item.regulation || '',
+            unit: item.unit || '',
+          };
+
           return (
             <GasObservationItem
-              key={item.id}
-              item={item}
+              key={itemId}
+              item={normalizedItem}
               localInspectionId={inspection.id}
               remoteInspectionId={inspection.remoteId}
               zone={inspection.zone}
@@ -94,7 +105,7 @@ export default function InspectionFormScreen() {
       </ScrollView>
 
       {/* Footer Navigation */}
-      <View className="px-4 pt-4 border-t border-binance-border-strong">
+      <View className="px-4 pt-4 border-t border-comet-border">
         <Button 
           variant="primary" 
           onPress={handleFinish}

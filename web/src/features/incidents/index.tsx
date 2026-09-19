@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -41,42 +42,48 @@ const mockIncidents = [
 ]
 
 export function IncidentsList() {
+  const {
+    t
+  } = useTranslation();
+
   const [filter, setFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
 
   const getSeverityBadge = (severity: string) => {
     switch (severity) {
-      case 'critical': return <Badge variant="destructive">Critical</Badge>
-      case 'high': return <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-200">High</Badge>
-      case 'medium': return <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-200">Medium</Badge>
-      default: return <Badge variant="outline" className="bg-emerald-100 text-emerald-700 border-emerald-200">Minor</Badge>
+      case 'critical': return <Badge variant="outline" className="bg-[#f6465d]/15 text-comet-down border-[#f6465d]/30">{t("critical", "Critical")}</Badge>;
+      case 'high': return <Badge variant="outline" className="bg-orange-500/15 text-orange-600 border-orange-500/30">{t("high", "High")}</Badge>;
+      case 'medium': return <Badge variant="outline" className="bg-amber-500/15 text-amber-600 border-amber-500/30">{t("medium", "Medium")}</Badge>;
+      default: return <Badge variant="outline" className="bg-[#0ecb81]/15 text-comet-up border-[#0ecb81]/30">{t("minor", "Minor")}</Badge>;
     }
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'investigating': return <Badge variant="secondary">Investigating</Badge>
-      case 'resolved': return <Badge variant="outline" className="bg-slate-100">Resolved</Badge>
+      case 'investigating': return <Badge variant="secondary">{t("investigating", "Investigating")}</Badge>;
+      case 'resolved': return <Badge variant="outline" className="bg-muted">{t("resolved", "Resolved")}</Badge>;
       default: return <Badge>{status}</Badge>
     }
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50/50 max-w-[1200px] mx-auto w-full space-y-6">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1200px] mx-auto w-full space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <ShieldAlert className="h-8 w-8 text-primary" />
-            Incident Register
-          </h1>
-          <p className="text-muted-foreground mt-1">Log, investigate, and report workplace incidents to DGMS.</p>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
+            <ShieldAlert className="h-8 w-8 text-primary" />{t("incident_register", "Incident Register")}</h1>
+          <p className="text-muted-foreground mt-1">{t(
+            "log_investigate_and_report_wor",
+            "Log, investigate, and report workplace incidents to DGMS."
+          )}</p>
         </div>
-        <Button><Plus className="h-4 w-4 mr-2" /> File Incident Report</Button>
+        <Button><Plus className="h-4 w-4 mr-2" />{t("file_incident_report", "File Incident Report")}</Button>
       </div>
 
-      <div className="flex gap-4 items-center bg-white p-4 rounded-lg shadow-sm border">
+      <div className="flex gap-4 items-center bg-background p-4 rounded-lg shadow-sm border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search incidents..." className="pl-9" />
+          <Input placeholder="Search incidents..." className="pl-9" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
         </div>
         <Select defaultValue="all" onValueChange={setFilter}>
           <SelectTrigger className="w-[180px]">
@@ -84,17 +91,21 @@ export function IncidentsList() {
             <SelectValue placeholder="Severity" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Severities</SelectItem>
-            <SelectItem value="critical">Critical</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-            <SelectItem value="medium">Medium</SelectItem>
-            <SelectItem value="minor">Minor</SelectItem>
+            <SelectItem value="all">{t("all_severities", "All Severities")}</SelectItem>
+            <SelectItem value="critical">{t("critical", "Critical")}</SelectItem>
+            <SelectItem value="high">{t("high", "High")}</SelectItem>
+            <SelectItem value="medium">{t("medium", "Medium")}</SelectItem>
+            <SelectItem value="minor">{t("minor", "Minor")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-4">
-        {mockIncidents.filter(i => filter === 'all' || i.severity === filter).map(incident => (
+        {mockIncidents.filter(i => {
+          const matchesFilter = filter === 'all' || i.severity === filter;
+          const matchesSearch = i.type.toLowerCase().includes(searchQuery.toLowerCase()) || i.desc.toLowerCase().includes(searchQuery.toLowerCase()) || i.id.toLowerCase().includes(searchQuery.toLowerCase());
+          return matchesFilter && matchesSearch;
+        }).map(incident => (
           <Card key={incident.id} className="shadow-sm hover:shadow-md transition-shadow">
             <CardContent className="p-5 flex flex-col md:flex-row gap-6 md:items-center">
               <div className="flex-1 space-y-2">
@@ -106,21 +117,19 @@ export function IncidentsList() {
                   {getSeverityBadge(incident.severity)}
                   {getStatusBadge(incident.status)}
                 </div>
-                <p className="text-sm text-slate-600 line-clamp-1">{incident.desc}</p>
-                <div className="flex gap-4 text-xs font-medium text-slate-500">
-                  <span>📍 {incident.zone}</span>
-                  <span>⏰ {incident.shift}</span>
-                  <span>📅 {new Date(incident.date).toLocaleDateString()}</span>
+                <p className="text-sm text-muted-foreground line-clamp-1">{incident.desc}</p>
+                <div className="flex gap-4 text-xs font-medium text-muted-foreground">
+                  <span>{t("text", "📍")}{incident.zone}</span>
+                  <span>{t("text", "⏰")}{incident.shift}</span>
+                  <span>{t("text", "📅")}{new Date(incident.date).toLocaleDateString()}</span>
                 </div>
               </div>
               
               <div className="flex gap-3 md:flex-col lg:flex-row shrink-0">
                 <Button variant="outline" size="sm">
-                  <FileText className="h-4 w-4 mr-2" /> Form 4-A
-                </Button>
+                  <FileText className="h-4 w-4 mr-2" />{t("form_4_a", "Form 4-A")}</Button>
                 <Link to={`/incidents/$id`} params={{ id: incident.id }}>
-                  <Button size="sm">
-                    View Details <ChevronRight className="h-4 w-4 ml-1" />
+                  <Button size="sm">{t("view_details", "View Details")}<ChevronRight className="h-4 w-4 ml-1" />
                   </Button>
                 </Link>
               </div>
@@ -129,5 +138,5 @@ export function IncidentsList() {
         ))}
       </div>
     </div>
-  )
+  );
 }

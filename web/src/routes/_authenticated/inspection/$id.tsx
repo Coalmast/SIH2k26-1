@@ -12,7 +12,7 @@ function InspectionDetailPage() {
 
   return (
     <>
-      <Header fixed />
+
       
       <Main className='flex flex-1 flex-col'>
         <InspectionDetail id={id} />

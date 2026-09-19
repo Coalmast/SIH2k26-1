@@ -1,7 +1,12 @@
+import { useTranslation } from "react-i18next";
 import { type SVGProps } from 'react'
 import { cn } from '@/lib/utils'
 
 export function Logo({ className, ...props }: SVGProps<SVGSVGElement>) {
+  const {
+    t
+  } = useTranslation();
+
   return (
     <svg
       id='shadcn-admin-logo'
@@ -17,8 +22,8 @@ export function Logo({ className, ...props }: SVGProps<SVGSVGElement>) {
       className={cn('size-6', className)}
       {...props}
     >
-      <title>Shadcn-Admin</title>
+      <title>{t("shadcn_admin", "Shadcn-Admin")}</title>
       <path d='M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3' />
     </svg>
-  )
+  );
 }

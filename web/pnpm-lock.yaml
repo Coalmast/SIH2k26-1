@@ -98,6 +98,9 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.2.2
         version: 4.2.2(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.1)(jiti@2.6.1)(tsx@4.20.3)(yaml@2.8.3))
+      '@takumi-rs/helpers':
+        specifier: ^2.14.0
+        version: 2.14.0(preact@10.29.8)(react@19.2.5)
       '@tanstack/react-query':
         specifier: ^5.99.0
         version: 5.99.0(react@19.2.5)
@@ -131,6 +134,9 @@ importers:
       framer-motion:
         specifier: ^13.1.1
         version: 13.1.1(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      glimm:
+        specifier: ^0.3.1
+        version: 0.3.1(react@19.2.5)
       i18next:
         specifier: ^26.4.2
         version: 26.4.2(typescript@6.0.3)
@@ -159,8 +165,8 @@ importers:
         specifier: ^19.2.5
         version: 19.2.5
       react-day-picker:
-        specifier: 9.14.0
-        version: 9.14.0(react@19.2.5)
+        specifier: ^10.0.1
+        version: 10.0.1(@types/react@19.2.14)(react@19.2.5)
       react-dom:
         specifier: ^19.2.5
         version: 19.2.5(react@19.2.5)
@@ -191,6 +197,9 @@ importers:
       tailwindcss:
         specifier: ^4.2.2
         version: 4.2.2
+      takumi-pdf:
+        specifier: ^0.15.0
+        version: 0.15.0(preact@10.29.8)(react@19.2.5)
       temporal-polyfill:
         specifier: ^1.0.4
         version: 1.0.4
@@ -2859,10 +2868,6 @@ packages:
       '@opentelemetry/api':
         optional: true
 
-  '@tabby_ai/hijri-converter@1.0.5':
-    resolution: {integrity: sha512-r5bClKrcIusDoo049dSL8CawnHR6mRdDwhlQuIgZRNty68q0x8k3Lf1BtPAMxRf/GgnHBnIO4ujd3+GQdLWzxQ==}
-    engines: {node: '>=16.0.0'}
-
   '@tailwindcss/node@4.2.2':
     resolution: {integrity: sha512-pXS+wJ2gZpVXqFaUEjojq7jzMpTGf8rU6ipJz5ovJV6PUGmlJ+jvIwGrzdHdQ80Sg+wmQxUFuoW1UAAwHNEdFA==}
 
@@ -2952,6 +2957,18 @@ packages:
     resolution: {integrity: sha512-mEiF5HO1QqCLXoNEfXVA1Tzo+cYsrqV7w9Juj2wdUFyW07JRenqMG225MvPwr3ZD9N1bFQj46X7r33iHxLUW0w==}
     peerDependencies:
       vite: ^5.2.0 || ^6 || ^7 || ^8
+
+  '@takumi-rs/helpers@2.14.0':
+    resolution: {integrity: sha512-jFIpuWfBMAxlULx3tEk2V+FCs1CLOMo2/c7h3I2P+eNzMmxwE9TJ/BtwJVghnLlFW1M88QW/ZOY/E7MqXACWJA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      preact: ^10.0.0
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      preact:
+        optional: true
+      react:
+        optional: true
 
   '@tanstack/eslint-plugin-query@5.99.0':
     resolution: {integrity: sha512-jVp1AEL7S7BeuQvH5SN1F5UdrNW/AbryKDeWUUMeAKNzh9C+Ik/bRSa/HeuJLlmaN+WOUkdDFbtCK0go7BxnUQ==}
@@ -3907,9 +3924,6 @@ packages:
     resolution: {integrity: sha512-e1U46jVP+w7Iut8Jt8ri1YsPOvFpg46k+K8TpCb0P+zjCkjkPnV7WzfDJzMHy1LnA+wj5pLT1wjO901gLXeEhA==}
     engines: {node: '>=12'}
 
-  date-fns-jalali@4.1.0-0:
-    resolution: {integrity: sha512-hTIP/z+t+qKwBDcmmsnmjWTduxCg+5KfdqWQvb2X/8C9+knYY6epN/pfxdDuyVlSVeFz0sM5eEfwIUQ70U4ckg==}
-
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
@@ -4277,6 +4291,18 @@ packages:
 
   gl-matrix@3.4.4:
     resolution: {integrity: sha512-latSnyDNt/8zYUB6VIJ6PCh2jBjJX6gnDsoCZ7LyW7GkqrD51EWwa9qCoGixj8YqBtETQK/xY7OmpTF8xz1DdQ==}
+
+  glimm@0.3.1:
+    resolution: {integrity: sha512-7O+Ga+cqqP8FEFDa63X+BXCYKndlnZZEMjTl1DhMfQ3yWweDgl8nC+ImP/zLo351YEn/6WpnOL6jKfvFWmnyDg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      next: '>=14'
+      react: '>=18'
+    peerDependenciesMeta:
+      next:
+        optional: true
+      react:
+        optional: true
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -5003,11 +5029,15 @@ packages:
       '@types/react-dom':
         optional: true
 
-  react-day-picker@9.14.0:
-    resolution: {integrity: sha512-tBaoDWjPwe0M5pGrum4H0SR6Lyk+BO9oHnp9JbKpGKW2mlraNPgP9BMfsg5pWpwrssARmeqk7YBl2oXutZTaHA==}
+  react-day-picker@10.0.1:
+    resolution: {integrity: sha512-eNh6BlwcYInWaJtRv18mXQ06Ys/H6rdTZAnTaSdOYJuTpwP1JMCHNd1FDRadA+gbeinq+psdULN5Xnowy9mV8w==}
     engines: {node: '>=18'}
     peerDependencies:
+      '@types/react': '>=16.8.0'
       react: '>=16.8.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   react-dom@19.2.5:
     resolution: {integrity: sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag==}
@@ -5313,6 +5343,15 @@ packages:
 
   tailwindcss@4.2.2:
     resolution: {integrity: sha512-KWBIxs1Xb6NoLdMVqhbhgwZf2PGBpPEiwOqgI4pFIYbNTfBXiKYyWoTsXgBQ9WFg/OlhnvHaY+AEpW7wSmFo2Q==}
+
+  takumi-pdf@0.15.0:
+    resolution: {integrity: sha512-LvK3GxvYsQYHDvx6pVO6tg2QWUC45iSGDDp5thijkP3WYHj0bcnNoQRp9dpUDRZlri+dwRIwkGNXA+DZGonCvg==}
+    engines: {node: '>=20.19'}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
 
   tapable@2.3.2:
     resolution: {integrity: sha512-1MOpMXuhGzGL5TTCZFItxCc0AARf1EZFQkGqMm7ERKj8+Hgr5oLvJOVFcC+lRmR8hCe2S3jC4T5D7Vg/d7/fhA==}
@@ -8316,8 +8355,6 @@ snapshots:
       '@supabase/realtime-js': 2.112.4
       '@supabase/storage-js': 2.112.4
 
-  '@tabby_ai/hijri-converter@1.0.5': {}
-
   '@tailwindcss/node@4.2.2':
     dependencies:
       '@jridgewell/remapping': 2.3.5
@@ -8385,6 +8422,11 @@ snapshots:
       '@tailwindcss/oxide': 4.2.2
       tailwindcss: 4.2.2
       vite: 8.0.8(@types/node@25.6.0)(esbuild@0.27.1)(jiti@2.6.1)(tsx@4.20.3)(yaml@2.8.3)
+
+  '@takumi-rs/helpers@2.14.0(preact@10.29.8)(react@19.2.5)':
+    optionalDependencies:
+      preact: 10.29.8
+      react: 19.2.5
 
   '@tanstack/eslint-plugin-query@5.99.0(eslint@10.2.1(jiti@2.6.1))(typescript@6.0.3)':
     dependencies:
@@ -9543,8 +9585,6 @@ snapshots:
       d3-transition: 3.0.1(d3-selection@3.0.0)
       d3-zoom: 3.0.0
 
-  date-fns-jalali@4.1.0-0: {}
-
   date-fns@4.1.0: {}
 
   debug@4.4.1:
@@ -9973,6 +10013,10 @@ snapshots:
   get-value@2.0.6: {}
 
   gl-matrix@3.4.4: {}
+
+  glimm@0.3.1(react@19.2.5):
+    optionalDependencies:
+      react: 19.2.5
 
   glob-parent@5.1.2:
     dependencies:
@@ -10642,13 +10686,13 @@ snapshots:
       '@types/react': 19.2.14
       '@types/react-dom': 19.2.3(@types/react@19.2.14)
 
-  react-day-picker@9.14.0(react@19.2.5):
+  react-day-picker@10.0.1(@types/react@19.2.14)(react@19.2.5):
     dependencies:
       '@date-fns/tz': 1.4.1
-      '@tabby_ai/hijri-converter': 1.0.5
       date-fns: 4.1.0
-      date-fns-jalali: 4.1.0-0
       react: 19.2.5
+    optionalDependencies:
+      '@types/react': 19.2.14
 
   react-dom@19.2.5(react@19.2.5):
     dependencies:
@@ -10946,6 +10990,14 @@ snapshots:
   tailwind-merge@3.5.0: {}
 
   tailwindcss@4.2.2: {}
+
+  takumi-pdf@0.15.0(preact@10.29.8)(react@19.2.5):
+    dependencies:
+      '@takumi-rs/helpers': 2.14.0(preact@10.29.8)(react@19.2.5)
+    optionalDependencies:
+      react: 19.2.5
+    transitivePeerDependencies:
+      - preact
 
   tapable@2.3.2: {}
 

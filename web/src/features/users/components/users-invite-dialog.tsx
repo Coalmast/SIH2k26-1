@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -46,6 +47,10 @@ export function UsersInviteDialog({
   open,
   onOpenChange,
 }: UserInviteDialogProps) {
+  const {
+    t
+  } = useTranslation();
+
   const form = useForm<UserInviteForm>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', role: '', desc: '' },
@@ -68,12 +73,11 @@ export function UsersInviteDialog({
       <DialogContent className='sm:max-w-md'>
         <DialogHeader className='text-start'>
           <DialogTitle className='flex items-center gap-2'>
-            <MailPlus /> Invite User
-          </DialogTitle>
-          <DialogDescription>
-            Invite new user to join your team by sending them an email
-            invitation. Assign a role to define their access level.
-          </DialogDescription>
+            <MailPlus />{t("invite_user", "Invite User")}</DialogTitle>
+          <DialogDescription>{t(
+            "invite_new_user_to_join_your_t",
+            "Invite new user to join your team by sending them an email\n            invitation. Assign a role to define their access level."
+          )}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -86,7 +90,7 @@ export function UsersInviteDialog({
               name='email'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>{t("email", "Email")}</FormLabel>
                   <FormControl>
                     <Input
                       type='email'
@@ -103,7 +107,7 @@ export function UsersInviteDialog({
               name='role'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>{t("role", "Role")}</FormLabel>
                   <SelectDropdown
                     defaultValue={field.value}
                     onValueChange={field.onChange}
@@ -122,7 +126,7 @@ export function UsersInviteDialog({
               name='desc'
               render={({ field }) => (
                 <FormItem className=''>
-                  <FormLabel>Description (optional)</FormLabel>
+                  <FormLabel>{t("description_optional", "Description (optional)")}</FormLabel>
                   <FormControl>
                     <Textarea
                       className='resize-none'
@@ -138,13 +142,12 @@ export function UsersInviteDialog({
         </Form>
         <DialogFooter className='gap-y-2'>
           <DialogClose asChild>
-            <Button variant='outline'>Cancel</Button>
+            <Button variant='outline'>{t("cancel", "Cancel")}</Button>
           </DialogClose>
-          <Button type='submit' form='user-invite-form'>
-            Invite <Send />
+          <Button type='submit' form='user-invite-form'>{t("invite", "Invite")}<Send />
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

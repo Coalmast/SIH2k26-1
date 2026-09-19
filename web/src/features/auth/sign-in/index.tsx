@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Link, useSearch } from '@tanstack/react-router'
 import {
   Card,
@@ -27,6 +28,10 @@ const STATS = [
 ]
 
 export function SignIn() {
+  const {
+    t
+  } = useTranslation();
+
   const { redirect } = useSearch({ from: '/(auth)/sign-in' })
 
   return (
@@ -125,10 +130,8 @@ export function SignIn() {
                 marginBottom: 40,
               }}
             >
-              <span style={{ fontSize: 18 }}>⛏️</span>
-              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', fontWeight: 500, letterSpacing: '0.05em' }}>
-                Ministry of Coal · Coal India Limited
-              </span>
+              <span style={{ fontSize: 18 }}>{t("text", "⛏️")}</span>
+              <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', fontWeight: 500, letterSpacing: '0.05em' }}>{t("ministry_of_coal_coal_india_li", "Ministry of Coal · Coal India Limited")}</span>
             </div>
 
             <h1
@@ -140,12 +143,8 @@ export function SignIn() {
                 marginBottom: 16,
                 letterSpacing: '-0.02em',
               }}
-            >
-              Smart Governance
-              <br />
-              <span style={{ background: 'linear-gradient(90deg, #f97316, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                for Coal Mines
-              </span>
+            >{t("smart_governance", "Smart Governance")}<br />
+              <span style={{ background: 'linear-gradient(90deg, #f97316, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{t("for_coal_mines", "for Coal Mines")}</span>
             </h1>
 
             <p
@@ -156,11 +155,10 @@ export function SignIn() {
                 lineHeight: 1.65,
                 marginBottom: 36,
               }}
-            >
-              An AI-enabled compliance monitoring platform unifying inspections,
-              statutory reporting, contractor management, and field operations
-              across all Indian coal mine sites.
-            </p>
+            >{t(
+              "an_ai_enabled_compliance_monit",
+              "An AI-enabled compliance monitoring platform unifying inspections,\n              statutory reporting, contractor management, and field operations\n              across all Indian coal mine sites."
+            )}</p>
 
             {/* Stats row */}
             <div style={{ display: 'flex', gap: 24, marginBottom: 44 }}>
@@ -174,9 +172,7 @@ export function SignIn() {
 
             {/* Roles */}
             <div style={{ marginBottom: 8 }}>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 14 }}>
-                Platform Roles
-              </p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 14 }}>{t("platform_roles", "Platform Roles")}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {ROLES.map((r, i) => (
                   <div key={r.label} className='role-row' style={{ animationDelay: `${i * 60}ms` }}>
@@ -205,13 +201,16 @@ export function SignIn() {
           {/* Bottom: Footer */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 6px #22c55e' }} />
-            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>System operational · SIH 2026 · Smart Automation</span>
+            <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)' }}>{t(
+              "system_operational_sih_2026_sm",
+              "System operational · SIH 2026 · Smart Automation"
+            )}</span>
           </div>
         </div>
       </div>
 
       {/* ── Right Form Panel ── */}
-      <div className='flex flex-1 items-center justify-center bg-background px-6 py-12'>
+      <div className='flex flex-1 items-center justify-center bg-background text-foreground px-6 py-12'>
         <div className='w-full max-w-sm'>
           {/* Mobile branding */}
           <div className='flex items-center gap-3 mb-8 lg:hidden'>
@@ -222,49 +221,34 @@ export function SignIn() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 18,
               }}
-            >
-              ⛏️
-            </div>
+            >{t("text", "⛏️")}</div>
             <div>
-              <div className='font-bold text-sm'>Coal Mine Governance</div>
-              <div className='text-xs text-muted-foreground'>Ministry of Coal · CIL</div>
+              <div className='font-bold text-sm'>{t("coal_mine_governance", "Coal Mine Governance")}</div>
+              <div className='text-xs text-muted-foreground'>{t("ministry_of_coal_cil", "Ministry of Coal · CIL")}</div>
             </div>
           </div>
 
           <Card className='border-border/60 shadow-xl'>
             <CardHeader className='pb-4'>
-              <CardTitle className='text-xl font-bold tracking-tight'>
-                Welcome back
-              </CardTitle>
-              <CardDescription className='text-sm'>
-                Sign in to your governance account.{' '}
+              <CardTitle className='text-xl font-bold tracking-tight'>{t("welcome_back", "Welcome back")}</CardTitle>
+              <CardDescription className='text-sm'>{t("sign_in_to_your_governance_acc", "Sign in to your governance account.")}{' '}
                 <Link
                   to='/sign-up'
                   className='font-medium text-primary underline underline-offset-4 hover:text-primary/80'
-                >
-                  Create an account
-                </Link>
+                >{t("create_an_account", "Create an account")}</Link>
               </CardDescription>
             </CardHeader>
             <CardContent>
               <UserAuthForm redirectTo={redirect} />
             </CardContent>
             <CardFooter className='pt-0'>
-              <p className='text-center text-xs text-muted-foreground w-full'>
-                By signing in, you agree to our{' '}
-                <a href='/terms' className='underline underline-offset-4 hover:text-primary'>
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a href='/privacy' className='underline underline-offset-4 hover:text-primary'>
-                  Privacy Policy
-                </a>
-                .
-              </p>
+              <p className='text-center text-xs text-muted-foreground w-full'>{t("by_signing_in_you_agree_to_our", "By signing in, you agree to our")}{' '}
+                <a href='/terms' className='underline underline-offset-4 hover:text-primary'>{t("terms_of_service", "Terms of Service")}</a>{' '}{t("and", "and")}{' '}
+                <a href='/privacy' className='underline underline-offset-4 hover:text-primary'>{t("privacy_policy", "Privacy Policy")}</a>{t("text", ".")}</p>
             </CardFooter>
           </Card>
         </div>
       </div>
     </AuthLayout>
-  )
+  );
 }

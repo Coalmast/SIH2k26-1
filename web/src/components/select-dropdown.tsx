@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Loader } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FormControl } from '@/components/ui/form'
@@ -30,6 +31,10 @@ export function SelectDropdown({
   className = '',
   isControlled = false,
 }: SelectDropdownProps) {
+  const {
+    t
+  } = useTranslation();
+
   const defaultState = isControlled
     ? { value: defaultValue, onValueChange }
     : { defaultValue, onValueChange }
@@ -45,9 +50,7 @@ export function SelectDropdown({
           <SelectItem disabled value='loading' className='h-14'>
             <div className='flex items-center justify-center gap-2'>
               <Loader className='h-5 w-5 animate-spin' />
-              {'  '}
-              Loading...
-            </div>
+              {'  '}{t("loading", "Loading...")}</div>
           </SelectItem>
         ) : (
           items?.map(({ label, value }) => (
@@ -58,5 +61,5 @@ export function SelectDropdown({
         )}
       </SelectContent>
     </Select>
-  )
+  );
 }

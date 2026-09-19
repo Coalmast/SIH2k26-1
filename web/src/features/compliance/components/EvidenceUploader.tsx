@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,10 @@ interface Props {
 }
 
 export function EvidenceUploader({ onFilesSelected, maxFiles = 3, uploading = false }: Props) {
+  const {
+    t
+  } = useTranslation();
+
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -50,15 +55,13 @@ export function EvidenceUploader({ onFilesSelected, maxFiles = 3, uploading = fa
         <h3 className="text-lg font-semibold mb-1">
           {isDragActive ? 'Drop files here' : 'Drag & Drop Documents'}
         </h3>
-        <p className="text-sm text-muted-foreground mb-4">Support PDF, JPG, PNG up to 10MB</p>
-        <Button type="button" variant="outline" disabled={uploading}>
-          Browse Files
-        </Button>
+        <p className="text-sm text-muted-foreground mb-4">{t("support_pdf_jpg_png_up_to_10mb", "Support PDF, JPG, PNG up to 10MB")}</p>
+        <Button type="button" variant="outline" disabled={uploading}>{t("browse_files", "Browse Files")}</Button>
       </div>
 
       {selectedFiles.length > 0 && (
         <div className="flex flex-col gap-3">
-          <h4 className="text-sm font-medium text-muted-foreground">Selected Files ({selectedFiles.length}/{maxFiles})</h4>
+          <h4 className="text-sm font-medium text-muted-foreground">{t("selected_files", "Selected Files (")}{selectedFiles.length}/{maxFiles}{t("text", ")")}</h4>
           {selectedFiles.map((file, idx) => (
             <div key={`${file.name}-${idx}`} className="flex items-center justify-between rounded-lg border border-border/50 p-3 bg-background">
               <div className="flex items-center gap-3">
@@ -67,7 +70,7 @@ export function EvidenceUploader({ onFilesSelected, maxFiles = 3, uploading = fa
                 </div>
                 <div>
                   <p className="font-medium text-sm line-clamp-1">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                  <p className="text-xs text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)}{t("mb", "MB")}</p>
                 </div>
               </div>
               <Button 

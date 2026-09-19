@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { z } from 'zod'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -57,6 +58,10 @@ const defaultValues: Partial<ProfileFormValues> = {
 }
 
 export function ProfileForm() {
+  const {
+    t
+  } = useTranslation();
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -79,14 +84,14 @@ export function ProfileForm() {
           name='username'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{t("username", "Username")}</FormLabel>
               <FormControl>
                 <Input placeholder='shadcn' {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
-              </FormDescription>
+              <FormDescription>{t(
+                "this_is_your_public_display_na",
+                "This is your public display name. It can be your real name or a\n                pseudonym. You can only change this once every 30 days."
+              )}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -96,7 +101,7 @@ export function ProfileForm() {
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email", "Email")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -104,15 +109,16 @@ export function ProfileForm() {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='m@example.com'>m@example.com</SelectItem>
-                  <SelectItem value='m@google.com'>m@google.com</SelectItem>
-                  <SelectItem value='m@support.com'>m@support.com</SelectItem>
+                  <SelectItem value='m@example.com'>{t("m_example_com", "m@example.com")}</SelectItem>
+                  <SelectItem value='m@google.com'>{t("m_google_com", "m@google.com")}</SelectItem>
+                  <SelectItem value='m@support.com'>{t("m_support_com", "m@support.com")}</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>
-                You can manage verified email addresses in your{' '}
-                <Link to='/'>email settings</Link>.
-              </FormDescription>
+              <FormDescription>{t(
+                "you_can_manage_verified_email_",
+                "You can manage verified email addresses in your"
+              )}{' '}
+                <Link to='/'>{t("email_settings", "email settings")}</Link>{t("text", ".")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -122,7 +128,7 @@ export function ProfileForm() {
           name='bio'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>{t("bio", "Bio")}</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder='Tell us a little bit about yourself'
@@ -130,10 +136,10 @@ export function ProfileForm() {
                   {...field}
                 />
               </FormControl>
-              <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
-              </FormDescription>
+              <FormDescription>{t("you_can", "You can")}<span>{t("mention", "@mention")}</span>{t(
+                "other_users_and_organizations_",
+                "other users and organizations to\n                link to them."
+              )}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -146,12 +152,11 @@ export function ProfileForm() {
               name={`urls.${index}.value`}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className={cn(index !== 0 && 'sr-only')}>
-                    URLs
-                  </FormLabel>
-                  <FormDescription className={cn(index !== 0 && 'sr-only')}>
-                    Add links to your website, blog, or social media profiles.
-                  </FormDescription>
+                  <FormLabel className={cn(index !== 0 && 'sr-only')}>{t("urls", "URLs")}</FormLabel>
+                  <FormDescription className={cn(index !== 0 && 'sr-only')}>{t(
+                    "add_links_to_your_website_blog",
+                    "Add links to your website, blog, or social media profiles."
+                  )}</FormDescription>
                   <FormControl className={cn(index !== 0 && 'mt-1.5')}>
                     <Input {...field} />
                   </FormControl>
@@ -166,12 +171,10 @@ export function ProfileForm() {
             size='sm'
             className='mt-2'
             onClick={() => append({ value: '' })}
-          >
-            Add URL
-          </Button>
+          >{t("add_url", "Add URL")}</Button>
         </div>
-        <Button type='submit'>Update profile</Button>
+        <Button type='submit'>{t("update_profile", "Update profile")}</Button>
       </form>
     </Form>
-  )
+  );
 }

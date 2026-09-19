@@ -31,18 +31,17 @@ export default function CriticalAlarmModal() {
     };
   }, [criticalAlarmActive, criticalAlerts.length]);
 
-  if (!criticalAlarmActive || criticalAlerts.length === 0) return null;
-
-  const currentAlert = criticalAlerts[0];
+  const isActive = criticalAlarmActive && criticalAlerts.length > 0;
+  const currentAlert = isActive ? criticalAlerts[0] : null;
 
   const handleAcknowledge = async () => {
-    await acknowledgeAlert(currentAlert.id);
+    if (currentAlert) await acknowledgeAlert(currentAlert.id);
   };
 
   return (
     <Modal
       transparent
-      visible={criticalAlarmActive}
+      visible={isActive}
       animationType="fade"
       statusBarTranslucent
     >
@@ -53,10 +52,10 @@ export default function CriticalAlarmModal() {
           </View>
           
           <Text style={styles.title}>EMERGENCY ALARM</Text>
-          <Text style={styles.subtitle}>{currentAlert.title}</Text>
+          <Text style={styles.subtitle}>{currentAlert?.title || ''}</Text>
           
           <View style={styles.messageBox}>
-            <Text style={styles.message}>{currentAlert.message}</Text>
+            <Text style={styles.message}>{currentAlert?.message || ''}</Text>
           </View>
 
           <TouchableOpacity style={styles.ackButton} onPress={handleAcknowledge}>
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(153, 27, 27, 0.95)', // Darker red for blinking effect
   },
   card: {
-    backgroundColor: '#0b0e11',
+    backgroundColor: '#0f0d0c',
     width: '100%',
     borderRadius: 16,
     padding: 24,
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   messageBox: {
-    backgroundColor: '#1e2329',
+    backgroundColor: '#1e1a17',
     padding: 16,
     borderRadius: 8,
     width: '100%',
@@ -120,7 +119,7 @@ const styles = StyleSheet.create({
     borderLeftColor: '#ef4444',
   },
   message: {
-    color: '#eaecef',
+    color: '#f5f0eb',
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'center',

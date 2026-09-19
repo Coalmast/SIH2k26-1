@@ -15,10 +15,10 @@ import {
   Settings,
   HardHat,
   Briefcase,
-  LucideIcon
+  CalendarCheck
 } from 'lucide-react'
 import { type SidebarData, type NavGroup } from '../types'
-import { AppRole } from '@/stores/auth-store'
+import { type AppRole } from '@/stores/auth-store'
 
 // Base data
 const user = {
@@ -43,6 +43,7 @@ const mineManagerNav: NavGroup[] = [
     items: [
       { title: 'Mine Dashboard', url: '/mine-manager', icon: LayoutDashboard },
       { title: 'Live Alerts', url: '/alerts', icon: Bell, badge: 'unread' }, // special tag for badge
+      { title: 'Environment', url: '/environment', icon: Leaf },
       { title: 'GIS Risk Map', url: '/mine-map', icon: Map },
     ],
   },
@@ -51,7 +52,6 @@ const mineManagerNav: NavGroup[] = [
     items: [
       { title: 'Compliance Tasks', url: '/compliance', icon: ShieldAlert },
       { title: 'Inspections', url: '/inspection', icon: Search },
-      { title: 'Violations & CAPAs', url: '/corrective-actions', icon: AlertTriangle },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
     ],
   },
@@ -59,13 +59,13 @@ const mineManagerNav: NavGroup[] = [
     title: '🏭 OPERATIONS',
     items: [
       { title: 'Production', url: '/production', icon: Activity },
-      { title: 'Environment', url: '/environment', icon: Leaf },
     ],
   },
   {
     title: '🤝 CONTRACTORS',
     items: [
       { title: 'Contractor Management', url: '/contractors', icon: Users },
+      { title: 'Attendance Management', url: '/attendance', icon: CalendarCheck },
     ],
   },
   {
@@ -144,7 +144,6 @@ const safetyOfficialNav: NavGroup[] = [
     items: [
       { title: 'Alerts', url: '/alerts', icon: Bell, badge: 'unread' },
       { title: 'Inspections', url: '/inspection', icon: Search },
-      { title: 'Violations & CAPAs', url: '/corrective-actions', icon: AlertTriangle },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
     ],
   },
@@ -181,7 +180,6 @@ const regulatorNav: NavGroup[] = [
     title: '🔍 INSPECT',
     items: [
       { title: 'Mine Map', url: '/mine-map', icon: Map },
-      { title: 'Violations', url: '/corrective-actions', icon: AlertTriangle },
     ],
   },
 ]
@@ -190,13 +188,8 @@ const contractorNav: NavGroup[] = [
   {
     title: '🏢 MY COMPANY',
     items: [
-      { title: 'Contractor Profile', url: '/contractors', icon: Briefcase },
-    ],
-  },
-  {
-    title: '📋 MY COMPLIANCE',
-    items: [
-      { title: 'Grievances', url: '/grievances', icon: MessageSquare },
+      { title: 'Contractor Dashboard', url: '/contractors', icon: Briefcase },
+      { title: 'Attendance & Workers', url: '/attendance', icon: CalendarCheck },
     ],
   },
 ]
@@ -223,10 +216,10 @@ const godModeNav: NavGroup[] = [
       { title: 'Compliance', url: '/compliance', icon: ShieldAlert },
       { title: 'Inspections', url: '/inspection', icon: Search },
       { title: 'Contractors', url: '/contractors', icon: Users },
+      { title: 'Attendance Management', url: '/attendance', icon: CalendarCheck },
       { title: 'Environment', url: '/environment', icon: Leaf },
       { title: 'Production', url: '/production', icon: Activity },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
-      { title: 'Corrective Actions', url: '/corrective-actions', icon: AlertTriangle },
       { title: 'OCR', url: '/ocr', icon: FileScan },
       { title: 'GIS Map', url: '/mine-map', icon: Map },
       { title: 'Alerts', url: '/alerts', icon: Bell, badge: 'unread' },
@@ -242,6 +235,7 @@ const godModeNav: NavGroup[] = [
 export const sidebarDataByRole: Record<AppRole | 'god_mode', SidebarData> = {
   super_admin: { user, teams, navGroups: superAdminNav },
   corporate_executive: { user, teams, navGroups: corporateExecutiveNav },
+  subsidiary_admin: { user, teams, navGroups: corporateExecutiveNav },
   mine_manager: { user, teams, navGroups: mineManagerNav },
   field_inspector: { user, teams, navGroups: fieldInspectorNav },
   safety_official: { user, teams, navGroups: safetyOfficialNav },

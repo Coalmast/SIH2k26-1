@@ -90,6 +90,20 @@ def seed():
         roles_db = {r["name"]: str(r["id"]) for r in cur.fetchall()}
         print(f"   Found {len(roles_db)} roles in DB")
 
+        print("   [0/19] Seeding orgs, subsidiaries & mines ...")
+        cur.execute("INSERT INTO organizations (id, name, type) VALUES (%s, %s, %s) ON CONFLICT (id) DO NOTHING", 
+                    (ORG_CIL, 'Coal India Limited', 'psu'))
+        
+        cur.execute("INSERT INTO subsidiaries (id, organization_id, name, code) VALUES (%s, %s, %s, %s) ON CONFLICT (id) DO NOTHING", 
+                    (SUB_WCL, ORG_CIL, 'Western Coalfields Limited', 'WCL'))
+        cur.execute("INSERT INTO subsidiaries (id, organization_id, name, code) VALUES (%s, %s, %s, %s) ON CONFLICT (id) DO NOTHING", 
+                    (SUB_SECL, ORG_CIL, 'South Eastern Coalfields Limited', 'SECL'))
+
+        for m in MINES:
+            cur.execute("INSERT INTO mines (id, subsidiary_id, name, mine_type, state, district) VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO NOTHING", 
+                        (m["id"], m["sub"], m["name"], m["type"], m["state"], m["district"]))
+        conn.commit()
+
         print("   [1/19] Seeding users ...")
         user_list  = make_users()
         mine_users = {m["id"]: [] for m in MINES}

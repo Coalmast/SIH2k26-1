@@ -6,8 +6,8 @@ interface CardProps extends ViewProps {
 }
 
 export function Card({ elevated = false, children, className = '', ...props }: CardProps) {
-  const baseClasses = 'rounded-xl p-6';
-  const surfaceClasses = elevated ? 'bg-binance-surface-elevated-dark' : 'bg-binance-surface-card-dark';
+  const baseClasses = 'rounded-lg p-6 border border-comet-border';
+  const surfaceClasses = elevated ? 'bg-comet-muted' : 'bg-comet-card';
 
   return (
     <View className={`${baseClasses} ${surfaceClasses} ${className}`} {...props}>

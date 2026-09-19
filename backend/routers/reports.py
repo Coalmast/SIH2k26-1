@@ -37,7 +37,7 @@ async def get_inspection_summary(id: uuid.UUID, db=Depends(get_db)):
 @router.get("/jobs/{job_id}")
 async def get_job_status(job_id: str):
     """Poll job status"""
-    from main import celery
+    from celery_config import celery
     res = celery.AsyncResult(job_id)
     if res.ready():
         return {"status": "completed", "result": res.result}

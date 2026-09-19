@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
@@ -56,6 +57,10 @@ export function SignUpForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLFormElement>) {
+  const {
+    t
+  } = useTranslation();
+
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -99,7 +104,7 @@ export function SignUpForm({
           name='email'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("email", "Email")}</FormLabel>
               <FormControl>
                 <Input placeholder='name@coalmines.gov.in' {...field} />
               </FormControl>
@@ -112,7 +117,7 @@ export function SignUpForm({
           name='role'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Role</FormLabel>
+              <FormLabel>{t("role", "Role")}</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger id='signup-role'>
@@ -136,7 +141,7 @@ export function SignUpForm({
           name='password'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t("password", "Password")}</FormLabel>
               <FormControl>
                 <PasswordInput placeholder='••••••••' {...field} />
               </FormControl>
@@ -149,7 +154,7 @@ export function SignUpForm({
           name='confirmPassword'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>{t("confirm_password", "Confirm Password")}</FormLabel>
               <FormControl>
                 <PasswordInput placeholder='••••••••' {...field} />
               </FormControl>
@@ -158,11 +163,9 @@ export function SignUpForm({
           )}
         />
         <Button className='mt-2' disabled={isLoading}>
-          {isLoading ? <Loader2 className='animate-spin' /> : <UserPlus />}
-          Create Account
-        </Button>
+          {isLoading ? <Loader2 className='animate-spin' /> : <UserPlus />}{t("create_account", "Create Account")}</Button>
       </form>
     </Form>
-  )
+  );
 }
 
