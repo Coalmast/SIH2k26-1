@@ -44,7 +44,7 @@ export function ProductionTrendChart({ mineId }: { mineId?: string }) {
   // Format data for chart
   const formattedData = data.productionData.map((d: any) => ({
     date: format(new Date(d.created_at), 'MMM dd'),
-    production: d.coal_extracted,
+    production: d.quantity_tonnes,
     originalDate: d.created_at
   }));
 

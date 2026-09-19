@@ -18,17 +18,28 @@ export function ComplianceCalendar({ mineId }: { mineId?: string }) {
         .from('compliance_instances')
         .select(`
           id, status, due_date,
-          compliance_requirements(title, regulation_reference)
+          compliance_requirements(title)
         `)
         .eq('mine_id', mineId!);
       
       if (data) {
         let formattedEvents = data.map((item: any) => {
           let color = 'hsl(var(--muted))'; // default gray
-          if (item.status === 'pending') color = 'hsl(var(--primary))'; // yellow
-          if (item.status === 'approved') color = 'hsl(var(--chart-2))'; // green
-          else if (item.status === 'breached') color = 'hsl(var(--destructive))'; // red
-          else if (item.status === 'in_progress') color = 'hsl(var(--chart-4))'; // turquoise
+          let textColor = 'hsl(var(--muted-foreground))';
+          
+          if (item.status === 'pending') {
+            color = 'hsl(var(--primary))'; // yellow
+            textColor = 'hsl(var(--primary-foreground))';
+          } else if (item.status === 'approved') {
+            color = 'hsl(var(--chart-2))'; // green
+            textColor = '#ffffff';
+          } else if (item.status === 'breached') {
+            color = 'hsl(var(--destructive))'; // red
+            textColor = 'hsl(var(--destructive-foreground))';
+          } else if (item.status === 'in_progress') {
+            color = 'hsl(var(--chart-4))'; // turquoise
+            textColor = '#ffffff';
+          }
 
           const req = Array.isArray(item.compliance_requirements) ? item.compliance_requirements[0] : item.compliance_requirements;
 
@@ -38,9 +49,9 @@ export function ComplianceCalendar({ mineId }: { mineId?: string }) {
             start: item.due_date,
             allDay: true,
             color,
+            textColor,
             extendedProps: {
-              status: item.status,
-              reg: req?.regulation_reference
+              status: item.status
             }
           };
         });
@@ -48,9 +59,9 @@ export function ComplianceCalendar({ mineId }: { mineId?: string }) {
         // Mock events if empty
         if (formattedEvents.length === 0) {
            formattedEvents = [
-             { id: 'mock1', title: 'Environmental Audit', start: '2026-09-12', allDay: true, color: 'hsl(var(--primary))' },
-             { id: 'mock2', title: 'Safety Gear Check', start: '2026-09-05', allDay: true, color: 'hsl(var(--chart-2))' },
-             { id: 'mock3', title: 'Equipment Licensing', start: '2026-09-20', allDay: true, color: 'hsl(var(--destructive))' }
+             { id: 'mock1', title: 'Environmental Audit', start: '2026-09-12', allDay: true, color: 'hsl(var(--primary))', textColor: 'hsl(var(--primary-foreground))' },
+             { id: 'mock2', title: 'Safety Gear Check', start: '2026-09-05', allDay: true, color: 'hsl(var(--chart-2))', textColor: '#ffffff' },
+             { id: 'mock3', title: 'Equipment Licensing', start: '2026-09-20', allDay: true, color: 'hsl(var(--destructive))', textColor: 'hsl(var(--destructive-foreground))' }
            ];
         }
         setEvents(formattedEvents);

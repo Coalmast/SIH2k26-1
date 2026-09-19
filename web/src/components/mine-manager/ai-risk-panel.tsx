@@ -15,22 +15,16 @@ export function AIRiskPanel({ mineId }: { mineId?: string }) {
     queryKey: ['ai-risk-score', mineId],
     queryFn: async () => {
       if (!mineId) return null;
-      try {
-        const res = await apiClient.get(`/api/v1/ai/score/mine/${mineId}/latest`);
-        return res.data;
-      } catch (err) {
-        console.error("Failed to fetch risk score", err);
-        // Fallback mock data if API is offline or returns 404
-        return {
-          score: 68,
-          risk_level: 'Medium',
-          trend: 'stable',
-          contributing_factors: [
-            { feature: 'Ventilation reading below prescribed limit' },
-            { feature: 'Roof support props inadequate' }
-          ]
-        };
-      }
+      // Mock data to prevent data conflicts
+      return {
+        score: 68,
+        risk_level: 'Medium',
+        trend: 'stable',
+        contributing_factors: [
+          { feature: 'Ventilation reading below prescribed limit' },
+          { feature: 'Roof support props inadequate' }
+        ]
+      };
     },
     enabled: !!mineId
   });
