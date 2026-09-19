@@ -7,3 +7,4 @@ secrets.md
 .env.docker
 .claude
 .agents
+web/src/routeTree.gen.ts

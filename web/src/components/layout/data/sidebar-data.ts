@@ -43,6 +43,7 @@ const mineManagerNav: NavGroup[] = [
     items: [
       { title: 'Mine Dashboard', url: '/mine-manager', icon: LayoutDashboard },
       { title: 'Live Alerts', url: '/alerts', icon: Bell, badge: 'unread' }, // special tag for badge
+      { title: 'Environment', url: '/environment', icon: Leaf },
       { title: 'GIS Risk Map', url: '/mine-map', icon: Map },
     ],
   },
@@ -58,7 +59,6 @@ const mineManagerNav: NavGroup[] = [
     title: '🏭 OPERATIONS',
     items: [
       { title: 'Production', url: '/production', icon: Activity },
-      { title: 'Environment', url: '/environment', icon: Leaf },
     ],
   },
   {

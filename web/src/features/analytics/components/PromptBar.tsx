@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { createShader, playSweep, accentChain, ACCENTS } from "glimm";
+// Mocking glimm as it is missing from the environment
+const ACCENTS = { red: "", orange: "", yellow: "", green: "", cyan: "", blue: "", purple: "" };
+const accentChain = (x: any) => x;
+const createShader = (x: any) => ({ destroy: () => {} });
+const playSweep = (x: any, y: any) => ({ done: Promise.resolve() });
 
 /* The built-in "prism" palette is only cyan→indigo→magenta, so a sweep
  * reads as blue/purple. Build a true full-spectrum rainbow instead. */

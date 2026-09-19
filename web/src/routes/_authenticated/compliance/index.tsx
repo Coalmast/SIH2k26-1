@@ -149,7 +149,7 @@ function CompliancePage() {
                     value={healthScore}
                     gaugePrimaryColor={healthScore >= 90 ? "rgb(16 185 129)" : healthScore >= 70 ? "rgb(245 158 11)" : "rgb(239 68 68)"}
                     gaugeSecondaryColor="currentColor"
-                    className="size-12 text-sm font-bold text-muted-foreground/20"
+                    className="size-16 text-sm font-bold text-foreground"
                   />
                   <div>
                     <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Mine Health</div>

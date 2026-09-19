@@ -155,7 +155,7 @@ export function ComplianceKanban({ mineId, filterStatus, filterCategory }: { min
     return (
       <div className="flex flex-1 gap-6 p-6 overflow-hidden">
         {[1, 2, 3, 4].map((colIndex) => (
-          <div key={colIndex} className="flex flex-col gap-4 w-[320px] min-w-[320px] shrink-0">
+          <div key={colIndex} className="flex flex-col gap-4 flex-1 min-w-0">
             <Skeleton className="h-12 w-full rounded-xl bg-card/40" />
             {[1, 2, 3].map((cardIndex) => (
               <motion.div
