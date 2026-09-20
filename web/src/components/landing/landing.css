@@ -1,8 +1,332 @@
-/* Add custom specific landing page styles here if needed.
-   Most styling is handled by Tailwind utility classes in LandingPage.tsx. */
+/* ─── COMET Landing Page — Obsidian Command Dark Theme ─── */
+/* All landing-page colors are hardcoded to bypass app-level CSS variable conflicts */
 
-.landing-container {
-  /* Dynamic gradient support is provided by Tailwind classes */
+.lp-root {
+  background: #0f0d0c;
+  color: #f5f0eb;
+  font-family: 'Geist', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
 }
 
-/* You can add custom animation keyframes or complex responsive rules here */
+/* ── Cards ── */
+.lp-card {
+  background: #171412;
+  border: 1px solid #2a2420;
+  border-radius: 16px;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+.lp-card:hover {
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 0 28px rgba(249, 115, 22, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ── Bento grid ── */
+.bento-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(1, 1fr);
+}
+@media (min-width: 640px) {
+  .bento-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .bento-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.bento-card {
+  background: #171412;
+  border: 1px solid #2a2420;
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 200px;
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  position: relative;
+  overflow: hidden;
+}
+.bento-card:hover {
+  border-color: rgba(249, 115, 22, 0.45);
+  box-shadow: 0 0 28px rgba(249, 115, 22, 0.10);
+  transform: translateY(-2px);
+}
+.bento-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(249,115,22,0.04) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.bento-card:hover::before { opacity: 1; }
+
+.bento-card.span-2 { grid-column: span 2; }
+.bento-card.span-3 { grid-column: span 3; }
+@media (max-width: 639px) {
+  .bento-card.span-2,
+  .bento-card.span-3 { grid-column: span 1; }
+}
+
+/* ── Depth label ── */
+.depth-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #f97316;
+  margin-bottom: 1rem;
+}
+.depth-label::after {
+  content: '';
+  display: block;
+  height: 1px;
+  width: 80px;
+  background: #2a2420;
+}
+
+/* ── Section headings ── */
+.lp-h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #f5f0eb;
+  margin: 0 0 1rem;
+}
+
+/* ── Stat cards ── */
+.stat-card {
+  background: #171412;
+  border: 1px solid #2a2420;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+/* ── Timeline/Ladder ── */
+.ladder-step {
+  display: flex;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border-left: 3px solid #2a2420;
+  background: transparent;
+  transition: all 150ms ease;
+  color: #a8a29e;
+}
+.ladder-step.active {
+  border-left-color: #f97316;
+  background: rgba(249, 115, 22, 0.07);
+  color: #f5f0eb;
+}
+.ladder-step.danger.active {
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.07);
+}
+
+/* ── Comparison bar ── */
+.comp-bar-track {
+  display: flex;
+  height: 40px;
+  border: 1px solid #2a2420;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #1e1a17;
+}
+.comp-bar-seg-paper { background: #4a3a22; color: #c2b08c; }
+.comp-bar-seg-comet { background: #f97316; color: #0f0d0c; }
+.comp-bar-seg {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border-right: 2px solid rgba(0,0,0,0.3);
+}
+
+/* ── Risk badge ── */
+.risk-critical { background: rgba(239,68,68,0.15); color: #f87171; }
+.risk-high     { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.risk-low      { background: rgba(22,163,74,0.15); color: #4ade80; }
+
+/* ── Phone mockup ── */
+.phone-shell {
+  width: 280px;
+  height: 540px;
+  background: #0a0908;
+  border-radius: 36px;
+  padding: 12px;
+  border: 6px solid #1e1a17;
+  box-shadow: 0 0 48px rgba(0,0,0,0.6);
+  margin: 0 auto;
+}
+.phone-screen {
+  background: #f4f6f7;
+  color: #16232b;
+  height: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  padding: 16px 14px;
+  font-size: 0.85rem;
+  position: relative;
+}
+
+/* ── Scorecard ticks ── */
+.tick-green {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  margin-top: 2px;
+}
+
+/* ── Impact table ── */
+.impact-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.impact-table th,
+.impact-table td {
+  padding: 0.875rem 1rem;
+  border-top: 1px solid #2a2420;
+  text-align: left;
+  vertical-align: top;
+}
+.impact-table th { font-weight: 700; color: #a8a29e; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.impact-table td:last-child { color: #f97316; font-weight: 700; }
+
+/* ── Divider strata line ── */
+.strata-divider {
+  height: 3px;
+  background: linear-gradient(to right, transparent, #2a2420 20%, #2a2420 80%, transparent);
+  margin: 0;
+}
+
+/* ── Tag ── */
+.lp-tag {
+  display: inline-block;
+  background: #f97316;
+  color: #0f0d0c;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ── Pulse animation for alerts ── */
+@keyframes lp-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  50% { box-shadow: 0 0 0 6px rgba(239,68,68,0); }
+}
+.pulse-red { animation: lp-pulse 2s ease-in-out infinite; }
+
+/* ── Section separator ── */
+.section-sep { border: none; border-top: 1px solid #2a2420; margin: 0; }
+
+/* ── Glassmorphism overlay for hero ── */
+.hero-glass {
+  background: rgba(15, 13, 12, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(42, 36, 32, 0.8);
+  border-radius: 20px;
+}
+
+/* ── Number flash animation ── */
+@keyframes num-flash {
+  0% { color: #f5f0eb; }
+  30% { color: #f59e0b; }
+  100% { color: #f5f0eb; }
+}
+
+/* ── Responsive bento grid (4-column interlocking) ── */
+.bento-responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(180px, auto);
+  gap: 1.25rem;
+}
+.bento-col-1 { grid-column: span 1; }
+.bento-col-2 { grid-column: span 2; }
+.bento-row-1 { grid-row: span 1; }
+.bento-row-2 { grid-row: span 2; }
+
+@media (max-width: 1024px) {
+  .bento-responsive-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bento-col-1, .bento-col-2 { grid-column: span 1; }
+  /* Make some wide cards span 2 on tablet */
+  .tablet-span-2 { grid-column: span 2 !important; }
+}
+
+@media (max-width: 640px) {
+  .bento-responsive-grid {
+    grid-template-columns: 1fr;
+  }
+  .bento-col-1, .bento-col-2, .tablet-span-2 {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+  }
+}
+
+/* ── Scorecard 2-col on mobile fix ── */
+@media (max-width: 640px) {
+  ul[style*="column-count: 2"], ul[style*="columnCount: 2"] {
+    column-count: 1 !important;
+  }
+}
+
+/* ── Role layer responsive ── */
+@media (max-width: 768px) {
+  .role-card {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Nav link hover color ── */
+nav a:hover { color: #f5f0eb !important; }
+
+/* ── CTA button hover ── */
+a[style*="background: #f97316"]:hover,
+a[style*="background:#f97316"]:hover {
+  background: #ea6d0c !important;
+  box-shadow: 0 0 40px rgba(249,115,22,0.45) !important;
+}
+
+/* ── Hero two-column responsive ── */
+@media (max-width: 900px) {
+  /* Hero grid collapses to single column */
+  div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Hide the dashboard image column on mobile to keep hero clean */
+  div[style*="grid-template-columns: 1fr 1fr"] > *:last-child {
+    display: none;
+  }
+}
+
+/* ── Bento wide card responsive image panel ── */
+@media (max-width: 640px) {
+  .bento-card[style*="flex-direction: row"] {
+    flex-direction: column !important;
+  }
+  .bento-card[style*="flex-direction: row"] > div:last-child {
+    width: 100% !important;
+    height: 160px !important;
+    border-left: none !important;
+    border-top: 1px solid #2a2420 !important;
+  }
+}

@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>COMET: Know what's happening underground while it's still happening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c-sky:#E6EEF2; --c-sand:#DCCBA8; --c-shale:#38454D; --c-coal:#14171A;
+  --lamp:#FFB300; --alarm:#E5382B; --okd:#2E9E69;
+  --display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --body:'Hanken Grotesk','Segoe UI',system-ui,-apple-system,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:#E6EEF2;color:#10242D;font-family:var(--body);font-size:1.0625rem;line-height:1.55;-webkit-text-size-adjust:100%}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--c-sky:#0E2028;--c-sand:#2B2418}
+  :root:not([data-theme="light"]) body{background:#0E2028}
+  :root:not([data-theme="light"]) .sky{--ink:#E4EEF2;--mut:#9FB6C1;--line:#24404D;--acc:#FFB300;--panel:#14303B;--focus:#FFD166}
+  :root:not([data-theme="light"]) .sand{--ink:#F1E7D0;--mut:#C2B08C;--line:#4A3F2A;--acc:#FFB300;--panel:#352C1D;--focus:#FFD166}
+}
+:root[data-theme="dark"]{--c-sky:#0E2028;--c-sand:#2B2418}
+:root[data-theme="dark"] body{background:#0E2028}
+:root[data-theme="dark"] .sky{--ink:#E4EEF2;--mut:#9FB6C1;--line:#24404D;--acc:#FFB300;--panel:#14303B;--focus:#FFD166}
+:root[data-theme="dark"] .sand{--ink:#F1E7D0;--mut:#C2B08C;--line:#4A3F2A;--acc:#FFB300;--panel:#352C1D;--focus:#FFD166}
+
+.sky{--bg:var(--c-sky);--ink:#10242D;--mut:#43606E;--line:#B7C9D2;--acc:#9A5A00;--panel:#F5F9FB;--focus:#0B5FFF}
+.sand{--bg:var(--c-sand);--ink:#2A2013;--mut:#5A4A30;--line:#B9A47B;--acc:#8A4B00;--panel:#EBDDBE;--focus:#0B5FFF}
+.shale{--bg:var(--c-shale);--ink:#EDF1F2;--mut:#B4C1C7;--line:#5A6B74;--acc:#FFB300;--panel:#2E3A41;--focus:#FFD166}
+.coal{--bg:var(--c-coal);--ink:#F0EDE4;--mut:#A7ACAE;--line:#33393E;--acc:#FFB300;--panel:#1D2226;--focus:#FFD166}
+.sec{background:var(--bg);color:var(--ink);padding:clamp(56px,9vw,120px) clamp(20px,6vw,80px)}
+@media (min-width:1100px){.sec{padding-left:140px}}
+.wrap{max-width:1120px;margin:0 auto}
+.strata{height:44px;background:var(--from);position:relative}
+.strata::after{content:"";position:absolute;inset:0;background:var(--to);clip-path:polygon(0 55%,5% 40%,11% 62%,17% 35%,24% 58%,31% 42%,38% 66%,46% 38%,53% 60%,61% 36%,69% 63%,77% 41%,85% 65%,92% 39%,100% 56%,100% 100%,0 100%)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus,#FFD166);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.98;margin:0 0 .4em;letter-spacing:-.005em}
+h1{font-size:clamp(3rem,8vw,6.4rem)}
+h2{font-size:clamp(2.2rem,5vw,3.9rem);max-width:18ch}
+h3{font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.05}
+p{margin:0 0 1em;max-width:62ch}
+.lead{font-size:1.2rem;color:var(--mut)}
+.depth{display:flex;align-items:center;gap:14px;font:800 1.35rem var(--display);color:var(--acc);margin-bottom:20px}
+.depth::after{content:"";height:2px;background:var(--line);flex:1;max-width:220px}
+.btn{font:700 1rem var(--body);padding:.85em 1.4em;border:2px solid currentColor;background:none;color:inherit;border-radius:2px;cursor:pointer;text-decoration:none;display:inline-block}
+.btn.solid{background:var(--lamp);border-color:var(--lamp);color:#1A1200}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.sm{padding:.55em 1em;font-size:.92rem}
+.note{font-size:.88rem;color:var(--mut)}
+.sample{display:inline-block;font-size:.8rem;font-weight:700;border:1px solid var(--line);padding:2px 8px;border-radius:2px;color:var(--mut)}
+dl.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0 36px;margin:0}
+dl.feat>div{padding:14px 0;border-top:1px solid var(--line)}
+dl.feat dt{font-weight:700}
+dl.feat dd{margin:2px 0 0;color:var(--mut);font-size:.98rem}
+.split{display:grid;gap:40px;grid-template-columns:1fr}
+@media (min-width:960px){.split{grid-template-columns:1fr 1fr;align-items:start}}
+.block{margin-top:clamp(56px,8vw,96px)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:2px;padding:20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:700 .95rem var(--body);padding:.5em 1em;border:2px solid var(--line);background:none;color:inherit;border-radius:999px;cursor:pointer}
+.chip[aria-pressed="true"],.chip[aria-selected="true"]{background:var(--lamp);border-color:var(--lamp);color:#1A1200}
+
+/* header + gauge */
+.top{position:fixed;top:0;left:0;right:0;z-index:30;background:#14171A;color:#F0EDE4;display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0px) + 10px) clamp(16px,4vw,32px) 10px;min-height:52px}
+.top a{text-decoration:none}
+.mark-name{display:flex;align-items:center;gap:10px;font:900 1.7rem var(--display);color:var(--lamp);letter-spacing:.02em}
+.top nav a{font-weight:700;font-size:.95rem;margin-left:20px;color:#F0EDE4}
+.gauge{position:fixed;right:12px;top:calc(env(safe-area-inset-top,0px) + 60px);z-index:25;pointer-events:none}
+.rail{display:none}
+.mark{position:static}
+.mark i{display:none}
+.lab{background:#14171A;color:var(--lamp);padding:4px 10px;border-radius:2px;line-height:1.1;white-space:nowrap}
+.lab b{display:block;font:800 1rem var(--display)}
+.lab span{font-size:.72rem;color:#F0EDE4}
+@media (min-width:1100px){
+  .gauge{right:auto;left:18px;top:14vh;height:72vh}
+  .rail{display:block;position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--lamp);box-shadow:0 0 0 1px rgba(0,0,0,.35);border-radius:2px}
+  .mark{position:absolute;left:1px;top:0;width:0;height:0}
+  .mark i{display:block;position:absolute;left:0;top:0;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--lamp);border:3px solid #14171A}
+  .lab{position:absolute;left:16px;top:0;transform:translateY(-50%)}
+}
+
+/* hero */
+.hero{padding-top:clamp(96px,12vw,140px);padding-bottom:0}
+.hero-grid{display:grid;gap:32px;grid-template-columns:1fr;align-items:center}
+@media (min-width:960px){.hero-grid{grid-template-columns:1.05fr .95fr}}
+.hero h1{max-width:11ch}
+.levels{list-style:none;margin:36px 0 0;padding:0;max-width:440px}
+.levels li{border-top:1px solid var(--line)}
+.levels a{display:flex;justify-content:space-between;padding:10px 2px;text-decoration:none;font-weight:700}
+.levels a span:last-child{font-family:var(--display);font-weight:800;font-size:1.15rem;color:var(--acc)}
+.levels a:hover span:first-child{text-decoration:underline}
+#shaft{width:100%;height:auto;max-height:78vh;display:block;color:var(--ink)}
+.r-sand{fill:var(--c-sand)}.r-shale{fill:var(--c-shale)}.r-coal{fill:var(--c-coal)}
+.tk{fill:#fff;stroke:rgba(0,0,0,.6);stroke-width:3;paint-order:stroke;font:800 15px var(--display)}
+.sv-t{fill:#fff;font:700 12px var(--body)}
+.ho-box{fill:#10242D;stroke:#FFB300;stroke-width:1.5;transition:fill .3s}
+.hit .ho-box{fill:#FFB300}
+.hit .ho-t{fill:#1A1200}
+#arrived{opacity:0;transition:opacity .4s;fill:currentColor;font:700 12px var(--body)}
+.hit #arrived{opacity:1}
+.cap{font-size:.9rem;color:var(--mut);margin:10px 0 0}
+
+/* gap */
+.lane{margin:28px 0}
+.lane h3{font-size:1.4rem;margin-bottom:8px}
+.track{display:flex;height:46px;border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--panel)}
+.seg{display:flex;align-items:center;padding:0 10px;font-size:.85rem;font-weight:700;white-space:nowrap;overflow:hidden;width:0;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+.paper .seg{background:#B9A47B;color:#2A2013;border-right:2px solid var(--c-sky)}
+.comet .seg{background:var(--lamp);color:#1A1200}
+.in .paper .s1{width:14%}.in .paper .s2{width:16%}.in .paper .s3{width:32%}.in .paper .s4{width:38%}
+.in .comet .s1{width:9%;min-width:0}
+.comet-l{margin-top:6px;font-weight:700}
+.three{display:grid;gap:0;grid-template-columns:1fr;margin-top:48px}
+@media (min-width:860px){.three{grid-template-columns:repeat(3,1fr)}.three>div{padding:0 28px;border-left:1px solid var(--line)}.three>div:first-child{padding-left:0;border-left:0}}
+.three>div{padding-top:18px;padding-bottom:18px;border-top:1px solid var(--line)}
+@media (min-width:860px){.three>div{border-top:0}}
+
+/* head office */
+.risklist{list-style:none;margin:16px 0 0;padding:0}
+.risklist button{display:grid;grid-template-columns:120px 1fr 44px;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);color:inherit;padding:10px 2px;cursor:pointer;font:inherit}
+.risklist button[aria-expanded="true"]{background:var(--panel)}
+.bar{height:12px;background:var(--line);border-radius:1px;overflow:hidden}
+.bar>i{display:block;height:100%}
+.b-Critical{background:var(--alarm)}.b-High{background:#E08A00}.b-Low{background:var(--okd)}
+.why{margin:0;padding:10px 12px;background:var(--panel);border-left:4px solid var(--lamp);font-size:.95rem;display:none}
+.why.on{display:block}
+#tamperText{width:100%;font:inherit;padding:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:2px;resize:vertical}
+.hash{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem;word-break:break-all}
+.verdict{display:inline-block;padding:4px 10px;font-weight:700;border-radius:2px;margin-top:8px}
+.verdict.ok{background:#CDEFDD;color:#0C5A37}
+.verdict.bad{background:var(--alarm);color:#fff}
+
+/* control room tabs */
+.room{display:grid;gap:24px;grid-template-columns:1fr}
+@media (min-width:900px){.room{grid-template-columns:250px 1fr}}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+@media (min-width:900px){.tabs{flex-direction:column;overflow:visible;gap:0}}
+.tabs button{flex:none;text-align:left;background:none;border:0;border-left:4px solid transparent;color:inherit;font:700 1rem var(--body);padding:9px 12px;cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{background:var(--panel);border-left-color:var(--lamp)}
+.tpanel{min-height:280px}
+.tpanel h3{font-size:2.3rem}
+.tag{display:inline-block;font-size:.82rem;font-weight:700;background:var(--lamp);color:#1A1200;padding:2px 9px;border-radius:2px;margin-right:8px}
+.repl{border-top:1px solid var(--line);margin-top:18px;padding-top:12px;color:var(--mut)}
+
+/* demos */
+.steps{list-style:none;margin:14px 0;padding:0}
+.steps li{padding:9px 12px;border-left:4px solid var(--line);color:var(--mut)}
+.steps li.on{border-left-color:var(--lamp);color:var(--ink);background:var(--panel)}
+.steps li.red.on{border-left-color:var(--alarm)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.state{font-weight:700}
+.st-line{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+
+/* phone */
+.facegrid{display:grid;gap:36px;grid-template-columns:1fr;margin-top:32px}
+@media (min-width:980px){.facegrid{grid-template-columns:320px 1fr;align-items:start}}
+.phone{width:300px;max-width:100%;height:560px;background:#0B0D0F;border-radius:38px;padding:10px;margin:0 auto}
+.scr{position:relative;background:#F4F6F7;color:#16232B;height:100%;border-radius:28px;overflow:hidden;padding:18px 16px;font-size:.92rem}
+.ph-top{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;margin-bottom:12px}
+.pill{background:#FFE29A;color:#4A3300;padding:2px 9px;border-radius:999px;font-weight:700;font-size:.78rem}
+.pill.ok{background:#CDEFDD;color:#0C5A37}
+.ph-title{font:800 1.5rem var(--display);line-height:1;margin-bottom:4px}
+.ph-sub{color:#4B5E68;font-size:.82rem;margin-bottom:12px}
+.ph-item{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #D5DEE2}
+.ph-bad{color:#B3261E;font-weight:700}
+.gasbox{margin-top:12px;background:#fff;border:1px solid #D5DEE2;padding:12px;border-radius:6px}
+.gasval{font:800 3rem var(--display);line-height:1}
+.gasbar{height:10px;background:#E1E8EB;border-radius:5px;margin-top:8px;overflow:hidden;position:relative}
+.gasbar i{display:block;height:100%;background:#2E9E69;width:33%;transition:width .15s}
+.gasbar b{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#16232B}
+.evac{position:absolute;inset:0;background:#C62418;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:5}
+.evac.on{display:flex;animation:flash 1s steps(2) infinite}
+.evac b{font:900 3.6rem var(--display);line-height:.95}
+@keyframes flash{50%{background:#8E1410}}
+@media (prefers-reduced-motion:reduce){.evac.on{animation:none}}
+.ctl{margin-top:16px;text-align:center}
+.ctl input[type=range]{width:100%;accent-color:#FFB300}
+.win{border:1px solid var(--line);background:var(--panel);border-radius:4px;overflow:hidden}
+.win-h{background:#14171A;color:#F0EDE4;padding:8px 14px;font-weight:700;font-size:.9rem;display:flex;justify-content:space-between}
+.feed{list-style:none;margin:0;padding:0;min-height:170px}
+.feed li{padding:11px 14px;border-left:5px solid var(--okd);border-top:1px solid var(--line)}
+.feed li.crit{border-left-color:var(--alarm);background:rgba(229,56,43,.12);font-weight:700}
+.feed li.warn{border-left-color:#E08A00}
+.feed li.new{animation:slide .5s}
+@keyframes slide{from{transform:translateX(14px);opacity:0}}
+.feed small{display:block;color:var(--mut);font-weight:400}
+
+/* ocr */
+.paperdoc{background:#F1E9D2;color:#2A2013;padding:20px;transform:rotate(-1.2deg);box-shadow:0 8px 24px rgba(0,0,0,.35);border-radius:2px}
+.paperdoc h4{margin:0 0 10px;font:800 1.4rem var(--display)}
+.paperdoc p{margin:6px 0;max-width:none;font-family:Georgia,serif}
+.exrows{margin-top:16px}
+.ex{display:grid;grid-template-columns:130px 1fr 54px;gap:8px;padding:9px 0;border-top:1px solid var(--line);opacity:.25;transition:opacity .4s}
+.ex.on{opacity:1}
+.ex.low .cf{color:#FFB300;font-weight:700}
+.review{display:none;margin-top:12px;padding:10px 12px;border-left:4px solid #FFB300;background:var(--panel)}
+.review.on{display:block}
+
+/* grievance */
+.gflow{list-style:none;margin:16px 0 0;padding:0}
+.gflow li{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line);opacity:.2;transition:opacity .35s}
+.gflow li.on{opacity:1}
+.gflow b{color:var(--acc)}
+.indic{font-family:'Noto Sans Devanagari','Noto Sans Bengali','Noto Sans Oriya','Nirmala UI',var(--body);font-size:1.15rem}
+
+/* ai */
+.sim{display:grid;gap:14px}
+.sim label{display:grid;grid-template-columns:1fr 46px;gap:4px 10px;font-weight:700}
+.sim input[type=range]{grid-column:1/-1;width:100%;accent-color:#FFB300}
+.score{font:900 6rem var(--display);line-height:.9}
+.contrib{margin-top:14px}
+.contrib div{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center;margin:6px 0;font-size:.92rem}
+.contrib .bar{background:var(--line)}
+.contrib .bar i{background:var(--lamp)}
+.agents{list-style:none;margin:0;padding:0}
+.agents li{padding:12px 0;border-top:1px solid var(--line)}
+.agents b{display:block}
+
+/* build */
+.flow{display:grid;gap:0;grid-template-columns:1fr;margin-top:24px}
+.flow>div{border:1px solid var(--line);padding:16px;background:var(--panel)}
+@media (min-width:860px){.flow{grid-template-columns:repeat(3,1fr)}.flow>div+div{border-left:0}}
+.flow b{font:800 1.3rem var(--display);display:block;margin-bottom:4px}
+.phases{display:grid;gap:0;grid-template-columns:1fr;margin-top:24px}
+@media (min-width:860px){.phases{grid-template-columns:repeat(3,1fr)}}
+.phases>div{padding:16px 20px 16px 0;border-top:4px solid var(--lamp)}
+.phases>div:nth-child(2){border-top-color:#E08A00}
+.phases>div:nth-child(3){border-top-color:var(--alarm)}
+table.imp{width:100%;border-collapse:collapse;margin-top:16px}
+table.imp th,table.imp td{text-align:left;padding:12px 10px;border-top:1px solid var(--line);vertical-align:top}
+table.imp th{font-weight:700}
+table.imp td:last-child{color:var(--acc);font-weight:700}
+.scroll-x{overflow-x:auto}
+
+/* scorecard */
+.score-list{list-style:none;margin:20px 0 0;padding:0;columns:1;column-gap:48px}
+@media (min-width:900px){.score-list{columns:2}}
+.score-list li{break-inside:avoid;display:grid;grid-template-columns:28px 1fr;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
+.tick{width:22px;height:22px;border-radius:50%;background:var(--okd);color:#fff;font-weight:900;font-size:.8rem;display:grid;place-items:center;margin-top:2px}
+.score-list a{font-size:.85rem;color:var(--acc);font-weight:700;display:block}
+footer.sec{padding-top:40px;padding-bottom:40px}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark-name" href="#top" aria-label="COMET, back to top">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="21" cy="9" r="6" fill="#FFB300"/><path d="M17 12 3 26M15 8 2 18M20 15 10 28" stroke="#FFB300" stroke-width="2" stroke-linecap="round" opacity=".8"/></svg>
+    COMET
+  </a>
+  <nav><a href="#office">Roles</a><a href="#scorecard">Scorecard</a></nav>
+</header>
+
+<aside class="gauge" aria-hidden="true">
+  <div class="rail"></div>
+  <div class="mark" id="mark"><i></i><div class="lab"><b id="gd">0 m</b><span id="gn">Surface</span></div></div>
+</aside>
+
+<main>
+
+<!-- HERO -->
+<section class="sec sky hero" id="top" data-depth="0" data-level="Surface">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Know what's happening underground while it's still happening.</h1>
+      <p class="lead">COMET connects the field inspector, the mine manager, company headquarters and the regulator on one platform. It works offline underground and goes live the moment there is signal.</p>
+      <div class="row">
+        <a class="btn solid" href="#gap">Start the descent</a>
+        <a class="btn" href="#scorecard">Jump to the scorecard</a>
+      </div>
+      <ul class="levels" aria-label="Levels of the page">
+        <li><a href="#surface"><span>Head office and regulator</span><span>0 m</span></a></li>
+        <li><a href="#office"><span>Mine office and safety office</span><span>−120 m</span></a></li>
+        <li><a href="#face"><span>Working face, contractors, workers</span><span>−300 m</span></a></li>
+        <li><a href="#ai"><span>The AI layer and how it scales</span><span>−420 m</span></a></li>
+      </ul>
+    </div>
+    <div>
+      <svg id="shaft" viewBox="0 0 480 640" role="img" aria-labelledby="shaft-t shaft-d">
+        <title id="shaft-t">Cross-section of a coal mine</title>
+        <desc id="shaft-d">An alert travels from the working face, up the shaft, to head office.</desc>
+        <rect class="r-sand" x="0" y="120" width="480" height="180"/>
+        <rect class="r-shale" x="0" y="300" width="480" height="200"/>
+        <rect class="r-coal" x="0" y="500" width="480" height="140"/>
+        <rect x="0" y="385" width="480" height="40" fill="#0F1215"/>
+        <line x1="0" y1="120" x2="480" y2="120" stroke="currentColor" stroke-width="3"/>
+        <polyline points="200,120 231,52 262,120" fill="none" stroke="currentColor" stroke-width="3"/>
+        <circle cx="231" cy="52" r="9" fill="none" stroke="currentColor" stroke-width="3"/>
+        <rect x="218" y="120" width="26" height="440" fill="#0F1215"/>
+        <rect x="244" y="224" width="120" height="16" fill="#0F1215"/>
+        <rect x="364" y="204" width="100" height="56" fill="#0F1215"/>
+        <text class="sv-t" x="414" y="236" text-anchor="middle">Mine office</text>
+        <a href="#office"><rect x="364" y="204" width="100" height="56" fill="transparent"/></a>
+        <text class="sv-t" x="262" y="410">Working face</text>
+        <circle cx="420" cy="400" r="6" fill="#FFB300"/>
+        <a href="#face"><rect x="250" y="388" width="180" height="26" fill="transparent"/></a>
+        <rect x="110" y="540" width="220" height="64" fill="#23292E" stroke="#FFB300" stroke-width="1.5"/>
+        <text class="sv-t" x="220" y="568" text-anchor="middle">AI layer</text>
+        <text class="sv-t" x="220" y="586" text-anchor="middle" style="font-weight:400">risk · anomalies · drafts</text>
+        <a href="#ai"><rect x="110" y="540" width="220" height="64" fill="transparent"/></a>
+        <g id="ho"><rect class="ho-box" x="300" y="84" width="130" height="36"/><text class="sv-t ho-t" x="365" y="107" text-anchor="middle">Head office</text></g>
+        <a href="#surface"><rect x="300" y="84" width="130" height="36" fill="transparent"/></a>
+        <text id="arrived" x="300" y="72">Alert received</text>
+        <text class="tk" x="8" y="112">0 m</text>
+        <text class="tk" x="8" y="238">−120 m</text>
+        <text class="tk" x="8" y="404">−300 m</text>
+        <text class="tk" x="8" y="520">−420 m</text>
+        <path d="M420 400 L231 400 L231 120 L300 102" fill="none" stroke="#FFB300" stroke-width="2" stroke-dasharray="5 6" opacity=".75"/>
+        <circle id="sig" r="7" fill="#FFB300" stroke="#fff" stroke-width="2" opacity="0">
+          <animateMotion id="sigAnim" dur="3.4s" begin="indefinite" fill="freeze" path="M420 400 L231 400 L231 120 L300 102"/>
+        </circle>
+      </svg>
+      <p class="cap">A field alert climbs from the working face to head office as soon as the phone finds signal. <button class="btn sm" id="replay" type="button">Replay</button></p>
+    </div>
+  </div>
+</section>
+
+<!-- GAP -->
+<section class="sec sky" id="gap" data-depth="0" data-level="Surface">
+  <div class="wrap" id="gapwrap">
+    <div class="depth">0 m · The problem</div>
+    <h2>Today, a fault underground takes days to reach the manager and weeks to reach the regulator.</h2>
+    <p class="lead">Compliance lives in paper registers and spreadsheets spread across mines, contractors and field offices. By the time anyone reads the evidence, it is old.</p>
+    <div class="lane">
+      <h3>On paper <span class="sample">Illustrative</span></h3>
+      <div class="track paper" aria-label="Paper flow: field notebook, register, mine manager, regulator">
+        <span class="seg s1">Notebook</span><span class="seg s2">Register</span><span class="seg s3">Mine manager</span><span class="seg s4">DGMS</span>
+      </div>
+    </div>
+    <div class="lane">
+      <h3>On COMET <span class="sample">Pilot target</span></h3>
+      <div class="track comet" aria-label="COMET flow: minutes after sync"><span class="seg s1"></span></div>
+      <div class="comet-l">Minutes after the phone syncs, visible to every level at once.</div>
+    </div>
+    <div class="three">
+      <div><h3>No trail from the field</h3><p>Observations, violations and corrective actions sit in registers. Nobody sees them until someone reads the register.</p></div>
+      <div><h3>No early warning</h3><p>Recurring failures go unnoticed until something goes wrong. There is no layer that watches the pattern.</p></div>
+      <div><h3>Reports made by hand</h3><p>Statutory reports to DGMS and SPCB take days to compile, and the same numbers are copied between spreadsheets.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HEAD OFFICE -->
+<section class="sec sky" id="surface" data-depth="0" data-level="Head office">
+  <div class="wrap">
+    <div class="depth">0 m · Head office and regulator</div>
+    <h2>Head office sees every mine. The regulator sees verified reports.</h2>
+    <p class="lead">One dashboard across mines and subsidiaries. No roll-up phone calls, no waiting for a subsidiary report.</p>
+    <div class="split">
+      <div class="panel">
+        <h3>AI risk ranking <span class="sample">Sample data</span></h3>
+        <div class="chips" role="group" aria-label="Filter mines by risk band" id="riskFilter">
+          <button class="chip" aria-pressed="true" data-f="All" type="button">All</button>
+          <button class="chip" aria-pressed="false" data-f="Critical" type="button">Critical</button>
+          <button class="chip" aria-pressed="false" data-f="High" type="button">High</button>
+          <button class="chip" aria-pressed="false" data-f="Low" type="button">Low</button>
+        </div>
+        <ul class="risklist" id="riskList"></ul>
+        <p class="note" style="margin-top:12px">Select a mine to see why the AI scored it that way.</p>
+      </div>
+      <div>
+        <dl class="feat">
+          <div><dt>National dashboard</dt><dd>Total mines, inspections done against plan, violations and compliance.</dd></div>
+          <div><dt>Live alerts</dt><dd>Critical, High and Low priority, so nothing urgent is buried.</dd></div>
+          <div><dt>Compliance overview</dt><dd>Compare mines and subsidiaries side by side.</dd></div>
+          <div><dt>Production analytics</dt><dd>Production, dispatch, active machinery and trends.</dd></div>
+          <div><dt>AI risk intelligence</dt><dd>Risks, anomalies and the reasons behind them.</dd></div>
+          <div><dt>Environmental summary</dt><dd>Air, dust and noise performance across operations.</dd></div>
+          <div><dt>Contractor trust map</dt><dd>Contractor compliance and risk, compared.</dd></div>
+          <div><dt>Emergency broadcast</dt><dd>One urgent message to every operational unit.</dd></div>
+        </dl>
+      </div>
+    </div>
+    <div class="block split" id="tamper">
+      <div>
+        <h3>The regulator can check that a report was not changed.</h3>
+        <p>Regulators get read-only access. Every signed statutory report carries a SHA-256 fingerprint. If a single character changes afterwards, the fingerprint no longer matches.</p>
+        <p class="note">Try it: edit the number in the report.</p>
+      </div>
+      <div class="panel">
+        <label for="tamperText"><b>Signed report, week 38</b> <span class="sample">Sample</span></label>
+        <textarea id="tamperText" rows="3">Methane exceedances this week: 3. Open violations: 2. Corrective actions closed on time: 9 of 10.</textarea>
+        <p class="note" style="margin:10px 0 2px">Fingerprint when signed</p>
+        <div class="hash" id="h0"></div>
+        <p class="note" style="margin:10px 0 2px">Fingerprint now</p>
+        <div class="hash" id="h1"></div>
+        <span class="verdict ok" id="verdict" role="status">Matches. Nothing changed.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strata" style="--from:var(--c-sky);--to:var(--c-sand)"></div>
+
+<!-- MINE OFFICE -->
+<section class="sec sand" id="office" data-depth="120" data-level="Mine office">
+  <div class="wrap">
+    <div class="depth">−120 m · Mine office</div>
+    <h2>One screen for the whole mine. Every deadline, violation and reading.</h2>
+    <p class="lead">The Mine Manager runs the mine from a live command center. Pick a screen to see what it does and what it replaces.</p>
+    <div class="room">
+      <div class="tabs" role="tablist" aria-label="Mine manager screens" id="tabs"></div>
+      <div class="tpanel panel" role="tabpanel" id="tpanel" aria-live="polite"></div>
+    </div>
+
+    <div class="block split">
+      <div id="escalate">
+        <h3>Deadlines that chase themselves</h3>
+        <p>COMET creates compliance tasks from the Mines Act, CMR 2017, the EP Act and CLRA. If a task is missed, it climbs the ladder on its own.</p>
+        <div class="row"><button class="btn solid sm" id="day" type="button">Let a day pass</button><button class="btn sm" id="dayReset" type="button">Reset</button></div>
+        <p class="note" style="margin-top:8px">Sample task: quarterly ventilation survey</p>
+      </div>
+      <ol class="steps" id="ladder"></ol>
+    </div>
+
+    <div class="block split" id="capa">
+      <div>
+        <h3>A corrective action that cannot be closed on a promise</h3>
+        <p>Every violation gets an owner and a deadline. Closing it needs uploaded evidence, and the AI risk score updates the moment it is closed.</p>
+        <p class="note">Try to close it before attaching evidence.</p>
+      </div>
+      <div class="panel">
+        <div class="st-line" style="border-top:0"><span><b>Violation</b> <span class="sample">Sample</span><br>Roof support missing, gallery 4. Severity: High.</span></div>
+        <div class="st-line"><span class="state" id="c1">Not assigned</span><button class="btn sm" id="cAssign" type="button">Assign to officer</button></div>
+        <div class="st-line"><span class="state" id="c2">No evidence attached</span><button class="btn sm" id="cEvid" type="button">Attach photo</button></div>
+        <div class="st-line"><span class="state" id="c3">Open</span><button class="btn solid sm" id="cClose" type="button">Close action</button></div>
+        <p class="note" id="cMsg" role="status" style="margin:10px 0 0"></p>
+      </div>
+    </div>
+
+    <div class="block" id="safety">
+      <h3>Safety officials work from the same records</h3>
+      <div class="split">
+        <dl class="feat" style="grid-template-columns:1fr">
+          <div><dt>Incidents</dt><dd>Investigate roof falls, machinery breakdowns, slips and falls. File the incident report and Form 4-A.</dd></div>
+          <div><dt>Environment</dt><dd>Watch AQI, PM10 and noise. Enter a manual reading when a sensor is down. View the sensor map.</dd></div>
+          <div><dt>Statutory reports</dt><dd>Auto-populate from the system, sign digitally and submit.</dd></div>
+          <div><dt>Violations and corrective actions</dt><dd>Follow every safety violation to closure.</dd></div>
+        </dl>
+        <div class="panel">
+          <b>PM10 forecast</b> <span class="sample">Sample</span>
+          <svg viewBox="0 0 420 190" width="100%" role="img" aria-label="PM10 readings rising with a forecast crossing the limit" style="margin-top:8px">
+            <line x1="10" y1="60" x2="410" y2="60" stroke="#E5382B" stroke-width="2" stroke-dasharray="6 5"/>
+            <text x="12" y="52" fill="#E5382B" font-size="12" font-weight="700">Limit</text>
+            <polyline fill="none" stroke="currentColor" stroke-width="3" points="10,150 50,142 90,138 130,126 170,118 210,104"/>
+            <polyline fill="none" stroke="#FFB300" stroke-width="3" stroke-dasharray="7 6" points="210,104 260,86 310,64 360,46 410,34"/>
+            <line x1="210" y1="20" x2="210" y2="170" stroke="currentColor" stroke-width="1" opacity=".4"/>
+            <text x="216" y="182" fill="currentColor" font-size="12">Now</text>
+            <text x="14" y="182" fill="currentColor" font-size="12">Past 12 hours</text>
+            <text x="300" y="182" fill="currentColor" font-size="12">Forecast</text>
+          </svg>
+          <p class="note" style="margin:8px 0 0">The forecast crosses the limit in about 6 hours. Suggested action: more water spraying on haul roads.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strata" style="--from:var(--c-sand);--to:var(--c-shale)"></div>
+
+<!-- WORKING FACE -->
+<section class="sec shale" id="face" data-depth="300" data-level="Working face">
+  <div class="wrap">
+    <div class="depth">−300 m · Working face</div>
+    <h2>Underground has no signal. The app does not need one.</h2>
+    <p class="lead">Field inspectors record everything on the phone, geo-tagged and time-stamped. When a reading is dangerous, the alert fires on the device itself.</p>
+    <div class="facegrid">
+      <div>
+        <div class="phone">
+          <div class="scr">
+            <div class="ph-top"><span class="pill" id="offpill">Offline</span><span>10:42</span></div>
+            <div class="ph-title">DGMS annual inspection</div>
+            <div class="ph-sub">Ventilation section · GPS locked</div>
+            <div class="ph-item"><span>Roof support in place</span><span>Safe</span></div>
+            <div class="ph-item"><span>Fan running</span><span class="ph-bad">Non-compliant · High</span></div>
+            <div class="ph-item"><span>Photo evidence</span><span>1 attached</span></div>
+            <div class="gasbox">
+              <div style="font-weight:700">Methane (CH4)</div>
+              <div class="gasval"><span id="gv">1.0</span>%</div>
+              <div class="gasbar"><i id="gb"></i><b></b></div>
+              <div class="note" style="color:#4B5E68;margin-top:6px">Demo limit 1.5%</div>
+            </div>
+            <div class="note" style="color:#4B5E68;margin-top:12px" id="pend">3 records saved on device</div>
+            <div class="evac" id="evac" role="alert"><b>EVACUATE</b><p style="margin:12px 0 0">Methane <span id="ev">1.6</span>%. Leave the area now. Fired on the device, no network needed.</p></div>
+          </div>
+        </div>
+        <div class="ctl">
+          <label for="gas"><b>Enter a methane reading</b></label>
+          <input id="gas" type="range" min="0" max="30" value="10" aria-describedby="gasnote">
+          <div class="note" id="gasnote" style="color:var(--mut)">Slide past 1.5% to trigger the alarm.</div>
+        </div>
+      </div>
+      <div>
+        <div class="row" style="margin-bottom:12px"><button class="btn solid" id="sync" type="button">Reconnect and sync</button></div>
+        <div class="win">
+          <div class="win-h"><span>Mine Manager · Live alert feed</span><span>Live</span></div>
+          <ul class="feed" id="feed"></ul>
+        </div>
+        <p class="note" style="margin-top:10px">Sample data. Sync sends the inspection and any alert to the manager's dashboard.</p>
+        <dl class="feat" style="margin-top:28px">
+          <div><dt>Geo-tagged and time-stamped</dt><dd>Every record carries where and when.</dd></div>
+          <div><dt>Offline first</dt><dd>Saves on the device and syncs on signal.</dd></div>
+          <div><dt>Checklists from the regulation library</dt><dd>Safe or non-compliant, with severity and photo evidence.</dd></div>
+          <div><dt>Safety observations</dt><dd>Any worksite observation, logged in seconds.</dd></div>
+          <div><dt>Incident reporting</dt><dd>Roof fall or machinery breakdown, filed on the spot.</dd></div>
+          <div><dt>QR attendance</dt><dd>Badge scan, geofenced to the mine, with night-shift limit flags.</dd></div>
+          <div><dt>SOS and notifications</dt><dd>Normal alerts for tasks, an SOS for emergencies.</dd></div>
+          <div><dt>Mine map</dt><dd>Find and navigate to the right location.</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="block split" id="ocr">
+      <div>
+        <h3>Contractors: paper in, data out</h3>
+        <p>Every contractor's licence, CLRA registration and safety certificate is tracked in one place, with expiry flags. Drop in a scanned document and COMET reads it. Anything the AI is less than 85% sure about goes to a person.</p>
+        <button class="btn solid" id="ocrGo" type="button">Read this document</button>
+        <dl class="feat" style="margin-top:28px;grid-template-columns:1fr 1fr">
+          <div><dt>Medicals</dt><dd>Expiring worker medicals.</dd></div>
+          <div><dt>Machinery fitness</dt><dd>Renewal tracking.</dd></div>
+          <div><dt>Training</dt><dd>Overdue renewals.</dd></div>
+          <div><dt>Corrective actions</dt><dd>Assigned to the contractor.</dd></div>
+          <div><dt>RFID attendance</dt><dd>Workforce utilization.</dd></div>
+          <div><dt>Production vs target</dt><dd>Contractor performance.</dd></div>
+        </dl>
+      </div>
+      <div>
+        <div class="paperdoc" aria-hidden="true">
+          <h4>Licence to employ contract labour</h4>
+          <p>Issued to: Sample Contractors Pvt Ltd</p>
+          <p>Licence no. CL/2024/0187</p>
+          <p>Issued by the Regional Labour Commissioner (Central)</p>
+          <p>Valid until 31 March 2027</p>
+        </div>
+        <div class="exrows" id="exrows">
+          <div class="ex"><span>Contractor</span><span>Sample Contractors Pvt Ltd</span><span class="cf">97%</span></div>
+          <div class="ex"><span>Licence number</span><span>CL/2024/0187</span><span class="cf">95%</span></div>
+          <div class="ex"><span>Issuing authority</span><span>Regional Labour Commissioner</span><span class="cf">91%</span></div>
+          <div class="ex low"><span>Valid until</span><span>31 Mar 2027</span><span class="cf">78%</span></div>
+        </div>
+        <div class="review" id="review"><b>Human review queue.</b> Valid until is below 85% confidence. A person checks the source image against the extracted field.</div>
+      </div>
+    </div>
+
+    <div class="block split" id="grievance">
+      <div>
+        <h3>Workers speak. COMET routes.</h3>
+        <p>Any worker can record a grievance by voice, or type it, in Hindi, Bengali, Odia, Marathi or English. Workers also submit worksite observations and photos. Pick a language to hear the flow.</p>
+        <div class="chips" role="group" aria-label="Choose a language" id="langs"></div>
+      </div>
+      <div class="panel">
+        <span class="sample">Sample</span>
+        <ul class="gflow" id="gflow">
+          <li><b>Heard</b><span class="indic" id="g1"></span></li>
+          <li><b>In English</b><span id="g2"></span></li>
+          <li><b>Category</b><span id="g3">Safety</span></li>
+          <li><b>Priority</b><span id="g4">High</span></li>
+          <li><b>Routed to</b><span id="g5">Ventilation officer, with an escalation timer</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strata" style="--from:var(--c-shale);--to:var(--c-coal)"></div>
+
+<!-- AI + BUILD -->
+<section class="sec coal" id="ai" data-depth="420" data-level="AI layer">
+  <div class="wrap">
+    <div class="depth">−420 m · The AI layer</div>
+    <h2>AI that warns early and shows its reasoning.</h2>
+    <p class="lead">Built on Google Gemini and the Agent Development Kit. The AI advises. People decide.</p>
+    <div class="split">
+      <div class="panel">
+        <h3>How a risk score is made <span class="sample">Illustrative</span></h3>
+        <div class="sim">
+          <label>Violation history <output id="o1">60</output><input type="range" id="i1" min="0" max="100" value="60"></label>
+          <label>Corrective action closure rate <output id="o2">55</output><input type="range" id="i2" min="0" max="100" value="55"></label>
+          <label>Gas reading pressure <output id="o3">40</output><input type="range" id="i3" min="0" max="100" value="40"></label>
+          <label>Production pressure <output id="o4">50</output><input type="range" id="i4" min="0" max="100" value="50"></label>
+        </div>
+        <div style="display:flex;align-items:baseline;gap:16px;margin-top:18px">
+          <div class="score" id="score">0</div><div><b id="band">High</b><br><span class="note">risk score out of 100</span></div>
+        </div>
+        <div class="contrib" id="contrib"></div>
+        <p class="note">Move the inputs to see the score and the reasons change. The real score reads live mine data.</p>
+      </div>
+      <div>
+        <ul class="agents">
+          <li><b>Risk scoring</b>Scores every mine from violations, closure rates, gas readings and production pressure.</li>
+          <li><b>Anomaly and pattern detection</b>Flags recurring violations and unusual readings before they become incidents.</li>
+          <li><b>Statutory report drafting</b>Fills reports from real data. A person reviews and signs.</li>
+          <li><b>Grievance understanding</b>Transcribes, translates, categorizes and prioritizes worker voice notes in five languages.</li>
+          <li><b>Human in the loop, everywhere</b>Low-confidence OCR goes to review. Corrective actions need evidence. Reports need a digital signature.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="block" id="build">
+      <h3>Built to run, and to scale</h3>
+      <p>This is a working prototype, not a mockup. Adding a mine means adding configuration, not rebuilding software.</p>
+      <div class="flow">
+        <div><b>Field app</b>React Native and Expo. Offline store, geo-tagging, QR scan, voice.</div>
+        <div><b>Backend</b>FastAPI with Supabase: Postgres, PostGIS and Realtime updates.</div>
+        <div><b>Dashboards and maps</b>React with MapLibre and DeckGL, for five roles.</div>
+      </div>
+      <div class="flow" style="margin-top:-1px"><div style="grid-column:1/-1"><b>AI agents</b>Google Gemini and ADK, reading the same records as the dashboards.</div></div>
+      <div class="phases">
+        <div><h3>Pilot at one mine</h3><p>Prove the field-to-manager loop with real inspectors.</p></div>
+        <div><h3>One subsidiary</h3><p>Add corporate dashboards, contractors and statutory reports.</p></div>
+        <div><h3>All subsidiaries</h3><p>Repeat the same design across Coal India. Proposed rollout.</p></div>
+      </div>
+    </div>
+
+    <div class="block" id="impact">
+      <h3>What changes for the mine</h3>
+      <p class="note">Impact targets to be measured in the pilot.</p>
+      <div class="scroll-x">
+      <table class="imp">
+        <thead><tr><th scope="col">Today</th><th scope="col">With COMET</th></tr></thead>
+        <tbody>
+          <tr><td>A field problem reaches the manager in days, by phone or register.</td><td>Minutes after the phone syncs.</td></tr>
+          <tr><td>Deadlines live in diaries and wall charts.</td><td>Tasks are created, reminded and escalated automatically.</td></tr>
+          <tr><td>Statutory reports take days to compile.</td><td>Auto-populated, digitally signed and submitted.</td></tr>
+          <tr><td>Contractor papers are checked by hand.</td><td>OCR reads them, a person confirms the doubtful ones.</td></tr>
+          <tr><td>Risk is understood after an incident.</td><td>A live score with reasons, before it.</td></tr>
+          <tr><td>Workers use complaint boxes.</td><td>Voice in five languages, routed to the right officer.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strata" style="--from:var(--c-coal);--to:var(--c-sky)"></div>
+
+<!-- SCORECARD -->
+<section class="sec sky" id="scorecard" data-depth="0" data-level="Surface">
+  <div class="wrap">
+    <div class="depth">Back at the surface · Scorecard</div>
+    <h2>Checked against the problem statement.</h2>
+    <p class="lead">Smart India Hackathon 2026, PS 26024, Coal India Limited, Ministry of Coal. Each line links to where it is shown.</p>
+    <ul class="score-list" id="score-list"></ul>
+    <div class="row" style="margin-top:36px"><a class="btn solid" href="#top">Back to the top</a></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="sec coal">
+  <div class="wrap"><p class="note" style="margin:0">COMET, Coal Operations Monitoring, Enforcement and Transparency. Prototype shown with sample data.</p></div>
+</footer>
+
+<script>
+(function(){
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+function $(id){return document.getElementById(id)}
+
+/* ---------- depth gauge ---------- */
+var secs = Array.prototype.slice.call(document.querySelectorAll('[data-depth]'));
+var mark=$('mark'), gd=$('gd'), gn=$('gn');
+function gauge(){
+  var cy = window.innerHeight*0.5, d=0, name='Surface';
+  for(var i=0;i<secs.length;i++){
+    var r=secs[i].getBoundingClientRect();
+    if(r.top<=cy && r.bottom>cy){
+      var t=(cy-r.top)/r.height; d=+secs[i].dataset.depth; name=secs[i].dataset.level;
+      var n=secs[i+1];
+      if(n && t>0.75){ d = d + (+n.dataset.depth - d)*((t-0.75)/0.25); }
+      break;
+    }
+  }
+  gd.textContent = d<1 ? '0 m' : '\u2212'+Math.round(d)+' m';
+  gn.textContent = name;
+  mark.style.top = Math.max(0,Math.min(1,d/420))*100+'%';
+}
+window.addEventListener('scroll',gauge,{passive:true});
+window.addEventListener('resize',gauge);
+gauge();
+
+/* ---------- hero signal ---------- */
+var sig=$('sig'), anim=$('sigAnim'), ho=$('shaft'), st;
+function play(){
+  ho.classList.remove('hit');
+  sig.setAttribute('opacity','1');
+  clearTimeout(st);
+  if(reduce || !anim.beginElement){ sig.setAttribute('transform','translate(300 102)'); ho.classList.add('hit'); return; }
+  sig.removeAttribute('transform');
+  anim.beginElement();
+  st=setTimeout(function(){ho.classList.add('hit')},3400);
+}
+$('replay').addEventListener('click',play);
+setTimeout(play,900);
+
+/* ---------- gap bars ---------- */
+var gw=$('gapwrap');
+if('IntersectionObserver' in window){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){gw.classList.add('in');io.disconnect()}})},{threshold:.3});
+  io.observe(gw);
+}else{gw.classList.add('in')}
+
+/* ---------- risk ranking ---------- */
+var mines=[
+ ['Sample mine A',84,'Critical','Two open high-severity violations are past deadline, and methane readings have risen for five days.'],
+ ['Sample mine B',73,'Critical','Corrective action closure is slow and a contractor licence has expired.'],
+ ['Sample mine C',58,'High','Recurring ventilation violations in the same section over three inspections.'],
+ ['Sample mine D',46,'High','Production pressure is high while two inspections are overdue.'],
+ ['Sample mine E',27,'Low','Deadlines met. One minor observation open.'],
+ ['Sample mine F',19,'Low','All corrective actions closed on time this quarter.']
+];
+var rl=$('riskList'), filt='All', open=-1;
+function drawRisk(){
+  rl.innerHTML='';
+  mines.forEach(function(m,i){
+    if(filt!=='All' && m[2]!==filt) return;
+    var li=document.createElement('li');
+    var b=document.createElement('button'); b.type='button';
+    b.setAttribute('aria-expanded', open===i);
+    b.innerHTML='<span>'+m[0]+'</span><span class="bar"><i class="b-'+m[2]+'" style="width:'+m[1]+'%"></i></span><b>'+m[1]+'</b>';
+    var w=document.createElement('p'); w.className='why'+(open===i?' on':''); w.textContent=m[2]+'. '+m[3];
+    b.addEventListener('click',function(){open=(open===i?-1:i);drawRisk()});
+    li.appendChild(b); li.appendChild(w); rl.appendChild(li);
+  });
+}
+drawRisk();
+$('riskFilter').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  filt=b.dataset.f; open=-1;
+  Array.prototype.forEach.call(this.children,function(c){c.setAttribute('aria-pressed',c===b)});
+  drawRisk();
+});
+
+/* ---------- tamper-evident ---------- */
+function fnv(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('00000000'+h.toString(16)).slice(-8).repeat(8)}
+function sha(s){
+  if(window.crypto && crypto.subtle){
+    return crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')});
+  }
+  return Promise.resolve(fnv(s));
+}
+var tt=$('tamperText'), h0=$('h0'), h1=$('h1'), vd=$('verdict'), base='';
+sha(tt.value).then(function(h){base=h;h0.textContent=h;h1.textContent=h});
+tt.addEventListener('input',function(){
+  sha(tt.value).then(function(h){
+    h1.textContent=h;
+    var ok=(h===base);
+    vd.className='verdict '+(ok?'ok':'bad');
+    vd.textContent= ok ? 'Matches. Nothing changed.' : 'Does not match. Changed after signing.';
+  });
+});
+
+/* ---------- control room tabs ---------- */
+var T=[
+ ['Mine dashboard','Compliance score, open violations, contractor score, production and the compliance calendar on one live screen.','Centralized dashboard','Weekly paper roll-ups'],
+ ['Live alerts','Compliance, contractor, environmental and corrective action events as they happen, with escalation timestamps.','Automated alerts','Phone calls and late messages'],
+ ['GIS risk map','Every site pinned on a map and colored by AI risk score. Hover a pin for score, active alerts and subsidiary. Built on MapLibre and PostGIS.','GIS mapping','Guessing which site is worst'],
+ ['Compliance tasks','Auto-generated from the Mines Act, CMR 2017, the EP Act and CLRA. Calendar and Kanban views. Reminders before the deadline, escalation after it.','Statutory compliance tracking','Diaries and wall charts'],
+ ['Inspections','Schedule an inspection and assign it to a field inspector. Results arrive with geo-stamp, timestamp, checklist outcome and photos.','Real-time inspection monitoring','Inspection registers'],
+ ['Violations and CAPAs','Each violation gets a corrective action with an owner and deadline. Closure needs uploaded evidence.','Corrective actions','Follow-up by memory'],
+ ['Incidents','Roof falls, machinery breakdowns and other incidents, with investigation status.','Incident reporting','Handwritten incident notes'],
+ ['Production','Production against target, dispatch, machinery and inventory.','Production monitoring','End-of-shift spreadsheets'],
+ ['Environment','Dust, SO\u2082 and NO\u2093 readings against SPCB limits. A breach raises an alert and escalates.','Environmental monitoring','Quarterly audit surprises'],
+ ['Contractors','Licences, CLRA registration and safety certificates with expiry flags. Training, medicals and machinery fitness tracked.','Contractor management','Filing cabinets of licences'],
+ ['Grievances','Worker concerns by text or voice, categorized, prioritized and routed automatically.','Grievance handling','Complaint boxes'],
+ ['Attendance','QR-scan attendance geofenced to the mine, with flags for night-shift limits under the Mines Act.','Worker attendance','Muster sheets'],
+ ['Statutory reports','Auto-populated from system data, digitally signed and submitted, with history kept.','Automated reports','Days of manual compilation'],
+ ['OCR and digitization','Scanned forms, handwritten records and contractor documents become searchable digital data.','Paperless governance','Boxes of legacy records'],
+ ['AI analytics','Aggregated risk, a compliance radar and an assistant that answers from safety, environmental, incident and production data.','AI and analytics','Reading every report by hand']
+];
+var tabs=$('tabs'), tp=$('tpanel'), cur=0;
+function drawTabs(){
+  tabs.innerHTML='';
+  T.forEach(function(t,i){
+    var b=document.createElement('button'); b.type='button'; b.setAttribute('role','tab');
+    b.setAttribute('aria-selected',i===cur); b.tabIndex=(i===cur?0:-1); b.textContent=t[0];
+    b.addEventListener('click',function(){cur=i;drawTabs();drawPanel()});
+    b.addEventListener('keydown',function(e){
+      var k=e.key, n=cur;
+      if(k==='ArrowDown'||k==='ArrowRight') n=(cur+1)%T.length;
+      else if(k==='ArrowUp'||k==='ArrowLeft') n=(cur-1+T.length)%T.length;
+      else return;
+      e.preventDefault(); cur=n; drawTabs(); drawPanel(); tabs.children[cur].focus();
+    });
+    tabs.appendChild(b);
+  });
+}
+function drawPanel(){
+  var t=T[cur];
+  tp.innerHTML='<h3></h3><p></p><p><span class="tag"></span></p><div class="repl"></div>';
+  tp.children[0].textContent=t[0]; tp.children[1].textContent=t[1];
+  tp.querySelector('.tag').textContent=t[2]; tp.querySelector('.repl').textContent='Replaces: '+t[3];
+}
+drawTabs(); drawPanel();
+
+/* ---------- escalation ladder ---------- */
+var L=[
+ ['Task created from CMR 2017, due in 3 days','',''],
+ ['Reminder sent to the responsible officer','',''],
+ ['Due today','',''],
+ ['Overdue. Mine Manager alerted.','red',''],
+ ['Still open. Subsidiary Admin alerted.','red',''],
+ ['Still open. DGMS notified.','red','']
+];
+var ld=$('ladder'), step=0;
+function drawLadder(){
+  ld.innerHTML='';
+  L.forEach(function(x,i){var li=document.createElement('li');li.textContent=x[0];li.className=(x[1]||'')+(i<=step?' on':'');ld.appendChild(li)});
+  $('day').disabled = step>=L.length-1;
+}
+$('day').addEventListener('click',function(){if(step<L.length-1){step++;drawLadder()}});
+$('dayReset').addEventListener('click',function(){step=0;drawLadder()});
+drawLadder();
+
+/* ---------- CAPA ---------- */
+var cs={a:false,e:false,c:false};
+function drawCapa(msg){
+  $('c1').textContent=cs.a?'Assigned to Field Officer, due in 7 days':'Not assigned';
+  $('c2').textContent=cs.e?'Evidence photo attached':'No evidence attached';
+  $('c3').textContent=cs.c?'Closed. Risk score updated.':'Open';
+  $('cAssign').disabled=cs.a; $('cEvid').disabled=cs.e||!cs.a; $('cClose').disabled=cs.c;
+  $('cMsg').textContent=msg||'';
+}
+$('cAssign').addEventListener('click',function(){cs.a=true;drawCapa('Assigned. The officer has a deadline and a digital trail.')});
+$('cEvid').addEventListener('click',function(){cs.e=true;drawCapa('Evidence attached.')});
+$('cClose').addEventListener('click',function(){
+  if(!cs.a){drawCapa('Cannot close. Assign it to an officer first.');return}
+  if(!cs.e){drawCapa('Cannot close. Attach evidence first.');return}
+  cs.c=true; drawCapa('Closed with evidence. The AI risk score has been recalculated.');
+});
+drawCapa();
+
+/* ---------- phone + feed ---------- */
+var LIMIT=1.5, gas=$('gas'), synced=false;
+var feed=$('feed');
+function feedItem(text,sub,cls,isNew){
+  var li=document.createElement('li'); li.className=(cls||'')+(isNew?' new':'');
+  li.innerHTML='<span></span><small></small>'; li.children[0].textContent=text; li.children[1].textContent=sub;
+  return li;
+}
+[['Contractor licence expires in 12 days','Contractor alert, sample','warn'],['Corrective action closed: conveyor guard','CAPA, sample','']].forEach(function(x){feed.appendChild(feedItem(x[0],x[1],x[2],false))});
+function readGas(){
+  var v=gas.value/10;
+  $('gv').textContent=v.toFixed(1);
+  $('gb').style.width=(v/3*100)+'%';
+  $('gb').style.background = v>=LIMIT ? '#C62418' : '#2E9E69';
+  $('ev').textContent=v.toFixed(1);
+  $('evac').classList.toggle('on', v>=LIMIT);
+  synced=false; $('offpill').textContent='Offline'; $('offpill').className='pill';
+  $('pend').textContent='4 records saved on device, waiting for signal';
+}
+gas.addEventListener('input',readGas);
+$('sync').addEventListener('click',function(){
+  var v=gas.value/10;
+  if(synced) return;
+  synced=true;
+  $('offpill').textContent='Synced'; $('offpill').className='pill ok';
+  $('pend').textContent='All records synced';
+  feed.insertBefore(feedItem('DGMS annual inspection submitted','1 non-compliant item, High severity, 1 photo, geo-stamped','warn',true),feed.firstChild);
+  if(v>=LIMIT){
+    feed.insertBefore(feedItem('CH4 '+v.toFixed(1)+'% at ventilation checkpoint','Evacuation alert raised. Escalating.','crit',true),feed.firstChild);
+  }
+});
+
+/* ---------- OCR ---------- */
+var exs=Array.prototype.slice.call(document.querySelectorAll('#exrows .ex')), oT=[];
+$('ocrGo').addEventListener('click',function(){
+  oT.forEach(clearTimeout); oT=[];
+  exs.forEach(function(e){e.classList.remove('on')}); $('review').classList.remove('on');
+  exs.forEach(function(e,i){oT.push(setTimeout(function(){e.classList.add('on')},reduce?0:(i+1)*450))});
+  oT.push(setTimeout(function(){$('review').classList.add('on')},reduce?0:(exs.length+1)*450));
+});
+
+/* ---------- grievance ---------- */
+var G=[
+ ['Hindi','\u0935\u0947\u0902\u091f\u093f\u0932\u0947\u0936\u0928 \u0915\u093e \u092a\u0902\u0916\u093e \u0926\u094b \u0926\u093f\u0928 \u0938\u0947 \u092c\u0902\u0926 \u0939\u0948\u0964'],
+ ['Bengali','\u09ad\u09c7\u09a8\u09cd\u099f\u09bf\u09b2\u09c7\u09b6\u09a8 \u09ab\u09cd\u09af\u09be\u09a8 \u09a6\u09c1\u0987 \u09a6\u09bf\u09a8 \u09a7\u09b0\u09c7 \u09ac\u09a8\u09cd\u09a7 \u0986\u099b\u09c7\u0964'],
+ ['Odia','\u0b2d\u0b47\u0b23\u0b4d\u0b1f\u0b3f\u0b32\u0b47\u0b38\u0b28 \u0b2a\u0b19\u0b4d\u0b16\u0b3e \u0b26\u0b41\u0b07 \u0b26\u0b3f\u0b28 \u0b27\u0b30\u0b3f \u0b2c\u0b28\u0b4d\u0b26 \u0b05\u0b1b\u0b3f\u0964'],
+ ['Marathi','\u0935\u093e\u092f\u0941\u0935\u0940\u091c\u0928 \u092a\u0902\u0916\u093e \u0926\u094b\u0928 \u0926\u093f\u0935\u0938\u093e\u0902\u092a\u093e\u0938\u0942\u0928 \u092c\u0902\u0926 \u0906\u0939\u0947\u0964'],
+ ['English','The ventilation fan has been off for two days.']
+];
+var EN='The ventilation fan has been off for two days.', langs=$('langs'), gT=[], gl=Array.prototype.slice.call(document.querySelectorAll('#gflow li'));
+G.forEach(function(g,i){
+  var b=document.createElement('button'); b.type='button'; b.className='chip'; b.setAttribute('aria-pressed','false'); b.textContent=g[0];
+  b.addEventListener('click',function(){
+    Array.prototype.forEach.call(langs.children,function(c){c.setAttribute('aria-pressed',c===b)});
+    gT.forEach(clearTimeout); gT=[]; gl.forEach(function(l){l.classList.remove('on')});
+    $('g1').textContent=g[1]; $('g2').textContent= g[0]==='English' ? 'No translation needed' : EN;
+    gl.forEach(function(l,k){gT.push(setTimeout(function(){l.classList.add('on')},reduce?0:k*500))});
+  });
+  langs.appendChild(b);
+});
+
+/* ---------- risk sim ---------- */
+function sim(){
+  var v=[1,2,3,4].map(function(n){return +$('i'+n).value});
+  [1,2,3,4].forEach(function(n){$('o'+n).textContent=$('i'+n).value});
+  var parts=[['Violation history',.35*v[0],35],['Low closure rate',.25*(100-v[1]),25],['Gas readings',.25*v[2],25],['Production pressure',.15*v[3],15]];
+  var s=Math.round(parts.reduce(function(a,p){return a+p[1]},0));
+  $('score').textContent=s;
+  $('band').textContent= s>=70?'Critical':(s>=40?'High':'Low');
+  var c=$('contrib'); c.innerHTML='';
+  parts.forEach(function(p){
+    var d=document.createElement('div'); d.innerHTML='<span></span><span class="bar"><i></i></span>';
+    d.children[0].textContent=p[0]+' +'+Math.round(p[1]);
+    d.querySelector('i').style.width=(p[1]/p[2]*100)+'%';
+    c.appendChild(d);
+  });
+}
+[1,2,3,4].forEach(function(n){$('i'+n).addEventListener('input',sim)});
+sim();
+
+/* ---------- scorecard ---------- */
+var S=[
+ ['Track statutory compliance across safety, environment, production and labour','#office','Mine office'],
+ ['Real-time monitoring of inspections, observations, violations and corrective actions','#face','Working face'],
+ ['AI to identify high-risk areas','#ai','AI layer'],
+ ['AI for recurring failures and operational anomalies','#ai','AI layer'],
+ ['Predictive alerts','#safety','Safety office'],
+ ['Geo-tagged, time-stamped field reporting','#face','Working face'],
+ ['Mobile app with offline support: inspections, observations, attendance, incidents','#face','Working face'],
+ ['Dashboards for mine officials, corporate management and regulators','#surface','Head office'],
+ ['Automated alerts, reminders, compliance reports and escalation','#escalate','Mine office'],
+ ['Digital approvals and statutory report generation','#capa','Mine office'],
+ ['GIS mapping','#office','Mine office'],
+ ['OCR document digitization','#ocr','Working face'],
+ ['Secure, tamper-evident audit trail','#tamper','Head office'],
+ ['Contractor management','#ocr','Working face'],
+ ['Grievance handling, multilingual and by voice','#grievance','Working face'],
+ ['Production reporting and environmental monitoring','#office','Mine office'],
+ ['Scalable across mines and subsidiaries','#build','AI layer'],
+ ['Less paperwork, more transparency and accountability','#impact','AI layer']
+];
+var sl=$('score-list');
+S.forEach(function(s){
+  var li=document.createElement('li');
+  li.innerHTML='<span class="tick" aria-hidden="true">\u2713</span><div><span></span><a href="'+s[1]+'">Shown at '+s[2]+'</a></div>';
+  li.querySelector('div span').textContent=s[0];
+  sl.appendChild(li);
+});
+})();
+</script>
+</body>
+</html>

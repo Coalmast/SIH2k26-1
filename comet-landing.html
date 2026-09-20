@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>COMET — Coal Operations Monitoring, Enforcement &amp; Transparency</title>
+<meta name="description" content="COMET connects field inspectors, mine managers, headquarters and regulators on one platform. Real-time monitoring, AI risk intelligence, and offline-first field reporting for India's coal mines.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<style>
+:root{
+  --coal:#0A0D10;--deep:#0D1117;--panel:#131920;--card:#1A2230;
+  --border:rgba(255,179,0,.15);--amber:#FFB300;--amber2:#FFD166;
+  --red:#E5382B;--green:#2E9E69;--muted:#6B7A8D;
+  --text:#E4EEF4;--sub:#9FB6C4;
+  --font:'Outfit',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+  --r:10px;--r-lg:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{background:var(--coal);color:var(--text);font-family:var(--font);font-size:1rem;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--deep)}::-webkit-scrollbar-thumb{background:var(--amber);border-radius:3px}
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,5vw,60px);height:72px;background:rgba(10,13,16,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;font-size:1.55rem;font-weight:900;color:var(--amber);text-decoration:none;letter-spacing:.05em}
+.nav-logo svg{width:32px;height:32px}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:var(--sub);font-size:.88rem;font-weight:600;text-decoration:none;letter-spacing:.03em;transition:color .2s}
+.nav-links a:hover{color:var(--amber)}
+.nav-cta{padding:.55em 1.4em;background:var(--amber);color:#0A0D10;font:700 .88rem var(--font);border:none;border-radius:6px;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;display:inline-block}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,179,0,.35)}
+@media(max-width:700px){.nav-links{display:none}}
+
+/* HERO */
+#hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px clamp(20px,8vw,100px) 60px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,179,0,.1);border:1px solid var(--border);color:var(--amber);font-size:.75rem;font-weight:700;padding:.4em 1em;border-radius:999px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:28px}
+.hero-badge span{width:8px;height:8px;background:var(--amber);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero-title{font-size:clamp(3rem,7.5vw,7rem);font-weight:900;line-height:.95;background:linear-gradient(135deg,#fff 0%,var(--amber) 55%,#E08A00 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:14px;max-width:16ch}
+.hero-sub{font-size:clamp(1rem,2vw,1.3rem);color:var(--sub);max-width:50ch;margin:0 auto 40px;line-height:1.65}
+.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-p{padding:.85em 2em;background:var(--amber);color:#0A0D10;font:700 1rem var(--font);border:none;border-radius:8px;cursor:pointer;text-decoration:none;transition:transform .2s,box-shadow .2s;display:inline-block}
+.btn-p:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(255,179,0,.4)}
+.btn-g{padding:.85em 2em;background:transparent;color:var(--text);font:700 1rem var(--font);border:1.5px solid rgba(255,255,255,.2);border-radius:8px;cursor:pointer;text-decoration:none;transition:border-color .2s,background .2s;display:inline-block}
+.btn-g:hover{border-color:var(--amber);background:rgba(255,179,0,.07)}
+.scroll-hint{margin-top:60px;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase}
+.scroll-bar{width:2px;height:44px;background:linear-gradient(var(--amber),transparent);border-radius:1px;animation:sb 2s ease-in-out infinite}
+@keyframes sb{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* SECTIONS */
+section{position:relative;z-index:1}
+.si{max-width:1200px;margin:0 auto;padding:clamp(60px,10vw,120px) clamp(20px,5vw,60px)}
+.sec-label{display:inline-flex;align-items:center;gap:8px;color:var(--amber);font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+.sec-label::before{content:'';width:20px;height:2px;background:var(--amber);border-radius:1px}
+.sec-title{font-size:clamp(1.9rem,5vw,3.4rem);font-weight:800;line-height:1.05;max-width:18ch;margin-bottom:18px}
+.sec-lead{color:var(--sub);max-width:54ch;font-size:1rem;margin-bottom:48px}
+.depth-tag{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+.depth-tag::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px rgba(255,179,0,.15)}
+
+/* BENTO */
+.bento{display:grid;gap:16px;grid-template-columns:repeat(12,1fr)}
+.bento-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:28px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s}
+.bento-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,179,0,.07) 0%,transparent 60%);opacity:0;transition:opacity .3s;pointer-events:none}
+.bento-card:hover::before{opacity:1}
+.bento-card:hover{border-color:rgba(255,179,0,.35);transform:translateY(-2px)}
+.s4{grid-column:span 4}.s6{grid-column:span 6}.s8{grid-column:span 8}.s12{grid-column:span 12}.s3{grid-column:span 3}
+@media(max-width:900px){.s4,.s6,.s8,.s3{grid-column:span 12}}
+@media(min-width:901px) and (max-width:1100px){.s4{grid-column:span 6}.s3{grid-column:span 6}}
+.c-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:10px}
+.c-title{font-size:1.2rem;font-weight:800;line-height:1.2;margin-bottom:8px}
+.c-body{font-size:.9rem;color:var(--sub);line-height:1.55}
+.ficon{width:44px;height:44px;border-radius:10px;background:rgba(255,179,0,.12);border:1px solid rgba(255,179,0,.2);display:grid;place-items:center;margin-bottom:16px;font-size:1.3rem}
+
+/* PROBLEM */
+#problem{background:linear-gradient(180deg,var(--coal) 0%,var(--deep) 100%)}
+.flow-compare{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:700px){.flow-compare{grid-template-columns:1fr}}
+.flow-box{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.flow-box h4{font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:12px;letter-spacing:.06em;text-transform:uppercase}
+.flow-bar{height:48px;border-radius:6px;overflow:hidden;display:flex}
+.flow-seg{display:flex;align-items:center;padding:0 12px;font-size:.75rem;font-weight:700;white-space:nowrap;transition:width 1.4s cubic-bezier(.2,.7,.2,1);width:0;overflow:hidden}
+.paper-bar .flow-seg{background:rgba(220,200,160,.25);color:#DCC8A0;border-right:2px solid var(--coal)}
+.comet-bar .flow-seg{background:var(--amber);color:#1A0D00}
+.in .paper-bar .p1{width:14%}.in .paper-bar .p2{width:16%}.in .paper-bar .p3{width:32%}.in .paper-bar .p4{width:38%}
+.in .comet-bar .c1{width:9%;min-width:0}
+.flow-lbl{font-size:.78rem;color:var(--sub);margin-top:8px;font-weight:600}
+.stat-row{display:flex;gap:40px;flex-wrap:wrap;margin-top:32px}
+.stat-num{font-size:3rem;font-weight:900;color:var(--amber);line-height:1}
+.stat-lbl{font-size:.82rem;color:var(--sub);margin-top:4px}
+
+/* HEAD OFFICE */
+#headoffice{background:var(--deep)}
+.risk-badge{display:inline-block;font-size:.72rem;font-weight:800;padding:.22em .75em;border-radius:4px}
+.rc{background:rgba(229,56,43,.2);color:#FF6B6B;border:1px solid rgba(229,56,43,.4)}
+.rh{background:rgba(224,138,0,.2);color:#FFA940;border:1px solid rgba(224,138,0,.4)}
+.rl{background:rgba(46,158,105,.2);color:#5CDB95;border:1px solid rgba(46,158,105,.4)}
+.mine-list{list-style:none;margin-top:16px}
+.mine-list li{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid rgba(255,255,255,.06);font-size:.85rem}
+.mbar{flex:1;margin:0 12px;height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.mbar-f{height:100%;border-radius:3px;transition:width 1.2s ease}
+.hash-blk{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin-top:10px}
+.hash-lbl{font-size:.7rem;color:var(--muted);margin-bottom:4px;font-weight:600}
+.hash-val{font-family:var(--mono);font-size:.74rem;color:var(--green);word-break:break-all}
+.hash-val.bad{color:var(--red)}
+.vtag{display:inline-block;padding:.3em .9em;border-radius:4px;font-size:.78rem;font-weight:800;margin-top:10px}
+.vok{background:rgba(46,158,105,.15);color:var(--green);border:1px solid rgba(46,158,105,.3)}
+.vbad{background:rgba(229,56,43,.15);color:var(--red);border:1px solid rgba(229,56,43,.3)}
+textarea.t-inp{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.1);color:var(--text);font:.85rem/1.5 var(--font);padding:12px;border-radius:6px;resize:vertical;outline:none;transition:border-color .2s}
+textarea.t-inp:focus{border-color:var(--amber)}
+
+/* WORK FACE */
+#workface{background:linear-gradient(180deg,var(--deep) 0%,#0C1520 100%)}
+.phone-frame{width:272px;max-width:100%;background:#070909;border-radius:36px;padding:9px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);margin:0 auto}
+.phone-screen{background:#0F1A22;color:#E4EEF4;border-radius:26px;overflow:hidden;padding:18px;font-size:.85rem;min-height:490px;position:relative}
+.ph-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.pill{font-size:.68rem;font-weight:800;padding:.25em .7em;border-radius:999px}
+.p-off{background:rgba(255,179,0,.2);color:var(--amber)}.p-on{background:rgba(46,158,105,.2);color:var(--green)}
+.ph-tit{font:800 1.25rem/1.1 var(--font);margin-bottom:3px}.ph-sub{font-size:.72rem;color:#5B7A8A;margin-bottom:12px}
+.ph-item{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem}
+.ph-bad{color:var(--red);font-weight:700}
+.meth-box{margin-top:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px}
+.meth-tit{font-weight:700;font-size:.78rem;color:var(--sub)}
+.meth-val{font:900 2.6rem/1 var(--font)}
+.meth-bar{height:8px;background:rgba(255,255,255,.07);border-radius:4px;margin-top:10px;overflow:hidden;position:relative}
+.meth-fill{height:100%;border-radius:4px;transition:width .15s,background .3s}
+.meth-lim{position:absolute;top:0;bottom:0;left:50%;width:2px;background:var(--text);opacity:.25}
+.evac{position:absolute;inset:0;background:#C62418;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:10;border-radius:26px}
+.evac.on{display:flex;animation:flash 1s steps(2) infinite}
+.evac-big{font:900 3.2rem/1 var(--font)}
+@keyframes flash{50%{background:#8E1410}}
+.gas-ctl{width:100%;max-width:272px;margin:16px auto 0;text-align:center}
+.gas-ctl label{font-size:.85rem;font-weight:700;display:block;margin-bottom:8px}
+.gas-ctl input{width:100%;accent-color:var(--amber)}
+.feed-win{background:var(--panel);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.feed-hdr{background:#0D1117;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;font-weight:700}
+.live{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--green)}
+.live::before{content:'';width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite}
+.feed-ul{list-style:none;min-height:150px}
+.feed-ul li{padding:11px 16px;border-left:4px solid var(--green);border-top:1px solid rgba(255,255,255,.04);font-size:.83rem}
+.feed-ul li.warn{border-left-color:#E08A00}.feed-ul li.crit{border-left-color:var(--red);background:rgba(229,56,43,.07);font-weight:700}
+.feed-ul li small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}
+.feed-ul li.new{animation:sli .4s ease}
+@keyframes sli{from{transform:translateX(14px);opacity:0}}
+
+/* AI LAYER */
+#ailayer{background:#080810}
+.sim-lbl{display:flex;justify-content:space-between;align-items:center;font-size:.83rem;font-weight:600}
+.sim-lbl output{color:var(--amber);font-weight:800;font-family:var(--mono)}
+.sim-r{width:100%;accent-color:var(--amber);height:5px;border-radius:3px;margin-top:5px}
+.sc-disp{display:flex;align-items:baseline;gap:14px;margin-top:22px}
+.sc-num{font:900 4.8rem/1 var(--font);color:var(--amber)}
+.sc-band{font-size:.95rem;font-weight:800}
+.sc-contrib{margin-top:14px;display:grid;gap:8px}
+.cr{display:flex;align-items:center;gap:10px;font-size:.8rem}
+.cr-lbl{flex:0 0 155px;color:var(--sub)}
+.cr-bar{flex:1;height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.cr-fill{height:100%;background:var(--amber);border-radius:3px;transition:width .5s ease}
+.ag-list{list-style:none}
+.ag-list li{padding:14px 0;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:14px;align-items:flex-start}
+.ag-icon{width:36px;height:36px;flex-shrink:0;background:rgba(255,179,0,.1);border:1px solid rgba(255,179,0,.2);border-radius:8px;display:grid;place-items:center;font-size:1rem}
+.ag-name{font-weight:700;font-size:.88rem;margin-bottom:3px}
+.ag-desc{font-size:.8rem;color:var(--sub)}
+
+/* TECH */
+#techstack{background:var(--deep)}
+.tech-pill{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--border);color:var(--sub);font-size:.78rem;font-weight:600;padding:.45em .9em;border-radius:6px;margin:4px;transition:border-color .2s,color .2s}
+.tech-pill:hover{border-color:var(--amber);color:var(--amber)}
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+@media(max-width:700px){.phase-grid{grid-template-columns:1fr}}
+.phase-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;border-top:3px solid var(--amber)}
+.phase-card:nth-child(2){border-top-color:#E08A00}.phase-card:nth-child(3){border-top-color:var(--red)}
+.ph-num{font:800 .72rem/1 var(--mono);color:var(--muted);margin-bottom:10px}
+.ph-tl{font:800 1.25rem/1.2 var(--font);margin-bottom:8px}
+.ph-bd{font-size:.85rem;color:var(--sub)}
+.imp-table{width:100%;border-collapse:collapse;margin-top:28px}
+.imp-table th,.imp-table td{text-align:left;padding:14px 16px;border-top:1px solid rgba(255,255,255,.06);font-size:.88rem}
+.imp-table th{color:var(--muted);font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.imp-table td:last-child{color:var(--amber);font-weight:700}
+.imp-table tbody tr:hover{background:rgba(255,179,0,.04)}
+
+/* SCORECARD */
+#scorecard{background:linear-gradient(180deg,var(--coal) 0%,var(--deep) 100%)}
+.check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:32px}
+.check-item{display:flex;gap:14px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;transition:border-color .2s}
+.check-item:hover{border-color:rgba(255,179,0,.35)}
+.check-tick{width:24px;height:24px;flex-shrink:0;background:rgba(46,158,105,.15);border:1px solid rgba(46,158,105,.3);border-radius:6px;display:grid;place-items:center;color:var(--green);font-size:.82rem;font-weight:900}
+.check-txt{font-size:.85rem;font-weight:600;line-height:1.45}
+.check-lnk{font-size:.72rem;color:var(--amber);text-decoration:none;font-weight:700;display:block;margin-top:4px}
+.check-lnk:hover{text-decoration:underline}
+
+/* GRIEVANCE */
+.lang-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.lang-chip{font:700 .82rem var(--font);padding:.42em 1em;background:transparent;border:1.5px solid rgba(255,255,255,.15);color:var(--sub);border-radius:999px;cursor:pointer;transition:all .2s}
+.lang-chip.active{background:var(--amber);border-color:var(--amber);color:#0A0D10}
+.grief-flow{list-style:none}
+.grief-flow li{display:grid;grid-template-columns:100px 1fr;gap:10px;padding:10px 0;border-top:1px solid rgba(255,255,255,.05);font-size:.85rem;opacity:.2;transition:opacity .35s}
+.grief-flow li.on{opacity:1}
+.grief-flow b{color:var(--amber);font-weight:700}
+
+/* FOOTER */
+footer{background:#07090B;border-top:1px solid rgba(255,179,0,.1);padding:36px clamp(20px,5vw,60px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
+.ftag{font-size:.7rem;font-weight:700;letter-spacing:.06em;background:rgba(255,179,0,.07);border:1px solid rgba(255,179,0,.15);color:var(--amber);padding:.28em .75em;border-radius:4px}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px)}
+
+/* MINI GRID HELPERS */
+.sub-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.sub-grid{grid-template-columns:1fr}}
+.sub-box{padding:10px;background:var(--panel);border-radius:8px;border:1px solid var(--border)}
+.sub-box-lbl{font-size:.77rem;font-weight:700;color:var(--amber);margin-bottom:3px}
+.sub-box-txt{font-size:.72rem;color:var(--sub)}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<nav id="nav-bar">
+  <a class="nav-logo" href="#hero" aria-label="COMET home">
+    <svg viewBox="0 0 34 34" fill="none" aria-hidden="true">
+      <circle cx="24" cy="10" r="7" fill="#FFB300"/>
+      <path d="M19 14 3 30M17 9 2 20M23 17 12 31" stroke="#FFB300" stroke-width="2.2" stroke-linecap="round" opacity=".7"/>
+    </svg>
+    COMET
+  </a>
+  <ul class="nav-links">
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#headoffice">Head Office</a></li>
+    <li><a href="#workface">Field</a></li>
+    <li><a href="#ailayer">AI Layer</a></li>
+    <li><a href="#scorecard">Scorecard</a></li>
+  </ul>
+  <a class="nav-cta" href="#scorecard">View Scorecard</a>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-badge"><span></span>SIH 2026 · PS 26024 · Coal India Limited</div>
+  <h1 class="hero-title" id="hero-title">Know What's Happening Underground.</h1>
+  <p class="hero-sub">COMET connects the field inspector, mine manager, company headquarters and the regulator on one platform — working offline underground, live the moment there is signal.</p>
+  <div class="cta-row">
+    <a class="btn-p" href="#problem">Start the Descent</a>
+    <a class="btn-g" href="#scorecard">View Scorecard</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-bar"></div>
+    <span>Scroll to descend</span>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ──────────────────────────────────────────────── -->
+<section id="problem">
+  <div class="si">
+    <div class="depth-tag reveal">0 m · The Problem</div>
+    <h2 class="sec-title reveal">A fault underground takes <em style="color:var(--amber);font-style:normal">days</em> to reach the manager.</h2>
+    <p class="sec-lead reveal">Compliance lives in paper registers and spreadsheets spread across mines, contractors and field offices. By the time anyone reads the evidence, it is old.</p>
+
+    <div class="bento">
+      <div class="bento-card s12 reveal" id="flowCard">
+        <div class="flow-compare">
+          <div class="flow-box">
+            <h4>On Paper · Illustrative</h4>
+            <div class="flow-bar paper-bar">
+              <span class="flow-seg p1">Notebook</span>
+              <span class="flow-seg p2">Register</span>
+              <span class="flow-seg p3">Mine Manager</span>
+              <span class="flow-seg p4">DGMS</span>
+            </div>
+            <div class="flow-lbl">Days → Weeks → Months</div>
+          </div>
+          <div class="flow-box">
+            <h4>On COMET · Pilot Target</h4>
+            <div class="flow-bar comet-bar">
+              <span class="flow-seg c1">Done</span>
+            </div>
+            <div class="flow-lbl" style="color:var(--amber)">Minutes after the phone syncs — visible to every level at once.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bento-card s4 reveal">
+        <div class="ficon">📋</div>
+        <div class="c-label">No trail</div>
+        <div class="c-title">Field data stays in registers</div>
+        <div class="c-body">Observations, violations and corrective actions sit in handwritten registers. Nobody sees them until someone physically reads the register.</div>
+      </div>
+      <div class="bento-card s4 reveal">
+        <div class="ficon">⚠️</div>
+        <div class="c-label">No early warning</div>
+        <div class="c-title">Recurring failures go unnoticed</div>
+        <div class="c-body">There is no layer that watches the pattern. Risk is only understood after an incident — not before it.</div>
+      </div>
+      <div class="bento-card s4 reveal">
+        <div class="ficon">📄</div>
+        <div class="c-label">Manual effort</div>
+        <div class="c-title">Reports made by hand</div>
+        <div class="c-body">Statutory reports to DGMS and SPCB take days to compile. The same numbers are copied between multiple spreadsheets.</div>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="reveal"><div class="stat-num" data-count="420">0</div><div class="stat-lbl">Metres underground, offline</div></div>
+      <div class="reveal"><div class="stat-num" data-count="18">0</div><div class="stat-lbl">Scorecard items addressed</div></div>
+      <div class="reveal"><div class="stat-num" data-count="5">0</div><div class="stat-lbl">Languages for worker voice</div></div>
+      <div class="reveal"><div class="stat-num" data-count="85">0</div><div class="stat-lbl">% AI OCR confidence threshold</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HEAD OFFICE ──────────────────────────────────────────── -->
+<section id="headoffice">
+  <div class="si">
+    <div class="depth-tag reveal">0 m · Head Office &amp; Regulator</div>
+    <h2 class="sec-title reveal">Head office sees every mine. The regulator sees verified reports.</h2>
+    <p class="sec-lead reveal">One dashboard across mines and subsidiaries. No roll-up phone calls, no waiting for subsidiary reports.</p>
+
+    <div class="bento">
+      <div class="bento-card s6 reveal">
+        <div class="c-label">AI Risk Intelligence</div>
+        <div class="c-title">National Risk Ranking</div>
+        <ul class="mine-list" id="mineList">
+          <li><span style="min-width:100px">Sample Mine A</span><div class="mbar"><div class="mbar-f" style="background:var(--red);width:0" data-w="84%"></div></div><span class="risk-badge rc">Critical · 84</span></li>
+          <li><span style="min-width:100px">Sample Mine B</span><div class="mbar"><div class="mbar-f" style="background:var(--red);width:0" data-w="73%"></div></div><span class="risk-badge rc">Critical · 73</span></li>
+          <li><span style="min-width:100px">Sample Mine C</span><div class="mbar"><div class="mbar-f" style="background:#E08A00;width:0" data-w="58%"></div></div><span class="risk-badge rh">High · 58</span></li>
+          <li><span style="min-width:100px">Sample Mine D</span><div class="mbar"><div class="mbar-f" style="background:#E08A00;width:0" data-w="46%"></div></div><span class="risk-badge rh">High · 46</span></li>
+          <li><span style="min-width:100px">Sample Mine E</span><div class="mbar"><div class="mbar-f" style="background:var(--green);width:0" data-w="27%"></div></div><span class="risk-badge rl">Low · 27</span></li>
+          <li><span style="min-width:100px">Sample Mine F</span><div class="mbar"><div class="mbar-f" style="background:var(--green);width:0" data-w="19%"></div></div><span class="risk-badge rl">Low · 19</span></li>
+        </ul>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:12px">Sample data. Scored from violations, gas readings &amp; production pressure.</p>
+      </div>
+
+      <div class="bento-card s6 reveal">
+        <div class="c-label">Dashboard Modules</div>
+        <div class="c-title">Everything a head office needs</div>
+        <div class="sub-grid" style="margin-top:16px">
+          <div class="sub-box"><div class="sub-box-lbl">National Dashboard</div><div class="sub-box-txt">Total mines, inspections vs plan, violations and compliance</div></div>
+          <div class="sub-box"><div class="sub-box-lbl">Live Alerts</div><div class="sub-box-txt">Critical, High and Low priority — nothing urgent is buried</div></div>
+          <div class="sub-box"><div class="sub-box-lbl">Production Analytics</div><div class="sub-box-txt">Production, dispatch, active machinery and trends</div></div>
+          <div class="sub-box"><div class="sub-box-lbl">Environmental</div><div class="sub-box-txt">Air, dust and noise performance across operations</div></div>
+          <div class="sub-box"><div class="sub-box-lbl">Contractor Trust Map</div><div class="sub-box-txt">Contractor compliance and risk, compared</div></div>
+          <div class="sub-box"><div class="sub-box-lbl">Emergency Broadcast</div><div class="sub-box-txt">One urgent message to every operational unit</div></div>
+        </div>
+      </div>
+
+      <div class="bento-card s6 reveal">
+        <div class="c-label">Regulatory Integrity</div>
+        <div class="c-title">Tamper-evident reports</div>
+        <p style="font-size:.85rem;color:var(--sub);margin:10px 0">Every signed statutory report carries a SHA-256 fingerprint. Edit a single character and the fingerprint no longer matches.</p>
+        <p style="font-size:.74rem;color:var(--muted);margin-bottom:10px">Try it: edit the number below.</p>
+        <textarea class="t-inp" id="tamperText" rows="3">Methane exceedances this week: 3. Open violations: 2. Corrective actions closed on time: 9 of 10.</textarea>
+        <div class="hash-blk"><div class="hash-lbl">Fingerprint when signed</div><div class="hash-val" id="h0"></div></div>
+        <div class="hash-blk"><div class="hash-lbl">Fingerprint now</div><div class="hash-val" id="h1"></div></div>
+        <span class="vtag vok" id="verdict" role="status">✓ Matches. Nothing changed.</span>
+      </div>
+
+      <div class="bento-card s6 reveal">
+        <div class="depth-tag" style="margin-bottom:10px">−120 m · Mine Office</div>
+        <div class="c-title">One screen for the whole mine</div>
+        <p style="font-size:.85rem;color:var(--sub);margin:12px 0 16px">Every deadline, violation and reading in a live command center. COMET creates compliance tasks from the Mines Act, CMR 2017, EP Act and CLRA.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border-radius:8px;border-left:3px solid var(--amber)">
+            <span>📅</span><div><div style="font-weight:700;font-size:.82rem">Compliance Calendar</div><div style="font-size:.74rem;color:var(--sub)">Auto-created tasks from Mines Act, CMR 2017, EP Act, CLRA</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border-radius:8px;border-left:3px solid #E08A00">
+            <span>🔔</span><div><div style="font-weight:700;font-size:.82rem">Auto Escalation</div><div style="font-size:.74rem;color:var(--sub)">Missed → Manager → Subsidiary Admin → DGMS</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border-radius:8px;border-left:3px solid var(--red)">
+            <span>📊</span><div><div style="font-weight:700;font-size:.82rem">PM10 Forecasting</div><div style="font-size:.74rem;color:var(--sub)">AI predicts dust crossing the limit before it happens</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel);border-radius:8px;border-left:3px solid var(--green)">
+            <span>✅</span><div><div style="font-weight:700;font-size:.82rem">Evidence-locked CAPAs</div><div style="font-size:.74rem;color:var(--sub)">Corrective actions cannot close without photo evidence</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WORKING FACE ─────────────────────────────────────────── -->
+<section id="workface">
+  <div class="si">
+    <div class="depth-tag reveal">−300 m · Working Face</div>
+    <h2 class="sec-title reveal">Underground has no signal. The app does not need one.</h2>
+    <p class="sec-lead reveal">Field inspectors record everything on the phone — geo-tagged and time-stamped. When a reading is dangerous, the alert fires on the device itself.</p>
+
+    <div class="bento">
+      <div class="bento-card s4 reveal" style="display:flex;flex-direction:column;align-items:center">
+        <div class="phone-frame">
+          <div class="phone-screen">
+            <div class="evac on" id="evacDiv" style="display:none">
+              <div class="evac-big">EVACUATE</div>
+              <p style="margin:12px 0 0;font-size:.85rem">Methane <span id="evacVal">1.6</span>%.<br>Leave now. No network needed.</p>
+            </div>
+            <div class="ph-top"><span class="pill p-off" id="syncPill">Offline</span><span style="font-size:.72rem;font-weight:700">10:42</span></div>
+            <div class="ph-tit">DGMS Annual Inspection</div>
+            <div class="ph-sub">Ventilation section · GPS locked</div>
+            <div class="ph-item"><span>Roof support in place</span><span style="color:var(--green);font-weight:700">Safe</span></div>
+            <div class="ph-item"><span>Fan running</span><span class="ph-bad">Non-compliant · High</span></div>
+            <div class="ph-item"><span>Photo evidence</span><span>1 attached</span></div>
+            <div class="meth-box">
+              <div class="meth-tit">Methane (CH₄)</div>
+              <div class="meth-val"><span id="gasVal">1.0</span>%</div>
+              <div class="meth-bar"><div class="meth-fill" id="gasBar" style="width:33%;background:var(--green)"></div><div class="meth-lim"></div></div>
+              <div style="font-size:.7rem;color:#5B7A8A;margin-top:6px">Demo limit 1.5%</div>
+            </div>
+            <div style="font-size:.7rem;color:#5B7A8A;margin-top:12px" id="pendStatus">3 records saved on device</div>
+          </div>
+        </div>
+        <div class="gas-ctl">
+          <label for="gasSlider">Enter a methane reading</label>
+          <input id="gasSlider" type="range" min="0" max="30" value="10">
+          <div style="font-size:.72rem;color:var(--muted);margin-top:5px">Slide past 1.5% to trigger evacuation alarm.</div>
+        </div>
+        <button class="btn-p" id="syncBtn" style="margin-top:14px;font-size:.82rem;padding:.6em 1.4em">Reconnect &amp; Sync</button>
+      </div>
+
+      <div class="bento-card s8 reveal" style="display:flex;flex-direction:column;gap:20px">
+        <div>
+          <div class="c-label">Mine Manager Dashboard</div>
+          <div class="feed-win">
+            <div class="feed-hdr"><span>Live Alert Feed</span><span class="live">Live</span></div>
+            <ul class="feed-ul" id="alertFeed">
+              <li class="warn">Contractor licence expires in 12 days<small>Contractor alert · Sample</small></li>
+              <li>Corrective action closed: conveyor guard<small>CAPA · Sample</small></li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="c-label">Field App Features</div>
+          <div class="sub-grid">
+            <div class="sub-box"><div class="sub-box-lbl">📍 Geo-tagged &amp; Time-stamped</div><div class="sub-box-txt">Every record carries where and when</div></div>
+            <div class="sub-box"><div class="sub-box-lbl">📶 Offline First</div><div class="sub-box-txt">Saves on device, syncs on signal</div></div>
+            <div class="sub-box"><div class="sub-box-lbl">📋 Regulation Library</div><div class="sub-box-txt">Checklists from CMR 2017 and DGMS standards</div></div>
+            <div class="sub-box"><div class="sub-box-lbl">📷 Photo Evidence</div><div class="sub-box-txt">Attached to every non-compliant finding</div></div>
+            <div class="sub-box"><div class="sub-box-lbl">🚨 SOS &amp; Alerts</div><div class="sub-box-txt">Normal alerts for tasks; SOS for emergencies</div></div>
+            <div class="sub-box"><div class="sub-box-lbl">🗺 Mine Map</div><div class="sub-box-txt">Find and navigate to the right location</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bento-card s6 reveal">
+        <div class="c-label">Multilingual Worker Voice</div>
+        <div class="c-title">Workers speak. COMET routes.</div>
+        <p style="font-size:.85rem;color:var(--sub);margin:10px 0 16px">Record a grievance by voice in Hindi, Bengali, Odia, Marathi or English. COMET transcribes, translates, categorizes and routes it to the right officer.</p>
+        <div class="lang-chips" id="langChips">
+          <button class="lang-chip" data-lang="0">Hindi</button>
+          <button class="lang-chip" data-lang="1">Bengali</button>
+          <button class="lang-chip" data-lang="2">Odia</button>
+          <button class="lang-chip" data-lang="3">Marathi</button>
+          <button class="lang-chip active" data-lang="4">English</button>
+        </div>
+        <ul class="grief-flow" id="griefFlow">
+          <li><b>Heard</b><span id="g1">The ventilation fan has been off for two days.</span></li>
+          <li><b>Translated</b><span id="g2">—</span></li>
+          <li><b>Category</b><span id="g3">Safety</span></li>
+          <li><b>Priority</b><span id="g4">High</span></li>
+          <li><b>Routed to</b><span id="g5">Ventilation officer, with an escalation timer</span></li>
+        </ul>
+      </div>
+
+      <div class="bento-card s6 reveal">
+        <div class="c-label">Contractor Compliance</div>
+        <div class="c-title">Paper in, data out</div>
+        <p style="font-size:.85rem;color:var(--sub);margin:10px 0 14px">Drop in a scanned document — COMET reads it. Anything below 85% confidence goes to a person for review.</p>
+        <button class="btn-p" id="ocrBtn" style="font-size:.82rem;padding:.6em 1.3em">Read this document</button>
+        <div style="margin-top:14px;background:rgba(240,220,170,.05);border:1px solid rgba(240,220,170,.15);border-radius:8px;padding:14px;transform:rotate(-0.8deg)">
+          <div style="font:800 .95rem var(--font);margin-bottom:6px">Licence to employ contract labour</div>
+          <div style="font-size:.78rem;color:var(--sub)">Issued to: Sample Contractors Pvt Ltd<br>Licence no. CL/2024/0187<br>Valid until 31 March 2027</div>
+        </div>
+        <div id="ocrRows" style="margin-top:14px">
+          <div class="ocr-row" style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem;opacity:.2;transition:opacity .4s"><span>Contractor</span><span>Sample Contractors Pvt Ltd</span><span style="color:var(--green);font-weight:700">97%</span></div>
+          <div class="ocr-row" style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem;opacity:.2;transition:opacity .4s"><span>Licence number</span><span>CL/2024/0187</span><span style="color:var(--green);font-weight:700">95%</span></div>
+          <div class="ocr-row" style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem;opacity:.2;transition:opacity .4s"><span>Issuing authority</span><span>Regional Labour Commissioner</span><span style="color:var(--green);font-weight:700">91%</span></div>
+          <div class="ocr-row" style="display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid rgba(255,255,255,.05);font-size:.8rem;opacity:.2;transition:opacity .4s"><span>Valid until</span><span>31 Mar 2027</span><span style="color:var(--amber);font-weight:700">78% ⚠</span></div>
+        </div>
+        <div id="ocrReview" style="display:none;margin-top:10px;padding:10px 12px;border-left:3px solid var(--amber);background:rgba(255,179,0,.06);font-size:.8rem;border-radius:0 6px 6px 0"><b>Human review queue.</b> "Valid until" is below 85% confidence. A person checks the source image against the extracted field.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── AI LAYER ─────────────────────────────────────────────── -->
+<section id="ailayer">
+  <div class="si">
+    <div class="depth-tag reveal">−420 m · The AI Layer</div>
+    <h2 class="sec-title reveal">AI that warns early and shows its reasoning.</h2>
+    <p class="sec-lead reveal">Built on Google Gemini and the Agent Development Kit. The AI advises. People decide.</p>
+
+    <div class="bento">
+      <div class="bento-card s6 reveal">
+        <div class="c-label">Risk Score Simulator · Illustrative</div>
+        <div class="c-title">How a risk score is made</div>
+        <div style="margin-top:20px;display:grid;gap:14px">
+          <div><div class="sim-lbl">Violation history <output id="o1">60</output></div><input class="sim-r" type="range" id="i1" min="0" max="100" value="60"></div>
+          <div><div class="sim-lbl">Corrective action closure rate <output id="o2">55</output></div><input class="sim-r" type="range" id="i2" min="0" max="100" value="55"></div>
+          <div><div class="sim-lbl">Gas reading pressure <output id="o3">40</output></div><input class="sim-r" type="range" id="i3" min="0" max="100" value="40"></div>
+          <div><div class="sim-lbl">Production pressure <output id="o4">50</output></div><input class="sim-r" type="range" id="i4" min="0" max="100" value="50"></div>
+        </div>
+        <div class="sc-disp">
+          <div class="sc-num" id="riskScore">54</div>
+          <div><div class="sc-band" id="riskBand" style="color:var(--amber)">High Risk</div><div style="font-size:.78rem;color:var(--muted)">out of 100</div></div>
+        </div>
+        <div class="sc-contrib" id="scoreContrib"></div>
+        <p style="font-size:.74rem;color:var(--muted);margin-top:12px">Move the inputs to see the score and reasons change. The real score reads live mine data.</p>
+      </div>
+
+      <div class="bento-card s6 reveal">
+        <div class="c-label">AI Agents</div>
+        <div class="c-title">Five agents. One coherent system.</div>
+        <ul class="ag-list" style="margin-top:14px">
+          <li><div class="ag-icon">🎯</div><div><div class="ag-name">Risk Scoring</div><div class="ag-desc">Scores every mine from violations, closure rates, gas readings and production pressure.</div></div></li>
+          <li><div class="ag-icon">🔍</div><div><div class="ag-name">Anomaly &amp; Pattern Detection</div><div class="ag-desc">Flags recurring violations and unusual readings before they become incidents.</div></div></li>
+          <li><div class="ag-icon">📝</div><div><div class="ag-name">Statutory Report Drafting</div><div class="ag-desc">Fills reports from real data. A person reviews and signs before submission.</div></div></li>
+          <li><div class="ag-icon">🗣</div><div><div class="ag-name">Grievance Understanding</div><div class="ag-desc">Transcribes, translates, categorizes and prioritizes worker voice notes in five languages.</div></div></li>
+          <li><div class="ag-icon">👤</div><div><div class="ag-name">Human in the Loop, Everywhere</div><div class="ag-desc">Low-confidence OCR to review. Reports need digital signature. AI advises — people decide.</div></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── TECH STACK ────────────────────────────────────────────── -->
+<section id="techstack">
+  <div class="si">
+    <div class="depth-tag reveal">Architecture</div>
+    <h2 class="sec-title reveal">Built to run. Built to scale.</h2>
+    <p class="sec-lead reveal">A working prototype, not a mockup. Adding a mine means adding configuration, not rebuilding software.</p>
+
+    <div class="bento" style="margin-bottom:32px">
+      <div class="bento-card s4 reveal"><div class="ficon">📱</div><div class="c-label">Field App</div><div class="c-title">React Native &amp; Expo</div><div class="c-body">Offline data store, geo-tagging, QR scan for attendance, voice input. Works at 420 m underground.</div></div>
+      <div class="bento-card s4 reveal"><div class="ficon">⚙️</div><div class="c-label">Backend</div><div class="c-title">FastAPI + Supabase</div><div class="c-body">Postgres with PostGIS for spatial data, Realtime subscriptions, Row Level Security by role.</div></div>
+      <div class="bento-card s4 reveal"><div class="ficon">🗺</div><div class="c-label">Dashboards</div><div class="c-title">React + MapLibre + DeckGL</div><div class="c-body">Five role-specific views. Spatial overlays. Realtime alert feeds across all dashboards.</div></div>
+      <div class="bento-card s12 reveal" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+        <div class="ficon" style="margin:0">🤖</div>
+        <div><div class="c-label">AI Layer</div><div class="c-title" style="font-size:.95rem">Google Gemini &amp; ADK — reading the same records as the dashboards</div></div>
+        <div style="margin-left:auto;display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tech-pill">Gemini 2.0 Flash</span>
+          <span class="tech-pill">Agent Development Kit</span>
+          <span class="tech-pill">Vertex AI</span>
+          <span class="tech-pill">PostGIS</span>
+          <span class="tech-pill">Supabase Realtime</span>
+          <span class="tech-pill">Expo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase-grid">
+      <div class="phase-card reveal"><div class="ph-num">Phase 01</div><div class="ph-tl">Pilot at one mine</div><div class="ph-bd">Prove the field-to-manager loop with real inspectors. Measure latency vs paper.</div></div>
+      <div class="phase-card reveal"><div class="ph-num">Phase 02</div><div class="ph-tl">One subsidiary</div><div class="ph-bd">Add corporate dashboards, contractor management and statutory reports.</div></div>
+      <div class="phase-card reveal"><div class="ph-num">Phase 03</div><div class="ph-tl">All subsidiaries</div><div class="ph-bd">Repeat the same design across Coal India Limited. Proposed national rollout.</div></div>
+    </div>
+
+    <div class="bento-card reveal" style="margin-top:32px">
+      <div class="c-label">Impact Targets</div>
+      <div class="c-title">What changes for the mine</div>
+      <p style="font-size:.78rem;color:var(--muted);margin:6px 0 0">To be measured in the pilot.</p>
+      <div style="overflow-x:auto">
+        <table class="imp-table">
+          <thead><tr><th>Today</th><th>With COMET</th></tr></thead>
+          <tbody>
+            <tr><td>A field problem reaches the manager in days, by phone or register.</td><td>Minutes after the phone syncs.</td></tr>
+            <tr><td>Deadlines live in diaries and wall charts.</td><td>Tasks created, reminded and escalated automatically.</td></tr>
+            <tr><td>Statutory reports take days to compile.</td><td>Auto-populated, digitally signed and submitted.</td></tr>
+            <tr><td>Contractor papers checked by hand.</td><td>OCR reads them; a person confirms the doubtful ones.</td></tr>
+            <tr><td>Risk understood after an incident.</td><td>A live score with reasons, before it.</td></tr>
+            <tr><td>Workers use complaint boxes.</td><td>Voice in five languages, routed to the right officer.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SCORECARD ────────────────────────────────────────────── -->
+<section id="scorecard">
+  <div class="si">
+    <div class="depth-tag reveal">Back at the surface · Scorecard</div>
+    <h2 class="sec-title reveal">Checked against the problem statement.</h2>
+    <p class="sec-lead reveal">Smart India Hackathon 2026, PS 26024, Coal India Limited, Ministry of Coal. Every item links to where it is demonstrated.</p>
+    <div class="check-grid" id="checkGrid"></div>
+    <div style="margin-top:48px;text-align:center" class="reveal">
+      <a class="btn-p" href="#hero">↑ Back to the top</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="display:flex;align-items:center;gap:8px;color:var(--amber);font-weight:900;font-size:1.2rem">
+    <svg width="26" height="26" viewBox="0 0 34 34" fill="none" aria-hidden="true"><circle cx="24" cy="10" r="7" fill="#FFB300"/><path d="M19 14 3 30M17 9 2 20M23 17 12 31" stroke="#FFB300" stroke-width="2.2" stroke-linecap="round" opacity=".7"/></svg>
+    COMET
+  </div>
+  <span style="color:var(--muted);font-size:.78rem">Coal Operations Monitoring, Enforcement &amp; Transparency · Prototype shown with sample data</span>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+    <span class="ftag">SIH 2026</span><span class="ftag">PS 26024</span><span class="ftag">Coal India</span><span class="ftag">Ministry of Coal</span>
+  </div>
+</footer>
+
+<!-- THREE.JS -->
+<script>
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 80;
+
+  // Stars / dust
+  const N = 1800;
+  const pos = new Float32Array(N * 3);
+  const col = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    pos[i*3]   = (Math.random()-.5)*300;
+    pos[i*3+1] = (Math.random()-.5)*300;
+    pos[i*3+2] = (Math.random()-.5)*200;
+    if (Math.random() < .12) { col[i*3]=1; col[i*3+1]=.7; col[i*3+2]=0; }
+    else { col[i*3]=.1+Math.random()*.1; col[i*3+1]=.14+Math.random()*.18; col[i*3+2]=.24+Math.random()*.2; }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const m = new THREE.PointsMaterial({ size:.9, vertexColors:true, transparent:true, opacity:.65, sizeAttenuation:true });
+  scene.add(new THREE.Points(g, m));
+
+  // Orbit ring
+  const orb = new THREE.Mesh(new THREE.TorusGeometry(30,.15,8,80), new THREE.MeshBasicMaterial({ color:0xFFB300, transparent:true, opacity:.07 }));
+  orb.rotation.x = Math.PI / 3; orb.rotation.y = Math.PI / 5;
+  scene.add(orb);
+
+  // Comet body
+  const comet = new THREE.Mesh(new THREE.SphereGeometry(1.5,12,12), new THREE.MeshBasicMaterial({ color:0xFFB300 }));
+  scene.add(comet);
+
+  // Tail
+  const tp = new Float32Array(60 * 3);
+  const tg = new THREE.BufferGeometry();
+  tg.setAttribute('position', new THREE.BufferAttribute(tp, 3));
+  scene.add(new THREE.Line(tg, new THREE.LineBasicMaterial({ color:0xFFB300, transparent:true, opacity:.3 })));
+
+  let scrollY = 0;
+  window.addEventListener('scroll', () => { scrollY = window.scrollY; }, { passive:true });
+  let pts = scene.children[0]; let t = 0;
+  function frame() {
+    requestAnimationFrame(frame);
+    t += .004;
+    pts.rotation.y = t * .05; pts.rotation.x = t * .02;
+    orb.rotation.z = t * .15;
+    const cx = 30*Math.cos(t*.7), cy = 30*Math.sin(t*.7)*Math.sin(Math.PI/3), cz = 30*Math.sin(t*.7)*Math.cos(Math.PI/3);
+    comet.position.set(cx, cy, cz);
+    for (let i = 59; i > 0; i--) { tp[i*3]=tp[(i-1)*3]; tp[i*3+1]=tp[(i-1)*3+1]; tp[i*3+2]=tp[(i-1)*3+2]; }
+    tp[0]=cx; tp[1]=cy; tp[2]=cz;
+    tg.attributes.position.needsUpdate = true;
+    camera.position.y = -scrollY * .015;
+    renderer.render(scene, camera);
+  }
+  frame();
+  window.addEventListener('resize', () => { renderer.setSize(window.innerWidth, window.innerHeight); camera.aspect = window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); });
+})();
+</script>
+
+<!-- GSAP -->
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero entrance
+gsap.from('#hero-title',    { opacity:0, y:60, duration:1.2, ease:'power4.out', delay:.2 });
+gsap.from('.hero-badge',    { opacity:0, y:-20, duration:.8, ease:'back.out', delay:.1 });
+gsap.from('.hero-sub',      { opacity:0, y:30, duration:1, ease:'power3.out', delay:.5 });
+gsap.from('.cta-row',       { opacity:0, y:20, duration:.8, ease:'power3.out', delay:.7 });
+gsap.from('.scroll-hint',   { opacity:0, y:20, duration:.8, ease:'power3.out', delay:1 });
+
+// Reveal
+gsap.utils.toArray('.reveal').forEach(el => {
+  gsap.fromTo(el, { opacity:0, y:28 }, { opacity:1, y:0, duration:.72, ease:'power3.out',
+    scrollTrigger: { trigger:el, start:'top 88%', toggleActions:'play none none none' } });
+});
+
+// Counter animations
+gsap.utils.toArray('[data-count]').forEach(el => {
+  ScrollTrigger.create({ trigger:el, start:'top 85%', onEnter: () => {
+    gsap.to({ v:0 }, { v:+el.dataset.count, duration:1.8, ease:'power2.out',
+      onUpdate: function() { el.textContent = Math.round(this.targets()[0].v); }
+    });
+  }});
+});
+
+// Flow bars
+ScrollTrigger.create({ trigger:'#flowCard', start:'top 80%', onEnter: () => {
+  document.getElementById('flowCard').parentElement.classList.add('in');
+}});
+
+// Mine bars
+ScrollTrigger.create({ trigger:'#mineList', start:'top 80%', onEnter: () => {
+  document.querySelectorAll('.mbar-f').forEach(b => {
+    gsap.to(b, { width:b.dataset.w, duration:1.4, ease:'power2.out', delay:Math.random()*.4 });
+  });
+}});
+
+// Mouse spotlight
+document.querySelectorAll('.bento-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+    card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+  });
+});
+</script>
+
+<!-- SHA-256 TAMPER -->
+<script>
+async function sha256(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+const orig = document.getElementById('tamperText').value;
+let origHash = '';
+(async()=>{ origHash = await sha256(orig); document.getElementById('h0').textContent = origHash; document.getElementById('h1').textContent = origHash; })();
+document.getElementById('tamperText').addEventListener('input', async function() {
+  const curr = await sha256(this.value);
+  const h1 = document.getElementById('h1'), v = document.getElementById('verdict');
+  h1.textContent = curr;
+  const ok = curr === origHash;
+  h1.className = 'hash-val' + (ok ? '' : ' bad');
+  v.className = 'vtag ' + (ok ? 'vok' : 'vbad');
+  v.textContent = ok ? '✓ Matches. Nothing changed.' : '✗ Mismatch. Report was changed.';
+});
+</script>
+
+<!-- PHONE / GAS -->
+<script>
+const LIMIT = 1.5;
+const gs = document.getElementById('gasSlider');
+let synced = false;
+function readGas() {
+  const v = gs.value / 10;
+  document.getElementById('gasVal').textContent = v.toFixed(1);
+  document.getElementById('evacVal').textContent = v.toFixed(1);
+  const bar = document.getElementById('gasBar');
+  bar.style.width = Math.min(v / 3 * 100, 100) + '%';
+  bar.style.background = v >= LIMIT ? '#C62418' : '#2E9E69';
+  const evac = document.getElementById('evacDiv');
+  if (v >= LIMIT) { evac.style.display = 'flex'; evac.className = 'evac on'; }
+  else { evac.style.display = 'none'; evac.className = 'evac'; }
+  synced = false;
+  document.getElementById('syncPill').textContent = 'Offline';
+  document.getElementById('syncPill').className = 'pill p-off';
+  document.getElementById('pendStatus').textContent = '4 records saved on device, waiting for signal';
+}
+gs.addEventListener('input', readGas);
+document.getElementById('syncBtn').addEventListener('click', function() {
+  if (synced) return; synced = true;
+  const v = gs.value / 10;
+  document.getElementById('syncPill').textContent = 'Synced';
+  document.getElementById('syncPill').className = 'pill p-on';
+  document.getElementById('pendStatus').textContent = 'All records synced';
+  const feed = document.getElementById('alertFeed');
+  const mk = (txt, sub, cls) => { const li = document.createElement('li'); li.className = (cls||'') + ' new'; li.innerHTML = txt + '<small>' + sub + '</small>'; return li; };
+  feed.insertBefore(mk('DGMS annual inspection submitted','1 non-compliant item, High severity, 1 photo, geo-stamped','warn'), feed.firstChild);
+  if (v >= LIMIT) feed.insertBefore(mk('CH₄ '+v.toFixed(1)+'% at ventilation checkpoint','Evacuation alert raised. Escalating.','crit'), feed.firstChild);
+});
+</script>
+
+<!-- OCR -->
+<script>
+document.getElementById('ocrBtn').addEventListener('click', function() {
+  const rows = document.querySelectorAll('.ocr-row');
+  rows.forEach(r => r.style.opacity = '.2');
+  document.getElementById('ocrReview').style.display = 'none';
+  rows.forEach((r, i) => setTimeout(() => r.style.opacity = '1', (i+1)*420));
+  setTimeout(() => document.getElementById('ocrReview').style.display = 'block', (rows.length+1)*420);
+});
+</script>
+
+<!-- GRIEVANCE -->
+<script>
+const G = [
+  ['Hindi',   'वेंटिलेशन का पंखा दो दिन से बंद है।', 'The ventilation fan has been off for two days.'],
+  ['Bengali', 'ভেন্টিলেশন ফ্যান দুই দিন ধরে বন্ধ আছে।', 'The ventilation fan has been off for two days.'],
+  ['Odia',    'ଭେଣ୍ଟିଲେସନ ପଙ୍ଖା ଦୁଇ ଦିନ ଧରି ବନ୍ଦ ଅଛି।', 'The ventilation fan has been off for two days.'],
+  ['Marathi', 'वायुवीजन पंखा दोन दिवसांपासून बंद आहे।', 'The ventilation fan has been off for two days.'],
+  ['English', 'The ventilation fan has been off for two days.', 'No translation needed']
+];
+let gT = [];
+function activateLang(idx) {
+  gT.forEach(clearTimeout); gT = [];
+  document.querySelectorAll('.grief-flow li').forEach(l => l.classList.remove('on'));
+  document.getElementById('g1').textContent = G[idx][1];
+  document.getElementById('g2').textContent = G[idx][2];
+  document.querySelectorAll('.grief-flow li').forEach((l, k) => gT.push(setTimeout(() => l.classList.add('on'), k * 480)));
+}
+document.querySelectorAll('.lang-chip').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.lang-chip').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    activateLang(+this.dataset.lang);
+  });
+});
+setTimeout(() => activateLang(4), 900);
+</script>
+
+<!-- RISK SIM -->
+<script>
+function runSim() {
+  const v = [1,2,3,4].map(n => +document.getElementById('i'+n).value);
+  [1,2,3,4].forEach(n => document.getElementById('o'+n).textContent = document.getElementById('i'+n).value);
+  const parts = [
+    { l:'Violation history',    v:.35*v[0],  max:35 },
+    { l:'Low closure rate',     v:.25*(100-v[1]), max:25 },
+    { l:'Gas readings',         v:.25*v[2],  max:25 },
+    { l:'Production pressure',  v:.15*v[3],  max:15 }
+  ];
+  const score = Math.round(parts.reduce((a,p) => a+p.v, 0));
+  const se = document.getElementById('riskScore');
+  gsap.to({ n:+se.textContent }, { n:score, duration:.5, ease:'power2.out', onUpdate: function(){ se.textContent = Math.round(this.targets()[0].n); }});
+  const be = document.getElementById('riskBand');
+  const band = score>=70 ? 'Critical' : score>=40 ? 'High' : 'Low';
+  be.textContent = band + ' Risk';
+  be.style.color = score>=70 ? 'var(--red)' : score>=40 ? '#E08A00' : 'var(--green)';
+  const c = document.getElementById('scoreContrib'); c.innerHTML='';
+  parts.forEach(p => {
+    const d = document.createElement('div'); d.className='cr';
+    d.innerHTML = `<div class="cr-lbl">${p.l} +${Math.round(p.v)}</div><div class="cr-bar"><div class="cr-fill" style="width:${p.v/p.max*100}%"></div></div>`;
+    c.appendChild(d);
+  });
+}
+[1,2,3,4].forEach(n => document.getElementById('i'+n).addEventListener('input', runSim));
+runSim();
+</script>
+
+<!-- SCORECARD -->
+<script>
+const SC = [
+  ['Track statutory compliance across safety, environment, production and labour','#techstack','Tech Stack'],
+  ['Real-time monitoring of inspections, observations, violations and corrective actions','#workface','Working Face'],
+  ['AI to identify high-risk areas','#ailayer','AI Layer'],
+  ['AI for recurring failures and operational anomalies','#ailayer','AI Layer'],
+  ['Predictive alerts','#headoffice','Head Office'],
+  ['Geo-tagged, time-stamped field reporting','#workface','Working Face'],
+  ['Mobile app with offline support: inspections, observations, attendance, incidents','#workface','Working Face'],
+  ['Dashboards for mine officials, corporate management and regulators','#headoffice','Head Office'],
+  ['Automated alerts, reminders, compliance reports and escalation','#headoffice','Head Office'],
+  ['Digital approvals and statutory report generation','#headoffice','Head Office'],
+  ['GIS mapping','#techstack','Tech Stack'],
+  ['OCR document digitization','#workface','Working Face'],
+  ['Secure, tamper-evident audit trail','#headoffice','Head Office'],
+  ['Contractor management','#workface','Working Face'],
+  ['Grievance handling, multilingual and by voice','#workface','Working Face'],
+  ['Production reporting and environmental monitoring','#headoffice','Head Office'],
+  ['Scalable across mines and subsidiaries','#techstack','Tech Stack'],
+  ['Less paperwork, more transparency and accountability','#techstack','Tech Stack']
+];
+const grid = document.getElementById('checkGrid');
+SC.forEach(([text, href, where]) => {
+  const div = document.createElement('div');
+  div.className = 'check-item reveal';
+  div.innerHTML = `<div class="check-tick">✓</div><div><div class="check-txt">${text}</div><a class="check-lnk" href="${href}">Shown at ${where} →</a></div>`;
+  grid.appendChild(div);
+});
+ScrollTrigger.refresh();
+gsap.utils.toArray('#checkGrid .reveal').forEach((el, i) => {
+  gsap.fromTo(el, { opacity:0, y:20 }, { opacity:1, y:0, duration:.55, ease:'power2.out', delay:(i%4)*.07,
+    scrollTrigger: { trigger:el, start:'top 90%', toggleActions:'play none none none' } });
+});
+</script>
+</body>
+</html>
