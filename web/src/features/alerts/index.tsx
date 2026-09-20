@@ -6,6 +6,7 @@ import { AlertTriangle, CheckCircle, Info, BellRing, Check, ExternalLink, Shield
 import { supabase } from '@/lib/supabase'
 import { useAlertStore } from '@/stores/alert-store'
 import { toast } from 'sonner'
+import { Badge } from '@/components/ui/badge'
 
 const AIAnalysisPanel = () => (
   <Card className="mb-6 border-l-4 border-l-orange-500 bg-orange-500/5">
@@ -49,9 +50,11 @@ export function AlertsPage() {
       
       if (!data || data.length === 0) {
         setAlerts([
-          { id: '1', title: 'PM10 Dust Levels Exceed EC Limit — Umrer OCP', priority: 'critical', message: 'Monthly Environmental Monitoring inspection submitted by Field Inspector Sunil Patil at 14:32 IST, Sept 16. PM10 recorded at 4.2 mg/m³ (EC limit: 3.0 mg/m³), SO2 at 2.8 ppm (limit: 2.0 ppm). Regulatory action may be required under EPA 1986, Schedule VI.', read: false, timestamp: new Date().toISOString() },
-          { id: '2', title: '[YEL] CLRA Expiring', priority: 'high', message: 'Contractor License expires in 7 days.', read: false, timestamp: new Date(Date.now() - 3600000).toISOString() },
-          { id: '3', title: '[GRN] CAPA Closed', priority: 'low', message: 'Corrective action verified.', read: true, timestamp: new Date(Date.now() - 86400000).toISOString() },
+          { id: '1', title: 'New inspection assigned, due Friday.', priority: 'medium', type: 'ASSIGNED', message: 'Environmental Dust Monitoring inspection assigned to Sunil Patil.', read: false, timestamp: new Date().toISOString() },
+          { id: '2', title: 'Inspection assigned to Sunil Patil.', priority: 'low', type: 'CONFIRMATION', message: 'Manager confirmation: Inspection ID INS-889 has been assigned successfully.', read: false, timestamp: new Date(Date.now() - 3600000).toISOString() },
+          { id: '3', title: 'Inspection due in 24 hours.', priority: 'high', type: 'REMINDER', message: 'Upcoming deadline for Machinery Safety Audit.', read: false, timestamp: new Date(Date.now() - 7200000).toISOString() },
+          { id: '4', title: 'Compliance task overdue: Air Quality Audit.', priority: 'critical', type: 'ESCALATION', message: 'Task escalated to Subsidiary Admin. Originally due 2 days ago.', read: false, timestamp: new Date(Date.now() - 86400000).toISOString() },
+          { id: '5', title: 'PM10 Dust Levels Exceed EC Limit — Umrer OCP', priority: 'critical', type: 'VIOLATION', message: 'Monthly Environmental Monitoring inspection submitted by Field Inspector Sunil Patil at 14:32 IST, Sept 16. PM10 recorded at 4.2 mg/m³ (EC limit: 3.0 mg/m³), SO2 at 2.8 ppm (limit: 2.0 ppm). Regulatory action may be required under EPA 1986, Schedule VI.', read: false, timestamp: new Date(Date.now() - 172800000).toISOString() },
         ])
       } else {
         // Map backend alerts to store format
@@ -60,6 +63,7 @@ export function AlertsPage() {
           title: d.title,
           message: d.message,
           priority: d.severity,
+          type: d.type || 'INFO',
           read: d.is_read,
           timestamp: d.created_at
         }))
@@ -129,6 +133,13 @@ export function AlertsPage() {
 
       <AIAnalysisPanel />
 
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+          <BellRing className="h-5 w-5 text-primary" />
+          Notification Feed
+        </h2>
+      </div>
+
       <div className="space-y-4">
         {filteredAlerts.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">{t("no_alerts_found", "No alerts found.")}</div>
@@ -141,8 +152,13 @@ export function AlertsPage() {
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-start mb-1">
-                    <h3 className={`font-semibold text-base flex items-center gap-2 ${!alert.read ? 'text-foreground' : 'text-muted-foreground'}`}>
-                      <span className="md:hidden">{getAlertIcon(alert.priority)}</span>
+                    <h3 className={`font-semibold text-base flex flex-col md:flex-row md:items-center gap-2 ${!alert.read ? 'text-foreground' : 'text-muted-foreground'}`}>
+                      <div className="flex items-center gap-2">
+                        <span className="md:hidden">{getAlertIcon(alert.priority)}</span>
+                        <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 text-[10px] tracking-wider font-bold">
+                          {(alert as any).type || 'INFO'}
+                        </Badge>
+                      </div>
                       {alert.title}
                     </h3>
                     <span className="text-xs font-medium text-muted-foreground/70 whitespace-nowrap ml-4">

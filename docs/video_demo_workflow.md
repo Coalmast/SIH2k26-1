@@ -1,4 +1,4 @@
-# 🎬 COMET — SIH 2026 | Video Demo Script & Recording Workflow
+# 🎬 COMET — SIH 2026 | Pitch Video Demo Script & Web App Route Mapping
 
 **Platform:** Coal Operations Monitoring, Enforcement & Transparency (COMET)  
 **PS:** SIH 2026 — PS 26024 | Coal India Limited | Ministry of Coal  

@@ -14,6 +14,7 @@ import { useAuthStore } from '@/stores/auth-store'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
 
 const MAPTILER_KEY = 'XohI3EUdKAVWWP3q4tA3'
 const API = import.meta.env.VITE_API_BASE_URL ?? ''
@@ -373,10 +374,50 @@ function CorporateDashboard() {
                     <Activity size={16} className="text-muted-foreground/70 group-hover:text-primary transition-colors" />
                   </Button>
                 </Link>
-                <Button variant="outline" className="w-full flex items-center justify-between text-comet-down border-[#f6465d]/30 bg-[#f6465d]/10 hover:bg-[#f6465d]/15 hover:text-comet-down group px-4 h-12 mt-2">
+                <Button 
+                  onClick={() => toast.success("Emergency broadcast sent to all units")}
+                  variant="outline" 
+                  className="w-full flex items-center justify-between text-comet-down border-[#f6465d]/30 bg-[#f6465d]/10 hover:bg-[#f6465d]/15 hover:text-comet-down group px-4 h-12 mt-2"
+                >
                   <span className="text-[14px] font-semibold">{t("emergency_broadcast", "Emergency Broadcast")}</span>
                   <AlertTriangle size={16} />
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Contractor Trust Score */}
+          <Card className="shadow-sm">
+            <CardContent className="p-6">
+              <SectionHeader title="Contractor Trust Score" />
+              <div className="flex flex-col gap-3 mt-2">
+                <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background/50">
+                  <div>
+                    <div className="font-semibold text-[13px]">Balaji Mining Services</div>
+                    <div className="text-[11px] text-muted-foreground">ID: C-8921</div>
+                  </div>
+                  <Badge variant="outline" className="bg-[#0ecb81]/10 text-comet-up border-[#0ecb81]/30 text-xs">
+                    94%
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background/50">
+                  <div>
+                    <div className="font-semibold text-[13px]">TechDrill Corp</div>
+                    <div className="text-[11px] text-muted-foreground">ID: C-7734</div>
+                  </div>
+                  <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/30 text-xs">
+                    78%
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background/50">
+                  <div>
+                    <div className="font-semibold text-[13px]">Apex Haulage</div>
+                    <div className="text-[11px] text-muted-foreground">ID: C-9102</div>
+                  </div>
+                  <Badge variant="outline" className="bg-[#f6465d]/10 text-comet-down border-[#f6465d]/30 text-xs">
+                    62%
+                  </Badge>
+                </div>
               </div>
             </CardContent>
           </Card>

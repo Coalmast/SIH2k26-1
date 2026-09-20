@@ -8,6 +8,7 @@ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, L
 import { ShieldCheck, Search, Filter, ShieldAlert, FileSignature, CheckCircle2, AlertOctagon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { motion } from 'framer-motion'
 
 // Mock Data
 const subsidiaries = ['ECL', 'BCCL', 'CCL', 'MCL', 'NCL', 'SECL', 'WCL', 'NEC']
@@ -46,11 +47,11 @@ export function RegulatorDashboard() {
   }
 
   const getHeatmapColor = (score: number) => {
-    if (score < 20) return 'bg-emerald-500/20 text-emerald-700'
-    if (score < 40) return 'bg-yellow-400/20 text-yellow-700'
-    if (score < 60) return 'bg-orange-400/20 text-orange-700'
-    if (score < 80) return 'bg-red-500/20 text-red-700'
-    return 'bg-red-600 text-white font-bold' // Critical risk
+    if (score < 20) return 'bg-emerald-500/10 dark:bg-emerald-500/20'
+    if (score < 40) return 'bg-emerald-500/30 dark:bg-emerald-500/40'
+    if (score < 60) return 'bg-amber-500/40 dark:bg-amber-500/50'
+    if (score < 80) return 'bg-orange-500/60 dark:bg-orange-500/70'
+    return 'bg-red-500/80 dark:bg-red-500/90' // Critical risk
   }
 
   return (
@@ -60,7 +61,9 @@ export function RegulatorDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-foreground">
-            <ShieldAlert className="h-8 w-8 text-primary" />{t("dgms_regulatory_forensic_dashb", "DGMS Regulatory Forensic Dashboard")}</h1>
+            <ShieldAlert className="h-8 w-8 text-primary" />{t("dgms_regulatory_forensic_dashb", "DGMS Regulatory Forensic Dashboard")}
+            <Badge className="ml-2 bg-emerald-500/15 text-emerald-600 border-emerald-500/30">🔒 Read-Only Access</Badge>
+          </h1>
           <p className="text-muted-foreground mt-1">{t(
             "stark_monochrome_view_for_regu",
             "Stark monochrome view for regulatory oversight, AI risk prediction, and compliance verification."
@@ -87,8 +90,6 @@ export function RegulatorDashboard() {
               <SelectItem value="minesact">{t("mines_act_1952", "Mines Act 1952")}</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-none shadow-sm">
-            <FileSignature className="h-4 w-4 mr-2" />{t("generate_notice", "Generate Notice")}</Button>
         </div>
       </div>
 
@@ -100,38 +101,42 @@ export function RegulatorDashboard() {
               "ai_risk_prediction_matrix_12_w",
               "AI Risk Prediction Matrix (12-Week Rolling)"
             )}</CardTitle>
-            <div className="flex gap-2 text-xs items-center text-muted-foreground">{t("low_risk", "Low Risk")}<div className="w-3 h-3 bg-indigo-50 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-200 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-400 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-600 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-900 border border-border"></div>{t("high_risk", "High Risk")}</div>
+            <div className="flex gap-2 text-xs items-center text-muted-foreground">{t("low_risk", "Low Risk")}<div className="w-3 h-3 bg-emerald-500/10 dark:bg-emerald-500/20 border border-border"></div>
+              <div className="w-3 h-3 bg-emerald-500/30 dark:bg-emerald-500/40 border border-border"></div>
+              <div className="w-3 h-3 bg-amber-500/40 dark:bg-amber-500/50 border border-border"></div>
+              <div className="w-3 h-3 bg-orange-500/60 dark:bg-orange-500/70 border border-border"></div>
+              <div className="w-3 h-3 bg-red-500/80 dark:bg-red-500/90 border border-border"></div>{t("high_risk", "High Risk")}</div>
           </div>
         </CardHeader>
         <CardContent className="p-6">
           <TooltipProvider delayDuration={0}>
-            <div className="flex">
+            <div className="border border-border rounded-md p-4 bg-muted/10 flex">
               {/* Y-Axis Labels */}
-              <div className="flex flex-col gap-1 pr-4 pt-6">
+              <div className="flex flex-col gap-1.5 pr-4">
+                {/* Empty corner block to match X-axis header height */}
+                <div className="flex items-center text-[10px] mb-2 opacity-0 font-mono w-12">&nbsp;</div>
                 {subsidiaries.map(sub => (
-                  <div key={sub} className="h-6 flex items-center text-xs font-mono font-bold text-muted-foreground w-12">{sub}</div>
+                  <div key={sub} className="h-7 flex items-center text-xs font-mono font-bold text-muted-foreground w-12">{sub}</div>
                 ))}
               </div>
               
               {/* Heatmap Grid */}
               <div className="flex-1 overflow-x-auto">
-                <div className="flex gap-1 mb-2">
+                <div className="flex gap-1.5 mb-2">
                   {weeks.map(w => (
                     <div key={w} className="flex-1 flex justify-center text-[10px] text-muted-foreground/70 font-mono">{w}</div>
                   ))}
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1.5">
                   {subsidiaries.map(sub => (
-                    <div key={sub} className="flex gap-1">
+                    <div key={sub} className="flex gap-1.5">
                       {heatmapData[sub].map((score, i) => (
                         <Tooltip key={i}>
                           <TooltipTrigger asChild>
-                            <div 
-                              className={`flex-1 h-6 cursor-pointer border border-border transition-all hover:ring-2 hover:ring-indigo-500 ${getHeatmapColor(score)}`}
+                            <motion.div 
+                              whileHover={{ scale: 1.3, zIndex: 10, borderRadius: "6px" }}
+                              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                              className={`relative flex-1 h-7 rounded-sm cursor-pointer border border-border/50 ${getHeatmapColor(score)}`}
                             />
                           </TooltipTrigger>
                           <TooltipContent className="font-mono text-xs border-indigo-900 bg-background text-foreground">
@@ -150,24 +155,29 @@ export function RegulatorDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Blockchain Ledger */}
-        <Card className="lg:col-span-2 border-border rounded-none shadow-sm flex flex-col">
+        {/* Tamper-Evident Audit Trail */}
+        <Card className="lg:col-span-2 border-border rounded-none shadow-sm flex flex-col relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-3 flex items-center gap-2 text-emerald-600 bg-emerald-500/10 rounded-bl-lg border-b border-l border-emerald-500/20">
+            <CheckCircle2 className="h-4 w-4" />
+            <span className="text-xs font-bold uppercase tracking-wider">SHA-256 Verified</span>
+          </div>
           <CardHeader className="bg-muted/50 border-b border-border py-3">
             <CardTitle className="text-sm font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" />{t("blockchain_verification_ledger", "Blockchain Verification Ledger")}</CardTitle>
+              <ShieldCheck className="h-4 w-4 text-emerald-500" />{t("blockchain_verification_ledger", "Tamper-Evident Audit Trail (SHA-256)")}</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 flex-1 overflow-x-auto">
-            <table className="w-full text-xs font-mono text-left">
-              <thead className="bg-muted text-muted-foreground border-b border-border">
-                <tr>
-                  <th className="px-4 py-3 font-semibold">{t("timestamp", "Timestamp")}</th>
-                  <th className="px-4 py-3 font-semibold">{t("report_id", "Report ID")}</th>
-                  <th className="px-4 py-3 font-semibold">{t("mine_inspector", "Mine / Inspector")}</th>
-                  <th className="px-4 py-3 font-semibold">{t("cryptographic_hash", "Cryptographic Hash")}</th>
-                  <th className="px-4 py-3 text-right">{t("integrity", "Integrity")}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
+          <CardContent className="p-4 flex-1 overflow-x-auto">
+            <div className="border border-border rounded-md overflow-hidden">
+              <table className="w-full text-xs font-mono text-left">
+                <thead className="bg-muted text-muted-foreground border-b border-border">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold">{t("timestamp", "Timestamp")}</th>
+                    <th className="px-4 py-3 font-semibold">{t("report_id", "Report ID")}</th>
+                    <th className="px-4 py-3 font-semibold">{t("mine_inspector", "Mine / Inspector")}</th>
+                    <th className="px-4 py-3 font-semibold">{t("cryptographic_hash", "Cryptographic Hash")}</th>
+                    <th className="px-4 py-3 text-right">{t("integrity", "Integrity")}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
                 {blockchainLedger.map((row) => (
                   <tr key={row.id} className="hover:bg-muted/50">
                     <td className="px-4 py-3 text-muted-foreground">{row.time}</td>
@@ -175,25 +185,15 @@ export function RegulatorDashboard() {
                     <td className="px-4 py-3 text-foreground/80">{row.mine} <span className="text-muted-foreground/70">|</span> {row.inspector}</td>
                     <td className="px-4 py-3 text-muted-foreground/70 select-all">{row.hash}</td>
                     <td className="px-4 py-3 text-right">
-                      {row.status === 'verified' && verifying !== row.id ? (
-                        <Badge variant="outline" className="rounded-none bg-[#0ecb81]/10 text-comet-up border-emerald-300 font-mono uppercase text-[10px]">
-                          <CheckCircle2 className="h-3 w-3 mr-1" />{t("verified", "Verified")}</Badge>
-                      ) : (
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="h-7 text-[10px] rounded-none uppercase font-bold text-indigo-700 border-indigo-200 hover:bg-indigo-50"
-                          onClick={() => handleVerify(row.id)}
-                          disabled={verifying === row.id}
-                        >
-                          {verifying === row.id ? 'Computing...' : 'Verify Hash'}
-                        </Button>
-                      )}
+                      <Badge variant="outline" className="rounded-none bg-[#0ecb81]/10 text-comet-up border-emerald-300 font-mono uppercase text-[10px]">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />{t("verified", "Verified")}
+                      </Badge>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            </div>
           </CardContent>
         </Card>
 

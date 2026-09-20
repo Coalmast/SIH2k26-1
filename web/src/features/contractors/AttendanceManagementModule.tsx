@@ -139,6 +139,7 @@ interface Worker {
   shift: string;
   rfidEvents: RfidEvent[];
   calendarDays: ("present" | "absent" | "leave" | "off" | "late")[];
+  nightShiftFlag?: boolean;
 }
 
 const mockWorkers: Worker[] = [
@@ -248,6 +249,24 @@ const mockWorkers: Worker[] = [
     id: "W-006",
     name: "Mohan Das",
     initials: "MD",
+    role: "Excavator Operator",
+    contractor: "TechDrill Corp",
+    contractorId: "C-7734",
+    status: "present",
+    checkIn: "22:15 PM",
+    checkOut: null,
+    attendance30d: 95,
+    training: "valid",
+    esi: "ESI-998877",
+    shift: "C",
+    nightShiftFlag: true,
+    rfidEvents: [{ time: "22:15 PM", type: "in", gate: "Gate 3" }],
+    calendarDays: Array.from({ length: 30 }, (_, i) => "present"),
+  },
+  {
+    id: "W-007",
+    name: "Ravi Teja",
+    initials: "RT",
     role: "Electrician",
     contractor: "TechDrill Corp",
     contractorId: "C-7734",
@@ -907,7 +926,14 @@ export function AttendanceManagementModule() {
                                 {worker.initials}
                               </div>
                               <div>
-                                <div className="font-semibold text-foreground">{worker.name}</div>
+                                <div className="font-semibold text-foreground flex items-center gap-2">
+                                  {worker.name}
+                                  {worker.nightShiftFlag && (
+                                    <Badge variant="destructive" className="bg-red-500/10 text-red-500 border-red-500/20 text-[9px] uppercase px-1.5 py-0">
+                                      🔴 Limit Exceeded
+                                    </Badge>
+                                  )}
+                                </div>
                                 <div className="text-xs text-muted-foreground">{worker.id}</div>
                                 <div className="text-xs text-muted-foreground font-mono">{worker.esi}</div>
                               </div>
