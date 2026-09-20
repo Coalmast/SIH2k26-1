@@ -116,6 +116,7 @@ const corporateExecutiveNav: NavGroup[] = [
     title: '📋 REPORTING',
     items: [
       { title: 'Statutory Reports', url: '/reports', icon: FileSignature },
+      { title: 'Regulator Portal', url: '/regulator', icon: ShieldAlert },
       { title: 'OCR / Digitization', url: '/ocr', icon: FileScan },
     ],
   },
