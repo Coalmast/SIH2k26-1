@@ -49,6 +49,9 @@ export default function HomeScreen() {
         <Text className="text-comet-fg text-xl font-bold mb-4">Quick Actions</Text>
         
         <View className="gap-4">
+          <Button variant="outline" onPress={() => router.push('/(app)/grievance')} className="w-full justify-start py-4">
+            <Text className="text-comet-fg font-semibold">🎙️ Voice Grievance</Text>
+          </Button>
           <Button variant="outline" onPress={() => router.push('/(app)/inspect')} className="w-full justify-start py-4">
             <Text className="text-comet-fg font-semibold">🔍 New Inspection</Text>
           </Button>

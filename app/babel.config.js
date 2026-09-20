@@ -5,6 +5,7 @@ module.exports = function (api) {
       ["babel-preset-expo", { jsxImportSource: "nativewind" }],
     ],
     plugins: [
+      ["@babel/plugin-transform-typescript", { isTSX: true, allExtensions: true }],
       "react-native-reanimated/plugin",
       ["@babel/plugin-proposal-decorators", { "legacy": true }],
       ["@babel/plugin-transform-class-properties", { "loose": true }],
