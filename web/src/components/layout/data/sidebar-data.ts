@@ -116,6 +116,7 @@ const corporateExecutiveNav: NavGroup[] = [
     title: '📋 REPORTING',
     items: [
       { title: 'Statutory Reports', url: '/reports', icon: FileSignature },
+      { title: 'Regulator Portal', url: '/regulator', icon: ShieldAlert },
       { title: 'OCR / Digitization', url: '/ocr', icon: FileScan },
     ],
   },
@@ -126,6 +127,7 @@ const fieldInspectorNav: NavGroup[] = [
     title: "📍 TODAY'S WORK",
     items: [
       { title: 'Start Inspection', url: '/inspection', icon: Search },
+      { title: 'Compliance Tasks', url: '/compliance', icon: ShieldAlert },
       { title: 'Report Incident', url: '/incidents', icon: AlertTriangle },
     ],
   },
@@ -143,6 +145,7 @@ const safetyOfficialNav: NavGroup[] = [
     title: '🛡️ SAFETY DESK',
     items: [
       { title: 'Alerts', url: '/alerts', icon: Bell, badge: 'unread' },
+      { title: 'Compliance Dashboard', url: '/compliance', icon: ShieldAlert },
       { title: 'Inspections', url: '/inspection', icon: Search },
       { title: 'Incidents', url: '/incidents', icon: AlertTriangle },
     ],

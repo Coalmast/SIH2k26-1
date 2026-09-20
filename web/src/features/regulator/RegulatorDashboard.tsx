@@ -8,6 +8,7 @@ import { PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, L
 import { ShieldCheck, Search, Filter, ShieldAlert, FileSignature, CheckCircle2, AlertOctagon } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { motion } from 'framer-motion'
 
 // Mock Data
 const subsidiaries = ['ECL', 'BCCL', 'CCL', 'MCL', 'NCL', 'SECL', 'WCL', 'NEC']
@@ -46,11 +47,11 @@ export function RegulatorDashboard() {
   }
 
   const getHeatmapColor = (score: number) => {
-    if (score < 20) return 'bg-emerald-500/20 text-emerald-700'
-    if (score < 40) return 'bg-yellow-400/20 text-yellow-700'
-    if (score < 60) return 'bg-orange-400/20 text-orange-700'
-    if (score < 80) return 'bg-red-500/20 text-red-700'
-    return 'bg-red-600 text-white font-bold' // Critical risk
+    if (score < 20) return 'bg-emerald-500/10 dark:bg-emerald-500/20'
+    if (score < 40) return 'bg-emerald-500/30 dark:bg-emerald-500/40'
+    if (score < 60) return 'bg-amber-500/40 dark:bg-amber-500/50'
+    if (score < 80) return 'bg-orange-500/60 dark:bg-orange-500/70'
+    return 'bg-red-500/80 dark:bg-red-500/90' // Critical risk
   }
 
   return (
@@ -100,38 +101,42 @@ export function RegulatorDashboard() {
               "ai_risk_prediction_matrix_12_w",
               "AI Risk Prediction Matrix (12-Week Rolling)"
             )}</CardTitle>
-            <div className="flex gap-2 text-xs items-center text-muted-foreground">{t("low_risk", "Low Risk")}<div className="w-3 h-3 bg-indigo-50 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-200 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-400 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-600 border border-border"></div>
-              <div className="w-3 h-3 bg-indigo-900 border border-border"></div>{t("high_risk", "High Risk")}</div>
+            <div className="flex gap-2 text-xs items-center text-muted-foreground">{t("low_risk", "Low Risk")}<div className="w-3 h-3 bg-emerald-500/10 dark:bg-emerald-500/20 border border-border"></div>
+              <div className="w-3 h-3 bg-emerald-500/30 dark:bg-emerald-500/40 border border-border"></div>
+              <div className="w-3 h-3 bg-amber-500/40 dark:bg-amber-500/50 border border-border"></div>
+              <div className="w-3 h-3 bg-orange-500/60 dark:bg-orange-500/70 border border-border"></div>
+              <div className="w-3 h-3 bg-red-500/80 dark:bg-red-500/90 border border-border"></div>{t("high_risk", "High Risk")}</div>
           </div>
         </CardHeader>
         <CardContent className="p-6">
           <TooltipProvider delayDuration={0}>
-            <div className="flex">
+            <div className="border border-border rounded-md p-4 bg-muted/10 flex">
               {/* Y-Axis Labels */}
-              <div className="flex flex-col gap-1 pr-4 pt-6">
+              <div className="flex flex-col gap-1.5 pr-4">
+                {/* Empty corner block to match X-axis header height */}
+                <div className="flex items-center text-[10px] mb-2 opacity-0 font-mono w-12">&nbsp;</div>
                 {subsidiaries.map(sub => (
-                  <div key={sub} className="h-6 flex items-center text-xs font-mono font-bold text-muted-foreground w-12">{sub}</div>
+                  <div key={sub} className="h-7 flex items-center text-xs font-mono font-bold text-muted-foreground w-12">{sub}</div>
                 ))}
               </div>
               
               {/* Heatmap Grid */}
               <div className="flex-1 overflow-x-auto">
-                <div className="flex gap-1 mb-2">
+                <div className="flex gap-1.5 mb-2">
                   {weeks.map(w => (
                     <div key={w} className="flex-1 flex justify-center text-[10px] text-muted-foreground/70 font-mono">{w}</div>
                   ))}
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1.5">
                   {subsidiaries.map(sub => (
-                    <div key={sub} className="flex gap-1">
+                    <div key={sub} className="flex gap-1.5">
                       {heatmapData[sub].map((score, i) => (
                         <Tooltip key={i}>
                           <TooltipTrigger asChild>
-                            <div 
-                              className={`flex-1 h-6 cursor-pointer border border-border transition-all hover:ring-2 hover:ring-indigo-500 ${getHeatmapColor(score)}`}
+                            <motion.div 
+                              whileHover={{ scale: 1.3, zIndex: 10, borderRadius: "6px" }}
+                              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                              className={`relative flex-1 h-7 rounded-sm cursor-pointer border border-border/50 ${getHeatmapColor(score)}`}
                             />
                           </TooltipTrigger>
                           <TooltipContent className="font-mono text-xs border-indigo-900 bg-background text-foreground">
@@ -156,18 +161,19 @@ export function RegulatorDashboard() {
             <CardTitle className="text-sm font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-2">
               <ShieldCheck className="h-4 w-4" />{t("blockchain_verification_ledger", "Blockchain Verification Ledger")}</CardTitle>
           </CardHeader>
-          <CardContent className="p-0 flex-1 overflow-x-auto">
-            <table className="w-full text-xs font-mono text-left">
-              <thead className="bg-muted text-muted-foreground border-b border-border">
-                <tr>
-                  <th className="px-4 py-3 font-semibold">{t("timestamp", "Timestamp")}</th>
-                  <th className="px-4 py-3 font-semibold">{t("report_id", "Report ID")}</th>
-                  <th className="px-4 py-3 font-semibold">{t("mine_inspector", "Mine / Inspector")}</th>
-                  <th className="px-4 py-3 font-semibold">{t("cryptographic_hash", "Cryptographic Hash")}</th>
-                  <th className="px-4 py-3 text-right">{t("integrity", "Integrity")}</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-200">
+          <CardContent className="p-4 flex-1 overflow-x-auto">
+            <div className="border border-border rounded-md overflow-hidden">
+              <table className="w-full text-xs font-mono text-left">
+                <thead className="bg-muted text-muted-foreground border-b border-border">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold">{t("timestamp", "Timestamp")}</th>
+                    <th className="px-4 py-3 font-semibold">{t("report_id", "Report ID")}</th>
+                    <th className="px-4 py-3 font-semibold">{t("mine_inspector", "Mine / Inspector")}</th>
+                    <th className="px-4 py-3 font-semibold">{t("cryptographic_hash", "Cryptographic Hash")}</th>
+                    <th className="px-4 py-3 text-right">{t("integrity", "Integrity")}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
                 {blockchainLedger.map((row) => (
                   <tr key={row.id} className="hover:bg-muted/50">
                     <td className="px-4 py-3 text-muted-foreground">{row.time}</td>
@@ -194,6 +200,7 @@ export function RegulatorDashboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </CardContent>
         </Card>
 
