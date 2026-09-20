@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import React, { useState, useMemo } from "react";
+import { MagicCard } from "@/components/ui/magic-card";
 import {
   Card,
   CardContent,
