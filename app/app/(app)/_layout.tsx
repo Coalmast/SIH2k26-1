@@ -67,6 +67,14 @@ export default function AppLayout() {
           }}
         />
         <Tabs.Screen
+          name="grievance"
+          options={{
+            title: 'Grievance',
+            headerRight: () => <NotificationHeaderIcon />,
+            tabBarIcon: ({ color }) => <AlertTriangle size={24} color={color} />,
+          }}
+        />
+        <Tabs.Screen
           name="attendance"
           options={{
             href: null, // Hidden from tabs
