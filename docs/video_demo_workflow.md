@@ -1,362 +1,216 @@
-# 🎬 COMET — SIH 2026 | Video Demo Script & Recording Workflow
+# 🎬 COMET — SIH 2026 | Pitch Video Demo Script & Web App Route Mapping
 
 **Platform:** Coal Operations Monitoring, Enforcement & Transparency (COMET)  
 **Problem Statement:** SIH 2026 — PS 26024 | Coal India Limited | Ministry of Coal  
-**Target Duration:** 5 minutes 30 seconds  
-**Style:** Tarang-inspired — fast pace · live demo · no dead air · narration drives every transition
+**Target Duration:** 4 minutes 40 seconds (~700 spoken words)  
+**Pitch Style:** High-impact pitch demo · Fast pace · Role-by-role story loop · Screen-by-screen route mapping  
 
 ---
 
 > **How to use this document**  
-> — Each section has a **`[TIMESTAMP]`**, a **🖥️ ACTION** (what's on screen), and a **🎙️ SCRIPT** (what to say — speak naturally, don't read).  
-> — The script has a light story thread woven through it — no character names, just the *situation* of a field inspector and the governance problem that follows.  
-> — Transitions are written **into the narration** — one page flows directly into the next without pause.  
-> — Highlight **⚡ WOW moments** — slow down, let the judges absorb them.
+> — This guide maps every single section of the **700-word Final Pitch Script** to structured **Page Routes Tables**.  
+> — Each table lists the sequence order, screen name, exact frontend URL route, on-screen caption overlay, and visual highlight.  
+> — Use the tables during screen recording on `http://localhost:5173` to maintain rapid pacing and zero dead air.
 
 ---
 
-## 🎬 SEGMENT 1 — INTRODUCTION & HOOK
-### `[0:00 – 0:30]`
+## ⏱️ MASTER TIMELINE & ROLE WORKFLOW SUMMARY
 
-**🖥️ ACTION:** Show COMET landing page — full screen, hero animation running.
+| Time | Segment / Role | On-Screen Visual (🖥️) | Key Route / Target | On-Screen Captions / Highlights |
+|---|---|---|---|---|
+| **0:00 – 0:20** | **Hook** | COMET Landing Page | `/` | *Real-Time Coal Mine Governance Platform* |
+| **0:20 – 0:40** | **Problem & Solution** | PPT Slide: 3 Gaps & 3 Layers | Presentation Slide | *3 Gaps: Paper records, No warning, Manual reports* |
+| **0:40 – 1:25** | **Field Inspector (Mobile)** | Mobile App: Inspection & Gas Evacuation | App / `/mobile-inspection` | *Geo-tagged · Works offline · Safety observations · Incident reporting · QR attendance* |
+| **1:25 – 2:20** | **Mine Manager (Web Blitz)** | 14 Web Screens @ ~4s each | `/mine-manager` & modules | *14 Captions (Single source of truth → AI Analytics)* |
+| **2:20 – 2:45** | **Safety Official** | Alerts → Incident → Env Forecast → Sign Report | `/alerts`, `/incidents`, `/environment`, `/reports` | *Safety Desk · AI Air Quality Forecast · Digital Sign-off* |
+| **2:45 – 3:15** | **Corporate & Regulator** | HQ Dashboard & Regulator Portal | `/corporate-dashboard`, `/regulator` | *National Dashboard · AI Risk Ranking · Regulator Audit Trail* |
+| **3:15 – 3:35** | **Contractor & Worker** | Contractor Profile & Voice Grievance | `/contractors`, `/ocr`, `/grievances` | *Contractor Obligations · Multilingual Voice Grievances* |
+| **3:35 – 4:05** | **Feasibility & Methodology** | Slide: Tech Architecture & Phased Rollout | Slide / `comet-architecture.html` | *React + FastAPI + Supabase + React Native + Gemini* |
+| **4:05 – 4:40** | **Scorecard & Close** | Scorecard Slide → Impact → Landing Page | Slide → `/` | *PS 26024 Compliance Scorecard · Days to Minutes* |
+
+---
+
+## 🎬 SEGMENT-BY-SEGMENT DETAILED SCRIPT & PAGE ROUTES TABLES
+
+---
+
+### 0:00 – 0:20 | Segment 1 — Hook 🖥️ Landing Page
+
+#### 📍 Page Routes Table
+| # | Screen Name | Exact Frontend Route | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **Landing Page** | `/` | `Real-Time Coal Mine Governance Platform` | Hero banner animation, key feature badges & role login CTA |
 
 **🎙️ SCRIPT:**
-> "Hello and greetings. Acting upon Problem Statement 26024, issued by Coal India Limited under the Ministry of Coal, we are excited to present **COMET** — Coal Operations Monitoring, Enforcement and Transparency — our comprehensive platform designed to bring real-time AI-powered governance to India's coal mines.
->
-> Across India's 300-plus coal mines, statutory compliance is tracked on paper registers, field inspections leave no digital trail, and by the time a violation reaches a Mine Manager's desk — the evidence is already a week old. By the time it reaches DGMS — it is a month old.
->
-> Let me quickly demonstrate how COMET solves this — end to end."
+> *"In a coal mine, one missed check can cost lives. Today, compliance lives in paper registers and spreadsheets, and a problem found underground takes days to reach the manager and weeks to reach the regulator. COMET closes that gap."*
 
 ---
 
-## 📊 SEGMENT 2 — THE PROBLEM
-### `[0:30 – 1:00]`
+### 0:20 – 0:40 | Segment 2 — Problem & Solution 🖥️ Slide Deck
 
-**🖥️ ACTION:** Switch to PPT — **Slide 1: Problem Statement** — animate bullet points one by one.
+#### 📍 Page Routes / Slide Table
+| # | Screen Name | Target / Source Path | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **3 Gaps & 3 Solution Layers** | Presentation Slide | `3 Gaps · 3 Solution Layers` | Animate: Paper records → Mobile App; No warning → AI Gemini; Manual reporting → Web Platform |
 
 **🎙️ SCRIPT:**
-> "The problem has five dimensions. Compliance tracking is entirely manual — dozens of statutory deadlines under the Mines Act, CMR 2017, and the EP Act, all tracked on paper. Field inspections have no digital trail — observations, violations, corrective actions logged in registers with no real-time visibility. Contractor management is fragmented — license expiries and safety documents have no central system. Statutory reports to DGMS and SPCB take days to compile. And there is no AI layer — recurring safety failures go undetected until something goes wrong.
->
-> This is the governance gap COMET is built to close."
+> *"The gaps are no digital field record, no early warning, and manual reporting. COMET answers with a role-based web platform, an offline mobile app, and an AI layer on Google Gemini. Let me show you the loop, role by role."*
 
 ---
 
-## 💡 SEGMENT 3 — THE SOLUTION
-### `[1:00 – 1:30]`
+### 0:40 – 1:25 | Segment 3 — Field Inspector (Mobile) 📱 Mobile App Loop
 
-**🖥️ ACTION:** Switch to PPT — **Slide 2: Solution Architecture** — point to each pillar.
+#### 📍 Mobile Screen Routes Table
+| # | Screen Name | Exact Path / Trigger | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **Mobile Inspection Start** | Mobile App / `/mobile-inspection` | `Geo-tagged + time-stamped` | Auto GPS location & timestamp stamp |
+| **2** | **Safety Observation** | Mobile Checklist Screen | `Safety observations` | Complete checklist & attach photo |
+| **3** | **Incident Reporting** | Mobile Incident Form | `Incident reporting` | Quick-file roof fall observation |
+| **4** | **QR Attendance** | Mobile QR Scanner | `QR attendance` | Scan worker badge for attendance |
+| **5** | **Gas Reading Alert** | Mobile CH4 Input `1.6%` | `Works offline · EVACUATE` | **⚡ FULL-SCREEN RED EVACUATE ALERT FIRES INSTANTLY** |
 
 **🎙️ SCRIPT:**
-> "COMET is built on three pillars. A **role-based web dashboard** — for Mine Managers, Corporate Leadership, and Regulators — with real-time data via Supabase Realtime. An **offline-capable mobile field app** — for inspectors and overmen — geo-tagged, voice-enabled, working deep inside the mine with zero network. And an **AI layer powered by Google Gemini and ADK** — five intelligent agents continuously scoring risk, detecting anomalies, drafting statutory reports, and classifying worker grievances across five languages.
->
-> Now — let us walk through the working prototype."
+> *"It starts underground, with no network. The inspector runs a geo-tagged, time-stamped inspection, records observations with photos, and files incidents like a roof fall in seconds. Attendance is a QR scan. If a methane reading crosses the limit of 1.5 percent under CMR 2017, a full-screen evacuation alert fires instantly, even offline. Everything syncs when the network returns."*
 
 ---
 
-## 🖥️ SEGMENT 4 — WEB DASHBOARD WALKTHROUGH
-### `[1:30 – 3:55]`
+### 1:25 – 2:20 | Segment 4 — Mine Manager (Web) 🖥️ 14-Screen Rapid Web Blitz
 
----
-
-### 4.1 — Login & Landing
-#### `[1:30 – 1:42]`
-
-**🖥️ ACTION:** Open `http://localhost:5173` → landing page → click **Login** → sign in as Mine Manager.
+#### 📍 14-Screen Page Routes Table
+| # | Screen Name | Exact Frontend Route | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **Mine Dashboard** | `/mine-manager` | `Single source of truth` | Executive KPI cards, Live Risk Gauge & Shift Summary |
+| **2** | **Live Alerts** | `/alerts` | `Real-time alerts` | High-priority Methane Evacuation & Threshold alerts |
+| **3** | **GIS Risk Map** | `/mine-map` | `GIS risk map` | Interactive map pins, risk heatmap overlay & mine status |
+| **4** | **Compliance Tasks** | `/compliance` | `Auto-generated from Mines Act / CMR 2017` | Health score dial, auto-generated task calendar & Kanban |
+| **5** | **Inspections** | `/inspection` | `Schedule + track` | Inspection tracker, filter dropdowns & mobile sync items |
+| **6** | **Violations & CAPAs** | `/violations/VIO-2026-001` *(or `/corrective-actions`)* | `Digital approvals · Escalation` | Violation detail card, CAPA deadline & evidence upload |
+| **7** | **Incidents** | `/incidents` | `Investigation status` | Roof-fall incident report, severity flag & workflow status |
+| **8** | **Production** | `/production` | `Production reporting` | Tonnage chart, coal seam output & shift compliance |
+| **9** | **Environment** | `/environment` | `SPCB thresholds` | CAAQMS sensor readings, PM10 / SO2 limits & alerts |
+| **10** | **Contractors** | `/contractors` | `Licences · Training · Fitness` | Contractor safety scorecards, medical & licence status |
+| **11** | **Grievances** | `/grievances` | `Text + voice, 5 languages` | Grievance queue, audio player & multilinguality tags |
+| **12** | **Statutory Reports** | `/reports` | `Auto-populated · Digitally signed` | Form IV / DGMS monthly report generator & digital signature |
+| **13** | **OCR** | `/ocr` | `Paper → digital` | Document drag-drop, OCR confidence score & field extraction |
+| **14** | **AI Analytics** | `/ai-analytics` | `Risk · Recurring failures · Anomalies` | Gemini risk scoring engine, pattern detection & anomaly alerts |
 
 **🎙️ SCRIPT:**
-> "This is COMET's web platform — supporting five roles: Mine Manager, Corporate Executive, Contractor Manager, Field Officer, and Regulator. We log in as Mine Manager."
+> *"The data arrives on the Mine Manager's dashboard live, one source of truth for safety, environment, production and labour compliance. Alerts appear as they happen. The GIS map shows risk by site. Compliance tasks are generated automatically from the regulations, with reminders before deadlines and escalation after them. Each violation gets a corrective action that needs digital approval and proof to close. Production, environment, contractors and grievances are all tracked here, and reports fill themselves in. OCR digitizes old records and contractor documents, with a human check for low-confidence reads. The AI layer scores risk, explains why, and flags recurring violations and unusual readings."*
 
 ---
 
-### 4.2 — Mine Manager Command Center
-#### `[1:42 – 2:08]`  
-**Route:** `/mine-manager`
+### 2:20 – 2:45 | Segment 5 — Safety Official 🛡️ Desk Workflow
 
-**🖥️ ACTION:** Dashboard loads fully — point across the screen in one sweeping motion:  
-**KPI cards** → **Production Trend Chart** → **AI Risk Panel** → **Compliance Calendar** → **Open Violations Table** → *(right sidebar)* **Environmental Status** → **Worker Attendance Summary** → **Live Alert Feed**.
+#### 📍 Page Routes Table
+| # | Screen Name | Exact Frontend Route | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **Alerts Feed** | `/alerts` | `Real-time alerts` | Roof-fall emergency alert badge & notification item |
+| **2** | **Roof-Fall Incident** | `/incidents/INC-2026-001` *(or `/incidents`)* | `Investigation status` | Investigation detail, photos, severity tag & action plan |
+| **3** | **Environment & AI Forecast** | `/environment` | `AI Air Quality Forecast` | Gas sensor chart, particulate trends & Gemini forecast overlay |
+| **4** | **Statutory Report Sign-off** | `/reports` | `Digitally signed & submitted` | DGMS Form IV statutory filing, digital sign & submit button |
 
 **🎙️ SCRIPT:**
-> "⚡ The Mine Manager Command Center — everything on one screen, updated live.
->
-> Across the top — compliance health, open violations, pending corrective actions, worker attendance. Left — production trends charted by shift, and right beside it — the **AI Risk Panel** powered by Google Gemini, giving a live risk score computed from violation history, CAPA closure rate, gas readings, and production pressure.
->
-> Below — the Compliance Calendar, with every statutory deadline auto-generated from our regulation library — overdue tasks turning red, automatically escalating up the chain.
->
-> Right sidebar — live alerts streaming in from the field, environmental sensor status, and workforce attendance summary.
->
-> This used to arrive as a paper report at the end of the week. On COMET — it is live. Now, let us go deeper into compliance."
+> *"The Safety Official receives the roof-fall incident, investigates it, watches air quality with an AI forecast, and signs and submits the statutory report from the same system."*
 
 ---
 
-### 4.3 — Compliance Tracker
-#### `[2:08 – 2:28]`  
-**Route:** `/compliance`
+### 2:45 – 3:15 | Segment 6 — Corporate & Regulator 🏢 Executive & Regulatory Governance
 
-**🖥️ ACTION:** Navigate to `/compliance` — animated stat cards (Pending / In Progress / Approved / Breached) + circular health score dial → switch between **Calendar view** and **Kanban view**.
+#### 📍 Page Routes Table
+| # | Screen Name | Exact Frontend Route | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **National Dashboard** | `/corporate-dashboard` | `National dashboard` | Subsidiary overview, DeckGL map layer & CIL KPI metrics |
+| **2** | **Compliance Overview** | `/compliance` | `Compliance overview` | Multi-subsidiary compliance score ranking & health dial |
+| **3** | **Production Analytics** | `/production` | `Production analytics` | Seam-wise output, target vs actual & tonnage charts |
+| **4** | **AI Risk Intelligence** | `/ai-analytics` | `AI Risk Intelligence` | Gemini anomaly detection, risk heat matrix & recurring alerts |
+| **5** | **Environmental Summary** | `/environment` | `Environmental summary` | Subsidiary-wide CAAQMS emissions summary & SPCB compliance |
+| **6** | **Contractor Trust Map** | `/contractors` | `Contractor Trust Map` | Contractor compliance scoring, licence validity & risk tier |
+| **7** | **Emergency Broadcast** | `/alerts` | `Emergency broadcast` | Multi-site panic broadcast modal / alert dispatch banner |
+| **8** | **Regulator Read-Only View** | `/regulator` | `Regulator read-only view` | DGMS/SPCB audit portal, SHA-256 tamper-evident report logs |
 
 **🎙️ SCRIPT:**
-> "The Compliance module — the heartbeat of the platform. COMET auto-generates compliance tasks from the Mines Act, CMR 2017, EP Act, and CLRA. That circular dial is the mine's live compliance health score.
->
-> A Mine Manager can switch between a **Calendar view** — what is due this month — or a **Kanban board** — tasks by status. Breached tasks automatically trigger a multi-level escalation ladder — from Mine Manager, to Subsidiary Admin, to DGMS — so nothing disappears quietly.
->
-> Speaking of what actually happens in the field — let us look at inspections."
+> *"Headquarters sees every mine and subsidiary on one screen: compliance comparison, production trends, AI risk ranking, environmental performance, contractor trust, and an emergency broadcast to every site. Regulators get read-only access to verified reports, with tamper-evident records."*
 
 ---
 
-### 4.4 — Inspections
-#### `[2:28 – 2:48]`  
-**Route:** `/inspection`
+### 3:15 – 3:35 | Segment 7 — Contractor & Worker 🤝 Workforce & Grievances
 
-**🖥️ ACTION:** Navigate to `/inspection` — show list with filter dropdowns → open **Schedule Inspection** dialog.
+#### 📍 Page Routes Table
+| # | Screen Name | Exact Frontend Route | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **Contractor Profile** | `/contractors` *(or `/contractors/:id`)* | `Contractor profile` | Expiring medicals badge, machinery fitness & pending actions |
+| **2** | **AI Document Extraction** | `/ocr` | `AI document extraction` | OCR scan upload, auto-parsed fields & confidence scoring |
+| **3** | **Worker Observation** | `/worker` *(or Mobile App)* | `Worker observation` | Field safety hazard reporting form & photo upload |
+| **4** | **Voice Grievance** | `/grievances` *(or Mobile App)* | `Voice grievance` | Multilingual audio player, Gemini transcript & auto-category |
 
 **🎙️ SCRIPT:**
-> "Every field inspection submitted from the mobile app lands here — instantly. No phone call. No paper. Filter by type — DGMS Annual, Safety Committee, Environmental PCB. Every record carries the geo-stamp, timestamp, checklist outcome, and attached photos from the field.
->
-> When an inspection flags a violation — it becomes this."
+> *"Contractors see their own obligations: expiring medicals, machinery fitness, training, and pending actions. Workers submit observations and speak grievances in their own language."*
 
 ---
 
-### 4.5 — Violation Detail & CAPA
-#### `[2:48 – 3:05]`  
-**Route:** `/violations/:id`
+### 3:35 – 4:05 | Segment 8 — Feasibility & Methodology ⚙️ Architecture & Phased Rollout
 
-**🖥️ ACTION:** Click into an open violation → show **Violation Detail page** — severity badge, location, evidence section, CAPA assignment panel.
+#### 📍 Page Routes / Slide Table
+| # | Screen Name | Target / Source Path | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **System Architecture** | Presentation Slide / `docs/comet-architecture.html` | `Architecture slide` | React, FastAPI, Supabase, React Native, Gemini ADK engine |
+| **2** | **Phased Rollout Methodology** | Presentation Slide / `docs/comet-methodology.html` | `Configuration, not rebuild · Phased rollout` | Phase 1 Pilot Mine → Phase 2 Subsidiary → Phase 3 CIL Rollout |
 
 **🎙️ SCRIPT:**
-> "A violation detail — severity, location, observation, and evidence. Right here, the Mine Manager assigns a **Corrective Action** — sets a deadline, assigns the responsible officer.
->
-> That CAPA now has a digital trail. Closure requires uploaded evidence. The AI risk score updates the moment it is closed.
->
-> One of the biggest compliance gaps in coal mines is contractors — let us address that next."
+> *"COMET is built and running today on React, FastAPI, Supabase, React Native and Gemini. It is offline-first, and every mine uses the same design, so adding a mine is configuration, not a rebuild. AI suggests and humans approve. We propose a phased rollout: one pilot mine, one subsidiary, then all."*
 
 ---
 
-### 4.6 — Contractors & OCR
-#### `[3:05 – 3:22]`  
-**Routes:** `/contractors` → `/ocr`
+### 4:05 – 4:40 | Segment 9 — Scorecard & Close 🏁 Impact & Final Vision
 
-**🖥️ ACTION:** Navigate to `/contractors` — show contractor list with document status badges → navigate to `/ocr` — drag in a sample contractor document → watch fields auto-populate.
+#### 📍 Page Routes / Slide Table
+| # | Screen Name | Target / Source Path | On-Screen Caption Overlay | Visual Focus / Element to Highlight |
+|---|---|---|---|---|
+| **1** | **PS 26024 Compliance Scorecard** | Presentation Slide | `Scorecard slide with ticks` | 9/9 Problem statement criteria ticked green with verification |
+| **2** | **Before vs After Impact** | Presentation Slide | `Before/after impact` | Digital transformation metric: 7-day paper delay reduced to 3 mins |
+| **3** | **COMET Landing Page** | `/` | `Landing page` | Hero landing page closing shot with full platform branding |
 
 **🎙️ SCRIPT:**
-> "The Contractor module — every contractor's license, CLRA registration, and safety certificate tracked in one place. Expiry flags fire automatically.
->
-> ⚡ And this is our OCR pipeline. Drag a paper contractor document in — COMET reads it. License number, validity date, issuing authority — auto-extracted. Documents with confidence below 85 percent route to this human review queue — source image on the left, extracted fields on the right.
->
-> Paper onboarding eliminated. Now — what does the mine look like in real time?"
+> *"As the problem statement asked: compliance across safety, environment, production and labour; live inspections and corrective actions; AI risk detection; geo-tagged offline mobile reporting; dashboards for mine, corporate and regulator; alerts and escalations; OCR; and an audit trail. Violation reporting drops from days to minutes. COMET is an indigenous, paperless governance platform, ready to scale across Coal India."*
 
 ---
 
-### 4.7 — Alerts & Environment
-#### `[3:22 – 3:38]`  
-**Routes:** `/alerts` → `/environment`
+## 🗺️ MASTER WEB APP ROUTE REFERENCE MATRIX
 
-**🖥️ ACTION:** Navigate to `/alerts` — live alert cards loading → navigate to `/environment` — environmental readings against SPCB thresholds.
-
-**🎙️ SCRIPT:**
-> "The Alerts page is the mine's live emergency feed — every gas reading spike, compliance breach, and missed inspection deadline in one place, with escalation timestamps.
->
-> The Environment module tracks CAAQMS readings — dust, SO₂, NOₓ — against SPCB regulatory limits. A threshold breach triggers an immediate alert and escalation. No more discovering environmental violations at the end of a quarterly audit.
->
-> Let us pull out and look at the full spatial picture."
-
----
-
-### 4.8 — GIS Mine Map
-#### `[3:38 – 3:52]`  
-**Route:** `/mine-map`
-
-**🖥️ ACTION:** Navigate to `/mine-map` — map loads with mine pins → hover over a red pin to show popup — name, risk score, active alerts count.
-
-**🎙️ SCRIPT:**
-> "⚡ The COMET Mine Map — every mine, geo-pinned and colour-coded by AI risk score.
->
-> Green — healthy. Red — critical. Hover over any pin — the current risk score, number of active alerts, and subsidiary. A regional manager can see at a glance exactly which mines need immediate attention — without making a single phone call.
->
-> Built on MapLibre and PostGIS, every inspection, incident, and environmental reading is spatially anchored here.
->
-> Now — step up to the corporate level."
+| Feature / Screen | Exact URL Path | Role Access | Key Demo Trigger / Action |
+|---|---|---|---|
+| **Landing Page** | `/` | Public | Hero banner, features, sign-in entry |
+| **Mine Manager Dashboard** | `/mine-manager` | Mine Manager | Command center, AI risk score, live KPIs |
+| **Live Alerts** | `/alerts` | All Roles | Methane evacuation alert, emergency broadcast |
+| **GIS Mine Map** | `/mine-map` | All Roles | MapLibre pin hover, risk color coding |
+| **Compliance Tracker** | `/compliance` | Mine Manager / Corp | Health dial, Mines Act / CMR task calendar |
+| **Inspections List** | `/inspection` | Inspector / Manager | Mobile sync list, schedule dialog |
+| **Inspection Detail** | `/inspection/:id` | Inspector / Manager | Checklist items, photos, geo-stamp |
+| **Violations & CAPA** | `/violations/:id` *(or `/corrective-actions`)* | Manager / Safety | Severity badge, CAPA assignment & evidence |
+| **Incidents Management** | `/incidents` | Safety / Manager | Incident log, roof fall report investigation |
+| **Incident Detail** | `/incidents/:id` | Safety / Manager | Evidence attachments, status escalation |
+| **Production Analytics** | `/production` | Manager / Corp | Shift tonnage, seam output compliance |
+| **Environmental Sensor Status** | `/environment` | Safety / Manager | SPCB CAAQMS thresholds, AI air forecast |
+| **Contractor Management** | `/contractors` | Manager / Contractor | Licence expiries, worker fitness, trust map |
+| **Grievance Portal** | `/grievances` | All Roles | Multilingual voice audio, Gemini classification |
+| **Statutory Reports** | `/reports` | Safety / Regulator | Form IV auto-fill, SHA-256 digital signature |
+| **OCR Digitization Queue** | `/ocr` | Admin / Manager | Paper scan upload, low-confidence review |
+| **AI Analytics Engine** | `/ai-analytics` | Executive / Manager | Anomaly detection, Gemini risk reasoning |
+| **Corporate National Dashboard** | `/corporate-dashboard` | Executive | Subsidiary ranking, emergency broadcast |
+| **Regulator Audit View** | `/regulator` | Regulator | Read-only verified filings & audit trails |
+| **Worker Portal** | `/worker` | Worker / Inspector | Field observations, safety check-in |
+| **Mobile Inspection View** | `/mobile-inspection` | Inspector | Offline simulation, CH4 1.6% EVACUATE modal |
 
 ---
 
-### 4.9 — Corporate Dashboard
-#### `[3:52 – 3:55]`  
-**Route:** `/corporate-dashboard`
+## 🎥 RECORDING PREPARATION CHECKLIST
 
-**🖥️ ACTION:** Navigate to `/corporate-dashboard` — KPI cards, embedded live mine map with DeckGL scatter overlay, mine risk ranking table, AI insight panel.
-
-**🎙️ SCRIPT:**
-> "Corporate leadership sees across every mine and every subsidiary on one dashboard. The **AI Risk Ranking table** — powered by Gemini — continuously scores and surfaces the highest-risk sites. No manual roll-up calls. No waiting for a subsidiary report.
->
-> Regulatory authorities get read-only access to verified statutory reports — with SHA-256 hash anchoring for tamper-evident audit trails.
->
-> That is the web side. Now — let us go underground, into the field."
+- [ ] **Dev Servers Running:** Web (`http://localhost:5173`), Backend (`http://localhost:8000`).
+- [ ] **Demo Data Seeded:** Ensure 1 active mine (e.g., Rajmahal OCP), 3 inspections, 1 open roof-fall incident, 1 CH4 gas threshold breach, and 1 Hindi audio grievance are pre-loaded.
+- [ ] **Screen Resolution & Ratio:** Browser window set to `1920×1080` (1080p 60fps recording).
+- [ ] **Sidebar Navigation:** Practice clicking through the rapid page route sequences to maintain ~3–5 seconds per screen smooth pacing.
+- [ ] **Mobile Evacuation Trigger:** Pre-stage CH4 gas input to `1.6%` to ensure the full-screen red EVACUATE alert pops up instantly at `1:15`.
+- [ ] **Narration Sync:** Practice speaking the 700-word script alongside screen transitions — maintain smooth cadence without dead air.
 
 ---
-
-## 📱 SEGMENT 5 — MOBILE APP WALKTHROUGH
-### `[3:55 – 5:10]`
-
-> **Recording note:** Switch to Android emulator or physical device screen recording from here.
-
----
-
-### 5.1 — App Login & Home
-#### `[3:55 – 4:07]`
-
-**🖥️ ACTION:** App launch → login screen → sign in as Field Inspector → home screen with pending tasks and offline sync indicator.
-
-**🎙️ SCRIPT:**
-> "The COMET mobile field app — built with React Native and Expo. It works completely offline. A field inspector logs in and sees today's pending inspection tasks, active alerts, and shift status — even with zero network signal inside the mine."
-
----
-
-### 5.2 — Offline Inspection
-#### `[4:07 – 4:27]`
-
-**🖥️ ACTION:** Tap **Start Inspection** → select DGMS Annual → GPS stamps location → walk through checklist → mark one item **Non-Compliant** → set severity HIGH → add description → attach photo.
-
-**🎙️ SCRIPT:**
-> "Starting an inspection — GPS stamps the location. The checklist loads from our regulation library. Each checkpoint — safe, or non-compliant.
->
-> This ventilation checkpoint is flagged **High severity** — a short description is added, a photo attached. Everything saves to the device instantly. No network required.
->
-> The moment connectivity is restored — it syncs directly to the Mine Manager dashboard. But what happens when a reading crosses a safety threshold?"
-
----
-
-### 5.3 — ⚡ Gas Reading Evacuation Alert
-#### `[4:27 – 4:40]`
-
-**🖥️ ACTION:** In the ventilation section — enter CH4 reading `1.6%` → **full-screen red EVACUATE modal fires immediately**.
-
-**🎙️ SCRIPT:**
-> "Watch this. A methane reading of 1.6 percent — above the safe limit of 1.5 percent.
->
-> ⚡ Instantly — a full-screen evacuation alert. It bypasses silent mode. It is device-local — fires even offline, underground, with zero network.
->
-> On the next sync, this reading appears on the Mine Manager's Live Alert Feed automatically — from the field to the dashboard in seconds.
->
-> Attendance is tracked with equal precision."
-
----
-
-### 5.4 — QR Attendance
-#### `[4:40 – 4:52]`
-
-**🖥️ ACTION:** Switch to Attendance tab → QR scanner activates → scan worker badge → name and shift populate → **cut to web** `/attendance` — show the Attendance Management Module with attendance records.
-
-**🎙️ SCRIPT:**
-> "Worker attendance — captured by scanning a QR badge, geo-fenced to the mine boundary. Every scan is time-stamped and synced.
->
-> On the web — the Attendance module automatically flags workers exceeding consecutive night shift limits under the Mines Act. Labour compliance enforced without a single manual check.
->
-> And workers have a voice too."
-
----
-
-### 5.5 — Worker Grievance
-#### `[4:52 – 5:10]`
-
-**🖥️ ACTION:** Switch to Grievances tab → tap **Record Voice Grievance** → record audio in Hindi → submit → show pending sync indicator → **cut to web** `/grievances` — grievance appears with auto-category and priority assigned.
-
-**🎙️ SCRIPT:**
-> "Any worker can file a grievance by voice — in Hindi, Bengali, Odia, Marathi, or English.
->
-> ⚡ The audio is processed by our **Gemini Grievance Audio Agent**. It transcribes, translates, categorises — safety, wages, harassment — assigns a priority, and routes it to the responsible officer automatically.
->
-> From a voice recording in Hindi, to a categorised, escalated case on the Mine Manager's dashboard — fully automated."
-
----
-
-## 🏁 SEGMENT 6 — CLOSING
-### `[5:10 – 5:30]`
-
-**🖥️ ACTION:** Return to the COMET landing page — full screen.
-
-**🎙️ SCRIPT:**
-> "What you just saw is a **fully working prototype** — not a simulation.
->
-> COMET unifies statutory compliance, field inspections, CAPA management, contractor onboarding, production reporting, environmental monitoring, worker attendance, grievance handling, and AI-powered risk scoring — into one centralized platform for India's coal mines.
->
-> Stack: **React, FastAPI, Google Gemini ADK, Supabase, React Native** — ready to scale across all Coal India subsidiaries.
->
-> We are excited to be part of Smart India Hackathon 2026. Thank you."
-
----
-
-## ⏱️ TIMESTAMP TABLE
-
-| Time | Scene | Route / Action |
-|---|---|---|
-| 0:00 – 0:30 | Introduction & Hook | Landing page |
-| 0:30 – 1:00 | Problem Statement | PPT Slide 1 |
-| 1:00 – 1:30 | Solution Overview | PPT Slide 2 |
-| 1:30 – 1:42 | Login | `/` sign-in |
-| 1:42 – 2:08 | Mine Manager Command Center ⚡ | `/mine-manager` |
-| 2:08 – 2:28 | Compliance Tracker ⚡ | `/compliance` |
-| 2:28 – 2:48 | Inspections | `/inspection` |
-| 2:48 – 3:05 | Violation Detail + CAPA | `/violations/:id` |
-| 3:05 – 3:22 | Contractors + OCR ⚡ | `/contractors` → `/ocr` |
-| 3:22 – 3:38 | Alerts + Environment | `/alerts` → `/environment` |
-| 3:38 – 3:52 | GIS Mine Map ⚡ | `/mine-map` |
-| 3:52 – 3:55 | Corporate Dashboard ⚡ | `/corporate-dashboard` |
-| 3:55 – 4:07 | Mobile: Login & Home | App home screen |
-| 4:07 – 4:27 | Mobile: Offline Inspection | App inspection flow |
-| 4:27 – 4:40 | Mobile: CH4 Evacuation Alert ⚡⚡ | App gas reading `1.6%` |
-| 4:40 – 4:52 | Mobile: QR Attendance → Web | App → `/attendance` |
-| 4:52 – 5:10 | Mobile: Voice Grievance → Web | App → `/grievances` |
-| 5:10 – 5:30 | Closing | Landing page |
-
----
-
-## ✅ ALL WORKING PAGES COVERED
-
-| Page | URL | Segment |
-|---|---|---|
-| Landing Page | `/` | 1, 4.1, 6 |
-| Mine Manager Dashboard | `/mine-manager` | 4.2 |
-| Compliance Tracker | `/compliance` | 4.3 |
-| Inspections | `/inspection` | 4.4 |
-| Violation Detail | `/violations/:id` | 4.5 |
-| Contractors | `/contractors` | 4.6 |
-| OCR Review | `/ocr` | 4.6 |
-| Alerts | `/alerts` | 4.7 |
-| Environment | `/environment` | 4.7 |
-| GIS Mine Map | `/mine-map` | 4.8 |
-| Corporate Dashboard | `/corporate-dashboard` | 4.9 |
-| Attendance | `/attendance` | 5.4 |
-| Grievances | `/grievances` | 5.5 |
-| Mobile: Home | App | 5.1 |
-| Mobile: Inspection | App | 5.2 |
-| Mobile: Gas Alert | App | 5.3 |
-| Mobile: QR Attendance | App | 5.4 |
-| Mobile: Voice Grievance | App | 5.5 |
-
----
-
-## 🎥 RECORDING CHECKLIST
-
-- [ ] Web app at `http://localhost:5173` — demo data seeded
-- [ ] Backend `uvicorn` at `http://localhost:8000` — running
-- [ ] Screen recorder (OBS / QuickTime) — 1920×1080, mic checked
-- [ ] Mobile emulator / device — app installed, logged in as Field Inspector
-- [ ] Pre-stage the ventilation inspection so the CH4 input is reachable in under 60 seconds
-- [ ] Demo data: 1 mine · 3 inspections · 1 open violation with CAPA · 1 contractor with documents · 1 overdue compliance task (red) · 1 pending grievance
-- [ ] All notifications disabled on the recording machine
-- [ ] Rehearse spoken transitions at least 3 times — every page must flow into the next without silence
-
----
-
-## ⚡ WOW MOMENTS — PRACTICE THESE UNTIL SHARP
-
-| # | Moment | Why It Lands |
-|---|---|---|
-| 1 | Mine Manager dashboard fully loaded | Every widget live simultaneously — judges see a real product, not a mockup |
-| 2 | Compliance health dial + calendar | Animated, visual, emotional — colour-coded risk is immediately readable |
-| 3 | OCR auto-extracts contractor document | Paper to digital in one action — immediately communicates the paperwork problem solved |
-| 4 | GIS mine map — red pin hover | Spatial, visual, dangerous — risk becomes real when you can point at it on a map |
-| 5 | CH4 reading → full-screen EVACUATE | Your single highest-impact moment — pause, let it fill the screen, let the judges absorb it |
-
----
-
-*Script v3.0 — Tarang-style · SIH 2026 — PS 26024 · COMET Platform*
+*Updated Pitch Demo Script & Route Mapping v5.0 · SIH 2026 — PS 26024 · COMET Governance Platform*

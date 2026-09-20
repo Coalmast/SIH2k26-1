@@ -69,13 +69,15 @@ export const useAuthStore = create<AuthStore>()(
       return { auth: { ...state.auth, session, user, isLoading: false } }
     })
     
-    // Auto fetch roles when session is set
-    if (session?.user?.id) {
+    // Auto fetch roles when session is set if role isn't already set
+    if (session?.user?.id && !get().auth.role) {
        get().fetchRoleAndPermissions(session.user.id, session.user.email || '');
     }
   },
   fetchRoleAndPermissions: async (userId: string, email: string) => {
     try {
+       const currentRole = get().auth.role;
+
        // Check user_roles table
        const { data: roleData, error } = await supabase
          .from('user_roles')
@@ -89,6 +91,11 @@ export const useAuthStore = create<AuthStore>()(
          role = (roleData.roles as any).name as AppRole;
        }
        
+       // Preserve active user role if DB doesn't have an explicit entry
+       if (!role && currentRole) {
+         role = currentRole;
+       }
+
        // Fallback mock based on email for hackathon demo
        if (!role) {
          if (email.includes('admin') || email.includes('super')) role = 'super_admin';
@@ -97,10 +104,10 @@ export const useAuthStore = create<AuthStore>()(
          else if (email.includes('inspector') || email.includes('field')) role = 'field_inspector';
          else if (email.includes('safety')) role = 'safety_official';
          else if (email.includes('contractor') || email.includes('vendor')) role = 'contractor';
-         else role = 'field_inspector';
+         else role = 'mine_manager';
        }
 
-       get().setUserMeta(role, [], null);
+       get().setUserMeta(role, get().auth.mineIds || [], get().auth.subsidiaryId || null);
        
     } catch (err) {
        console.error("Failed to fetch role", err);
@@ -112,7 +119,7 @@ export const useAuthStore = create<AuthStore>()(
       if (role === 'super_admin') permissions.push('all');
       if (role === 'corporate_executive') permissions.push('compliance:view', 'reports:view', 'mine:read');
       if (role === 'mine_manager') permissions.push('compliance:approve', 'capa:verify', 'mine:write', 'reports:view');
-      if (role === 'field_inspector') permissions.push('inspection:create', 'violation:create', 'incident:create');
+      if (role === 'field_inspector') permissions.push('inspection:create', 'violation:create', 'incident:create', 'compliance:view');
       if (role === 'safety_official') permissions.push('inspection:create', 'violation:create', 'incident:create', 'capa:verify');
       if (role === 'contractor') permissions.push('contractor:view');
       
