@@ -73,15 +73,6 @@ export default function InspectionsScreen() {
   return (
     <View className="flex-1 bg-comet-canvas pt-4">
       
-      <View className="flex-row justify-end px-4 mb-4">
-        <TouchableOpacity 
-          className="bg-comet-orange px-4 py-2 rounded-lg"
-          onPress={() => router.push('/inspect/start')}
-        >
-          <Text className="text-comet-sidebar-bg font-bold">+ New</Text>
-        </TouchableOpacity>
-      </View>
-
       <View className="flex-row mb-4 bg-comet-card p-1 rounded-lg mx-4">
         {['all', 'active', 'done'].map((f) => (
           <TouchableOpacity

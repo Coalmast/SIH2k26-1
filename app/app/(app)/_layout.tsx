@@ -1,6 +1,6 @@
 import React from 'react';
-import { View } from 'react-native';
-import { Tabs } from 'expo-router';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { Tabs, useRouter } from 'expo-router';
 import { Home, ClipboardList, AlertTriangle, User } from 'lucide-react-native';
 import CriticalAlarmModal from '../../src/components/CriticalAlarmModal';
 import { InAppNotificationToast } from '../../src/components/InAppNotificationToast';
@@ -14,6 +14,7 @@ export default function AppLayout() {
   useRealtimeAlerts();
   useNotificationTap();
   const { colorScheme } = useColorScheme();
+  const router = useRouter();
   const isDark = colorScheme === 'dark';
   
   const headerBg = '#0a0908';
@@ -46,7 +47,14 @@ export default function AppLayout() {
           name="inspect"
           options={{
             title: 'Inspections',
-            headerRight: () => <NotificationHeaderIcon />,
+            headerRight: () => (
+              <TouchableOpacity 
+                className="bg-comet-orange px-3 py-1.5 rounded-lg mr-4"
+                onPress={() => router.push('/inspect/start')}
+              >
+                <Text className="text-comet-sidebar-bg font-bold">+ New</Text>
+              </TouchableOpacity>
+            ),
             tabBarIcon: ({ color }) => <ClipboardList size={24} color={color} />,
           }}
         />
