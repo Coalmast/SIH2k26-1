@@ -10,6 +10,18 @@ import { Badge } from '@/components/ui/badge'
 
 const mockGrievances = [
   {
+    id: 'GRV-105',
+    title: 'Roof Support Failing in Sector 4',
+    category: 'Safety',
+    submittedBy: 'Anonymous Worker',
+    date: '2026-09-20',
+    status: 'open',
+    aiSuggested: true,
+    priority: 'high',
+    source: 'voice',
+    language: 'Hindi'
+  },
+  {
     id: 'GRV-104',
     title: 'Inadequate Dust Suppression on Haul Road B',
     category: 'Environment',
@@ -135,11 +147,19 @@ export function GrievancesModule() {
                   <span className="font-mono text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded">
                     {g.id}
                   </span>
+                  {g.source === 'voice' && (
+                    <Badge variant="outline" className="bg-indigo-500/10 text-indigo-500 border-indigo-500/30 flex items-center gap-1 shrink-0 px-1.5 py-0" title={`Voice Grievance (${g.language})`}>
+                      🎙️ Voice
+                    </Badge>
+                  )}
                   <h3 className="font-semibold text-lg">{g.title}</h3>
                   {getStatusBadge(g.status)}
                 </div>
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <span className="font-medium bg-muted px-2 py-0.5 rounded text-foreground/80">{g.category}</span>
+                  {g.priority === 'high' && (
+                    <Badge variant="secondary" className="bg-red-500/10 text-red-500 border border-red-500/20">Priority: High</Badge>
+                  )}
                   <span>{t("submitted_by", "Submitted by:")}<span className="font-medium text-foreground/80">{g.submittedBy}</span></span>
                   <span>{t("date", "Date:")}{new Date(g.date).toLocaleDateString()}</span>
                 </div>

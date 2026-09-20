@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ShieldAlert, Plus, Search, Filter, FileText, ChevronRight } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Link } from '@tanstack/react-router'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog"
 
 const mockIncidents = [
   {
@@ -126,8 +127,40 @@ export function IncidentsList() {
               </div>
               
               <div className="flex gap-3 md:flex-col lg:flex-row shrink-0">
-                <Button variant="outline" size="sm">
-                  <FileText className="h-4 w-4 mr-2" />{t("form_4_a", "Form 4-A")}</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <FileText className="h-4 w-4 mr-2" />{t("form_4_a", "Form 4-A")}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl h-[80vh] overflow-hidden flex flex-col">
+                    <DialogHeader>
+                      <DialogTitle>Form 4-A (Statutory Incident Report)</DialogTitle>
+                      <DialogDescription>
+                        Draft report for incident {incident.id}. Auto-populated with available data.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-1 overflow-y-auto bg-muted/30 p-4 border rounded-md">
+                      <div className="bg-white dark:bg-slate-900 p-8 shadow-sm border text-sm space-y-6">
+                        <div className="text-center font-bold uppercase underline mb-6 text-foreground/80">Form 4-A</div>
+                        <div className="text-center font-bold mb-4 text-foreground">[See Regulation 9]</div>
+                        <div className="space-y-4 text-foreground/90 font-mono">
+                          <p>1. Name of Mine: Dhanbad Central Colliery</p>
+                          <p>2. Name of Owner: Coal India Limited</p>
+                          <p>3. Date and time of incident: {new Date(incident.date).toLocaleString()}</p>
+                          <p>4. Location of incident: {incident.zone}</p>
+                          <p>5. Classification: {incident.type}</p>
+                          <p>6. Brief Description: {incident.desc}</p>
+                          <p>7. Actions Taken: Immediate operations halted. Area cordoned off.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline">Download PDF</Button>
+                      <Button>Sign & Submit to DGMS</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
                 <Link to={`/incidents/$id`} params={{ id: incident.id }}>
                   <Button size="sm">{t("view_details", "View Details")}<ChevronRight className="h-4 w-4 ml-1" />
                   </Button>

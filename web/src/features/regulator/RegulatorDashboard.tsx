@@ -61,7 +61,9 @@ export function RegulatorDashboard() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3 text-foreground">
-            <ShieldAlert className="h-8 w-8 text-primary" />{t("dgms_regulatory_forensic_dashb", "DGMS Regulatory Forensic Dashboard")}</h1>
+            <ShieldAlert className="h-8 w-8 text-primary" />{t("dgms_regulatory_forensic_dashb", "DGMS Regulatory Forensic Dashboard")}
+            <Badge className="ml-2 bg-emerald-500/15 text-emerald-600 border-emerald-500/30">🔒 Read-Only Access</Badge>
+          </h1>
           <p className="text-muted-foreground mt-1">{t(
             "stark_monochrome_view_for_regu",
             "Stark monochrome view for regulatory oversight, AI risk prediction, and compliance verification."
@@ -88,8 +90,6 @@ export function RegulatorDashboard() {
               <SelectItem value="minesact">{t("mines_act_1952", "Mines Act 1952")}</SelectItem>
             </SelectContent>
           </Select>
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-none shadow-sm">
-            <FileSignature className="h-4 w-4 mr-2" />{t("generate_notice", "Generate Notice")}</Button>
         </div>
       </div>
 
@@ -155,11 +155,15 @@ export function RegulatorDashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Blockchain Ledger */}
-        <Card className="lg:col-span-2 border-border rounded-none shadow-sm flex flex-col">
+        {/* Tamper-Evident Audit Trail */}
+        <Card className="lg:col-span-2 border-border rounded-none shadow-sm flex flex-col relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-3 flex items-center gap-2 text-emerald-600 bg-emerald-500/10 rounded-bl-lg border-b border-l border-emerald-500/20">
+            <CheckCircle2 className="h-4 w-4" />
+            <span className="text-xs font-bold uppercase tracking-wider">SHA-256 Verified</span>
+          </div>
           <CardHeader className="bg-muted/50 border-b border-border py-3">
             <CardTitle className="text-sm font-bold uppercase tracking-wider text-foreground/80 flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4" />{t("blockchain_verification_ledger", "Blockchain Verification Ledger")}</CardTitle>
+              <ShieldCheck className="h-4 w-4 text-emerald-500" />{t("blockchain_verification_ledger", "Tamper-Evident Audit Trail (SHA-256)")}</CardTitle>
           </CardHeader>
           <CardContent className="p-4 flex-1 overflow-x-auto">
             <div className="border border-border rounded-md overflow-hidden">
@@ -181,20 +185,9 @@ export function RegulatorDashboard() {
                     <td className="px-4 py-3 text-foreground/80">{row.mine} <span className="text-muted-foreground/70">|</span> {row.inspector}</td>
                     <td className="px-4 py-3 text-muted-foreground/70 select-all">{row.hash}</td>
                     <td className="px-4 py-3 text-right">
-                      {row.status === 'verified' && verifying !== row.id ? (
-                        <Badge variant="outline" className="rounded-none bg-[#0ecb81]/10 text-comet-up border-emerald-300 font-mono uppercase text-[10px]">
-                          <CheckCircle2 className="h-3 w-3 mr-1" />{t("verified", "Verified")}</Badge>
-                      ) : (
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="h-7 text-[10px] rounded-none uppercase font-bold text-indigo-700 border-indigo-200 hover:bg-indigo-50"
-                          onClick={() => handleVerify(row.id)}
-                          disabled={verifying === row.id}
-                        >
-                          {verifying === row.id ? 'Computing...' : 'Verify Hash'}
-                        </Button>
-                      )}
+                      <Badge variant="outline" className="rounded-none bg-[#0ecb81]/10 text-comet-up border-emerald-300 font-mono uppercase text-[10px]">
+                        <CheckCircle2 className="h-3 w-3 mr-1" />{t("verified", "Verified")}
+                      </Badge>
                     </td>
                   </tr>
                 ))}

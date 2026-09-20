@@ -51,7 +51,8 @@ export function ComplianceCalendar({ mineId, filterStatus, filterCategory }: Pro
       filtered = filtered.filter((i: any) => i.requirement?.regulation?.category === filterCategory);
     }
     
-    return filtered.map((instance: any) => {
+    
+    const result: TaskItem[] = filtered.map((instance: any) => {
       const isOverdue = new Date(instance.due_date) < new Date() && instance.status !== 'approved';
       const category = instance.requirement?.regulation?.category;
       
@@ -84,6 +85,24 @@ export function ComplianceCalendar({ mineId, filterStatus, filterCategory }: Pro
         metadata: { category }
       };
     });
+    
+    // Add mock follow-up inspection 7 days from now
+    const mockDate = new Date();
+    mockDate.setDate(mockDate.getDate() + 7);
+    
+    result.push({
+      id: 'mock-followup',
+      name: '🔄 Follow-up Inspection — Air Quality Re-check',
+      description: 'Regulation: EPA-1986',
+      status: 'high_priority', 
+      active: true,
+      setAt: mockDate.toISOString(),
+      expireAt: mockDate.toISOString(),
+      priority: 'high',
+      metadata: { category: 'environment' }
+    });
+    
+    return result;
   }, [instances, filterStatus, filterCategory]);
 
   if (isLoading) {

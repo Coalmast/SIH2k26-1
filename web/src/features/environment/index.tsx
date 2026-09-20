@@ -7,6 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend } from 'recharts'
 import { Wind, Activity, Droplets, AlertTriangle, Plus, MapPin, Search } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { DigitalSignSheet } from '@/features/reports/components/DigitalSignSheet'
+import { FileSignature, CheckCircle2 } from 'lucide-react'
+import { toast } from 'sonner'
 
 const mockTrendData = [
   { time: '08:00', pm10: 85, pm25: 42, no2: 25 },
@@ -24,6 +27,17 @@ export function EnvironmentModule() {
   } = useTranslation();
 
   const [selectedStation, setSelectedStation] = useState('all')
+  const [isSignSheetOpen, setIsSignSheetOpen] = useState(false)
+  const [reportSigned, setReportSigned] = useState(false)
+  
+  const handleSignConfirm = (data: any) => {
+    setReportSigned(true)
+    setIsSignSheetOpen(false)
+    toast.success("Report signed & submitted to SPCB/DGMS", {
+      icon: <CheckCircle2 className="text-emerald-500 h-5 w-5" />,
+      style: { backgroundColor: '#f0fdf4', borderColor: '#bbf7d0', color: '#166534' }
+    })
+  }
 
   return (
     <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/30 max-w-[1400px] mx-auto w-full space-y-6">
@@ -76,20 +90,42 @@ export function EnvironmentModule() {
           </CardContent>
         </Card>
 
-        <Card className="bg-primary/10 border border-primary/30 shadow-sm text-foreground">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm text-primary flex items-center gap-2">
-              <Activity className="h-4 w-4" />{t("ai_forecast", "AI Forecast")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm font-medium">{t(
-              "pm10_expected_to_peak_at_125_g",
-              "PM10 expected to peak at 125 µg/m³ between 14:00-16:00."
-            )}</div>
-            <div className="text-xs text-muted-foreground mt-2">{t(
-              "recommendation_increase_water_",
-              "Recommendation: Increase water sprinkling on Haul Road B."
-            )}</div>
+      </div>
+
+      <div className="mt-6 mb-6">
+        <Card className="bg-primary/10 border-2 border-primary/40 shadow-md relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent pointer-events-none" />
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between relative z-10">
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="text-xl font-bold tracking-tight text-primary flex items-center gap-2">
+                    <Activity className="h-6 w-6" /> AI Environmental Forecast
+                  </h3>
+                  <Badge variant="destructive" className="animate-pulse bg-red-500 text-white border-none shadow-sm">
+                    🔴 Anomaly Detected
+                  </Badge>
+                </div>
+                <p className="text-base text-foreground font-medium">
+                  {t("pm10_expected_to_peak_at_125_g", "PM10 expected to peak at 125 µg/m³ between 14:00-16:00.")}
+                </p>
+                <div className="flex items-center gap-2 mt-2 p-3 bg-background/60 backdrop-blur rounded-lg border border-border/50 shadow-inner">
+                  <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0" />
+                  <p className="text-sm font-semibold text-foreground">
+                    <span className="text-amber-600 dark:text-amber-500 mr-2">Recommendation:</span>
+                    {t("recommendation_increase_water_", "Increase water sprinkling on Haul Road B.")}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 min-w-[200px]">
+                <Button className="w-full shadow-lg shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90">
+                  ✅ Take Action
+                </Button>
+                <Button variant="outline" className="w-full bg-background/50 hover:bg-background">
+                  Dismiss Alert
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -193,6 +229,50 @@ export function EnvironmentModule() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Statutory Report Section */}
+      <div className="mt-6">
+        <Card className="shadow-sm border border-border/50 bg-background/50 backdrop-blur-sm">
+          <CardHeader className="pb-3 border-b border-border/50">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <FileSignature className="h-5 w-5 text-primary" />
+              Statutory Report Submission
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex-1">
+                <h4 className="font-semibold text-foreground mb-1">Monthly Environmental Monitoring Report</h4>
+                <p className="text-sm text-muted-foreground">Auto-populate report from current sensor telemetry and compliance data.</p>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                {reportSigned ? (
+                  <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-md font-medium text-sm border border-emerald-200">
+                    <CheckCircle2 className="h-4 w-4" />
+                    Signed & Submitted
+                  </div>
+                ) : (
+                  <>
+                    <Button variant="outline" className="gap-2">
+                      <FileSignature className="h-4 w-4" /> Auto-populate
+                    </Button>
+                    <Button onClick={() => setIsSignSheetOpen(true)} className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20">
+                      <FileSignature className="h-4 w-4" /> Digital Sign & Submit
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <DigitalSignSheet 
+        isOpen={isSignSheetOpen} 
+        onClose={() => setIsSignSheetOpen(false)} 
+        onConfirm={handleSignConfirm} 
+      />
 
     </div>
   );

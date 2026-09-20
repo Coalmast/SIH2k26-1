@@ -58,6 +58,10 @@ const complianceCardRenderer: KanbanCardRenderer<any> = {
                 {data.requirement?.title || 'Task'}
               </span>
               <div className="flex items-center gap-1.5 shrink-0 mt-1">
+                {/* Hardcoded System-generated badge per user instruction */}
+                <span className="bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 shrink-0" title="System-generated">
+                  🤖 System
+                </span>
                 {isDueSoon && (
                   <span className="relative flex h-3 w-3" title="Due in < 48 hours">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>

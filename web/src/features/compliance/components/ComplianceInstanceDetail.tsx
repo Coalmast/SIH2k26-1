@@ -61,6 +61,11 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
               {instance.requirement?.title || 'Compliance Task'}
             </h1>
             <div className="relative flex items-center justify-center">
+              <Badge className="bg-primary/15 text-primary border-primary/30 mr-2 flex items-center gap-1.5 px-3 py-1 shadow-sm hover:bg-primary/25 transition-colors">
+                🤖 System-generated from Regulation Library
+              </Badge>
+            </div>
+            <div className="relative flex items-center justify-center">
               {instance.status === 'pending' && <div className="absolute inset-0 bg-yellow-500/30 blur-md rounded-full"></div>}
               {instance.status === 'breached' && <div className="absolute inset-0 bg-red-500/30 blur-md rounded-full animate-pulse"></div>}
               <Badge className={`relative px-3 py-1 shadow-sm ${
@@ -199,6 +204,15 @@ export function ComplianceInstanceDetail({ mineId, instanceId }: Props) {
               </CardHeader>
               <CardContent className="relative z-50">
                 <div className="space-y-4">
+                  <div className="p-3 mb-4 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-start gap-3 shadow-inner">
+                    <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-sm font-semibold text-amber-600 dark:text-amber-500">Proof required to close</h4>
+                      <p className="text-xs text-amber-600/80 dark:text-amber-500/80 mt-0.5">
+                        Upload corrective action evidence before this violation can be marked resolved.
+                      </p>
+                    </div>
+                  </div>
                   <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/10 shadow-inner">
                     <div className="flex justify-between items-start mb-2">
                       <div>
