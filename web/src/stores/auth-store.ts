@@ -104,6 +104,7 @@ export const useAuthStore = create<AuthStore>()(
          else if (email.includes('inspector') || email.includes('field')) role = 'field_inspector';
          else if (email.includes('safety')) role = 'safety_official';
          else if (email.includes('contractor') || email.includes('vendor')) role = 'contractor';
+         else if (email.includes('regulator') || email.includes('dgms')) role = 'regulator';
          else role = 'mine_manager';
        }
 

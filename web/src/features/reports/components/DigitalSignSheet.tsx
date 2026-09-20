@@ -165,11 +165,11 @@ export function DigitalSignSheet({ isOpen, onClose, onConfirm }: DigitalSignShee
               <h3 className="text-lg font-medium">2. Provide Signature</h3>
               
               <Tabs defaultValue="draw" onValueChange={(v) => setSignatureMode(v as 'draw' | 'type')}>
-                <TabsList className="w-full grid grid-cols-2 bg-[#0B0E11] border border-[#2B3139]">
-                  <TabsTrigger value="draw" className="data-[state=active]:bg-[#2B3139] data-[state=active]:text-white">
+                <TabsList className="w-full grid grid-cols-2">
+                  <TabsTrigger value="draw">
                     Draw
                   </TabsTrigger>
-                  <TabsTrigger value="type" className="data-[state=active]:bg-[#2B3139] data-[state=active]:text-white">
+                  <TabsTrigger value="type">
                     Type
                   </TabsTrigger>
                 </TabsList>
@@ -181,7 +181,7 @@ export function DigitalSignSheet({ isOpen, onClose, onConfirm }: DigitalSignShee
                       variant="ghost" 
                       size="sm" 
                       onClick={() => canvasRef.current?.clear()}
-                      className="text-[#707A8A] hover:text-white"
+                      className="text-muted-foreground hover:text-foreground"
                     >
                       Clear Canvas
                     </Button>
@@ -251,7 +251,7 @@ export function DigitalSignSheet({ isOpen, onClose, onConfirm }: DigitalSignShee
             <div className="flex w-full space-x-3">
               <Button 
                 variant="outline" 
-                className="flex-1 border-[#2B3139] text-[#EAECEF] hover:bg-[#2B3139]" 
+                className="flex-1 border-border text-foreground hover:bg-muted" 
                 onClick={() => setStep(1)}
               >
                 Back
@@ -269,7 +269,7 @@ export function DigitalSignSheet({ isOpen, onClose, onConfirm }: DigitalSignShee
             <div className="flex w-full space-x-3">
               <Button 
                 variant="outline" 
-                className="flex-1 border-[#2B3139] text-[#EAECEF] hover:bg-[#2B3139]" 
+                className="flex-1 border-border text-foreground hover:bg-muted" 
                 onClick={() => setStep(2)}
               >
                 Back

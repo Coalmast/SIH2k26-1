@@ -63,6 +63,7 @@ import {
   Cell,
 } from "recharts";
 import { NumberTicker } from "@/components/ui/number-ticker";
+import { motion } from "framer-motion";
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
 
@@ -727,7 +728,7 @@ export function AttendanceManagementModule() {
             <CalendarCheck className="h-8 w-8 text-emerald-400" />
             {t("attendance_worker_management", "Attendance & Worker Management")}
           </h1>
-          <p className="text-muted-foreground/60 mt-1 text-white">
+          <p className="text-muted-foreground mt-1">
             {t(
               "realtime_rfid_attendance_shift_management",
               "Real-time RFID attendance tracking, shift-wise headcounts, DGMS compliance monitoring, and biometric event logs."
@@ -736,7 +737,7 @@ export function AttendanceManagementModule() {
         </div>
         <div className="flex items-center gap-3">
           <Select value={contractorFilter} onValueChange={setContractorFilter}>
-            <SelectTrigger className="bg-transparent border-slate-600 text-slate-200 w-52">
+            <SelectTrigger className="bg-transparent border-input w-52">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

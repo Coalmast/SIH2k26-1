@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
+import { Link } from '@tanstack/react-router';
 import { Card } from '@/components/ui/card';
 import {
   Table,
@@ -87,9 +88,11 @@ export function OpenViolationsTable({ mineId }: { mineId?: string }) {
                     {formatDistanceToNow(new Date(v.created_at))} {t("ago", "ago")}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" className="h-8 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10">
-                      <Plus className="h-3 w-3 mr-1" /> {t("assign_capa", "CAPA")}
-                    </Button>
+                    <Link to="/violations/$id" params={{ id: v.id }}>
+                      <Button variant="ghost" size="sm" className="h-8 px-2 text-xs text-primary hover:text-primary hover:bg-primary/10">
+                        <Plus className="h-3 w-3 mr-1" /> {t("assign_capa", "CAPA")}
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))

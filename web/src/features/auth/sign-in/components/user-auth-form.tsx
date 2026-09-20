@@ -69,8 +69,19 @@ export function UserAuthForm({
         toast.error(error.message)
       } else {
         toast.success(`Welcome back, ${data.email}!`)
-        const targetPath = redirectTo || '/'
-        navigate({ to: targetPath, replace: true })
+        
+        // Wait for auth store to fetch the role
+        setTimeout(() => {
+          const { auth } = useAuthStore.getState();
+          let targetPath = redirectTo;
+          if (!targetPath || targetPath === '/') {
+            if (auth.role === 'super_admin' || auth.role === 'corporate_executive') targetPath = '/corporate-dashboard';
+            else if (auth.role === 'mine_manager') targetPath = '/mine-manager';
+            else if (auth.role === 'regulator') targetPath = '/regulator';
+            else targetPath = '/inspection';
+          }
+          navigate({ to: targetPath, replace: true });
+        }, 300);
       }
     })
   }
