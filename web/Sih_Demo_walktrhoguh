@@ -1,0 +1,37 @@
+# Demo Mode Deployed! 🚀
+
+The COMET web prototype is now fully decoupled from the backend and database for your committee presentation. You can safely build and host just the `web/` folder.
+
+## What Was Accomplished
+
+1. **Supabase & Realtime Stubbing:** 
+   - Replaced the Supabase client with a chainable dummy stub in demo mode. 
+   - All `.select()`, `.eq()`, `.channel().on()` calls execute safely without opening network connections.
+2. **API Mock Layer:** 
+   - Attached an Axios interceptor to `apiClient` to intercept all FastAPI requests and return mocked JSON responses instantly.
+   - Wrapped the native `fetchWithAuth` hook (used in Compliance/Reports) to do the same.
+3. **Data Injection:** 
+   - Created a comprehensive `mock-data/index.ts` file holding realistic seeds for mines, readings, production trends, compliance instances, and alerts.
+4. **Auth Flow & Role Switching UX:**
+   - Modified the auth store to inject a fake session, allowing the app to load fully authenticated without a real JWT.
+   - Replaced the `/sign-in` form with a grid of **7 interactive role cards**.
+   - Clicking a card instantly navigates to that role's dashboard (e.g., Mine Manager to `/mine-manager`). 
+   - The sidebar Role Switcher remains active, so you can hot-swap roles mid-demo.
+5. **Demo Banner:**
+   - A sticky header banner clearly states the app is in demo mode and data is simulated.
+6. **Scripts:**
+   - Added `dev:demo` and `build:demo` in `package.json`.
+
+## How to Test and Deploy
+
+1. Ensure `dotenv-cli` is installed: `npm install dotenv-cli --save-dev`
+2. **Run locally:** `npm run dev:demo`
+3. **Build for hosting:** `npm run build:demo`
+4. Deploy the contents of the `dist/` folder to Vercel, Netlify, or any static hosting service.
+
+## Verification Checklist
+- [x] `/sign-in` displays role cards instead of a form.
+- [x] Dashboards load with populated charts and tables.
+- [x] The compliance calendar correctly reads pending/approved dates.
+- [x] No `401 Unauthorized` or `500 Server Error` logs in the browser console.
+- [x] Sign-out gracefully prevents logout, keeping you in the prototype.

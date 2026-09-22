@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { type Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import { DEMO_MODE, DEMO_SESSION } from '@/lib/demo-mode'
 
 export type AppRole =
   | 'super_admin'
@@ -41,13 +42,28 @@ interface AuthStore {
 }
 
 const initialState: AuthState = {
-  user: null,
-  session: null,
-  isLoading: true,
-  role: null,
-  permissions: [],
-  mineIds: [],
-  subsidiaryId: null,
+  ...(DEMO_MODE ? {
+    user: {
+      id: 'demo-user-001',
+      email: 'demo@coalindia.gov.in',
+      role: 'authenticated' as const,
+      full_name: 'Demo User — SIH 2026',
+    },
+    session: DEMO_SESSION as any,
+    role: null,
+    isLoading: false,
+    permissions: [],
+    mineIds: ['mine-001', 'mine-002', 'mine-003'],
+    subsidiaryId: 'sub-001',
+  } : {
+    user: null,
+    session: null,
+    isLoading: true,
+    role: null,
+    permissions: [],
+    mineIds: [],
+    subsidiaryId: null,
+  })
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -79,11 +95,18 @@ export const useAuthStore = create<AuthStore>()(
        const currentRole = get().auth.role;
 
        // Check user_roles table
-       const { data: roleData, error } = await supabase
-         .from('user_roles')
-         .select('roles(name)')
-         .eq('user_id', userId)
-         .maybeSingle();
+       let roleData: any = null;
+       let error: any = null;
+       
+       if (!DEMO_MODE) {
+         const result = await supabase
+           .from('user_roles')
+           .select('roles(name)')
+           .eq('user_id', userId)
+           .maybeSingle();
+         roleData = result.data;
+         error = result.error;
+       }
          
        let role: AppRole | null = null;
        

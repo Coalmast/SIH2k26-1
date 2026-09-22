@@ -8,6 +8,7 @@ import { NavigationProgress } from '@/components/navigation-progress'
 import { GeneralError } from '@/features/errors/general-error'
 import { NotFoundError } from '@/features/errors/not-found-error'
 import { supabase } from '@/lib/supabase'
+import { DEMO_MODE } from '@/lib/demo-mode'
 import { useAuthStore } from '@/stores/auth-store'
 import { TooltipProvider } from "@/components/ui/tooltip"
 
@@ -18,6 +19,11 @@ export const Route = createRootRouteWithContext<{
     const { setSession, setIsLoading } = useAuthStore()
 
     useEffect(() => {
+      if (DEMO_MODE) {
+        setIsLoading(false)
+        return
+      }
+
       // Get initial session
       supabase.auth.getSession().then(({ data: { session } }) => {
         setSession(session)

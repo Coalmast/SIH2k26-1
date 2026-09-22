@@ -2,9 +2,11 @@ import { createFileRoute, redirect } from '@tanstack/react-router'
 import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 import { useAuthStore } from '@/stores/auth-store'
 import { supabase } from '@/lib/supabase'
+import { DEMO_MODE } from '@/lib/demo-mode'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: async () => {
+    if (DEMO_MODE) return
     let { session, isLoading } = useAuthStore.getState().auth
     
     // If it's the initial page load, check supabase directly

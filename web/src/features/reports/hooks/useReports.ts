@@ -1,10 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/stores/auth-store';
 import { supabase } from '@/lib/supabase';
+import { DEMO_MODE } from '@/lib/demo-mode';
+import { getMockFetchResponse } from '@/lib/mock-data';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL || ''}/api/v1/reports`;
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
+  if (DEMO_MODE) {
+    const mockData = getMockFetchResponse(url);
+    return new Response(JSON.stringify(mockData), { status: 200, headers: { 'Content-Type': 'application/json' } });
+  }
   const session = useAuthStore.getState().auth.session;
   const headers = new Headers(options.headers || {});
   

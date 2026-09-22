@@ -4,10 +4,9 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Loader2, LogIn } from 'lucide-react'
+import { Loader2, LogIn, Crown, Building2, Pickaxe, Search, ShieldCheck, HardHat, FileText } from 'lucide-react'
 import { toast } from 'sonner'
-import { IconFacebook, IconGithub } from '@/assets/brand-icons'
-import { useAuthStore } from '@/stores/auth-store'
+import { useAuthStore, type AppRole } from '@/stores/auth-store'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -21,6 +20,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/password-input'
+import { DEMO_MODE } from '@/lib/demo-mode'
+import { Card } from '@/components/ui/card'
 
 const formSchema = z.object({
   email: z.email({
@@ -32,7 +33,7 @@ const formSchema = z.object({
     .min(7, 'Password must be at least 7 characters long.'),
 })
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLFormElement> {
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
   redirectTo?: string
 }
 
@@ -41,13 +42,10 @@ export function UserAuthForm({
   redirectTo,
   ...props
 }: UserAuthFormProps) {
-  const {
-    t
-  } = useTranslation();
-
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
-  const { auth } = useAuthStore()
+  const { setUserMeta } = useAuthStore()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,6 +82,44 @@ export function UserAuthForm({
         }, 300);
       }
     })
+  }
+
+  const handleDemoLogin = (role: AppRole, path: string) => {
+    setUserMeta(role, ['mine-001'], 'sub-001');
+    navigate({ to: path, replace: true });
+    toast.success(`Signed in as ${role.replace('_', ' ')} (Demo Mode)`);
+  }
+
+  if (DEMO_MODE) {
+    const roles: { id: AppRole, name: string, icon: any, path: string }[] = [
+      { id: 'super_admin', name: 'Super Admin', icon: Crown, path: '/corporate-dashboard' },
+      { id: 'corporate_executive', name: 'Corporate Exec', icon: Building2, path: '/corporate-dashboard' },
+      { id: 'mine_manager', name: 'Mine Manager', icon: Pickaxe, path: '/mine-manager' },
+      { id: 'field_inspector', name: 'Field Inspector', icon: Search, path: '/inspection' },
+      { id: 'safety_official', name: 'Safety Official', icon: ShieldCheck, path: '/inspection' },
+      { id: 'contractor', name: 'Contractor', icon: HardHat, path: '/contractors' },
+      { id: 'regulator', name: 'Regulator', icon: FileText, path: '/regulator' },
+    ]
+
+    return (
+      <div className={cn('grid gap-4', className)} {...props}>
+        <div className="bg-primary/10 text-primary p-3 rounded-md text-sm mb-2 text-center font-semibold border border-primary/20">
+          🚀 Demo Mode: Select a role to continue
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {roles.map(r => (
+            <Card 
+              key={r.id}
+              className="p-3 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors flex flex-col items-center justify-center text-center gap-2"
+              onClick={() => handleDemoLogin(r.id, r.path)}
+            >
+              <r.icon className="h-5 w-5 text-primary" />
+              <span className="text-xs font-semibold">{r.name}</span>
+            </Card>
+          ))}
+        </div>
+      </div>
+    )
   }
 
   return (

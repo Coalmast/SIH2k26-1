@@ -7,7 +7,8 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
 import { SkipToMain } from '@/components/skip-to-main'
 import { Header } from '@/components/layout/header'
-
+import { DEMO_MODE } from '@/lib/demo-mode'
+import { Rocket } from 'lucide-react'
 type AuthenticatedLayoutProps = {
   children?: React.ReactNode
 }
@@ -34,6 +35,11 @@ export function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
               'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
             )}
           >
+            {DEMO_MODE && (
+              <div className="bg-primary text-primary-foreground text-xs font-semibold py-1.5 px-4 flex items-center justify-center gap-2 z-50 shadow-sm border-b border-primary-foreground/20 relative">
+                <Rocket className="h-3 w-3" /> SIH 2026 — Demo Mode | All data is simulated | Use the Role Switcher in the sidebar to explore all views
+              </div>
+            )}
             <Header fixed />
             {children ?? <Outlet />}
           </SidebarInset>
