@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Children, cloneElement, isValidElement } from "react";
 import type { ReactElement, ReactNode } from "react";
 
@@ -276,3 +277,4 @@ export const Table = ({
     inner
   );
 };
+

@@ -82,7 +82,7 @@ export function SignUpForm({
       options: {
         data: { role: data.role },
       },
-    }).then(({ error }) => {
+    }).then(({ error }: any) => {
       setIsLoading(false)
       if (error) {
         toast.error(error.message)

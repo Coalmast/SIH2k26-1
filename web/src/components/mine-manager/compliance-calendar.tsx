@@ -59,9 +59,9 @@ export function ComplianceCalendar({ mineId }: { mineId?: string }) {
         // Mock events if empty
         if (formattedEvents.length === 0) {
            formattedEvents = [
-             { id: 'mock1', title: 'Environmental Audit', start: '2026-09-12', allDay: true, color: 'hsl(var(--primary))', textColor: 'hsl(var(--primary-foreground))' },
-             { id: 'mock2', title: 'Safety Gear Check', start: '2026-09-05', allDay: true, color: 'hsl(var(--chart-2))', textColor: '#ffffff' },
-             { id: 'mock3', title: 'Equipment Licensing', start: '2026-09-20', allDay: true, color: 'hsl(var(--destructive))', textColor: 'hsl(var(--destructive-foreground))' }
+             { id: 'mock1', title: 'Environmental Audit', start: '2026-09-12', allDay: true, color: 'hsl(var(--primary))', textColor: 'hsl(var(--primary-foreground))', extendedProps: { status: 'pending' } },
+             { id: 'mock2', title: 'Safety Gear Check', start: '2026-09-05', allDay: true, color: 'hsl(var(--chart-2))', textColor: '#ffffff', extendedProps: { status: 'approved' } },
+             { id: 'mock3', title: 'Equipment Licensing', start: '2026-09-20', allDay: true, color: 'hsl(var(--destructive))', textColor: 'hsl(var(--destructive-foreground))', extendedProps: { status: 'breached' } }
            ];
         }
         setEvents(formattedEvents);

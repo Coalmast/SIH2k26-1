@@ -61,7 +61,7 @@ export function UserAuthForm({
     supabase.auth.signInWithPassword({
       email: data.email,
       password: data.password,
-    }).then(({ error }) => {
+    }).then(({ error }: any) => {
       setIsLoading(false)
       if (error) {
         toast.error(error.message)
@@ -123,46 +123,47 @@ export function UserAuthForm({
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('grid gap-3', className)}
-        {...props}
-      >
-        <FormField
-          control={form.control}
-          name='email'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("email", "Email")}</FormLabel>
-              <FormControl>
-                <Input placeholder='name@example.com' {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name='password'
-          render={({ field }) => (
-            <FormItem className='relative'>
-              <FormLabel>{t("password", "Password")}</FormLabel>
-              <FormControl>
-                <PasswordInput placeholder='********' {...field} />
-              </FormControl>
-              <FormMessage />
-              <Link
-                to='/forgot-password'
-                className='absolute inset-e-0 -top-0.5 text-sm font-medium text-muted-foreground hover:opacity-75'
-              >{t("forgot_password", "Forgot password?")}</Link>
-            </FormItem>
-          )}
-        />
-        <Button className='mt-2' disabled={isLoading}>
-          {isLoading ? <Loader2 className='animate-spin' /> : <LogIn />}{t("sign_in", "Sign in")}</Button>
-
-      </form>
-    </Form>
+    <div className={cn('grid gap-3', className)} {...props}>
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="grid gap-3"
+        >
+          <FormField
+            control={form.control}
+            name='email'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("email", "Email")}</FormLabel>
+                <FormControl>
+                  <Input placeholder='name@example.com' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='password'
+            render={({ field }) => (
+              <FormItem className='relative'>
+                <FormLabel>{t("password", "Password")}</FormLabel>
+                <FormControl>
+                  <PasswordInput placeholder='********' {...field} />
+                </FormControl>
+                <FormMessage />
+                <Link
+                  to='/forgot-password'
+                  className='absolute inset-e-0 -top-0.5 text-sm font-medium text-muted-foreground hover:opacity-75'
+                >{t("forgot_password", "Forgot password?")}</Link>
+              </FormItem>
+            )}
+          />
+          <Button className='mt-2' disabled={isLoading}>
+            {isLoading ? <Loader2 className='animate-spin' /> : <LogIn />}{t("sign_in", "Sign in")}
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }

@@ -9,7 +9,7 @@ import type {
 } from "react";
 import { createPortal } from "react-dom";
 import { format } from "date-fns";
-import { Flame, Droplet, ShieldAlert } from "lucide-react";
+import { Flame, Droplet, ShieldAlert, Flag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { CalendarOccurrence, TaskStatusOption } from "../types";

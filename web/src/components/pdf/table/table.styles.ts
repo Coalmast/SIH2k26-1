@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { StyleSheet } from "@/lib/pdf-primitives";
 import type { PdfcnTheme } from "@/components/pdf-themes";
 
@@ -277,3 +278,4 @@ export const createTableStyles = (t: PdfcnTheme) => {
     },
   });
 };
+

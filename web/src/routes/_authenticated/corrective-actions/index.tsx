@@ -36,7 +36,7 @@ function CAPAIndexPage() {
         <div className="grid gap-4">
           {MOCK_CAPAS.map(capa => (
             <Card key={capa.id} className="hover:shadow-md transition-shadow cursor-pointer">
-              <Link to={`/corrective-actions/${capa.id}`} className="block">
+              <Link to="/corrective-actions/$id" params={{ id: capa.id }} className="block">
                 <CardHeader className="py-4">
                   <div className="flex justify-between items-center">
                     <div>

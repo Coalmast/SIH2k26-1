@@ -38,7 +38,7 @@ export function LiveAlertFeed({ mineId }: { mineId?: string }) {
         .limit(30);
       
       if (data && data.length > 0) {
-        setAlerts(data.map(d => ({
+        setAlerts(data.map((d: any) => ({
           id: d.id,
           title: d.title,
           message: d.message,

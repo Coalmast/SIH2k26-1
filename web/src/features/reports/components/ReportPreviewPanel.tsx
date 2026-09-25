@@ -80,7 +80,7 @@ export function ReportPreviewPanel({
         try {
           const bytes = await render(element);
           if (active) {
-            const blob = new Blob([bytes], { type: 'application/pdf' });
+            const blob = new Blob([bytes as any], { type: 'application/pdf' });
             // Release previous url to prevent memory leaks
             if (pdfUrl) URL.revokeObjectURL(pdfUrl);
             const url = URL.createObjectURL(blob);

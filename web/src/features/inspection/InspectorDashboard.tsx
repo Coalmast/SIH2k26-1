@@ -21,7 +21,7 @@ export function InspectorDashboard() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
             <UserCircle className="h-8 w-8 text-primary" />
-            {t("welcome_inspector", "Welcome, Inspector")} {user?.firstName || 'Sunil Patil'}
+            {t("welcome_inspector", "Welcome, Inspector")} {user?.full_name?.split(' ')[0] || 'Sunil Patil'}
           </h1>
           <p className="text-muted-foreground mt-1">
             {t("your_assigned_inspections", "Your assigned inspections and compliance tasks for")} <span className="font-medium text-foreground">Mine {mineId.split('-')[0]}</span>

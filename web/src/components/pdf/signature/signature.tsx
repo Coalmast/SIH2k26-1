@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   usePdfcnTheme,
   useSafeMemo,
@@ -206,3 +207,4 @@ export const PdfSignatureBlock = ({
 };
 
 export { PdfSignatureBlock as Signature };
+

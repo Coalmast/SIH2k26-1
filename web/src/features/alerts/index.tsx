@@ -50,15 +50,17 @@ export function AlertsPage() {
       
       if (!data || data.length === 0) {
         setAlerts([
-          { id: '1', title: 'New inspection assigned, due Friday.', priority: 'medium', type: 'ASSIGNED', message: 'Environmental Dust Monitoring inspection assigned to Sunil Patil.', read: false, timestamp: new Date().toISOString() },
-          { id: '2', title: 'Inspection assigned to Sunil Patil.', priority: 'low', type: 'CONFIRMATION', message: 'Manager confirmation: Inspection ID INS-889 has been assigned successfully.', read: false, timestamp: new Date(Date.now() - 3600000).toISOString() },
-          { id: '3', title: 'Inspection due in 24 hours.', priority: 'high', type: 'REMINDER', message: 'Upcoming deadline for Machinery Safety Audit.', read: false, timestamp: new Date(Date.now() - 7200000).toISOString() },
-          { id: '4', title: 'Compliance task overdue: Air Quality Audit.', priority: 'critical', type: 'ESCALATION', message: 'Task escalated to Subsidiary Admin. Originally due 2 days ago.', read: false, timestamp: new Date(Date.now() - 86400000).toISOString() },
-          { id: '5', title: 'PM10 Dust Levels Exceed EC Limit — Umrer OCP', priority: 'critical', type: 'VIOLATION', message: 'Monthly Environmental Monitoring inspection submitted by Field Inspector Sunil Patil at 14:32 IST, Sept 16. PM10 recorded at 4.2 mg/m³ (EC limit: 3.0 mg/m³), SO2 at 2.8 ppm (limit: 2.0 ppm). Regulatory action may be required under EPA 1986, Schedule VI.', read: false, timestamp: new Date(Date.now() - 172800000).toISOString() },
+          { id: '1', title: 'High: PM10 Dust Elevated', priority: 'high', type: 'VIOLATION', message: 'Sensor station near Umrer OCP recorded PM10 levels at 90 µg/m³ (Approaching Limit: 100 µg/m³). Water sprinklers need deployment.', read: false, timestamp: new Date().toISOString() },
+          { id: '2', title: 'Contractor Validity Expiring', priority: 'high', type: 'COMPLIANCE', message: 'L&T Mining Services (ID: CON-802) labor license expires in 5 days. Work orders will be automatically paused if not renewed.', read: false, timestamp: new Date(Date.now() - 3600000 * 2).toISOString() },
+          { id: '3', title: 'Safety Audit Completed', priority: 'low', type: 'INSPECTION', message: 'Q3 Electrical Safety Audit at Block II completed by Inspector Ramesh Kumar. No major non-compliances found.', read: false, timestamp: new Date(Date.now() - 3600000 * 8).toISOString() },
+          { id: '4', title: 'Action Required: Machine Maintenance', priority: 'medium', type: 'MAINTENANCE', message: 'Excavator EX-04 has crossed 5,000 operational hours. Preventative maintenance required per DGMS guidelines.', read: true, timestamp: new Date(Date.now() - 86400000).toISOString() },
+          { id: '5', title: 'Notice: Groundwater Report Overdue', priority: 'medium', type: 'ESCALATION', message: 'Monthly groundwater withdrawal report for Gevra Project is overdue by 3 days. Please submit to SPCB portal.', read: false, timestamp: new Date(Date.now() - 86400000 * 2).toISOString() },
+          { id: '6', title: 'Production Target Reached', priority: 'low', type: 'INFO', message: 'Weekly coal production target for Sector A achieved 12 hours ahead of schedule.', read: true, timestamp: new Date(Date.now() - 86400000 * 3).toISOString() },
+          { id: '7', title: 'Upcoming Inspection', priority: 'medium', type: 'REMINDER', message: 'Regulatory inspection by CPCB scheduled for next Tuesday at Dipka OCP.', read: true, timestamp: new Date(Date.now() - 86400000 * 5).toISOString() },
         ])
       } else {
         // Map backend alerts to store format
-        const mapped = data.map(d => ({
+        const mapped = data.map((d: any) => ({
           id: d.id,
           title: d.title,
           message: d.message,
@@ -73,7 +75,7 @@ export function AlertsPage() {
     fetchAlerts()
 
     const channel = supabase.channel('alerts-page')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' }, payload => {
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'alerts' }, (payload: any) => {
         const newAlert = payload.new
         useAlertStore.getState().addAlert({
           title: newAlert.title,
@@ -130,8 +132,6 @@ export function AlertsPage() {
           </Button>
         ))}
       </div>
-
-      <AIAnalysisPanel />
 
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">

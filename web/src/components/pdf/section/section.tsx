@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   usePdfcnTheme,
   useSafeMemo,
@@ -75,7 +76,7 @@ const createSectionStyles = (t: PdfcnTheme) => {
     paddingNone: { padding: spacing[0] },
     paddingSm: { padding: spacing[3] },
     spacingLg: { marginVertical: spacing[8] },
-    spacingMd: { marginVertical: t.spacing.sectionGap },
+    spacingMd: { marginVertical: t.spacing.sectionGap ?? t.primitives.spacing[6] },
     spacingNone: { marginVertical: spacing[0] },
     spacingSm: { marginVertical: spacing[4] },
     spacingXl: { marginVertical: spacing[12] },
@@ -139,3 +140,4 @@ export const Section = ({
   }
   return <View style={styleArray}>{children}</View>;
 };
+

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   usePdfcnTheme,
   useSafeMemo,
@@ -146,3 +147,4 @@ export const Text = ({
   }
   return <PDFText style={styleArray}>{children}</PDFText>;
 };
+

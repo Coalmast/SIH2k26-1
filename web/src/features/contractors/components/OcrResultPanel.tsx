@@ -47,10 +47,10 @@ export function OcrResultPanel({ result, fileName, onReset }: OcrResultPanelProp
 
       <div className="p-4 space-y-4">
         {/* Progress Pipeline */}
-        {result.status !== 'error' && result.status !== 'idle' && (
+        {result.status !== 'error' && (
           <div className="flex items-center gap-2 w-full max-w-sm mx-auto my-4 text-xs">
-             <div className={`flex flex-col items-center gap-1 ${result.status !== 'idle' ? 'text-primary' : 'text-muted-foreground'}`}>
-                <div className={`h-2 w-full rounded-full ${result.status !== 'idle' ? 'bg-primary' : 'bg-muted'}`} />
+             <div className="flex flex-col items-center gap-1 text-primary">
+                <div className="h-2 w-full rounded-full bg-primary" />
                 <span>Upload</span>
              </div>
              <div className={`flex flex-col items-center gap-1 ${['scanning', 'verified'].includes(result.status) ? 'text-amber-500' : 'text-muted-foreground'}`}>

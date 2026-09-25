@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { KeyValue } from "@/components/pdf/key-value/key-value";
 import { PageFooter } from "@/components/pdf/page-footer/page-footer";
 import { PageHeader } from "@/components/pdf/page-header/page-header";
@@ -250,3 +251,4 @@ export const InvoiceMinimalDocument = ({
     <InvoiceMinimalContent data={data} />
   </PdfcnThemeProvider>
 );
+

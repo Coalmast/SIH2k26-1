@@ -11,6 +11,7 @@ export interface Alert {
   read: boolean
   source?: string
   mineId?: string
+  type?: string
 }
 
 interface AlertState {

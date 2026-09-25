@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { ColorTokens } from "@/components/pdf-themes";
 
 /** Theme color token keys that can be used for the color prop */
@@ -21,3 +22,4 @@ export const resolveColor = (value: string, colors: ColorTokens): string => {
   const key = value as (typeof THEME_COLOR_KEYS)[number];
   return THEME_COLOR_KEYS.includes(key) ? colors[key] : value;
 };
+

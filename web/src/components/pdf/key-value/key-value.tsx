@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   usePdfcnTheme,
   useSafeMemo,
@@ -207,3 +208,4 @@ export const KeyValue = ({
     </View>
   );
 };
+

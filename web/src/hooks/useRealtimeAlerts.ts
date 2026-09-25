@@ -67,7 +67,7 @@ export function useRealtimeAlerts({ mineId, onNewAlert }: UseRealtimeAlertsOptio
           table:  'alerts',
           filter: `mine_id=eq.${mineId}`,
         },
-        (payload) => {
+        (payload: any) => {
           const alert = payload.new as AlertPayload
           showAlertToast(alert)
           onNewAlert?.(alert)

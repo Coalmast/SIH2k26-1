@@ -58,6 +58,8 @@ export type TaskItem = {
   priority?: string;
   /** Label/tag keys (many-to-many). Consumer supplies display metadata via `labelOptions`. */
   labels?: string[];
+  /** Custom metadata specific to the consumer application. */
+  metadata?: Record<string, any>;
   /** Infinite recursive nesting. */
   children?: TaskItem[];
 };

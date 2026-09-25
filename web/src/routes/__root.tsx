@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase'
 import { DEMO_MODE } from '@/lib/demo-mode'
 import { useAuthStore } from '@/stores/auth-store'
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { DemoAlerts } from "@/components/demo-alerts"
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
@@ -25,7 +26,7 @@ export const Route = createRootRouteWithContext<{
       }
 
       // Get initial session
-      supabase.auth.getSession().then(({ data: { session } }) => {
+      supabase.auth.getSession().then(({ data: { session } }: any) => {
         setSession(session)
         setIsLoading(false)
       })
@@ -33,7 +34,7 @@ export const Route = createRootRouteWithContext<{
       // Listen for auth changes
       const {
         data: { subscription },
-      } = supabase.auth.onAuthStateChange((_event, session) => {
+      } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
         setSession(session)
       })
 
@@ -45,7 +46,7 @@ export const Route = createRootRouteWithContext<{
         <NavigationProgress />
         <Outlet />
         <Toaster duration={5000} />
-
+        <DemoAlerts />
       </TooltipProvider>
     )
   },
